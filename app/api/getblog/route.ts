@@ -1,8 +1,8 @@
 import { OpenAIStream, OpenAIStreamPayload } from "@/lib/openAiStream";
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("Missing env var from OpenAI");
-}
+// if (!process.env.OPENAI_API_KEY) {
+//   throw new Error("Missing env var from OpenAI");
+// }
 interface RequestBody {
   model_promt?: string;
   prompt?: string;
