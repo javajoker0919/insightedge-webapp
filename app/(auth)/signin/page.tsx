@@ -55,14 +55,14 @@ const SignIn = () => {
   //       invokeToast("error", "Please confirm your email and password", "top");
   //     }
   //   } else {
-  //     setIsAuth(true);
+  // setIsAuth(true);
   //     localStorage.setItem(
   //       "userInfo",
   //       JSON.stringify(data.session.user.user_metadata)
   //     );
   //     console.log("User signed in:", data);
 
-  //     invokeToast("success", "You have successfully logged in!", "top");
+  // invokeToast("success", "You have successfully logged in!", "top");
   //     router.replace("/");
   //   }
   // };
@@ -122,7 +122,18 @@ const SignIn = () => {
                 </div>
 
                 {/* Sign In Button */}
-                <button className="py-3.5 mt-2 flex items-center justify-center text-white bg-success-300 hover:bg-success-400 transition-all rounded-lg w-full bg-indigo-600 hover:bg-indigo-700">
+                <button
+                  onClick={() => {
+                    setIsAuth(true);
+                    // invokeToast(
+                    //   "success",
+                    //   "You have successfully logged in!",
+                    //   "top"
+                    // );
+                    router.push("/");
+                  }}
+                  className="py-3.5 mt-2 flex items-center justify-center text-white bg-success-300 hover:bg-success-400 transition-all rounded-lg w-full bg-indigo-600 hover:bg-indigo-700"
+                >
                   Sign In
                 </button>
               </form>
