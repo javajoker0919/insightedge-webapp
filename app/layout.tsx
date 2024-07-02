@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
@@ -9,8 +9,6 @@ import "./globals.css";
 import { UserProvider } from "../contexts/userContext";
 import ToastProvider from "@/contexts/toastContext";
 import AuthProvider from "@/contexts/AuthProvider";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <div className="flex h-full flex-col items-center justify-between">
           <UserProvider>
             <AuthProvider>
