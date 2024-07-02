@@ -58,7 +58,7 @@ const Footer = () => {
             <div className="flex flex-col gap-3">
               <div className="footer-img flex items-center text-slate-800">
                 <span className="text-3xl font-bold pl-2 text-slate-800">
-                  AI-BLOG
+                  Insightedge
                 </span>
               </div>
               <div className="text-gray-400">

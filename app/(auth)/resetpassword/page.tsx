@@ -85,7 +85,7 @@ const ResetPassword = () => {
           <header>
             <a className="" href="/resetpassword">
               <div className="text-4xl font-mono font-bold text-black cursor-pointer dark:text-white">
-                AI-BLOG
+                Insightedge
               </div>
             </a>
           </header>

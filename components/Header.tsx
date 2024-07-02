@@ -13,17 +13,17 @@ const Header = () => {
   const { userInfo, setUserInfo, isAuth, setIsAuth } = useUserContext();
 
   return (
-    <div className="w-full z-20 flex flex-row justify-center top-0 sticky bg-slate-200 shadow-lg">
-      <div className="py-2 px-4 z-10 w-full shadow-blue-100 border-b-sky-100 max-w-7xl items-center justify-between font-mono text-sm lg:flex">
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
+    <div className="w-full z-20 flex flex-row justify-center dark:bg-slate-700 top-0 sticky bg-slate-200 shadow-lg">
+      <div className="py-2 px-4 z-10 w-full shadow-blue-100 border-b-sky-100 max-w-7xl items-center justify-end font-mono text-sm lg:flex">
+        {/* <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
           <div
             className="text-4xl font-mono font-black cursor-pointer"
             onClick={() => window.location.reload()}
           >
-            AI-BLOG
+            Insightedge
           </div>
-        </div>
-        <div className="flex flex-row justify-center gap-10 text-xl font-mono place-items-center items-center">
+        </div> */}
+        {/* <div className="flex flex-row justify-center gap-10 text-xl font-mono place-items-center items-center">
           <div
             className="cursor-pointer hover:text-slate-500"
             onClick={() => router.push("/")}
@@ -45,18 +45,18 @@ const Header = () => {
             </div>
           )}
           <div className="cursor-pointer hover:text-slate-500">Contact</div>
-        </div>
+        </div> */}
         <div className="py-2 flex flex-row justify-center gap-4 text-base">
           {!isAuth ? (
             <>
               <button
-                className="p-2 px-4 font-bold font-mono rounded-lg bg-white text-black hover:bg-slate-300"
+                className="p-2 px-4 font-bold font-mono rounded-lg dark:text-slate-200 text-black hover:bg-slate-300"
                 onClick={() => router.push("/signin")}
               >
                 Sign In
               </button>
               <button
-                className="p-2 px-4 font-bold font-mono rounded-lg bg-white text-black hover:bg-slate-300"
+                className="p-2 px-4 font-bold font-mono rounded-lg bg-indigo-500 text-slate-200 hover:bg-indigo-600"
                 onClick={() => router.push("/signup")}
               >
                 Sign Up
