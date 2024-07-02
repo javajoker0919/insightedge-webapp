@@ -72,7 +72,7 @@ const SignIn = () => {
       <div className="flex flex-col lg:flex-row justify-center h-[calc(100vh-4.5rem)]">
         <div className="h-full px-5 flex items-center justify-center">
           <div className="flex flex-col gap-8 mb-16">
-            <div className="md:w-[450px] w-full md:m-auto shadow-slate-200 dark:shadow-slate-700 rounded-xl md:shadow-2xl md:p-8">
+            <div className="md:w-[400px] w-full md:m-auto shadow-slate-200 dark:shadow-slate-700 rounded-xl md:shadow-2xl md:p-8">
               <header className="text-center mb-8">
                 <h2 className="text-gray-900 dark:text-white text-2xl font-semibold mb-2">
                   Sign in to your account
