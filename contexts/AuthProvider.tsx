@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import {
   useRouter,
-  useSearchParams,
+  // useSearchParams,
   usePathname,
   redirect,
 } from "next/navigation";
@@ -11,7 +11,7 @@ import { useUserContext } from "./userContext";
 const AuthProvider = ({ children }: any) => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
 
   const { userInfo } = useUserContext();
@@ -31,7 +31,7 @@ const AuthProvider = ({ children }: any) => {
     } else if (userInfo === null) {
       authCheck(false);
     }
-  }, [pathname, searchParams, userInfo]);
+  }, [pathname, userInfo]);
 
   const authCheck = (isAuth: boolean) => {
     const redirectURLs = ["/signin", "/signup", "/resetpassword"];
