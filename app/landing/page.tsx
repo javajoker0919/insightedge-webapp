@@ -1,11 +1,8 @@
-"use client";
-
-const Landing = () => {
+export default function LandingPage() {
   return (
-    <main className="flex h-full w-full flex-col items-center justify-between">
-      Landing page
-    </main>
+    <div className="container mx-auto">
+      <h1>Landing Page</h1>
+      <p>Welcome to the landing page.</p>
+    </div>
   );
-};
-
-export default Landing;
+}

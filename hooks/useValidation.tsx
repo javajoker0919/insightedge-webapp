@@ -1,33 +1,31 @@
 const useValidation = () => {
-  const validateUserName = (name: string) => {
-    const result = /^[a-zA-Z0-9]+$/.test(name);
-    if (result) {
-      return { validate: result, error: "" };
-    } else {
-      return {
-        validate: result,
-        error: "userName must contain only a-z/A-z/0-9",
-      };
-    }
+  const validateField = (
+    value: string,
+    regex: RegExp,
+    errorMessage: string
+  ) => {
+    const isValid = regex.test(value);
+    return {
+      validate: isValid,
+      error: isValid ? "" : errorMessage,
+    };
   };
-  const validateEmail = (email: string) => {
-    const result = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
-    if (result) {
-      return { validate: result, error: "" };
-    } else {
-      return { validate: result, error: "Please provide valid email" };
-    }
-  };
-  const validatePassword = (password: string) => {
-    const result = /^[a-zA-Z0-9!@#$%^&*]{6,16}$/.test(password);
-    if (result) {
-      return { validate: result, error: "" };
-    } else {
-      return { validate: result, error: "Please provide a stroge password" };
-    }
-  };
+
+  const validateEmail = (email: string) =>
+    validateField(
+      email,
+      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+      "Please provide a valid email"
+    );
+
+  const validatePassword = (password: string) =>
+    validateField(
+      password,
+      /^[a-zA-Z0-9!@#$%^&*]{6,16}$/,
+      "Please provide a strong password"
+    );
+
   return {
-    validateUserName,
     validateEmail,
     validatePassword,
   };
