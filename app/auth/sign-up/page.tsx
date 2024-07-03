@@ -84,7 +84,7 @@ const SignUp = () => {
       /// Insert user data into 'users' table
       const { error: userError } = await supabase
         .from("users")
-        .insert({ id: data.user?.id });
+        .insert({ id: data.user?.id, email: data.user?.email });
 
       if (userError) throw userError;
 

@@ -1,8 +1,8 @@
 "use client";
 
+/// Import necessary dependencies and components
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import AuthInput from "@/app/components/SignInput";
 import useValidation from "@/hooks/useValidation";
@@ -10,29 +10,35 @@ import { supabase } from "@/supabase";
 import { useToastContext } from "@/contexts/toastContext";
 
 const ForgotPassword = () => {
+  /// Initialize hooks and context
   const router = useRouter();
   const { invokeToast } = useToastContext();
   const { validateEmail } = useValidation();
 
+  /// State management
   const [email, setEmail] = useState("");
   const [error, setError] = useState({ email: "" });
   const [isValidForm, setIsValidForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  /// Effect to update form validity
   useEffect(() => {
     setIsValidForm(!!email && !error.email);
   }, [email, error]);
 
+  /// Effect for debugging (consider removing in production)
   useEffect(() => {
     console.log(!isValidForm || isLoading);
   }, [isValidForm, isLoading]);
 
+  /// Handle input change and validate email
   const handleInputChange = (value: string) => {
     setEmail(value);
     const { validate, error } = validateEmail(value);
     setError({ email: validate ? "" : error });
   };
 
+  /// Handle forgot password submission
   const handleForgotPassword = async () => {
     if (!isValidForm) {
       setError({ email: validateEmail(email).error });
@@ -42,9 +48,11 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
+      /// Attempt to send password reset email
       const { error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) throw error;
 
+      /// Show success message and redirect
       invokeToast("success", "Password reset link sent to your email!", "top");
       router.push("/auth/sign-in");
     } catch (error: any) {
@@ -60,14 +68,18 @@ const ForgotPassword = () => {
       <div className="flex flex-col lg:flex-row justify-center h-full">
         <div className="h-full px-5 flex items-center justify-center">
           <div className="flex flex-col gap-8 mb-16">
+            {/* Forgot password form container */}
             <div className="md:w-[400px] min-w-72 w-full shadow-slate-200 rounded-xl md:shadow-2xl md:p-8">
+              {/* Form header */}
               <header className="text-center mb-8">
                 <h2 className="text-gray-900 text-2xl font-semibold mb-2">
                   Forgot Password
                 </h2>
               </header>
 
+              {/* Form inputs */}
               <div className="flex flex-col gap-5">
+                {/* Email input */}
                 <div className="space-y-1">
                   <p className="text-slate-600">Email</p>
                   <AuthInput
@@ -77,6 +89,7 @@ const ForgotPassword = () => {
                   />
                 </div>
 
+                {/* Submit button */}
                 <button
                   onClick={handleForgotPassword}
                   disabled={!isValidForm || isLoading}
@@ -91,6 +104,7 @@ const ForgotPassword = () => {
               </div>
             </div>
 
+            {/* Back to Sign In link */}
             <div className="text-center flex items-center gap-2 justify-center text-gray-900 text-base font-medium">
               <Link
                 href="/auth/sign-in"

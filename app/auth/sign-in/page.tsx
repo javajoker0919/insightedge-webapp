@@ -136,7 +136,7 @@ const SignIn = () => {
                 {/* Sign-in button */}
                 <button
                   onClick={handleSignInClick}
-                  disabled={isLoading}
+                  disabled={!isValidForm || isLoading}
                   className="py-3.5 mt-2 flex items-center justify-center text-white bg-success-300 hover:bg-success-400 transition-all rounded-lg w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (

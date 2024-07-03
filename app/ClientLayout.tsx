@@ -34,7 +34,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   const isAuthPage = AUTH_PAGES.includes(pathname);
 
   return (
-    <div className="flex h-full flex-col items-center justify-between">
+    <div className="flex h-screen flex-col items-center justify-between bg-white">
       <UserProvider>
         <AuthProvider>
           <ToastProvider>
