@@ -11,38 +11,43 @@ import AuthProvider from "@/contexts/AuthProvider";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
-export default function ClientLayout({
-  children,
-}: {
+const AUTH_PAGES = ["/auth/sign-in", "/auth/sign-up", "/auth/forgot-password"];
+
+const ToastContainerConfig = {
+  closeOnClick: true,
+  draggable: true,
+  pauseOnFocusLoss: true,
+  pauseOnHover: true,
+  autoClose: 3000,
+  hideProgressBar: true,
+  newestOnTop: false,
+  position: "top-right" as const,
+  theme: "colored" as const,
+};
+
+interface ClientLayoutProps {
   children: React.ReactNode;
-}) {
+}
+
+export default function ClientLayout({ children }: ClientLayoutProps) {
   const pathname = usePathname();
-  const isAuthPage = ["/auth/sign-in", "/auth/sign-up"].includes(pathname);
+  const isAuthPage = AUTH_PAGES.includes(pathname);
 
   return (
     <div className="flex h-full flex-col items-center justify-between">
       <UserProvider>
         <AuthProvider>
           <ToastProvider>
-            <ToastContainer
-              closeOnClick
-              draggable
-              pauseOnFocusLoss
-              pauseOnHover
-              autoClose={3000}
-              hideProgressBar
-              newestOnTop={false}
-              position="top-right"
-              theme="colored"
-            />
-            {!isAuthPage && (
+            <ToastContainer {...ToastContainerConfig} />
+            {isAuthPage ? (
+              children
+            ) : (
               <>
                 <Navbar />
                 {children}
                 <Footer />
               </>
             )}
-            {isAuthPage && children}
           </ToastProvider>
         </AuthProvider>
       </UserProvider>

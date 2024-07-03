@@ -28,8 +28,10 @@ const SignUp = () => {
     confirmPass: "",
   });
 
-  /// State to track form validation
+  /// State to track form validation, checkbox, and loading
   const [isValidate, setIsValidate] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   /// Effect to check form validity
   useEffect(() => {
@@ -38,8 +40,8 @@ const SignUp = () => {
     const allFieldsFilled = Boolean(email && password && confirmPass);
     const passwordsMatch = password === confirmPass;
 
-    setIsValidate(allFieldsFilled && !hasErrors && passwordsMatch);
-  }, [formData, errors]);
+    setIsValidate(allFieldsFilled && !hasErrors && passwordsMatch && isChecked);
+  }, [formData, errors, isChecked]);
 
   /// Handle input changes and validate fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,40 +57,48 @@ const SignUp = () => {
     }
   };
 
+  /// Handle checkbox change
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsChecked(e.target.checked);
+  };
+
   /// Handle form submission
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { email, password } = formData;
 
-    /// Sign up user with Supabase
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: "http://localhost:3000/",
-      },
-    });
+    setIsLoading(true);
 
-    if (error) {
-      invokeToast("error", "Something went wrong!", "top");
-    } else {
-      console.log(data.user?.id);
+    try {
+      /// Sign up user with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: "http://localhost:3000/",
+        },
+      });
+
+      if (error) throw error;
 
       /// Insert user data into 'users' table
       const { error: userError } = await supabase
         .from("users")
         .insert({ id: data.user?.id });
 
-      if (!userError) {
-        setUserInfo(data.user?.user_metadata);
-        localStorage.setItem(
-          "userInfo",
-          JSON.stringify(data.user?.user_metadata)
-        );
-        invokeToast("success", "Successfully signed up!", "top");
-      } else {
-        invokeToast("error", "Something went wrong!", "top");
-      }
+      if (userError) throw userError;
+
+      setUserInfo(data.user?.user_metadata);
+      localStorage.setItem(
+        "userInfo",
+        JSON.stringify(data.user?.user_metadata)
+      );
+      invokeToast("success", "Successfully signed up!", "top");
+    } catch (error: any) {
+      console.error("Sign-up error:", error);
+      invokeToast("error", error.message || "Something went wrong!", "top");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -141,6 +151,8 @@ const SignUp = () => {
                     id="remember"
                     type="checkbox"
                     name="remember"
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
                   />
                   <label
                     htmlFor="remember"
@@ -155,10 +167,14 @@ const SignUp = () => {
 
                 <button
                   type="submit"
-                  disabled={!isValidate}
+                  disabled={!isValidate || isLoading}
                   className="py-3.5 mt-2 flex items-center justify-center text-white bg-indigo-600 hover:bg-indigo-700 transition-all rounded-lg w-full disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
-                  Sign Up
+                  {isLoading ? (
+                    <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></span>
+                  ) : (
+                    "Sign Up"
+                  )}
                 </button>
               </form>
 
