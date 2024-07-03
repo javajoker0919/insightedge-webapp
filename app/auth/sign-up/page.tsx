@@ -35,10 +35,10 @@ const SignUp = () => {
   useEffect(() => {
     const { email, password, confirmPass } = formData;
     const hasErrors = Object.values(errors).some((error) => error !== "");
-    const allFieldsFilled = email && password && confirmPass;
+    const allFieldsFilled = Boolean(email && password && confirmPass);
     const passwordsMatch = password === confirmPass;
 
-    setIsValidate(!!allFieldsFilled && !hasErrors && passwordsMatch);
+    setIsValidate(allFieldsFilled && !hasErrors && passwordsMatch);
   }, [formData, errors]);
 
   /// Handle input changes and validate fields
@@ -72,23 +72,23 @@ const SignUp = () => {
     if (error) {
       invokeToast("error", "Something went wrong!", "top");
     } else {
-      // /// Insert user data into 'users' table
-      // const { error: userError } = await supabase
-      //   .from("users")
-      //   .insert({ email });
+      console.log(data.user?.id);
 
-      // if (!userError) {
-      //   setUserInfo(data.user?.user_metadata);
-      //   localStorage.setItem(
-      //     "userInfo",
-      //     JSON.stringify(data.user?.user_metadata)
-      //   );
-      //   invokeToast("success", "Successfully signed up!", "top");
-      // } else {
-      //   invokeToast("error", "Something went wrong!", "top");
-      // }
+      /// Insert user data into 'users' table
+      const { error: userError } = await supabase
+        .from("users")
+        .insert({ id: data.user?.id });
 
-      invokeToast("success", "You have successfully signed up!", "top");
+      if (!userError) {
+        setUserInfo(data.user?.user_metadata);
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify(data.user?.user_metadata)
+        );
+        invokeToast("success", "Successfully signed up!", "top");
+      } else {
+        invokeToast("error", "Something went wrong!", "top");
+      }
     }
   };
 
