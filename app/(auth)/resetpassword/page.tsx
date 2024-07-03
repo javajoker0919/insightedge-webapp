@@ -1,7 +1,7 @@
 "use client";
 
 import AuthInput from "@/components/SignInput";
-import useValidation from "@/app/hooks/useValidation";
+import useValidation from "@/hooks/useValidation";
 import { supabase } from "@/supabase";
 import Image from "next/image";
 import { useEffect, useState } from "react";
