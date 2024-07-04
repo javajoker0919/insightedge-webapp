@@ -11,7 +11,12 @@ import AuthProvider from "@/contexts/AuthProvider";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
-const AUTH_PAGES = ["/auth/sign-in", "/auth/sign-up", "/auth/forgot-password"];
+const AUTH_PAGES = [
+  "/",
+  "/auth/sign-in",
+  "/auth/sign-up",
+  "/auth/forgot-password",
+];
 
 const ToastContainerConfig = {
   closeOnClick: true,
@@ -34,7 +39,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   const isAuthPage = AUTH_PAGES.includes(pathname);
 
   return (
-    <div className="flex h-screen flex-col items-center justify-between bg-white">
+    <div className="flex h-full min-h-screen flex-col items-center justify-between bg-white">
       <UserProvider>
         <AuthProvider>
           <ToastProvider>
