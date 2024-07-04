@@ -1,57 +1,58 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import {
+  useRouter,
+  // useSearchParams,
+  usePathname,
+  redirect,
+} from "next/navigation";
 import { useUserContext } from "./userContext";
-import { supabase } from "@/utils/supabaseClient";
 
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+const AuthProvider = ({ children }: any) => {
   const router = useRouter();
   const pathname = usePathname();
-  // const [isLoading, setIsLoading] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  // const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(true);
+
   const { userInfo } = useUserContext();
 
+  const publicPaths = ["/landing", "/posts"];
+  const privatePaths = ["/personal", "/posts/add", "/settings"];
+
   useEffect(() => {
-    if (window.location.href.includes("localhost:")) return;
-
-    const checkAuth = async () => {
-      if (userInfo) {
-        await authCheck(true);
-      } else if (userInfo === null) {
-        await authCheck(false);
-      }
-    };
-
-    checkAuth();
+    if (window.location.href.includes("localhost:")) {
+      return;
+    }
   }, [pathname, userInfo]);
 
-  const authCheck = async (isAuth: boolean) => {
+  useEffect(() => {
+    if (userInfo) {
+      authCheck(true);
+    } else if (userInfo === null) {
+      authCheck(false);
+    }
+  }, [pathname, userInfo]);
+
+  const authCheck = (isAuth: boolean) => {
+    const redirectURLs = ["/signin", "/signup", "/resetpassword"];
+    const isPublicURL = publicPaths.some((publicPath) =>
+      pathname.startsWith(publicPath)
+    );
+    const isPrivateURL =
+      privatePaths.some((privatePath) => pathname.startsWith(privatePath)) ||
+      pathname === "/";
+
     if (isAuth) {
-      try {
-        const { data, error } = await supabase
-          .from("users")
-          .select("auth_completed")
-          .eq("id", userInfo.id)
-          .single();
-
-        if (error) throw error;
-
-        if (!data.auth_completed && pathname !== "/auth/create-profile") {
-          router.push("/auth/create-profile");
-        }
-      } catch (error) {
-        console.error("Error fetching auth_completed status:", error);
+      // if (pathname.startsWith('/admin') && !(user.role?.indexOf('admin') > -1)) {
+      //   router.push("/");
+      // } else
+      if (redirectURLs.includes(pathname)) {
+        router.push("/");
       }
-    } else {
-      // Handle non-authenticated user logic here if needed
     }
 
     setIsLoading(false);
   };
-
-  if (isLoading) {
-    return <div className="text-black">Loading...</div>; // Or any loading component
-  }
 
   return children;
 };
