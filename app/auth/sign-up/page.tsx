@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { supabase } from "@/supabase";
+import { useRouter } from "next/navigation";
 import { UserContext } from "@/contexts/userContext";
 import { useToastContext } from "@/contexts/toastContext";
 import useValidation from "@/hooks/useValidation";
@@ -14,6 +15,7 @@ const SignUp = () => {
   const { validateEmail, validatePassword } = useValidation();
   const { setUserInfo } = useContext(UserContext);
   const { invokeToast } = useToastContext();
+  const router = useRouter();
 
   /// State for form data and errors
   const [formData, setFormData] = useState({
@@ -94,6 +96,7 @@ const SignUp = () => {
         JSON.stringify(data.user?.user_metadata)
       );
       invokeToast("success", "Successfully signed up!", "top");
+      router.replace("/dashboard");
     } catch (error: any) {
       console.error("Sign-up error:", error);
       invokeToast("error", error.message || "Something went wrong!", "top");
