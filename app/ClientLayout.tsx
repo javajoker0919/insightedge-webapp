@@ -44,15 +44,9 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
         <AuthProvider>
           <ToastProvider>
             <ToastContainer {...ToastContainerConfig} />
-            {isAuthPage ? (
-              children
-            ) : (
-              <>
-                <Navbar />
-                {children}
-                <Footer />
-              </>
-            )}
+            {/* <Navbar /> */}
+            {children}
+            {/* <Footer /> */}
           </ToastProvider>
         </AuthProvider>
       </UserProvider>
