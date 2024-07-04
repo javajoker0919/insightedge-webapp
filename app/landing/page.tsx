@@ -279,7 +279,7 @@ export default function LandingPage() {
             </button>
           </form>
           <p className="text-lg">
-            &copy; 2023 InsightEdge. All rights reserved.
+            &copy; 2024 InsightEdge. All rights reserved.
           </p>
         </div>
       </footer>
