@@ -13,6 +13,7 @@
     "@supabase/supabase-js": "^2.44.0",
     "ai": "^3.2.15",
     "eventsource-parser": "^1.1.2",
+    "framer-motion": "^11.2.13",
     "jotai": "^2.8.4",
     "next": "14.2.4",
     "openai": "^4.52.1",

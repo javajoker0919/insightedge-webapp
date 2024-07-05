@@ -2,16 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 import AuthInput from "@/app/components/SignInput";
 import { supabase } from "@/utils/supabaseClient";
 import { useToastContext } from "@/contexts/toastContext";
+import { userDataAtom } from "@/utils/atoms";
+import { useAtom } from "jotai";
 
 export default function CreateProfile() {
   const router = useRouter();
   const { invokeToast } = useToastContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [showAdditionalFields, setShowAdditionalFields] = useState(false);
+  const [, setUserData] = useAtom(userDataAtom);
   const [errors, setErrors] = useState({
     firstName: "",
     lastName: "",
@@ -40,14 +44,18 @@ export default function CreateProfile() {
       companyOverview,
       productsServices,
     } = formData;
-    const isValid =
-      firstName.trim() !== "" &&
-      lastName.trim() !== "" &&
-      companyName.trim() !== "" &&
-      companyOverview.trim() !== "" &&
-      productsServices.trim() !== "";
+    let isValid = firstName.trim() !== "" && lastName.trim() !== "";
+
+    if (showAdditionalFields) {
+      isValid =
+        isValid &&
+        companyName.trim() !== "" &&
+        companyOverview.trim() !== "" &&
+        productsServices.trim() !== "";
+    }
+
     setIsFormValid(isValid);
-  }, [formData]);
+  }, [formData, showAdditionalFields]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
@@ -62,15 +70,17 @@ export default function CreateProfile() {
         lastName:
           formData.lastName.trim() === "" ? "Last name is required" : "",
         companyName:
-          formData.companyName.trim() === "" ? "Company name is required" : "",
+          showAdditionalFields && formData.companyName.trim() === ""
+            ? "Company name is required"
+            : "",
         website: "",
         companyOverview:
-          formData.companyOverview.trim() === ""
+          showAdditionalFields && formData.companyOverview.trim() === ""
             ? "Company overview is required"
             : "",
         productsServices:
-          formData.productsServices.trim() === ""
-            ? "Products & Services is required"
+          showAdditionalFields && formData.productsServices.trim() === ""
+            ? "Products & services are required"
             : "",
       });
       return;
@@ -84,23 +94,47 @@ export default function CreateProfile() {
 
       if (!user) throw new Error("No user found");
 
-      const { error } = await supabase
-        .from("users")
-        .update({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
+      const updateData = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        auth_step_completed: 1,
+      };
+
+      if (showAdditionalFields) {
+        Object.assign(updateData, {
           company_name: formData.companyName,
           website: formData.website,
           company_overview: formData.companyOverview,
           products_and_services: formData.productsServices,
-          auth_completed: true,
-        })
-        .eq("id", user.id);
+          has_company_profile: true,
+        });
+      }
+
+      const { data, error } = await supabase
+        .from("users")
+        .update(updateData)
+        .eq("id", user.id)
+        .select()
+        .single();
 
       if (error) throw error;
 
+      // Update userData after successful Supabase update
+      setUserData({
+        id: data.id,
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        companyName: data.company_name,
+        website: data.website,
+        companyOverview: data.company_overview,
+        hasCompanyProfile: data.has_company_profile,
+        productsAndServices: data.products_and_services,
+        authStepCompleted: data.auth_step_completed,
+      });
+
       invokeToast("success", "Profile created successfully!", "top");
-      router.replace("/dashboard");
+      router.replace("/app");
     } catch (error) {
       console.error("Error creating profile:", error);
       invokeToast(
@@ -149,59 +183,89 @@ export default function CreateProfile() {
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <p className="text-slate-600">Company Name*</p>
-                  <AuthInput
-                    error={errors.companyName}
-                    type="text"
-                    onChange={(e: any) =>
-                      handleInputChange("companyName", e.target.value)
+                <div className="flex items-center space-x-3">
+                  <input
+                    className="w-5 h-5 focus:ring-transparent rounded-full border border-bgray-300 focus:accent-success-300 text-success-300"
+                    id="showAdditional"
+                    type="checkbox"
+                    checked={showAdditionalFields}
+                    onChange={() =>
+                      setShowAdditionalFields(!showAdditionalFields)
                     }
                   />
+                  <label htmlFor="showAdditional" className="text-slate-600">
+                    {"Input additional fields"}
+                  </label>
                 </div>
 
-                <div className="space-y-1">
-                  <p className="text-slate-600">Website</p>
-                  <AuthInput
-                    error={errors.website}
-                    type="url"
-                    onChange={(e: any) =>
-                      handleInputChange("website", e.target.value)
-                    }
-                  />
-                </div>
+                <AnimatePresence>
+                  {showAdditionalFields && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-5 overflow-hidden"
+                    >
+                      <div className="space-y-1">
+                        <p className="text-slate-600">Company Name*</p>
+                        <AuthInput
+                          error={errors.companyName}
+                          type="text"
+                          onChange={(e: any) =>
+                            handleInputChange("companyName", e.target.value)
+                          }
+                        />
+                      </div>
 
-                <div className="space-y-1">
-                  <p className="text-slate-600">Company Overview*</p>
-                  <textarea
-                    className="w-full p-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    rows={3}
-                    onChange={(e: any) =>
-                      handleInputChange("companyOverview", e.target.value)
-                    }
-                  ></textarea>
-                  {errors.companyOverview && (
-                    <p className="text-red-500 text-sm">
-                      {errors.companyOverview}
-                    </p>
+                      <div className="space-y-1">
+                        <p className="text-slate-600">Website</p>
+                        <AuthInput
+                          error={errors.website}
+                          type="url"
+                          onChange={(e: any) =>
+                            handleInputChange("website", e.target.value)
+                          }
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <p className="text-slate-600">Company Overview*</p>
+                        <textarea
+                          className="w-full p-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          rows={3}
+                          onChange={(e: any) =>
+                            handleInputChange("companyOverview", e.target.value)
+                          }
+                        ></textarea>
+                        {errors.companyOverview && (
+                          <p className="text-red-500 text-sm">
+                            {errors.companyOverview}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-1">
+                        <p className="text-slate-600">Products & Services*</p>
+                        <textarea
+                          className="w-full p-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          rows={3}
+                          onChange={(e: any) =>
+                            handleInputChange(
+                              "productsServices",
+                              e.target.value
+                            )
+                          }
+                        ></textarea>
+                        {errors.productsServices && (
+                          <p className="text-red-500 text-sm">
+                            {errors.productsServices}
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
                   )}
-                </div>
-
-                <div className="space-y-1">
-                  <p className="text-slate-600">Products & Services*</p>
-                  <textarea
-                    className="w-full p-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    rows={3}
-                    onChange={(e: any) =>
-                      handleInputChange("productsServices", e.target.value)
-                    }
-                  ></textarea>
-                  {errors.productsServices && (
-                    <p className="text-red-500 text-sm">
-                      {errors.productsServices}
-                    </p>
-                  )}
-                </div>
+                </AnimatePresence>
 
                 <button
                   onClick={handleCreateProfile}

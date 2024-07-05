@@ -34,7 +34,7 @@ const Sidebar: React.FC = () => {
   return (
     <nav
       className={`bg-white text-gray-800 ${
-        isCollapsed ? "w-20" : "w-80"
+        isCollapsed ? "w-24" : "w-80"
       } min-h-screen p-4 transition-all overflow-hidden duration-300 left-0 z-10 border-r border-gray-200 shadow-md flex flex-col justify-between`}
     >
       <div>
@@ -59,13 +59,9 @@ const Sidebar: React.FC = () => {
           <li className="mb-3">
             <Link
               href="/"
-              className="flex items-center py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
+              className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
             >
-              <IoHomeOutline
-                className={`${
-                  isCollapsed ? "text-3xl" : "mr-4 text-2xl"
-                } text-indigo-600`}
-              />
+              <IoHomeOutline className={`text-indigo-600 text-2xl`} />
               {!isCollapsed && (
                 <span className="text-gray-700 hover:text-indigo-600 transition-colors duration-200 text-lg">
                   Home
@@ -76,13 +72,9 @@ const Sidebar: React.FC = () => {
           <li className="mb-3">
             <Link
               href="/profile"
-              className="flex items-center py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
+              className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
             >
-              <IoPersonOutline
-                className={`${
-                  isCollapsed ? "text-3xl" : "mr-4 text-2xl"
-                } text-indigo-600`}
-              />
+              <IoPersonOutline className={`text-indigo-600 text-2xl`} />
               {!isCollapsed && (
                 <span className="text-gray-700 hover:text-indigo-600 transition-colors duration-200 text-lg">
                   Profile
@@ -93,13 +85,9 @@ const Sidebar: React.FC = () => {
           <li className="mb-3">
             <Link
               href="/settings"
-              className="flex items-center py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
+              className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
             >
-              <IoSettingsOutline
-                className={`${
-                  isCollapsed ? "text-3xl" : "mr-4 text-2xl"
-                } text-indigo-600`}
-              />
+              <IoSettingsOutline className={`text-indigo-600 text-2xl`} />
               {!isCollapsed && (
                 <span className="text-gray-700 hover:text-indigo-600 transition-colors duration-200 text-lg">
                   Settings
