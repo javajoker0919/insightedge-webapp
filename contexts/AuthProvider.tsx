@@ -1,59 +1,62 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
-import {
-  useRouter,
-  // useSearchParams,
-  usePathname,
-  redirect,
-} from "next/navigation";
-import { useUserContext } from "./userContext";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useAtom } from "jotai";
+import { userMetadataAtom } from "@/utils/atoms";
+import { supabase } from "@/utils/supabaseClient";
 
-const AuthProvider = ({ children }: any) => {
+/// AuthProvider component manages user authentication state and handles routing based on auth status
+const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const router = useRouter();
   const pathname = usePathname();
-  // const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom);
 
-  const { userInfo } = useUserContext();
-
-  const publicPaths = ["/landing", "/posts"];
-  const privatePaths = ["/personal", "/posts/add", "/settings"];
-
-  useEffect(() => {
-    if (window.location.href.includes("localhost:")) {
-      return;
-    }
-  }, [pathname, userInfo]);
+  /// Define paths that don't require authentication
+  const authPaths = ["/auth/sign-in", "/auth/sign-up", "/auth/forgot-password"];
+  const landingPath = "/";
 
   useEffect(() => {
-    if (userInfo) {
-      authCheck(true);
-    } else if (userInfo === null) {
-      authCheck(false);
-    }
-  }, [pathname, userInfo]);
+    /// Asynchronous function to verify user authentication status
+    const checkUser = async () => {
+      try {
+        /// Retrieve the current session from Supabase
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-  const authCheck = (isAuth: boolean) => {
-    const redirectURLs = ["/signin", "/signup", "/resetpassword"];
-    const isPublicURL = publicPaths.some((publicPath) =>
-      pathname.startsWith(publicPath)
-    );
-    const isPrivateURL =
-      privatePaths.some((privatePath) => pathname.startsWith(privatePath)) ||
-      pathname === "/";
-
-    if (isAuth) {
-      // if (pathname.startsWith('/admin') && !(user.role?.indexOf('admin') > -1)) {
-      //   router.push("/");
-      // } else
-      if (redirectURLs.includes(pathname)) {
-        router.push("/");
+        if (session?.user) {
+          /// If a valid session exists, update the user metadata
+          setUserMetadata(session.user.user_metadata);
+        } else {
+          /// Clear user metadata if no valid session
+          setUserMetadata(null);
+          if (
+            /// Redirect to sign-in if user is not authenticated and not on exempt pages
+            !userMetadata &&
+            !authPaths.includes(pathname) &&
+            pathname !== landingPath
+          ) {
+            router.push("/auth/sign-in");
+          }
+        }
+      } catch (error) {
+        console.error("Failed to verify user session:", error);
+      } finally {
+        /// Mark loading as complete
+        setIsLoading(false);
       }
-    }
+    };
 
-    setIsLoading(false);
-  };
+    checkUser();
+  }, [pathname]); /// Effect depends on userMetadata changes
 
+  /// Display loading indicator while authentication status is being checked
+  if (isLoading) {
+    return <div className="text-black">Loading...</div>;
+  }
+
+  /// Render child components after authentication check is complete
   return children;
 };
 
