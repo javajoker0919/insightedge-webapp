@@ -183,20 +183,20 @@ export default function CreateProfile() {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3">
-                  <input
-                    className="w-5 h-5 focus:ring-transparent rounded-full border border-bgray-300 focus:accent-success-300 text-success-300"
-                    id="showAdditional"
-                    type="checkbox"
-                    checked={showAdditionalFields}
-                    onChange={() =>
-                      setShowAdditionalFields(!showAdditionalFields)
-                    }
-                  />
-                  <label htmlFor="showAdditional" className="text-slate-600">
-                    {"Input additional fields"}
-                  </label>
-                </div>
+                {!showAdditionalFields && (
+                  <div className="flex items-center space-x-3">
+                    <input
+                      className="w-5 h-5 focus:ring-transparent rounded-full border border-bgray-300 focus:accent-success-300 text-success-300"
+                      id="showAdditional"
+                      type="checkbox"
+                      checked={showAdditionalFields}
+                      onChange={() => setShowAdditionalFields(true)}
+                    />
+                    <label htmlFor="showAdditional" className="text-slate-600">
+                      {"Add company info"}
+                    </label>
+                  </div>
+                )}
 
                 <AnimatePresence>
                   {showAdditionalFields && (
