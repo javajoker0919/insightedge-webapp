@@ -53,7 +53,11 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
   /// Display loading indicator while authentication status is being checked
   if (isLoading) {
-    return <div className="text-black">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center w-screen h-screen">
+        <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></span>
+      </div>
+    );
   }
 
   /// Render child components after authentication check is complete

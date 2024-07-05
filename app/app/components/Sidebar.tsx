@@ -35,7 +35,7 @@ const Sidebar: React.FC = () => {
     <nav
       className={`bg-white text-gray-800 ${
         isCollapsed ? "w-20" : "w-80"
-      } min-h-screen p-4 transition-all duration-300 left-0 z-10 border-r border-gray-200 shadow-md flex flex-col justify-between`}
+      } min-h-screen p-4 transition-all overflow-hidden duration-300 left-0 z-10 border-r border-gray-200 shadow-md flex flex-col justify-between`}
     >
       <div>
         <div
