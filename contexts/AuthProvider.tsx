@@ -5,34 +5,34 @@ import { useAtom } from "jotai";
 import { userMetadataAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 
-/// AuthProvider component manages user authentication state and handles routing based on auth status
+// AuthProvider component manages user authentication state and handles routing based on auth status
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom);
 
-  /// Define paths that don't require authentication
+  // Define paths that don't require authentication
   const authPaths = ["/auth/sign-in", "/auth/sign-up", "/auth/forgot-password"];
   const landingPath = "/";
 
   useEffect(() => {
-    /// Asynchronous function to verify user authentication status
+    // Asynchronous function to verify user authentication status
     const checkUser = async () => {
       try {
-        /// Retrieve the current session from Supabase
+        // Retrieve the current session from Supabase
         const {
           data: { session },
         } = await supabase.auth.getSession();
 
         if (session?.user) {
-          /// If a valid session exists, update the user metadata
+          // If a valid session exists, update the user metadata
           setUserMetadata(session.user.user_metadata);
         } else {
-          /// Clear user metadata if no valid session
+          // Clear user metadata if no valid session
           setUserMetadata(null);
           if (
-            /// Redirect to sign-in if user is not authenticated and not on exempt pages
+            // Redirect to sign-in if user is not authenticated and not on exempt pages
             !userMetadata &&
             !authPaths.includes(pathname) &&
             pathname !== landingPath
@@ -43,15 +43,15 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
       } catch (error) {
         console.error("Failed to verify user session:", error);
       } finally {
-        /// Mark loading as complete
+        // Mark loading as complete
         setIsLoading(false);
       }
     };
 
     checkUser();
-  }, [pathname]); /// Effect depends on userMetadata changes
+  }, [pathname]); // Effect depends on pathname changes
 
-  /// Display loading indicator while authentication status is being checked
+  // Display loading indicator while authentication status is being checked
   if (isLoading) {
     return (
       <div className="flex justify-center items-center w-screen h-screen">
@@ -60,7 +60,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     );
   }
 
-  /// Render child components after authentication check is complete
+  // Render child components after authentication check is complete
   return children;
 };
 
