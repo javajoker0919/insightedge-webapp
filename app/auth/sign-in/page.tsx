@@ -9,13 +9,15 @@ import AuthInput from "@/app/components/SignInput";
 import useValidation from "@/hooks/useValidation";
 import { supabase } from "@/supabase";
 import { useToastContext } from "@/contexts/toastContext";
-import { useUserContext } from "@/contexts/userContext";
+import { useAtom } from "jotai";
+import { userMetadataAtom } from "@/utils/atoms";
 
 const SignIn = () => {
   /// Initialize hooks and contexts
   const router = useRouter();
   const { invokeToast } = useToastContext();
-  const { setIsAuth } = useUserContext();
+  const [, setUserMetadata] = useAtom(userMetadataAtom);
+
   const { validateEmail, validatePassword } = useValidation();
 
   /// State for user credentials, form errors, and form validation
@@ -63,16 +65,15 @@ const SignIn = () => {
 
       if (error) throw error;
 
-      /// Set authentication state and store user info
-      setIsAuth(true);
-      localStorage.setItem(
-        "userInfo",
-        JSON.stringify(data.session.user.user_metadata)
-      );
+      /// Set authentication state and store user info using Jotai
+      setUserMetadata(data.user?.user_metadata || null);
+
+      /// Display success toast and redirect to app
       invokeToast("success", "You have successfully logged in!", "top");
-      router.replace("/dashboard");
+      router.replace("/app");
     } catch (error: any) {
       console.error("Sign-in error:", error);
+      /// Display error toast with appropriate message
       invokeToast(
         "error",
         error.message === "Invalid login credentials"

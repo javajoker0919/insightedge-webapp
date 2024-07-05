@@ -1,19 +1,23 @@
 "use client";
 
+/// Import necessary dependencies and components
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/supabase";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/contexts/userContext";
+import { useAtom } from "jotai";
+import { userMetadataAtom } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 import useValidation from "@/hooks/useValidation";
 import AuthInput from "@/app/components/SignInput";
 
+/// SignUp component for user registration
 const SignUp = () => {
   /// Custom hooks for validation and context
   const { validateEmail, validatePassword } = useValidation();
-  const { setUserInfo } = useContext(UserContext);
+  const [, setUserMetadata] = useAtom(userMetadataAtom);
+
   const { invokeToast } = useToastContext();
   const router = useRouter();
 
@@ -59,12 +63,12 @@ const SignUp = () => {
     }
   };
 
-  /// Handle checkbox change
+  /// Handle checkbox change for terms agreement
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(e.target.checked);
   };
 
-  /// Handle form submission
+  /// Handle form submission for user registration
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { email, password } = formData;
@@ -90,13 +94,10 @@ const SignUp = () => {
 
       if (userError) throw userError;
 
-      setUserInfo(data.user?.user_metadata);
-      localStorage.setItem(
-        "userInfo",
-        JSON.stringify(data.user?.user_metadata)
-      );
+      setUserMetadata(data.user?.user_metadata || null);
+
       invokeToast("success", "Successfully signed up!", "top");
-      router.replace("/dashboard");
+      router.replace("/app");
     } catch (error: any) {
       console.error("Sign-up error:", error);
       invokeToast("error", error.message || "Something went wrong!", "top");
@@ -105,6 +106,7 @@ const SignUp = () => {
     }
   };
 
+  /// Render the sign-up form
   return (
     <div className="bg-white w-full h-screen">
       <div className="flex flex-col lg:flex-row justify-center h-full">

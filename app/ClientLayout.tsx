@@ -5,11 +5,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
-import { UserProvider } from "../contexts/userContext";
 import ToastProvider from "@/contexts/toastContext";
 import AuthProvider from "@/contexts/AuthProvider";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 
 const AUTH_PAGES = [
   "/",
@@ -40,16 +37,12 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
 
   return (
     <div className="flex h-full min-h-screen flex-col items-center justify-between bg-white">
-      <UserProvider>
-        <AuthProvider>
-          <ToastProvider>
-            <ToastContainer {...ToastContainerConfig} />
-            {/* <Navbar /> */}
-            {children}
-            {/* <Footer /> */}
-          </ToastProvider>
-        </AuthProvider>
-      </UserProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <ToastContainer {...ToastContainerConfig} />
+          {children}
+        </ToastProvider>
+      </AuthProvider>
     </div>
   );
 }
