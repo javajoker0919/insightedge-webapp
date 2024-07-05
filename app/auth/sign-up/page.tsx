@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/supabase";
 import { useRouter } from "next/navigation";
 import { useAtom } from "jotai";
-import { userMetadataAtom } from "@/utils/atoms";
+import { userMetadataAtom, userDataAtom } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 import useValidation from "@/hooks/useValidation";
 import AuthInput from "@/app/components/SignInput";
@@ -17,6 +17,7 @@ const SignUp = () => {
   /// Custom hooks for validation and context
   const { validateEmail, validatePassword } = useValidation();
   const [, setUserMetadata] = useAtom(userMetadataAtom);
+  const [, setUserData] = useAtom(userDataAtom);
 
   const { invokeToast } = useToastContext();
   const router = useRouter();
@@ -88,13 +89,29 @@ const SignUp = () => {
       if (error) throw error;
 
       /// Insert user data into 'users' table
-      const { error: userError } = await supabase
+      const { data: userData, error: userError } = await supabase
         .from("users")
-        .insert({ id: data.user?.id, email: data.user?.email });
+        .insert({ id: data.user?.id, email: data.user?.email })
+        .select()
+        .single();
 
       if (userError) throw userError;
 
       setUserMetadata(data.user?.user_metadata || null);
+
+      // Set user data using the userDataAtom
+      setUserData({
+        id: userData.id,
+        email: userData.email,
+        firstName: userData.first_name || "",
+        lastName: userData.last_name || "",
+        companyName: userData.company_name || "",
+        website: userData.website || "",
+        companyOverview: userData.company_overview || "",
+        hasCompanyProfile: userData.has_company_profile || false,
+        productsAndServices: userData.products_and_services || "",
+        authStepCompleted: userData.auth_step_completed || 0,
+      });
 
       invokeToast("success", "Successfully signed up!", "top");
       router.replace("/auth/create-profile");

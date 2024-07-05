@@ -10,13 +10,14 @@ import useValidation from "@/hooks/useValidation";
 import { supabase } from "@/supabase";
 import { useToastContext } from "@/contexts/toastContext";
 import { useAtom } from "jotai";
-import { userMetadataAtom } from "@/utils/atoms";
+import { userMetadataAtom, userDataAtom } from "@/utils/atoms";
 
 const SignIn = () => {
   /// Initialize hooks and contexts
   const router = useRouter();
   const { invokeToast } = useToastContext();
   const [, setUserMetadata] = useAtom(userMetadataAtom);
+  const [, setUserData] = useAtom(userDataAtom);
 
   const { validateEmail, validatePassword } = useValidation();
 
@@ -57,18 +58,37 @@ const SignIn = () => {
     setIsLoading(true);
 
     try {
-      /// Attempt to sign in with Supabase
+      /// Attempt to sign in with Supabase and fetch user data
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
       if (error) throw error;
 
-      /// Set authentication state and store user info using Jotai
       setUserMetadata(data.user?.user_metadata || null);
 
-      /// Display success toast and redirect to app
+      const { data: userData, error: userDataError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", data.user.id)
+        .single();
+
+      if (userDataError) throw userDataError;
+
+      /// Set user data using the userDataAtom
+      setUserData({
+        id: userData.id,
+        email: userData.email,
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+        companyName: userData.company_name,
+        website: userData.website,
+        companyOverview: userData.company_overview,
+        hasCompanyProfile: userData.has_company_profile,
+        productsAndServices: userData.products_and_services,
+        authStepCompleted: userData.auth_step_completed,
+      });
+
       invokeToast("success", "You have successfully logged in!", "top");
       router.replace("/app");
     } catch (error: any) {
