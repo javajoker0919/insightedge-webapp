@@ -7,12 +7,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import AuthInput from "@/app/components/SignInput";
 import { supabase } from "@/utils/supabaseClient";
 import { useToastContext } from "@/contexts/toastContext";
+import { userDataAtom } from "@/utils/atoms";
+import { useAtom } from "jotai";
 
 export default function CreateProfile() {
   const router = useRouter();
   const { invokeToast } = useToastContext();
   const [isLoading, setIsLoading] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
+  const [, setUserData] = useAtom(userDataAtom);
   const [errors, setErrors] = useState({
     firstName: "",
     lastName: "",
@@ -107,14 +110,28 @@ export default function CreateProfile() {
         });
       }
 
-      console.log(updateData);
-
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("users")
         .update(updateData)
-        .eq("id", user.id);
+        .eq("id", user.id)
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Update userData after successful Supabase update
+      setUserData({
+        id: data.id,
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        companyName: data.company_name,
+        website: data.website,
+        companyOverview: data.company_overview,
+        hasCompanyProfile: data.has_company_profile,
+        productsAndServices: data.products_and_services,
+        authStepCompleted: data.auth_step_completed,
+      });
 
       invokeToast("success", "Profile created successfully!", "top");
       router.replace("/app");

@@ -81,7 +81,11 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
           // Check if authStepCompleted is 0 and redirect if necessary
           if (userData) {
-            if (userData.authStepCompleted === 0) {
+            if (
+              userData.authStepCompleted === 0 &&
+              !authPaths.includes(pathname) &&
+              pathname !== landingPath
+            ) {
               router.push("/auth/create-profile");
             }
           }
