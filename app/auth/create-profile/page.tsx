@@ -91,23 +91,33 @@ export default function CreateProfile() {
 
       if (!user) throw new Error("No user found");
 
-      const { error } = await supabase
-        .from("users")
-        .update({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
+      const updateData = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        auth_step_completed: 1,
+      };
+
+      if (showAdditionalFields) {
+        Object.assign(updateData, {
           company_name: formData.companyName,
           website: formData.website,
           company_overview: formData.companyOverview,
           products_and_services: formData.productsServices,
-          auth_completed: true,
-        })
+          has_company_profile: true,
+        });
+      }
+
+      console.log(updateData);
+
+      const { error } = await supabase
+        .from("users")
+        .update(updateData)
         .eq("id", user.id);
 
       if (error) throw error;
 
       invokeToast("success", "Profile created successfully!", "top");
-      router.replace("/dashboard");
+      router.replace("/app");
     } catch (error) {
       console.error("Error creating profile:", error);
       invokeToast(
@@ -167,7 +177,7 @@ export default function CreateProfile() {
                     }
                   />
                   <label htmlFor="showAdditional" className="text-slate-600">
-                    {"Show additional fields"}
+                    {"Input additional fields"}
                   </label>
                 </div>
 

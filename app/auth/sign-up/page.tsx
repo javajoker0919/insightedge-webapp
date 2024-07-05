@@ -97,7 +97,7 @@ const SignUp = () => {
       setUserMetadata(data.user?.user_metadata || null);
 
       invokeToast("success", "Successfully signed up!", "top");
-      router.replace("/app");
+      router.replace("/auth/create-profile");
     } catch (error: any) {
       console.error("Sign-up error:", error);
       invokeToast("error", error.message || "Something went wrong!", "top");
