@@ -24,7 +24,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="p-4 fixed top-0 left-0 right-0 bg-white z-10 shadow-md">
+    <header className="p-4 bg-white z-10 shadow-md">
       <nav className="mx-auto flex justify-between items-center px-4">
         <a
           href="/"
