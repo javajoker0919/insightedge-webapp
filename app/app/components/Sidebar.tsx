@@ -35,26 +35,9 @@ const Sidebar: React.FC = () => {
     <nav
       className={`bg-white text-gray-800 ${
         isCollapsed ? "w-24" : "w-80"
-      } min-h-screen p-4 transition-all overflow-hidden duration-300 left-0 z-10 border-r border-gray-200 shadow-md flex flex-col justify-between`}
+      } transition-all overflow-hidden duration-300 left-0 border-r border-gray-200 shadow-md flex flex-col justify-between`}
     >
-      <div>
-        <div
-          className={`flex items-center mb-6 ${
-            isCollapsed ? "justify-center" : "justify-between"
-          }`}
-        >
-          {!isCollapsed && (
-            <div className="text-3xl font-bold text-indigo-600 transition-colors duration-200">
-              InsightEdge
-            </div>
-          )}
-          <button
-            onClick={toggleSidebar}
-            className="text-indigo-600 hover:text-indigo-800 focus:outline-none transition-colors duration-200 p-2 rounded-full hover:bg-indigo-100 text-2xl"
-          >
-            {isCollapsed ? "→" : "←"}
-          </button>
-        </div>
+      <div className="p-4">
         <ul>
           <li className="mb-3">
             <Link
@@ -77,7 +60,7 @@ const Sidebar: React.FC = () => {
               <IoPersonOutline className={`text-indigo-600 text-2xl`} />
               {!isCollapsed && (
                 <span className="text-gray-700 hover:text-indigo-600 transition-colors duration-200 text-lg">
-                  Profile
+                  Company Profile
                 </span>
               )}
             </Link>
@@ -97,8 +80,8 @@ const Sidebar: React.FC = () => {
           </li>
         </ul>
       </div>
-      <div className="mt-auto">
-        <button
+      <div className="mt-auto border-t p-4">
+        {/* <button
           onClick={handleLogout}
           disabled={isLoading}
           className="w-full flex items-center justify-center py-3 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 text-white"
@@ -111,7 +94,31 @@ const Sidebar: React.FC = () => {
               {isLoading ? "Logging out..." : "Log Out"}
             </span>
           )}
-        </button>
+        </button> */}
+        <div
+          className={`flex items-center space-x-2 ${
+            isCollapsed ? "justify-center" : "justify-between"
+          }`}
+        >
+          {!isCollapsed && (
+            <div className="w-full space-y-3">
+              <hr className="border" />
+              <hr className="border" />
+            </div>
+          )}
+          <button
+            onClick={toggleSidebar}
+            className="text-indigo-600 border border-indigo-200 hover:text-indigo-800 focus:outline-none transition-colors duration-200 px-2 py-1 rounded-full hover:bg-indigo-100 text-2xl"
+          >
+            {isCollapsed ? "→" : "←"}
+          </button>
+          {!isCollapsed && (
+            <div className="w-full space-y-3">
+              <hr className="border" />
+              <hr className="border" />
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
