@@ -1,14 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
 import { useAtom } from "jotai";
 import { userMetadataAtom } from "@/utils/atoms";
+import Image from "next/image";
+import Link from "next/link";
 
 const Header: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const router = useRouter();
   const [, setUserMetadata] = useAtom(userMetadataAtom);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -23,10 +27,30 @@ const Header: React.FC = () => {
     }
   };
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <header className="p-4 bg-white z-10 shadow-md">
       <nav className="mx-auto flex justify-between items-center px-4">
-        <a
+        <Link
           href="/"
           className="text-2xl font-bold text-indigo-600 flex items-center"
         >
@@ -43,18 +67,60 @@ const Header: React.FC = () => {
             />
           </svg>
           InsightEdge
-        </a>
-        <button
-          onClick={handleLogout}
-          disabled={isLoading}
-          className="bg-red-600 text-white w-24 px-4 py-2 rounded-full flex items-center justify-center"
-        >
-          {isLoading ? (
-            <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></span>
-          ) : (
-            "Log out"
-          )}
-        </button>
+        </Link>
+        <div className="flex items-center space-x-8">
+          <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200">
+            Upgrade
+          </button>
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={toggleDropdown}
+              className="w-10 h-10 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <Image
+                src="/default_avatar.jpeg"
+                alt="User avatar"
+                width={40}
+                height={40}
+              />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                <Link
+                  href="/profile"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  My Profile
+                </Link>
+                <Link
+                  href="/settings"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Subscription
+                </Link>
+                <Link
+                  href="/settings"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Manage users
+                </Link>
+                <Link
+                  href="/settings"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Change Password
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoading}
+                  className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
+                >
+                  {isLoading ? "Logging out..." : "Log out"}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </nav>
     </header>
   );
