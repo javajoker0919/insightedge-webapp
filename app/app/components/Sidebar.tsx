@@ -3,12 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
-import {
-  IoHomeOutline,
-  IoLogOutOutline,
-  IoPersonOutline,
-  IoSettingsOutline,
-} from "react-icons/io5";
+import { IoHomeOutline, IoList, IoPersonOutline } from "react-icons/io5";
 
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -41,7 +36,7 @@ const Sidebar: React.FC = () => {
         <ul>
           <li className="mb-3">
             <Link
-              href="#"
+              href="/app"
               className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
             >
               <IoHomeOutline className={`text-indigo-600 text-2xl`} />
@@ -54,7 +49,7 @@ const Sidebar: React.FC = () => {
           </li>
           <li className="mb-3">
             <Link
-              href="#"
+              href="/app/company-profile"
               className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
             >
               <IoPersonOutline className={`text-indigo-600 text-2xl`} />
@@ -67,13 +62,13 @@ const Sidebar: React.FC = () => {
           </li>
           <li className="mb-3">
             <Link
-              href="#"
+              href="/app/watchlist"
               className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
             >
-              <IoSettingsOutline className={`text-indigo-600 text-2xl`} />
+              <IoList className={`text-indigo-600 text-2xl`} />
               {!isCollapsed && (
                 <span className="text-gray-700 hover:text-indigo-600 transition-colors duration-200 text-lg">
-                  Settings
+                  Watchlist
                 </span>
               )}
             </Link>
