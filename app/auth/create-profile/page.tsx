@@ -94,7 +94,7 @@ export default function CreateProfile() {
         company_name: formData.companyName,
         website: formData.website,
         company_overview: formData.companyOverview,
-        products_and_services: formData.productsServices,
+        products: formData.productsServices,
       };
 
       const { data, error } = await supabase
@@ -115,7 +115,7 @@ export default function CreateProfile() {
         companyName: data.company_name,
         website: data.website,
         companyOverview: data.company_overview,
-        productsAndServices: data.products_and_services,
+        products: data.products,
         onboardingCompleted: data.onboarding_completed,
       });
 

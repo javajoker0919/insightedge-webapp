@@ -84,7 +84,7 @@ const SignIn = () => {
         companyName: userData.company_name,
         website: userData.website,
         companyOverview: userData.company_overview,
-        productsAndServices: userData.products_and_services,
+        products: userData.products,
         onboardingCompleted: userData.onboarding_completed,
       });
 
