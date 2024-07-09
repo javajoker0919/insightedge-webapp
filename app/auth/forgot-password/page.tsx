@@ -63,6 +63,11 @@ const ForgotPassword = () => {
     }
   };
 
+  /// Handle going back to the previous page
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
     <div className="bg-white w-full h-screen">
       <div className="flex flex-col lg:flex-row justify-center h-full">
@@ -104,14 +109,14 @@ const ForgotPassword = () => {
               </div>
             </div>
 
-            {/* Back to Sign In link */}
+            {/* Back to previous page button */}
             <div className="text-center flex items-center gap-2 justify-center text-gray-900 text-base font-medium">
-              <Link
-                href="/auth/sign-in"
+              <button
+                onClick={handleGoBack}
                 className="font-semibold text-indigo-400"
               >
-                Back to Sign In
-              </Link>
+                Go Back
+              </button>
             </div>
           </div>
         </div>

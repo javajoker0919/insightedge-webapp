@@ -8,14 +8,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Header: React.FC = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const router = useRouter();
   const [, setUserMetadata] = useAtom(userMetadataAtom);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
-    setIsLoading(true);
+    setIsLoggingOut(true);
     try {
       await supabase.auth.signOut();
       setUserMetadata(null);
@@ -23,7 +23,7 @@ const Header: React.FC = () => {
     } catch (error) {
       console.error("Error logging out:", error);
     } finally {
-      setIsLoading(false);
+      setIsLoggingOut(false);
     }
   };
 
@@ -87,35 +87,35 @@ const Header: React.FC = () => {
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                 <Link
-                  href="/profile"
+                  href="/app/my-profile"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   My Profile
                 </Link>
                 <Link
-                  href="/settings"
+                  href="/app/subscription"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Subscription
                 </Link>
                 <Link
-                  href="/settings"
+                  href="/app/manage-users"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Manage users
                 </Link>
                 <Link
-                  href="/settings"
+                  href="/auth/forgot-password"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Change Password
                 </Link>
                 <button
                   onClick={handleLogout}
-                  disabled={isLoading}
+                  disabled={isLoggingOut}
                   className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
                 >
-                  {isLoading ? "Logging out..." : "Log out"}
+                  {"Log out"}
                 </button>
               </div>
             )}

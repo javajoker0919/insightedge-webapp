@@ -36,7 +36,7 @@ const Sidebar: React.FC = () => {
         <ul>
           <li className="mb-3">
             <Link
-              href="#"
+              href="/app"
               className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
             >
               <IoHomeOutline className={`text-indigo-600 text-2xl`} />
@@ -49,7 +49,7 @@ const Sidebar: React.FC = () => {
           </li>
           <li className="mb-3">
             <Link
-              href="#"
+              href="/app/company-profile"
               className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
             >
               <IoPersonOutline className={`text-indigo-600 text-2xl`} />
@@ -62,7 +62,7 @@ const Sidebar: React.FC = () => {
           </li>
           <li className="mb-3">
             <Link
-              href="#"
+              href="/app/watchlist"
               className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
             >
               <IoList className={`text-indigo-600 text-2xl`} />
