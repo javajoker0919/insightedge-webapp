@@ -11,7 +11,7 @@ interface User {
   companyName: string;
   website: string;
   companyOverview: string;
-  productsAndServices: string;
+  products: string;
   onboardingCompleted: number;
 }
 

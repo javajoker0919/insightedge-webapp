@@ -35,7 +35,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
             company_name,
             website,
             company_overview,
-            products_and_services,
+            products,
             onboarding_completed
             `
           )
@@ -55,7 +55,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
           companyName: data.company_name,
           website: data.website,
           companyOverview: data.company_overview,
-          productsAndServices: data.products_and_services,
+          products: data.products,
           onboardingCompleted: data.onboarding_completed,
         });
       }
