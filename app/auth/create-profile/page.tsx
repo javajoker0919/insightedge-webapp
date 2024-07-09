@@ -90,12 +90,11 @@ export default function CreateProfile() {
       const updateData = {
         first_name: formData.firstName,
         last_name: formData.lastName,
-        auth_step_completed: 1,
+        onboarding_completed: 1,
         company_name: formData.companyName,
         website: formData.website,
         company_overview: formData.companyOverview,
         products_and_services: formData.productsServices,
-        has_company_profile: true,
       };
 
       const { data, error } = await supabase
@@ -116,9 +115,8 @@ export default function CreateProfile() {
         companyName: data.company_name,
         website: data.website,
         companyOverview: data.company_overview,
-        hasCompanyProfile: data.has_company_profile,
         productsAndServices: data.products_and_services,
-        authStepCompleted: data.auth_step_completed,
+        onboardingCompleted: data.onboarding_completed,
       });
 
       invokeToast("success", "Profile created successfully!", "top");

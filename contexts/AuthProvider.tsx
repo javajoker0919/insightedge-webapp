@@ -35,9 +35,8 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
             company_name,
             website,
             company_overview,
-            has_company_profile,
             products_and_services,
-            auth_step_completed
+            onboarding_completed
             `
           )
           .eq("id", session.user.id)
@@ -56,9 +55,8 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
           companyName: data.company_name,
           website: data.website,
           companyOverview: data.company_overview,
-          hasCompanyProfile: data.has_company_profile,
           productsAndServices: data.products_and_services,
-          authStepCompleted: data.auth_step_completed,
+          onboardingCompleted: data.onboarding_completed,
         });
       }
     };
@@ -79,10 +77,10 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
           // If a valid session exists, update the user metadata
           setUserMetadata(session.user.user_metadata);
 
-          // Check if authStepCompleted is 0 and redirect if necessary
+          // Check if onboardingCompleted is 0 and redirect if necessary
           if (userData) {
             if (
-              userData.authStepCompleted === 0 &&
+              userData.onboardingCompleted === 0 &&
               !authPaths.includes(pathname) &&
               pathname !== landingPath
             ) {

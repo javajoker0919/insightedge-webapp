@@ -11,9 +11,8 @@ interface User {
   companyName: string;
   website: string;
   companyOverview: string;
-  hasCompanyProfile: boolean;
   productsAndServices: string;
-  authStepCompleted: number;
+  onboardingCompleted: number;
 }
 
 export const userMetadataAtom = atomWithStorage<UserMetadata | null>(

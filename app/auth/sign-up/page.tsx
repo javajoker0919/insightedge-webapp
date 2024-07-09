@@ -108,9 +108,8 @@ const SignUp = () => {
         companyName: userData.company_name || "",
         website: userData.website || "",
         companyOverview: userData.company_overview || "",
-        hasCompanyProfile: userData.has_company_profile || false,
         productsAndServices: userData.products_and_services || "",
-        authStepCompleted: userData.auth_step_completed || 0,
+        onboardingCompleted: userData.onboarding_completed || 0,
       });
 
       invokeToast("success", "Successfully signed up!", "top");
