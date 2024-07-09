@@ -84,9 +84,8 @@ const SignIn = () => {
         companyName: userData.company_name,
         website: userData.website,
         companyOverview: userData.company_overview,
-        hasCompanyProfile: userData.has_company_profile,
         productsAndServices: userData.products_and_services,
-        authStepCompleted: userData.auth_step_completed,
+        onboardingCompleted: userData.onboarding_completed,
       });
 
       invokeToast("success", "You have successfully logged in!", "top");
