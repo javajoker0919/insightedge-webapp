@@ -2,8 +2,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
-import { useAtom } from "jotai";
-import { userMetadataAtom } from "@/utils/atoms";
+import { useSetAtom } from "jotai";
+import {
+  userMetadataAtom,
+  userInfoAtom,
+  orgInfoAtom,
+  watchlistAtom,
+} from "@/utils/atoms";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,7 +16,10 @@ const Header: React.FC = () => {
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const router = useRouter();
-  const [, setUserMetadata] = useAtom(userMetadataAtom);
+  const setUserMetadata = useSetAtom(userMetadataAtom);
+  const setUserInfo = useSetAtom(userInfoAtom);
+  const setOrgInfo = useSetAtom(orgInfoAtom);
+  const setWatchlist = useSetAtom(watchlistAtom);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
@@ -19,6 +27,9 @@ const Header: React.FC = () => {
     try {
       await supabase.auth.signOut();
       setUserMetadata(null);
+      setUserInfo(null);
+      setOrgInfo(null);
+      setWatchlist(null);
       router.push("/auth/sign-in");
     } catch (error) {
       console.error("Error logging out:", error);

@@ -6,14 +6,16 @@ import { useRouter } from "next/navigation";
 import AuthInput from "@/app/components/SignInput";
 import { supabase } from "@/utils/supabaseClient";
 import { useToastContext } from "@/contexts/toastContext";
-import { userDataAtom } from "@/utils/atoms";
-import { useAtom } from "jotai";
+import { userInfoAtom, orgInfoAtom, watchlistAtom } from "@/utils/atoms";
+import { useSetAtom } from "jotai";
 
 export default function CreateProfile() {
   const router = useRouter();
   const { invokeToast } = useToastContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [, setUserData] = useAtom(userDataAtom);
+  const setUserInfo = useSetAtom(userInfoAtom);
+  const setOrgInfo = useSetAtom(orgInfoAtom);
+  const setWatchList = useSetAtom(watchlistAtom);
   const [errors, setErrors] = useState({
     firstName: "",
     lastName: "",
@@ -87,37 +89,82 @@ export default function CreateProfile() {
 
       if (!user) throw new Error("No user found");
 
-      const updateData = {
+      const updateUserData = {
         first_name: formData.firstName,
         last_name: formData.lastName,
-        onboarding_completed: 1,
-        company_name: formData.companyName,
-        website: formData.website,
-        company_overview: formData.companyOverview,
-        products: formData.productsServices,
+        onboarding_status: true,
       };
 
-      const { data, error } = await supabase
+      const { data: userData, error: userError } = await supabase
         .from("users")
-        .update(updateData)
+        .update(updateUserData)
         .eq("id", user.id)
         .select()
         .single();
 
-      if (error) throw error;
+      if (userError) throw userError;
 
       // Update userData after successful Supabase update
-      setUserData({
-        id: data.id,
-        email: data.email,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        companyName: data.company_name,
-        website: data.website,
-        companyOverview: data.company_overview,
-        products: data.products,
-        onboardingCompleted: data.onboarding_completed,
+
+      setUserInfo({
+        id: userData.id,
+        email: userData.email,
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+        onboardingStatus: userData.onboarding_status,
       });
+
+      const insertOrganizationData = {
+        name: formData.companyName,
+        website: formData.website,
+        overview: formData.companyOverview,
+        products: formData.productsServices,
+        creator_id: userData.id,
+      };
+
+      const { data: orgData, error: orgError } = await supabase
+        .from("organizations")
+        .insert(insertOrganizationData)
+        .select()
+        .single();
+
+      if (orgError) throw orgError;
+
+      // Update orgData after successful Supabase insert
+
+      setOrgInfo({
+        id: orgData.id,
+        name: orgData.company_name,
+        website: orgData.website,
+        overview: orgData.company_overview,
+        products: orgData.products,
+        creatorID: userData.id,
+      });
+
+      const insertWatchlistData = {
+        name: "Watchlist",
+        organization_id: orgData.id,
+        creator_id: userData.id,
+      };
+
+      const { data: watchlistData, error: watchlistError } = await supabase
+        .from("watchlists")
+        .insert(insertWatchlistData)
+        .select()
+        .single();
+
+      if (watchlistError) throw watchlistError;
+
+      // Update watchlist after successful Supabase insert
+      setWatchList([
+        {
+          id: watchlistData.id,
+          name: watchlistData.name,
+          organizationID: watchlistData.organization_id,
+          creatorID: watchlistData.creator_id,
+          uuid: watchlistData.uuid,
+        },
+      ]);
 
       invokeToast("success", "Profile created successfully!", "top");
       router.replace("/app");

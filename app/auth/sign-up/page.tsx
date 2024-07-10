@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/supabase";
 import { useRouter } from "next/navigation";
-import { useAtom } from "jotai";
-import { userMetadataAtom, userDataAtom } from "@/utils/atoms";
+import { useSetAtom } from "jotai";
+import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 import useValidation from "@/hooks/useValidation";
 import AuthInput from "@/app/components/SignInput";
@@ -16,8 +16,8 @@ import AuthInput from "@/app/components/SignInput";
 const SignUp = () => {
   /// Custom hooks for validation and context
   const { validateEmail, validatePassword } = useValidation();
-  const [, setUserMetadata] = useAtom(userMetadataAtom);
-  const [, setUserData] = useAtom(userDataAtom);
+  const setUserMetadata = useSetAtom(userMetadataAtom);
+  const setUserData = useSetAtom(userInfoAtom);
 
   const { invokeToast } = useToastContext();
   const router = useRouter();
@@ -78,7 +78,7 @@ const SignUp = () => {
 
     try {
       /// Sign up user with Supabase
-      const { data, error } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -86,30 +86,26 @@ const SignUp = () => {
         },
       });
 
-      if (error) throw error;
+      if (authError) throw authError;
 
       /// Insert user data into 'users' table
       const { data: userData, error: userError } = await supabase
         .from("users")
-        .insert({ id: data.user?.id, email: data.user?.email })
+        .insert({ id: authData.user?.id, email: authData.user?.email })
         .select()
         .single();
 
       if (userError) throw userError;
 
-      setUserMetadata(data.user?.user_metadata || null);
+      setUserMetadata(authData.user?.user_metadata || null);
 
-      // Set user data using the userDataAtom
+      // Set user data using the userInfoAtom
       setUserData({
         id: userData.id,
         email: userData.email,
         firstName: userData.first_name || "",
         lastName: userData.last_name || "",
-        companyName: userData.company_name || "",
-        website: userData.website || "",
-        companyOverview: userData.company_overview || "",
-        products: userData.products || "",
-        onboardingCompleted: userData.onboarding_completed || 0,
+        onboardingStatus: false,
       });
 
       invokeToast("success", "Successfully signed up!", "top");
