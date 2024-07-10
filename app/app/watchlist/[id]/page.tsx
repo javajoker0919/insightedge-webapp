@@ -6,11 +6,11 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useAtom } from "jotai";
 import { Navigation } from "swiper/modules";
+import { IoAddOutline, IoList, IoPencil, IoTrash } from "react-icons/io5";
 
 import { supabase } from "@/utils/supabaseClient";
 import { watchlistAtom } from "@/utils/atoms";
-import { IoAddOutline, IoList, IoPencil, IoTrash } from "react-icons/io5";
-import AddWatchlistModal from "@/app/components/AddWatchlistModal";
+import WatchlistModal from "@/app/components/WatchlistModal";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -24,6 +24,7 @@ export default function WatchlistPage() {
   const [watchlistName, setWatchlistName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("add");
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
   const optionsModalRef = useRef<HTMLDivElement>(null);
 
@@ -64,11 +65,17 @@ export default function WatchlistPage() {
   }, []);
 
   const handleAddWatchlist = () => {
+    setModalType("add");
     setIsModalOpen(true);
   };
 
   const toggleOptionsModal = () => {
     setIsOptionsModalOpen(!isOptionsModalOpen);
+  };
+
+  const handleRenameWatchlist = () => {
+    setModalType("rename");
+    setIsModalOpen(true);
   };
 
   const handleDeleteWatchlist = async () => {
@@ -190,7 +197,10 @@ export default function WatchlistPage() {
                   ref={optionsModalRef}
                   className="absolute w-52 py-1 border border-gray-100 right-0 top-14 bg-white shadow-md rounded-md overflow-hidden"
                 >
-                  <button className="flex items-center gap-3 px-4 py-2 w-full hover:bg-gray-100">
+                  <button
+                    onClick={handleRenameWatchlist}
+                    className="flex items-center gap-3 px-4 py-2 w-full hover:bg-gray-100"
+                  >
                     <IoPencil className="text-gray-600 text-xl" />
                     <span>Rename</span>
                   </button>
@@ -218,7 +228,8 @@ export default function WatchlistPage() {
         )}
       </div>
 
-      <AddWatchlistModal
+      <WatchlistModal
+        type={modalType}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
       />
