@@ -16,6 +16,7 @@ const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const userInfo = useAtomValue(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
   const [watchlist, setWatchlist] = useAtom(watchlistAtom);
@@ -37,6 +38,7 @@ const Sidebar: React.FC = () => {
   };
 
   const handleAddWatchlist = async () => {
+    setIsSaving(true);
     try {
       const { data, error } = await supabase
         .from("watchlists")
@@ -65,6 +67,7 @@ const Sidebar: React.FC = () => {
     } catch (error) {
       console.error("Failed to insert to waitlist", error);
     } finally {
+      setIsSaving(false);
       closeModal();
     }
   };
@@ -219,19 +222,24 @@ const Sidebar: React.FC = () => {
               <button
                 onClick={closeModal}
                 className="px-4 py-2 text-gray-800 rounded hover:bg-gray-100 transition-colors duration-200 w-24"
+                disabled={isSaving}
               >
                 Cancel
               </button>
               <button
                 onClick={handleAddWatchlist}
-                disabled={!inputValue.trim()}
-                className={`px-4 py-2 rounded transition-colors duration-200 w-24 ${
-                  inputValue.trim()
+                disabled={!inputValue.trim() || isSaving}
+                className={`px-4 py-2 rounded transition-colors duration-200 w-24 flex items-center justify-center ${
+                  inputValue.trim() && !isSaving
                     ? "bg-indigo-600 text-white hover:bg-indigo-700"
                     : "bg-gray-300 text-white cursor-not-allowed"
                 }`}
               >
-                Save
+                {isSaving ? (
+                  <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white" />
+                ) : (
+                  "Save"
+                )}
               </button>
             </div>
           </div>
