@@ -29,7 +29,7 @@ const Sidebar: React.FC = () => {
   return (
     <>
       <nav
-        className={`bg-white text-gray-800 ${
+        className={`bg-white text-gray-800 shrink-0 ${
           isCollapsed ? "w-24" : "w-80"
         } transition-all overflow-hidden duration-300 left-0 border-r border-gray-200 shadow-md flex flex-col justify-between`}
       >
@@ -99,9 +99,9 @@ const Sidebar: React.FC = () => {
                         isCollapsed ? "justify-center" : ""
                       } gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                     >
-                      <IoList className={`text-2xl`} />
+                      <IoList className={`text-2xl shrink-0`} />
                       {!isCollapsed && (
-                        <span className="text-gray-700 transition-colors duration-200 text-lg">
+                        <span className="text-gray-700 truncate transition-colors duration-200 text-lg">
                           {item.name}
                         </span>
                       )}

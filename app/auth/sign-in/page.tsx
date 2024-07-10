@@ -91,6 +91,12 @@ const SignIn = () => {
         onboardingStatus: userData.onboarding_status,
       });
 
+      invokeToast("success", "You have successfully logged in!", "top");
+
+      if (!userData.onboarding_status) {
+        router.replace("/auth/create-profile");
+      }
+
       const { data: orgData, error: orgError } = await supabase
         .from("organizations")
         .select(
@@ -144,18 +150,21 @@ const SignIn = () => {
         })
       );
 
-      invokeToast("success", "You have successfully logged in!", "top");
-      router.replace("/app");
+      router.replace(`/app/watchlist/${watchlistData[0].uuid}`);
     } catch (error: any) {
       console.error("Sign-in error:", error);
       /// Display error toast with appropriate message
-      invokeToast(
-        "error",
-        error.message === "Invalid login credentials"
-          ? "Please confirm your email and password"
-          : "An error occurred during sign-in",
-        "top"
-      );
+      if (error.message === "Invalid login credentials") {
+        invokeToast("error", "Please confirm your email and password", "top");
+      }
+
+      // invokeToast(
+      //   "error",
+      //   error.message === "Invalid login credentials"
+      //     ? "Please confirm your email and password"
+      //     : "An error occurred during sign-in",
+      //   "top"
+      // );
     } finally {
       setIsLoading(false);
     }

@@ -36,10 +36,15 @@ const Header: React.FC = () => {
     } finally {
       setIsLoggingOut(false);
     }
+    setIsDropdownOpen(false);
   };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
   };
 
   useEffect(() => {
@@ -100,24 +105,28 @@ const Header: React.FC = () => {
                 <Link
                   href="/app/my-profile"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={closeDropdown}
                 >
                   My Profile
                 </Link>
                 <Link
                   href="/app/subscription"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={closeDropdown}
                 >
                   Subscription
                 </Link>
                 <Link
                   href="/app/manage-users"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={closeDropdown}
                 >
                   Manage users
                 </Link>
                 <Link
                   href="/auth/forgot-password"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={closeDropdown}
                 >
                   Forgot Password
                 </Link>

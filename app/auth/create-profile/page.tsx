@@ -167,7 +167,7 @@ export default function CreateProfile() {
       ]);
 
       invokeToast("success", "Profile created successfully!", "top");
-      router.replace("/app");
+      router.replace(`/app/watchlist/${watchlistData.uuid}`);
     } catch (error) {
       console.error("Error creating profile:", error);
       invokeToast(
