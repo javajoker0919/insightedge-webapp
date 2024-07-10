@@ -8,11 +8,24 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
-  companyName: string;
+  onboardingStatus: boolean | null;
+}
+
+interface Organization {
+  id: number;
+  name: string;
   website: string;
-  companyOverview: string;
+  overview: string;
   products: string;
-  onboardingCompleted: number;
+  creatorID: string;
+}
+
+interface Watchlist {
+  id: number;
+  name: string;
+  organizationID: number;
+  creatorID: string;
+  uuid: string;
 }
 
 export const userMetadataAtom = atomWithStorage<UserMetadata | null>(
@@ -20,4 +33,12 @@ export const userMetadataAtom = atomWithStorage<UserMetadata | null>(
   null
 );
 
-export const userDataAtom = atom<User | null>(null);
+export const userInfoAtom = atomWithStorage<User | null>("user-info", null);
+export const orgInfoAtom = atomWithStorage<Organization | null>(
+  "org-info",
+  null
+);
+export const watchlistAtom = atomWithStorage<Watchlist[] | null>(
+  "watchlists",
+  null
+);

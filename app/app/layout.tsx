@@ -13,9 +13,7 @@ export default function RootLayout({
       <Header />
       <div className="flex w-full flex-1">
         <Sidebar />
-        <div className="h-full m-auto flex items-center justify-center w-full text-black">
-          {children}
-        </div>
+        <div className="flex w-full text-black overflow-hidden">{children}</div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAtom } from "jotai";
-import { userMetadataAtom, userDataAtom } from "@/utils/atoms";
+import { userMetadataAtom, userInfoAtom, orgInfoAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 
 // AuthProvider component manages user authentication state and handles routing based on auth status
@@ -11,20 +11,23 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom);
-  const [userData, setUserData] = useAtom(userDataAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [orgData, setOrgData] = useAtom(orgInfoAtom);
 
   // Define paths that don't require authentication
   const authPaths = ["/auth/sign-in", "/auth/sign-up", "/auth/forgot-password"];
   const landingPath = "/";
 
+  /*
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
 
       if (session?.user) {
-        const { data, error } = await supabase
+        /// fetch user info
+        const { data: userData, error: userError } = await supabase
           .from("users")
           .select(
             `
@@ -32,37 +35,66 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
             email,
             first_name,
             last_name,
-            company_name,
-            website,
-            company_overview,
-            products,
-            onboarding_completed
+            onboarding_status
             `
           )
           .eq("id", session.user.id)
           .single();
 
-        if (error) {
-          console.error("Error occurred while fetching profile:", error);
-          throw error;
+        if (userError) {
+          console.error(
+            "Error occurred while fetching user profile:",
+            userError
+          );
+          throw userError;
         }
 
-        setUserData({
-          id: data.id,
-          email: data.email,
-          firstName: data.first_name,
-          lastName: data.last_name,
-          companyName: data.company_name,
-          website: data.website,
-          companyOverview: data.company_overview,
-          products: data.products,
-          onboardingCompleted: data.onboarding_completed,
+        setUserInfo({
+          id: userData.id,
+          email: userData.email,
+          firstName: userData.first_name,
+          lastName: userData.last_name,
+          onboardingStatus: userData.onboarding_status,
+        });
+
+        /// fetch organization info
+        const { data: orgData, error: orgError } = await supabase
+          .from("organizations")
+          .select(
+            `
+            id,
+            name,
+            website,
+            overview,
+            products,
+            creator_id
+            `
+          )
+          .eq("creator_id", session.user.id)
+          .single();
+
+        if (orgError) {
+          console.error(
+            "Error occurred while fetching organization profile:",
+            orgError
+          );
+          throw orgError;
+        }
+
+        setOrgData({
+          id: orgData.id,
+          name: orgData.name,
+          website: orgData.website,
+          overview: orgData.overview,
+          products: orgData.products,
+          creatorID: orgData.creator_id,
         });
       }
     };
 
-    fetchUserData();
+    fetchData();
   }, []);
+  */
 
   useEffect(() => {
     // Asynchronous function to verify user authentication status
@@ -77,10 +109,10 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
           // If a valid session exists, update the user metadata
           setUserMetadata(session.user.user_metadata);
 
-          // Check if onboardingCompleted is 0 and redirect if necessary
-          if (userData) {
+          // Check if onboardingStatus is true and redirect if necessary
+          if (userInfo) {
             if (
-              userData.onboardingCompleted === 0 &&
+              !userInfo.onboardingStatus &&
               !authPaths.includes(pathname) &&
               pathname !== landingPath
             ) {
@@ -108,7 +140,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     };
 
     checkUser();
-  }, [pathname, userData]); // Effect depends on pathname changes
+  }, [pathname, userInfo]); // Effect depends on pathname changes
 
   // Display loading indicator while authentication status is being checked
   if (isLoading) {

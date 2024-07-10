@@ -9,15 +9,22 @@ import AuthInput from "@/app/components/SignInput";
 import useValidation from "@/hooks/useValidation";
 import { supabase } from "@/supabase";
 import { useToastContext } from "@/contexts/toastContext";
-import { useAtom } from "jotai";
-import { userMetadataAtom, userDataAtom } from "@/utils/atoms";
+import { useSetAtom } from "jotai";
+import {
+  userMetadataAtom,
+  userInfoAtom,
+  orgInfoAtom,
+  watchlistAtom,
+} from "@/utils/atoms";
 
 const SignIn = () => {
   /// Initialize hooks and contexts
   const router = useRouter();
   const { invokeToast } = useToastContext();
-  const [, setUserMetadata] = useAtom(userMetadataAtom);
-  const [, setUserData] = useAtom(userDataAtom);
+  const setUserMetadata = useSetAtom(userMetadataAtom);
+  const setUserInfo = useSetAtom(userInfoAtom);
+  const setOrgInfo = useSetAtom(orgInfoAtom);
+  const setWatchlist = useSetAtom(watchlistAtom);
 
   const { validateEmail, validatePassword } = useValidation();
 
@@ -75,31 +82,89 @@ const SignIn = () => {
 
       if (userDataError) throw userDataError;
 
-      /// Set user data using the userDataAtom
-      setUserData({
+      /// Set user data using the userInfoAtom
+      setUserInfo({
         id: userData.id,
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: userData.company_name,
-        website: userData.website,
-        companyOverview: userData.company_overview,
-        products: userData.products,
-        onboardingCompleted: userData.onboarding_completed,
+        onboardingStatus: userData.onboarding_status,
       });
 
       invokeToast("success", "You have successfully logged in!", "top");
-      router.replace("/app");
+
+      if (!userData.onboarding_status) {
+        router.replace("/auth/create-profile");
+      }
+
+      const { data: orgData, error: orgError } = await supabase
+        .from("organizations")
+        .select(
+          `
+          id, 
+          name, 
+          website, 
+          overview, 
+          products, 
+          creator_id
+          `
+        )
+        .eq("creator_id", data.user.id)
+        .single();
+
+      if (orgError) throw orgError;
+
+      setOrgInfo({
+        id: orgData.id,
+        name: orgData.name,
+        website: orgData.website,
+        overview: orgData.overview,
+        products: orgData.products,
+        creatorID: orgData.creator_id,
+      });
+
+      const { data: watchlistData, error: watchlistError } = await supabase
+        .from("watchlists")
+        .select(
+          `
+          id, 
+          name, 
+          organization_id, 
+          creator_id,
+          uuid
+          `
+        )
+        .eq("creator_id", data.user.id);
+
+      if (watchlistError) throw watchlistError;
+
+      setWatchlist(
+        watchlistData.map((item) => {
+          return {
+            id: item.id,
+            name: item.name,
+            organizationID: item.organization_id,
+            creatorID: item.creator_id,
+            uuid: item.uuid,
+          };
+        })
+      );
+
+      router.replace(`/app/watchlist/${watchlistData[0].uuid}`);
     } catch (error: any) {
       console.error("Sign-in error:", error);
       /// Display error toast with appropriate message
-      invokeToast(
-        "error",
-        error.message === "Invalid login credentials"
-          ? "Please confirm your email and password"
-          : "An error occurred during sign-in",
-        "top"
-      );
+      if (error.message === "Invalid login credentials") {
+        invokeToast("error", "Please confirm your email and password", "top");
+      }
+
+      // invokeToast(
+      //   "error",
+      //   error.message === "Invalid login credentials"
+      //     ? "Please confirm your email and password"
+      //     : "An error occurred during sign-in",
+      //   "top"
+      // );
     } finally {
       setIsLoading(false);
     }

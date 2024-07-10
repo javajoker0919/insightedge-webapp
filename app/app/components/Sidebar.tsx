@@ -1,121 +1,149 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/supabaseClient";
-import { IoHomeOutline, IoList, IoPersonOutline } from "react-icons/io5";
+import { useAtomValue } from "jotai";
+
+import {
+  IoHomeOutline,
+  IoPersonOutline,
+  IoAddOutline,
+  IoList,
+} from "react-icons/io5";
+import { watchlistAtom } from "@/utils/atoms";
+import AddWatchlistModal from "@/app/components/AddWatchlistModal";
 
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const watchlist = useAtomValue(watchlistAtom);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-  const handleLogout = async () => {
-    setIsLoading(true);
-    try {
-      await supabase.auth.signOut();
-      router.push("/auth/sign-in");
-    } catch (error) {
-      console.error("Error logging out:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
   return (
-    <nav
-      className={`bg-white text-gray-800 ${
-        isCollapsed ? "w-24" : "w-80"
-      } transition-all overflow-hidden duration-300 left-0 border-r border-gray-200 shadow-md flex flex-col justify-between`}
-    >
-      <div className="p-4">
-        <ul>
-          <li className="mb-3">
-            <Link
-              href="/app"
-              className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
-            >
-              <IoHomeOutline className={`text-indigo-600 text-2xl`} />
-              {!isCollapsed && (
-                <span className="text-gray-700 hover:text-indigo-600 transition-colors duration-200 text-lg">
-                  Home
-                </span>
-              )}
-            </Link>
-          </li>
-          <li className="mb-3">
-            <Link
-              href="/app/company-profile"
-              className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
-            >
-              <IoPersonOutline className={`text-indigo-600 text-2xl`} />
-              {!isCollapsed && (
-                <span className="text-gray-700 hover:text-indigo-600 transition-colors duration-200 text-lg">
-                  Company Profile
-                </span>
-              )}
-            </Link>
-          </li>
-          <li className="mb-3">
-            <Link
-              href="/app/watchlist"
-              className="flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-indigo-100 transition-all duration-200"
-            >
-              <IoList className={`text-indigo-600 text-2xl`} />
-              {!isCollapsed && (
-                <span className="text-gray-700 hover:text-indigo-600 transition-colors duration-200 text-lg">
-                  Watchlist
-                </span>
-              )}
-            </Link>
-          </li>
-        </ul>
-      </div>
-      <div className="mt-auto border-t p-4">
-        {/* <button
-          onClick={handleLogout}
-          disabled={isLoading}
-          className="w-full flex items-center justify-center py-3 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 text-white"
-        >
-          <IoLogOutOutline
-            className={`${isCollapsed ? "text-3xl" : "mr-4 text-2xl"}`}
-          />
-          {!isCollapsed && (
-            <span className="text-lg">
-              {isLoading ? "Logging out..." : "Log Out"}
-            </span>
-          )}
-        </button> */}
-        <div
-          className={`flex items-center space-x-2 ${
-            isCollapsed ? "justify-center" : "justify-between"
-          }`}
-        >
-          {!isCollapsed && (
-            <div className="w-full space-y-3">
-              <hr className="border" />
-              <hr className="border" />
-            </div>
-          )}
-          <button
-            onClick={toggleSidebar}
-            className="text-indigo-600 border border-indigo-200 hover:text-indigo-800 focus:outline-none transition-colors duration-200 px-2 py-1 rounded-full hover:bg-indigo-100 text-2xl"
-          >
-            {isCollapsed ? "→" : "←"}
-          </button>
-          {!isCollapsed && (
-            <div className="w-full space-y-3">
-              <hr className="border" />
-              <hr className="border" />
-            </div>
-          )}
+    <>
+      <nav
+        className={`bg-white text-gray-800 shrink-0 ${
+          isCollapsed ? "w-24" : "w-80"
+        } transition-all overflow-hidden duration-300 left-0 border-r border-gray-200 shadow-md flex flex-col justify-between`}
+      >
+        <div className="p-3">
+          <ul>
+            <li className="mb-1">
+              <Link
+                href="/app"
+                className={`flex items-center ${
+                  isCollapsed ? "justify-center" : ""
+                } gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+              >
+                <IoHomeOutline className={`text-2xl`} />
+                {!isCollapsed && (
+                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                    Home
+                  </span>
+                )}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/app/company-profile"
+                className={`flex items-center ${
+                  isCollapsed ? "justify-center" : ""
+                } gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+              >
+                <IoPersonOutline className={`text-2xl`} />
+                {!isCollapsed && (
+                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                    Company Profile
+                  </span>
+                )}
+              </Link>
+            </li>
+          </ul>
         </div>
-      </div>
-    </nav>
+
+        <hr />
+
+        <div className="p-3">
+          <div
+            className={`flex items-center ${
+              isCollapsed ? "justify-center" : "justify-between"
+            } w-full gap-4`}
+          >
+            {!isCollapsed && (
+              <span className="text-gray-500 pl-4 transition-colors duration-200 text-base">
+                WATCHLISTS
+              </span>
+            )}
+            <button
+              onClick={openModal}
+              className="p-3 rounded-full hover:bg-gray-100 transition-all duration-200"
+            >
+              <IoAddOutline className={`text-2xl`} />
+            </button>
+          </div>
+          <ul>
+            {watchlist &&
+              watchlist.map((item) => {
+                return (
+                  <li>
+                    <Link
+                      href={`/app/watchlist/${item.uuid}`}
+                      className={`flex items-center ${
+                        isCollapsed ? "justify-center" : ""
+                      } gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                    >
+                      <IoList className={`text-2xl shrink-0`} />
+                      {!isCollapsed && (
+                        <span className="text-gray-700 truncate transition-colors duration-200 text-lg">
+                          {item.name}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+        <div className="mt-auto border-t p-4">
+          <div
+            className={`flex items-center space-x-2 ${
+              isCollapsed ? "justify-center" : "justify-between"
+            }`}
+          >
+            {!isCollapsed && (
+              <div className="w-full space-y-3">
+                <hr className="border" />
+                <hr className="border" />
+              </div>
+            )}
+            <button
+              onClick={toggleSidebar}
+              className="text-indigo-600 border border-indigo-200 hover:text-indigo-800 focus:outline-none transition-colors duration-200 px-2 py-1 rounded-full hover:bg-gray-100 text-2xl"
+            >
+              {isCollapsed ? "→" : "←"}
+            </button>
+            {!isCollapsed && (
+              <div className="w-full space-y-3">
+                <hr className="border" />
+                <hr className="border" />
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      <AddWatchlistModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
+    </>
   );
 };
 
