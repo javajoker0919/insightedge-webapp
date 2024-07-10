@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { supabase } from "@/utils/supabaseClient";
 import { orgInfoAtom, userInfoAtom, watchlistAtom } from "@/utils/atoms";
 
 interface WatchlistModalProps {
-  type: string; //  add | rename
+  type: string; //  add | rename | delete
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -20,8 +20,9 @@ const WatchlistModal = ({
   const orgInfo = useAtomValue(orgInfoAtom);
   const [watchlist, setWatchlist] = useAtom(watchlistAtom);
   const [inputValue, setInputValue] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
+  const router = useRouter();
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +51,7 @@ const WatchlistModal = ({
   };
 
   const handleSaveClick = async () => {
-    setIsSaving(true);
+    setIsLoading(true);
     try {
       if (type === "add") {
         const { data, error } = await supabase
@@ -104,8 +105,27 @@ const WatchlistModal = ({
         console.error(error);
       }
     } finally {
-      setIsSaving(false);
+      setIsLoading(false);
       closeModal();
+    }
+  };
+
+  const handleDeleteClick = async () => {
+    try {
+      const { error } = await supabase
+        .from("watchlists")
+        .delete()
+        .eq("uuid", params.id);
+
+      if (error) throw error;
+
+      setWatchlist(
+        (prev) => prev?.filter((item) => item.uuid !== params.id) || null
+      );
+
+      router.push(`/app/watchlist/${watchlist && watchlist[0].uuid}`);
+    } catch (error) {
+      console.error("Error deleting watchlist:", error);
     }
   };
 
@@ -126,41 +146,69 @@ const WatchlistModal = ({
                   case "rename":
                     return "Rename list";
 
+                  case "delete":
+                    return "Delete this watchlist?";
+
                   default:
                     return "";
                 }
               })()}
             </h2>
-            <input
-              type="text"
-              placeholder="List name"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
+
+            {type !== "delete" ? (
+              <input
+                type="text"
+                placeholder="List name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
+            ) : (
+              <p className="text-gray-500">This list will be deleted.</p>
+            )}
+
             <div className="flex justify-end space-x-2">
               <button
                 onClick={closeModal}
                 className="px-4 py-2 text-gray-800 rounded hover:bg-gray-100 transition-colors duration-200 w-24"
-                disabled={isSaving}
+                disabled={isLoading}
               >
                 Cancel
               </button>
-              <button
-                onClick={handleSaveClick}
-                disabled={!inputValue.trim() || isSaving}
-                className={`px-4 py-2 rounded transition-colors duration-200 w-24 flex items-center justify-center ${
-                  inputValue.trim() && !isSaving
-                    ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                    : "bg-gray-300 text-white cursor-not-allowed"
-                }`}
-              >
-                {isSaving ? (
-                  <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white" />
-                ) : (
-                  "Save"
-                )}
-              </button>
+
+              {type !== "delete" ? (
+                <button
+                  onClick={handleSaveClick}
+                  disabled={!inputValue.trim() || isLoading}
+                  className={`px-4 py-2 rounded transition-colors duration-200 w-24 flex items-center justify-center ${
+                    inputValue.trim() && !isLoading
+                      ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                      : "bg-gray-300 text-white cursor-not-allowed"
+                  }`}
+                >
+                  {isLoading ? (
+                    <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white" />
+                  ) : (
+                    "Save"
+                  )}
+                </button>
+              ) : (
+                <button
+                  onClick={handleDeleteClick}
+                  disabled={isLoading}
+                  className={`px-4 py-2 rounded transition-colors duration-200 w-24 flex items-center justify-center ${
+                    isLoading
+                      ? "bg-gray-300 text-white cursor-not-allowed"
+                      : "text-red-600 hover:bg-red-600 hover:text-white"
+                  }`}
+                >
+                  {isLoading ? (
+                    <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white" />
+                  ) : (
+                    "Delete"
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useAtom } from "jotai";
 import { Navigation } from "swiper/modules";
 import { IoAddOutline, IoList, IoPencil, IoTrash } from "react-icons/io5";
@@ -18,7 +18,6 @@ import "swiper/css/navigation";
 export default function WatchlistPage() {
   const params = useParams();
   const id = params.id;
-  const router = useRouter();
 
   const [watchlist, setWatchlist] = useAtom(watchlistAtom);
   const [watchlistName, setWatchlistName] = useState("");
@@ -80,20 +79,8 @@ export default function WatchlistPage() {
 
   const handleDeleteWatchlist = async () => {
     setIsOptionsModalOpen(false);
-
-    try {
-      const { error } = await supabase
-        .from("watchlists")
-        .delete()
-        .eq("uuid", id);
-
-      if (error) throw error;
-
-      setWatchlist((prev) => prev?.filter((item) => item.uuid !== id) || null);
-      router.push(`/app/watchlist/${watchlist && watchlist[0].uuid}`);
-    } catch (error) {
-      console.error("Error deleting watchlist:", error);
-    }
+    setModalType("delete");
+    setIsModalOpen(true);
   };
 
   return (
