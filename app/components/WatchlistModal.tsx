@@ -1,21 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
+import { useParams } from "next/navigation";
 
 import { supabase } from "@/utils/supabaseClient";
 import { orgInfoAtom, userInfoAtom, watchlistAtom } from "@/utils/atoms";
 
-const AddWatchlistModal = ({
-  isModalOpen,
-  setIsModalOpen,
-}: {
+interface WatchlistModalProps {
+  type: string; //  add | rename
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+}
+
+const WatchlistModal = ({
+  type = "add",
+  isModalOpen,
+  setIsModalOpen,
+}: WatchlistModalProps) => {
   const userInfo = useAtomValue(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
   const [watchlist, setWatchlist] = useAtom(watchlistAtom);
   const [inputValue, setInputValue] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const params = useParams();
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -43,35 +49,60 @@ const AddWatchlistModal = ({
     setInputValue("");
   };
 
-  const handleAddWatchlist = async () => {
+  const handleSaveClick = async () => {
     setIsSaving(true);
     try {
-      const { data, error } = await supabase
-        .from("watchlists")
-        .insert({
-          name: inputValue,
-          organization_id: orgInfo?.id,
-          creator_id: userInfo?.id,
-        })
-        .select()
-        .single();
+      if (type === "add") {
+        const { data, error } = await supabase
+          .from("watchlists")
+          .insert({
+            name: inputValue,
+            organization_id: orgInfo?.id,
+            creator_id: userInfo?.id,
+          })
+          .select()
+          .single();
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setWatchlist((prev) => {
-        return [
-          ...(prev ?? []),
-          {
-            id: data.id,
-            name: data.name,
-            organizationID: data.organization_id,
-            creatorID: data.creator_id,
-            uuid: data.uuid,
-          },
-        ];
-      });
+        setWatchlist((prev) => {
+          return [
+            ...(prev ?? []),
+            {
+              id: data.id,
+              name: data.name,
+              organizationID: data.organization_id,
+              creatorID: data.creator_id,
+              uuid: data.uuid,
+            },
+          ];
+        });
+      } else if (type === "rename") {
+        const { data, error } = await supabase
+          .from("watchlists")
+          .update({ name: inputValue })
+          .eq("uuid", params.id)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setWatchlist((prev) => {
+          return (
+            prev?.map((item) =>
+              item.uuid === data.uuid ? { ...item, name: data.name } : item
+            ) || null
+          );
+        });
+      }
     } catch (error) {
-      console.error("Failed to insert to waitlist", error);
+      if (type === "add") {
+        console.error("Failed to insert watchlist", error);
+      } else if (type === "rename") {
+        console.error("Failed to update watchlist", error);
+      } else {
+        console.error(error);
+      }
     } finally {
       setIsSaving(false);
       closeModal();
@@ -86,7 +117,20 @@ const AddWatchlistModal = ({
             ref={modalRef}
             className="bg-white text-black space-y-8 min-w-96 p-6 rounded-lg shadow-lg"
           >
-            <h2 className="text-2xl">Create a new list</h2>
+            <h2 className="text-2xl">
+              {(() => {
+                switch (type) {
+                  case "add":
+                    return "Create a new list";
+
+                  case "rename":
+                    return "Rename list";
+
+                  default:
+                    return "";
+                }
+              })()}
+            </h2>
             <input
               type="text"
               placeholder="List name"
@@ -103,7 +147,7 @@ const AddWatchlistModal = ({
                 Cancel
               </button>
               <button
-                onClick={handleAddWatchlist}
+                onClick={handleSaveClick}
                 disabled={!inputValue.trim() || isSaving}
                 className={`px-4 py-2 rounded transition-colors duration-200 w-24 flex items-center justify-center ${
                   inputValue.trim() && !isSaving
@@ -125,4 +169,4 @@ const AddWatchlistModal = ({
   );
 };
 
-export default AddWatchlistModal;
+export default WatchlistModal;

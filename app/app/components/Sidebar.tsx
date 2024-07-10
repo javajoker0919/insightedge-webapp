@@ -10,7 +10,7 @@ import {
   IoList,
 } from "react-icons/io5";
 import { watchlistAtom } from "@/utils/atoms";
-import AddWatchlistModal from "@/app/components/AddWatchlistModal";
+import WatchlistModal from "@/app/components/WatchlistModal";
 
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -92,7 +92,7 @@ const Sidebar: React.FC = () => {
             {watchlist &&
               watchlist.map((item) => {
                 return (
-                  <li>
+                  <li key={item.uuid}>
                     <Link
                       href={`/app/watchlist/${item.uuid}`}
                       className={`flex items-center ${
@@ -139,7 +139,8 @@ const Sidebar: React.FC = () => {
         </div>
       </nav>
 
-      <AddWatchlistModal
+      <WatchlistModal
+        type="add"
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
       />
