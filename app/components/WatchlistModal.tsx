@@ -25,6 +25,7 @@ const WatchlistModal = ({
   const router = useRouter();
 
   const modalRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,6 +39,9 @@ const WatchlistModal = ({
 
     if (isModalOpen) {
       document.addEventListener("mousedown", handleClickOutside);
+      if (inputRef.current && type !== "delete") {
+        inputRef.current.focus();
+      }
     }
 
     return () => {
@@ -170,6 +174,7 @@ const WatchlistModal = ({
 
             {type !== "delete" ? (
               <input
+                ref={inputRef}
                 type="text"
                 placeholder="List name"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"

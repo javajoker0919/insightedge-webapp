@@ -56,18 +56,14 @@ const Header = () => {
           >
             <Link
               href={`/app/watchlist/${item.uuid}`}
-              className={`flex items-center gap-2 p-2 rounded-lg w-full border transition-all duration-200 ${
+              className={`flex items-center gap-2 p-2 bg-white text-gray-700 rounded-lg w-full border transition-all duration-200 ${
                 paramUUID === item.uuid
-                  ? "bg-indigo-50 text-indigo-700"
-                  : "bg-white text-gray-700 hover:shadow-md"
+                  ? "border-b-2 border-b-indigo-500"
+                  : "hover:shadow-md"
               }`}
             >
-              <IoList
-                className={`text-2xl  p-1 rounded-sm ${
-                  paramUUID === item.uuid ? "bg-indigo-100" : "bg-gray-100"
-                }`}
-              />
-              <span className=" w-36 transition-colors duration-200 text-sm truncate font-medium">
+              <IoList className="text-2xl p-1 rounded-sm bg-gray-100" />
+              <span className="w-36 transition-colors duration-200 text-sm truncate font-medium">
                 {item.name}
               </span>
             </Link>

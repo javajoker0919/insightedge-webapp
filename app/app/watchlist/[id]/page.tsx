@@ -135,7 +135,7 @@ export default function WatchlistPage() {
 
     const debounce = setTimeout(() => {
       fetchSearchResults();
-    }, 300);
+    }, 800);
 
     return () => clearTimeout(debounce);
   }, [searchInput, searchType]);
@@ -264,7 +264,7 @@ export default function WatchlistPage() {
               {isOptionsModalOpen && (
                 <div
                   ref={optionsModalRef}
-                  className="absolute w-52 py-1 border border-gray-100 right-0 top-14 bg-white shadow-md rounded-md overflow-hidden"
+                  className="absolute w-52 py-1 border border-gray-100 right-4 top-14 bg-white shadow-md rounded-md overflow-hidden"
                 >
                   <button
                     onClick={handleRenameWatchlist}
@@ -300,7 +300,7 @@ export default function WatchlistPage() {
                   </button>
                 </>
               ) : (
-                <div className="w-full max-w-[900px] mb-auto">
+                <div className="w-full max-w-[900px] px-4 mb-auto">
                   {watchlistCompanies.map((company) => (
                     <div
                       key={company.id}
