@@ -112,18 +112,31 @@ const WatchlistModal = ({
 
   const handleDeleteClick = async () => {
     try {
-      const { error } = await supabase
+      const watchlistID = watchlist?.find(
+        (item) => item.uuid === params.id
+      )?.id;
+
+      // Delete all related entries from watchlist_companies
+      const { error: deleteCompaniesError } = await supabase
+        .from("watchlist_companies")
+        .delete()
+        .eq("watchlist_id", watchlistID);
+
+      if (deleteCompaniesError) throw deleteCompaniesError;
+
+      // Now delete the watchlist itself
+      const { error: deleteWatchlistError } = await supabase
         .from("watchlists")
         .delete()
         .eq("uuid", params.id);
 
-      if (error) throw error;
+      if (deleteWatchlistError) throw deleteWatchlistError;
 
       setWatchlist(
         (prev) => prev?.filter((item) => item.uuid !== params.id) || null
       );
 
-      router.push(`/app/watchlist/${watchlist && watchlist[0].uuid}`);
+      router.push(`/app/watchlist/${watchlist && watchlist[0]?.uuid}`);
     } catch (error) {
       console.error("Error deleting watchlist:", error);
     }
