@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { IoAddOutline, IoPencil, IoTrash, IoClose } from "react-icons/io5";
 
@@ -13,6 +13,8 @@ import CompanySearchbar from "@/app/components/CompanySearchbar";
 export default function WatchlistPage() {
   const params = useParams();
   const paramID = params.id as string;
+
+  const router = useRouter();
 
   const watchlist = useAtomValue(watchlistAtom);
   const [watchlistName, setWatchlistName] = useState<string>("");
@@ -204,7 +206,8 @@ export default function WatchlistPage() {
                   {watchlistCompanies.map((company) => (
                     <div
                       key={company.id}
-                      className="py-2 pl-4 pr-2 hover:bg-gray-50 border-t last:border-b-0 flex justify-between items-center group"
+                      onClick={() => router.push(`/app/company/${company.id}`)}
+                      className="py-2 hover:cursor-pointer pl-4 pr-2 hover:bg-gray-50 border-t last:border-b-0 flex justify-between items-center group"
                     >
                       <div>
                         <p className="font-medium">{company.name}</p>

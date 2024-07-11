@@ -143,6 +143,8 @@ const CompanySearchbar = ({
   };
 
   const handleCompanyClick = (companyID: number) => {
+    setIsInputFocused(false);
+
     switch (type) {
       case "header":
         router.push(`/app/company/${companyID}`);
