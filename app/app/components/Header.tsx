@@ -85,9 +85,11 @@ const Header: React.FC = () => {
           InsightEdge
         </Link>
         <div className="flex items-center space-x-8">
-          <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200">
-            Upgrade
-          </button>
+          <Link href="/upgrade">
+            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200">
+              Upgrade
+            </button>
+          </Link>
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={toggleDropdown}
