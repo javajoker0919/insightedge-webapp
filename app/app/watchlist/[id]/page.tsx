@@ -1,18 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useAtomValue } from "jotai";
-import { Navigation } from "swiper/modules";
-import {
-  IoAddOutline,
-  IoList,
-  IoPencil,
-  IoTrash,
-  IoClose,
-} from "react-icons/io5";
+import { IoAddOutline, IoPencil, IoTrash, IoClose } from "react-icons/io5";
 
 import { supabase } from "@/utils/supabaseClient";
 import { watchlistAtom } from "@/utils/atoms";
@@ -144,7 +135,7 @@ export default function WatchlistPage() {
 
     const debounce = setTimeout(() => {
       fetchSearchResults();
-    }, 300);
+    }, 800);
 
     return () => clearTimeout(debounce);
   }, [searchInput, searchType]);
@@ -154,11 +145,6 @@ export default function WatchlistPage() {
       searchInputRef.current.focus();
     }
   }, [isSearchBarOpen]);
-
-  const handleAddWatchlist = () => {
-    setModalType("add");
-    setIsModalOpen(true);
-  };
 
   const toggleOptionsModal = () => {
     setIsOptionsModalOpen(!isOptionsModalOpen);
@@ -241,60 +227,6 @@ export default function WatchlistPage() {
 
   return (
     <div className="flex flex-col w-full h-full items-center justify-center gap-1">
-      <div className="w-full p-4 bg-gray-50">
-        <Swiper
-          onInit={(swiper) => {
-            swiper.navigation.init();
-            swiper.navigation.update();
-          }}
-          watchOverflow={false}
-          slidesPerView="auto"
-          spaceBetween={15}
-          navigation={{
-            prevEl: ".swiper-button-prev",
-            nextEl: ".swiper-button-next",
-          }}
-          modules={[Navigation]}
-          breakpoints={{
-            320: { slidesPerView: 1 },
-            480: { slidesPerView: 2 },
-            640: { slidesPerView: 2 },
-            768: { slidesPerView: 3 },
-            1024: { slidesPerView: 5 },
-            1280: { slidesPerView: 6 },
-          }}
-          className="gap-2 items-center flex !px-5"
-        >
-          <div className="swiper-button-prev border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
-          <div className="swiper-button-next border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
-          {watchlist?.map((item) => (
-            <SwiperSlide
-              key={item.uuid}
-              className="!flex w-auto flex-col items-center py-1"
-            >
-              <Link
-                href={`/app/watchlist/${item.uuid}`}
-                className="flex items-center gap-2 p-2 rounded-lg bg-white w-full hover:shadow-md border transition-all duration-200"
-              >
-                <IoList className="text-2xl bg-gray-100 p-1 rounded-sm" />
-                <span className="text-gray-700 w-36 transition-colors duration-200 text-sm truncate font-medium">
-                  {item.name}
-                </span>
-              </Link>
-            </SwiperSlide>
-          ))}
-          <SwiperSlide className="py-1">
-            <button
-              onClick={handleAddWatchlist}
-              className="flex items-center min-w-fit w-full gap-2 rounded-md hover:bg-gray-100 text-indigo-500 p-2"
-            >
-              <IoAddOutline className="text-xl" />
-              <p>New list</p>
-            </button>
-          </SwiperSlide>
-        </Swiper>
-      </div>
-
       <div className="flex-1 w-full items-center flex justify-center">
         {isLoading ? (
           <div className="flex flex-col items-center gap-4">
@@ -312,7 +244,7 @@ export default function WatchlistPage() {
                     onClick={handleAddInvestments}
                   >
                     <IoAddOutline className="text-xl" />
-                    <p>Add investments</p>
+                    <p>Add companies</p>
                   </button>
                 )}
                 {watchlist && watchlist[0] && paramID !== watchlist[0].uuid && (
@@ -332,7 +264,7 @@ export default function WatchlistPage() {
               {isOptionsModalOpen && (
                 <div
                   ref={optionsModalRef}
-                  className="absolute w-52 py-1 border border-gray-100 right-0 top-14 bg-white shadow-md rounded-md overflow-hidden"
+                  className="absolute w-52 py-1 border border-gray-100 right-4 top-14 bg-white shadow-md rounded-md overflow-hidden"
                 >
                   <button
                     onClick={handleRenameWatchlist}
@@ -364,11 +296,11 @@ export default function WatchlistPage() {
                     onClick={handleAddInvestments}
                   >
                     <IoAddOutline className="text-xl" />
-                    <p>Add investments</p>
+                    <p>Add companies</p>
                   </button>
                 </>
               ) : (
-                <div className="w-full max-w-[900px] mb-auto">
+                <div className="w-full max-w-[900px] px-4 mb-auto">
                   {watchlistCompanies.map((company) => (
                     <div
                       key={company.id}
@@ -400,9 +332,9 @@ export default function WatchlistPage() {
               <div
                 id="search-bar"
                 ref={searchBarRef}
-                className="absolute w-full p-4 flex justify-center"
+                className="absolute w-full max-w-[900px] p-4 flex justify-center"
               >
-                <div className="shadow-lg max-w-[900px] w-full border overflow-hidden bg-white border-gray-100 rounded-xl relative">
+                <div className="shadow-lg w-full border overflow-hidden bg-white border-gray-100 rounded-xl relative">
                   <button
                     onClick={handleCloseSearchBar}
                     className="absolute top-2 right-2 hover:bg-gray-200 rounded-full p-2"

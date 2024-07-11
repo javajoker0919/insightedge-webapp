@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useAtomValue } from "jotai";
 
 import {
@@ -13,6 +14,8 @@ import { watchlistAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 
 const Sidebar: React.FC = () => {
+  const params = useParams();
+  const paramUUID = params.id as string;
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -37,7 +40,9 @@ const Sidebar: React.FC = () => {
           <ul>
             <li className="mb-1">
               <Link
-                href="/app"
+                href={`/app${
+                  watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
+                }`}
                 className={`flex items-center ${
                   isCollapsed ? "justify-center" : ""
                 } gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
@@ -92,12 +97,16 @@ const Sidebar: React.FC = () => {
             {watchlist &&
               watchlist.map((item) => {
                 return (
-                  <li key={item.uuid}>
+                  <li key={item.uuid} className="mb-0.5">
                     <Link
                       href={`/app/watchlist/${item.uuid}`}
                       className={`flex items-center ${
                         isCollapsed ? "justify-center" : ""
-                      } gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                      } gap-4 py-3 px-4 rounded-lg transition-all duration-200 ${
+                        paramUUID === item.uuid
+                          ? "bg-indigo-50"
+                          : "hover:bg-gray-100"
+                      }`}
                     >
                       <IoList className={`text-2xl shrink-0`} />
                       {!isCollapsed && (
