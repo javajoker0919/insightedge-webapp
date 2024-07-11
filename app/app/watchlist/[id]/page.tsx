@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { Navigation } from "swiper/modules";
 import { IoAddOutline, IoList, IoPencil, IoTrash } from "react-icons/io5";
 
@@ -17,14 +17,16 @@ import "swiper/css/navigation";
 
 export default function WatchlistPage() {
   const params = useParams();
-  const id = params.id;
+  const id = params.id as string;
 
-  const [watchlist, setWatchlist] = useAtom(watchlistAtom);
-  const [watchlistName, setWatchlistName] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("add");
-  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
+  const watchlist = useAtomValue(watchlistAtom);
+  const [watchlistName, setWatchlistName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<"add" | "rename" | "delete">(
+    "add"
+  );
+  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState<boolean>(false);
   const optionsModalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -77,7 +79,7 @@ export default function WatchlistPage() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteWatchlist = async () => {
+  const handleDeleteWatchlist = () => {
     setIsOptionsModalOpen(false);
     setModalType("delete");
     setIsModalOpen(true);
@@ -100,56 +102,39 @@ export default function WatchlistPage() {
           }}
           modules={[Navigation]}
           breakpoints={{
-            320: {
-              slidesPerView: 1,
-            },
-            480: {
-              slidesPerView: 2,
-            },
-            640: {
-              slidesPerView: 2,
-            },
-            768: {
-              slidesPerView: 3,
-            },
-            1024: {
-              slidesPerView: 5,
-            },
-            1280: {
-              slidesPerView: 5,
-            },
+            320: { slidesPerView: 1 },
+            480: { slidesPerView: 2 },
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1024: { slidesPerView: 5 },
+            1280: { slidesPerView: 6 },
           }}
           className="gap-2 items-center flex !px-5"
         >
           <div className="swiper-button-prev border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
           <div className="swiper-button-next border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
-          {watchlist &&
-            watchlist?.map((item) => {
-              return (
-                <SwiperSlide
-                  key={item.uuid}
-                  className="!flex w-auto flex-col items-center py-1"
-                >
-                  <Link
-                    href={`/app/watchlist/${item.uuid}`}
-                    className={`flex items-center gap-2 p-2 rounded-lg bg-white w-fit hover:shadow-md border transition-all duration-200`}
-                  >
-                    <IoList className={`text-2xl bg-gray-100 p-1 rounded-sm`} />
-
-                    <span className="text-gray-700 w-36 transition-colors duration-200 text-sm truncate font-medium">
-                      {item.name}
-                    </span>
-                  </Link>
-                </SwiperSlide>
-              );
-            })}
-
+          {watchlist?.map((item) => (
+            <SwiperSlide
+              key={item.uuid}
+              className="!flex w-auto flex-col items-center py-1"
+            >
+              <Link
+                href={`/app/watchlist/${item.uuid}`}
+                className="flex items-center gap-2 p-2 rounded-lg bg-white w-full hover:shadow-md border transition-all duration-200"
+              >
+                <IoList className="text-2xl bg-gray-100 p-1 rounded-sm" />
+                <span className="text-gray-700 w-36 transition-colors duration-200 text-sm truncate font-medium">
+                  {item.name}
+                </span>
+              </Link>
+            </SwiperSlide>
+          ))}
           <SwiperSlide className="py-1">
             <button
               onClick={handleAddWatchlist}
-              className="flex items-center min-w-fit gap-2 rounded-md hover:bg-gray-100 text-indigo-500 p-2"
+              className="flex items-center min-w-fit w-full gap-2 rounded-md hover:bg-gray-100 text-indigo-500 p-2"
             >
-              <IoAddOutline className={`text-xl`} />
+              <IoAddOutline className="text-xl" />
               <p>New list</p>
             </button>
           </SwiperSlide>
@@ -207,7 +192,7 @@ export default function WatchlistPage() {
                 Track investments you care about here
               </p>
               <button className="rounded-full p-2 text-indigo-500 hover:bg-gray-100 flex items-center gap-2">
-                <IoAddOutline className={`text-xl`} />
+                <IoAddOutline className="text-xl" />
                 <p>Add investments</p>
               </button>
             </div>
