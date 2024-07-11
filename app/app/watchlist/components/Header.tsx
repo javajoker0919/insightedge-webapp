@@ -11,6 +11,9 @@ import { watchlistAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import { useParams } from "next/navigation";
 
+import "swiper/css";
+import "swiper/css/navigation";
+
 const Header = () => {
   const params = useParams();
   const paramUUID = params.id as string;
