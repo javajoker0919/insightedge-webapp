@@ -42,6 +42,7 @@ export default function WatchlistPage() {
   );
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const searchBarRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [watchlistCompanies, setWatchlistCompanies] = useState<any[]>([]);
 
   useEffect(() => {
@@ -147,6 +148,12 @@ export default function WatchlistPage() {
 
     return () => clearTimeout(debounce);
   }, [searchInput, searchType]);
+
+  useEffect(() => {
+    if (isSearchBarOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchBarOpen]);
 
   const handleAddWatchlist = () => {
     setModalType("add");
@@ -403,6 +410,7 @@ export default function WatchlistPage() {
                     <IoClose className="text-2xl" />
                   </button>
                   <input
+                    ref={searchInputRef}
                     className="w-full p-4 rounded-md focus:outline-none"
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
