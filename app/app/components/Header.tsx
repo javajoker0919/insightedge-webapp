@@ -11,6 +11,7 @@ import {
 } from "@/utils/atoms";
 import Image from "next/image";
 import Link from "next/link";
+import CompanySearchbar from "@/app/components/CompanySearchbar";
 
 const Header: React.FC = () => {
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
@@ -64,9 +65,18 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="p-4 bg-white z-10 shadow-md">
+    <header className="p-2 bg-white z-10 shadow-md">
       <nav className="mx-auto flex justify-between items-center px-4">
         <div></div>
+
+        <div className="relative h-14 w-[700px]">
+          <CompanySearchbar
+            type="header"
+            isSearchBarOpen={true}
+            setIsSearchBarOpen={() => {}}
+            setWatchlistCompanies={() => {}}
+          />
+        </div>
 
         <div className="flex items-center space-x-8">
           <Link href="/upgrade">
