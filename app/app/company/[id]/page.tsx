@@ -478,27 +478,57 @@ const OpportunitiesTable: React.FC = () => {
         Opportunities
       </h3>
       <div className="overflow-x-auto overflow-y-auto max-h-96 text-sm">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-4 py-2 text-left">Opportunity</th>
-              <th className="px-4 py-2 text-left">Score</th>
-              <th className="px-4 py-2 text-left">Target Buyer Role</th>
-              <th className="px-4 py-2 text-left">Target Buyer Department</th>
-              <th className="px-4 py-2 text-left">Tips & Tricks</th>
+        <table className="w-full relative border-collapse">
+          <thead className="sticky top-0">
+            <tr className="bg-gray-200 text-black">
+              <th className="px-4 py-3 text-center font-medium">Opportunity</th>
+              <th className="px-4 py-3 text-center font-medium">Score</th>
+              <th className="px-4 py-3 text-center font-medium">
+                Target Buyer Role
+              </th>
+              <th className="px-4 py-3 text-center font-medium">
+                Target Buyer Department
+              </th>
+              <th className="px-4 py-3 text-center font-medium">
+                Tips & Tricks
+              </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-center">
             {opportunities.map((opp, index) => (
-              <tr key={index} className="border-t border-gray-200">
-                <td className="px-4 py-2">{opp.opportunityName}</td>
-                <td className="px-4 py-2">{opp.opportunityScore}</td>
-                <td className="px-4 py-2">{opp.targetBuyer.role}</td>
-                <td className="px-4 py-2">{opp.targetBuyer.department}</td>
-                <td className="px-4 py-2">
-                  <ul className="list-disc pl-4">
+              <tr
+                key={index}
+                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+              >
+                <td className="px-4 py-3 border-b text-left border-gray-200">
+                  {opp.opportunityName}
+                </td>
+                <td className="px-4 py-3 border-b border-gray-200">
+                  <span
+                    className={`inline-block px-2 py-1 rounded-full text-sm font-medium ${
+                      opp.opportunityScore >= 90
+                        ? "bg-green-100 text-green-800"
+                        : opp.opportunityScore >= 70
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {opp.opportunityScore}
+                  </span>
+                </td>
+                <td className="px-4 py-3 border-b border-gray-200">
+                  {opp.targetBuyer.role}
+                </td>
+                <td className="px-4 py-3 border-b border-gray-200">
+                  {opp.targetBuyer.department}
+                </td>
+                <td className="px-4 text-left py-3 border-b border-gray-200">
+                  <ul className="list-none space-y-1">
                     {opp.engagementTips.map((tip, tipIndex) => (
-                      <li key={tipIndex}>{tip}</li>
+                      <li key={tipIndex} className="flex items-start">
+                        <span className="mr-2 text-indigo-500">•</span>
+                        <span className="text-sm">{tip}</span>
+                      </li>
                     ))}
                   </ul>
                 </td>

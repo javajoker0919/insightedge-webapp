@@ -65,11 +65,11 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="p-2 bg-white z-10 shadow-md">
+    <header className="py-3 bg-white z-10 shadow-md">
       <nav className="mx-auto flex justify-between items-center px-4">
         <div></div>
 
-        <div className="relative h-14 w-[700px]">
+        <div className="relative h-10 w-[700px]">
           <CompanySearchbar
             type="header"
             isSearchBarOpen={true}
@@ -78,24 +78,22 @@ const Header: React.FC = () => {
           />
         </div>
 
-        <div className="flex items-center space-x-8">
+        <div className="flex items-center space-x-4">
           <Link href="/upgrade">
             <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200">
               Upgrade
             </button>
           </Link>
           <div className="relative" ref={dropdownRef}>
-            <button
+            <Image
               onClick={toggleDropdown}
-              className="w-10 h-10 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <Image
-                src="/default_avatar.jpeg"
-                alt="User avatar"
-                width={40}
-                height={40}
-              />
-            </button>
+              src="/default_avatar.jpeg"
+              alt="User avatar"
+              width={40}
+              height={40}
+              className="hover:cursor-pointer"
+            />
+
             {isDropdownOpen && (
               <div className="absolute border border-gray-200 right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                 <Link
