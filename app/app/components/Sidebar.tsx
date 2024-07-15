@@ -33,7 +33,7 @@ const Sidebar: React.FC = () => {
     <>
       <nav
         className={`bg-white text-gray-800 shrink-0 ${
-          isCollapsed ? "w-24" : "w-80"
+          isCollapsed ? "w-24" : "w-64"
         } transition-all overflow-hidden duration-300 left-0 border-r border-gray-200 shadow-md flex flex-col justify-between`}
       >
         <div className="p-3">

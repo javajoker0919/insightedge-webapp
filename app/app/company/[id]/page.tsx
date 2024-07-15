@@ -62,11 +62,19 @@ interface NewsItem {
   url: string;
 }
 
+interface YearQuarter {
+  year: number;
+  quarter: number;
+}
+
 const CompanyDetailPage: React.FC = () => {
   const { id: companyId } = useParams<{ id: string }>();
   const [companyData, setCompanyData] = useState<CompanyData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [yearQuarters, setYearQuarters] = useState<YearQuarter[]>([]);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedQuarter, setSelectedQuarter] = useState<number | null>(null);
 
   const watchlist = useAtomValue(watchlistAtom);
 
@@ -89,10 +97,20 @@ const CompanyDetailPage: React.FC = () => {
           .eq("company_id", companyId)
           .order("published_date", { ascending: false });
 
-        console.log(newsData);
-
         if (newsError) throw newsError;
         setNewsItems(newsData as NewsItem[]);
+
+        // Fetch year and quarter data
+        const { data: yearQuarterData, error: yearQuarterError } =
+          await supabase
+            .from("earnings_transcripts")
+            .select("year, quarter")
+            .eq("company_id", companyId)
+            .order("year", { ascending: true })
+            .order("quarter", { ascending: true });
+
+        if (yearQuarterError) throw yearQuarterError;
+        setYearQuarters(yearQuarterData as YearQuarter[]);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -125,7 +143,6 @@ const CompanyDetailPage: React.FC = () => {
         >
           Home
         </Link>
-        {/* <p>{`>`}</p> */}
         <FaArrowRight className="w-3 h-3" />
         <p className="text-black">{companyData.symbol}</p>
       </div>
@@ -133,12 +150,16 @@ const CompanyDetailPage: React.FC = () => {
       <h1 className="text-2xl text-gray-800">{companyData.name}</h1>
       <div className="flex gap-4 items-start">
         <div className="w-3/5 h-full space-y-4">
-          <OpportunitiesTable />
+          <OpportunitiesTable companyName={companyData.name} />
           <IncomeStatementSection />
           <RecentNewsSection newsItems={newsItems} />
         </div>
         <div className="flex-1 h-full space-y-4">
-          <YearQuarterSelector />
+          <YearQuarterSelector
+            yearQuarters={yearQuarters}
+            setSelectedYear={setSelectedYear}
+            setSelectedQuarter={setSelectedQuarter}
+          />
           <SpecificSummarySection />
           <GeneralSummarySection />
           <AboutSection companyData={companyData} />
@@ -273,7 +294,11 @@ const FinancialTable: React.FC = () => {
   );
 };
 
-const OpportunitiesTable: React.FC = () => {
+interface OpportunitiesTableProps {
+  companyName: string;
+}
+
+const OpportunitiesTable: React.FC<OpportunitiesTableProps> = () => {
   const opportunities = [
     {
       opportunityName:
@@ -492,6 +517,7 @@ const OpportunitiesTable: React.FC = () => {
               <th className="px-4 py-3 text-center font-medium">
                 Tips & Tricks
               </th>
+              <th className="px-4 py-3 text-center font-medium">Search URL</th>
             </tr>
           </thead>
           <tbody className="text-center">
@@ -531,6 +557,20 @@ const OpportunitiesTable: React.FC = () => {
                       </li>
                     ))}
                   </ul>
+                </td>
+                <td className="px-4 py-3 border-b border-gray-200">
+                  <a
+                    href={`https://www.google.com/search?q=${encodeURIComponent(
+                      opp.targetBuyer.role
+                    )}+${encodeURIComponent(
+                      opp.targetBuyer.department
+                    )}+"LinkedIn"`}
+                    className="text-blue-500"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Search on Google
+                  </a>
                 </td>
               </tr>
             ))}
@@ -625,38 +665,67 @@ const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({ newsItems }) => {
   );
 };
 
-const YearQuarterSelector: React.FC = () => (
-  <div className="flex space-x-4">
-    <SelectInput
-      options={[...Array(10)].map((_, i) => {
-        const year = new Date().getFullYear() - i;
-        return { value: year.toString(), label: year.toString() };
-      })}
-      placeholder="Select Year"
-    />
-    <SelectInput
-      options={["Q1", "Q2", "Q3", "Q4"].map((quarter) => ({
-        value: quarter,
-        label: quarter,
-      }))}
-      placeholder="Select Quarter"
-    />
-  </div>
-);
+const YearQuarterSelector: React.FC<{
+  yearQuarters: YearQuarter[];
+  setSelectedYear: React.Dispatch<React.SetStateAction<number | null>>;
+  setSelectedQuarter: React.Dispatch<React.SetStateAction<number | null>>;
+}> = ({ yearQuarters, setSelectedYear, setSelectedQuarter }) => {
+  const [year, setYear] = useState<number>(
+    yearQuarters[yearQuarters.length - 1].year
+  );
+
+  return (
+    <div className="flex space-x-4">
+      <SelectInput
+        defaultValue={yearQuarters[yearQuarters.length - 1].year}
+        options={yearQuarters
+          .map((yq) => yq.year)
+          .filter((v, i, a) => a.indexOf(v) === i)
+          .map((year) => ({
+            value: year.toString(),
+            label: year.toString(),
+          }))}
+        onChange={(selectedYear: number) => {
+          setSelectedYear(selectedYear);
+          setYear(selectedYear);
+        }}
+      />
+      {year && (
+        <SelectInput
+          defaultValue={yearQuarters[yearQuarters.length - 1].quarter}
+          options={yearQuarters
+            .filter((yq) => yq.year === year)
+            .map((yq) => yq.quarter)
+            .filter((v, i, a) => a.indexOf(v) === i)
+            .map((quarter) => ({
+              value: quarter.toString(),
+              label: `Q${quarter}`,
+            }))}
+          onChange={(selectedQuarter: number) =>
+            setSelectedQuarter(selectedQuarter)
+          }
+        />
+      )}
+    </div>
+  );
+};
 
 interface SelectInputProps {
+  defaultValue: number | undefined;
   options: SelectOption[];
-  placeholder: string;
+  onChange: (selectedYear: number) => void;
 }
 
-const SelectInput: React.FC<SelectInputProps> = ({ options, placeholder }) => (
+const SelectInput: React.FC<SelectInputProps> = ({
+  defaultValue,
+  options,
+  onChange,
+}) => (
   <select
+    defaultValue={defaultValue}
+    onChange={(e) => onChange(parseInt(e.target.value))}
     className="w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out appearance-none cursor-pointer"
-    defaultValue=""
   >
-    <option value="" disabled>
-      {placeholder}
-    </option>
     {options.map(({ value, label }) => (
       <option key={value} value={value} className="text-gray-700">
         {label}
