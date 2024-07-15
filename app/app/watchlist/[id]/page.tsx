@@ -216,11 +216,12 @@ export default function WatchlistPage() {
                         </p>
                       </div>
                       <button
-                        onClick={() =>
+                        onClick={(e) => {
                           handleRemoveCompanyFromWatchlist(
                             company.watchlist_company_id
-                          )
-                        }
+                          );
+                          e.stopPropagation();
+                        }}
                         className="text-gray-500 hover:bg-gray-200 p-2.5 rounded-full hidden group-hover:block"
                       >
                         <IoClose className="text-2xl" />
