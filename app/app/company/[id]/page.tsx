@@ -1,8 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
+import {
+  FaArrowRight,
+  FaBuilding,
+  FaGlobe,
+  FaUserTie,
+  FaUsers,
+} from "react-icons/fa";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -15,10 +23,12 @@ import {
 } from "chart.js";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import { useAtomValue } from "jotai";
 
 import "swiper/css";
 import "swiper/css/navigation";
-import { FaBuilding, FaGlobe, FaUserTie, FaUsers } from "react-icons/fa";
+
+import { watchlistAtom } from "@/utils/atoms";
 
 ChartJS.register(
   CategoryScale,
@@ -30,6 +40,7 @@ ChartJS.register(
 );
 interface CompanyData {
   id: string;
+  symbol: string;
   name: string;
   description: string;
   website: string;
@@ -56,6 +67,8 @@ const CompanyDetailPage: React.FC = () => {
   const [companyData, setCompanyData] = useState<CompanyData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+
+  const watchlist = useAtomValue(watchlistAtom);
 
   useEffect(() => {
     const fetchCompanyData = async () => {
@@ -102,12 +115,26 @@ const CompanyDetailPage: React.FC = () => {
   if (!companyData) return <div>Company not found</div>;
 
   return (
-    <div className="w-full p-6 h-full overflow-y-auto bg-indigo-50 bg-opacity-50 flex flex-col gap-6">
-      <h1 className="text-3xl text-gray-800">{companyData.name}</h1>
-      <div className="flex gap-6 items-start">
-        <div className="w-3/5 h-full">
-          <IncomeStatementSection />
+    <div className="w-full p-4 h-full overflow-y-auto bg-indigo-50 bg-opacity-50 flex flex-col gap-4">
+      <div className="flex text-sm items-center gap-2 text-gray-400">
+        <Link
+          href={`/app${
+            watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
+          }`}
+          className="hover:underline"
+        >
+          Home
+        </Link>
+        {/* <p>{`>`}</p> */}
+        <FaArrowRight className="w-3 h-3" />
+        <p className="text-black">{companyData.symbol}</p>
+      </div>
+
+      <h1 className="text-2xl text-gray-800">{companyData.name}</h1>
+      <div className="flex gap-4 items-start">
+        <div className="w-3/5 h-full space-y-4">
           <OpportunitiesTable />
+          <IncomeStatementSection />
           <RecentNewsSection newsItems={newsItems} />
         </div>
         <div className="flex-1 h-full space-y-4">
@@ -123,7 +150,7 @@ const CompanyDetailPage: React.FC = () => {
 
 const IncomeStatementSection: React.FC = () => (
   <details
-    className="bg-white border border-gray-300 rounded-lg overflow-hidden mb-6"
+    className="bg-white border border-gray-300 rounded-lg overflow-hidden"
     open
   >
     <summary className="px-4 py-3 cursor-pointer font-medium text-gray-700 hover:bg-gray-50">
@@ -446,7 +473,7 @@ const OpportunitiesTable: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg overflow-hidden mb-6">
+    <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
       <h3 className="px-4 py-3 font-medium text-gray-700 bg-gray-50">
         Opportunities
       </h3>
@@ -608,12 +635,6 @@ const SelectInput: React.FC<SelectInputProps> = ({ options, placeholder }) => (
   </select>
 );
 
-const GenerateButton: React.FC = () => (
-  <button className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out">
-    User Specific Summary - Generate
-  </button>
-);
-
 const SpecificSummarySection: React.FC = () => (
   <details
     className="bg-white border border-gray-300 rounded-lg overflow-hidden"
@@ -623,7 +644,9 @@ const SpecificSummarySection: React.FC = () => (
       User Specific Summary
     </summary>
     <div className="px-4 py-3">
-      <GenerateButton />
+      <button className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+        Generate
+      </button>
     </div>
   </details>
 );
