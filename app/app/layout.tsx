@@ -11,9 +11,9 @@ export default function RootLayout({
   return (
     <div className="w-full h-full flex-grow max-w-full flex">
       <Sidebar />
-      <div className="flex overflow-hidden flex-1 flex-col">
+      <div className="flex overflow-hidden flex-1 flex-col max-h-screen">
         <Header />
-        <div className="flex flex-1 text-black">{children}</div>
+        <div className="flex overflow-y-auto flex-1 text-black">{children}</div>
       </div>
     </div>
   );
