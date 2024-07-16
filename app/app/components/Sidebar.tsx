@@ -8,7 +8,7 @@ import {
   IoHomeOutline,
   IoPersonOutline,
   IoAddOutline,
-  IoList,
+  IoMenu,
 } from "react-icons/io5";
 import { watchlistAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
@@ -33,7 +33,7 @@ const Sidebar: React.FC = () => {
     <>
       <nav
         className={`bg-white text-gray-800 shrink-0 ${
-          isCollapsed ? "w-24" : "w-80"
+          isCollapsed ? "w-24" : "w-64"
         } transition-all overflow-hidden duration-300 left-0 border-r border-gray-200 shadow-md flex flex-col justify-between`}
       >
         <div className="p-3">
@@ -128,7 +128,7 @@ const Sidebar: React.FC = () => {
                           : "hover:bg-gray-100"
                       }`}
                     >
-                      <IoList className={`text-2xl shrink-0`} />
+                      <IoMenu className={`text-2xl shrink-0`} />
                       {!isCollapsed && (
                         <span className="text-gray-700 truncate transition-colors duration-200 text-lg">
                           {item.name}

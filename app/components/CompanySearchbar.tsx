@@ -170,16 +170,24 @@ const CompanySearchbar = ({
       <div
         className={`${
           isInputFocused ? (type === "header" ? "shadow-2xl" : "shadow-lg") : ""
-        } w-full border overflow-hidden bg-white border-gray-100 rounded-xl relative`}
+        } w-full border overflow-hidden bg-white border-gray-100 relative ${
+          type == "header" ? "rounded-md" : "rounded-xl"
+        }`}
       >
         {isInputFocused && (
-          <div className="absolute top-2 right-2 flex items-center">
+          <div
+            className={`absolute ${
+              type == "header" ? "top-1 right-1" : "top-2 right-2"
+            } flex items-center`}
+          >
             {isSearching && (
               <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500 mr-2" />
             )}
             <button
               onClick={handleCloseSearchBar}
-              className="hover:bg-gray-200 rounded-full p-2"
+              className={`hover:bg-gray-200 rounded-full ${
+                type == "header" ? "p-1" : "p-2"
+              }`}
             >
               <IoClose className="text-2xl" />
             </button>
@@ -188,9 +196,9 @@ const CompanySearchbar = ({
 
         <input
           ref={searchInputRef}
-          className={`w-full p-4 rounded-md focus:outline-none ${
+          className={`w-full rounded-md focus:outline-none ${
             isInputFocused ? "" : "bg-gray-100"
-          }`}
+          } ${type == "header" ? "py-2 px-3" : "p-4"}`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Search for companies..."
