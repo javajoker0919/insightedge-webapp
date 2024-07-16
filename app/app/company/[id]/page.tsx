@@ -67,6 +67,14 @@ interface YearQuarter {
   quarter: number;
 }
 
+interface TranscriptData {
+  summary: string;
+  challenges: string;
+  pain_points: string;
+  opportunities: string;
+  priorities: string;
+}
+
 const CompanyDetailPage: React.FC = () => {
   const { id: companyId } = useParams<{ id: string }>();
   const [companyData, setCompanyData] = useState<CompanyData | null>(null);
@@ -75,6 +83,9 @@ const CompanyDetailPage: React.FC = () => {
   const [yearQuarters, setYearQuarters] = useState<YearQuarter[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedQuarter, setSelectedQuarter] = useState<number | null>(null);
+  const [transcriptData, setTranscriptData] = useState<TranscriptData | null>(
+    null
+  );
 
   const watchlist = useAtomValue(watchlistAtom);
 
@@ -121,6 +132,32 @@ const CompanyDetailPage: React.FC = () => {
     fetchCompanyData();
   }, [companyId]);
 
+  useEffect(() => {
+    const fetchTranscriptData = async () => {
+      if (selectedYear && selectedQuarter) {
+        try {
+          const { data, error } = await supabase
+            .from("earnings_transcripts")
+            .select(
+              "summary, challenges, pain_points, opportunities, priorities"
+            )
+            .eq("company_id", companyId)
+            .eq("year", selectedYear)
+            .eq("quarter", selectedQuarter)
+            .single();
+
+          if (error) throw error;
+          setTranscriptData(data as TranscriptData);
+        } catch (error) {
+          console.error("Error fetching transcript data:", error);
+          setTranscriptData(null);
+        }
+      }
+    };
+
+    fetchTranscriptData();
+  }, [companyId, selectedYear, selectedQuarter]);
+
   if (isLoading)
     return (
       <div className="flex w-full h-full items-center justify-center bg-gray-100">
@@ -161,7 +198,7 @@ const CompanyDetailPage: React.FC = () => {
             setSelectedQuarter={setSelectedQuarter}
           />
           <SpecificSummarySection />
-          <GeneralSummarySection />
+          <GeneralSummarySection transcriptData={transcriptData} />
           <AboutSection companyData={companyData} />
         </div>
       </div>
@@ -674,6 +711,11 @@ const YearQuarterSelector: React.FC<{
     yearQuarters[yearQuarters.length - 1].year
   );
 
+  useEffect(() => {
+    setSelectedYear(yearQuarters[yearQuarters.length - 1].year);
+    setSelectedQuarter(yearQuarters[yearQuarters.length - 1].quarter);
+  }, [year]);
+
   return (
     <div className="flex space-x-4">
       <SelectInput
@@ -750,7 +792,13 @@ const SpecificSummarySection: React.FC = () => (
   </details>
 );
 
-const GeneralSummarySection: React.FC = () => (
+interface GeneralSummarySectionProps {
+  transcriptData: TranscriptData | null;
+}
+
+const GeneralSummarySection: React.FC<GeneralSummarySectionProps> = ({
+  transcriptData,
+}) => (
   <details
     className="bg-white border border-gray-300 rounded-lg overflow-hidden"
     open
@@ -759,11 +807,26 @@ const GeneralSummarySection: React.FC = () => (
       Summary
     </summary>
     <div className="px-4 py-3">
-      {["Priorities", "Challenges", "Pain Points", "Opportunities"].map(
-        (title) => (
-          <SummaryItem key={title} title={title} />
-        )
-      )}
+      <SummaryItem
+        key={"Priorities"}
+        title={"Priorities"}
+        content={transcriptData?.["priorities"] || "No data"}
+      />
+      <SummaryItem
+        key={"Challenges"}
+        title={"Challenges"}
+        content={transcriptData?.["challenges"] || "No data"}
+      />
+      <SummaryItem
+        key={"Pain Points"}
+        title={"Pain Points"}
+        content={transcriptData?.["pain_points"] || "No data"}
+      />
+      <SummaryItem
+        key={"Opportunities"}
+        title={"Opportunities"}
+        content={transcriptData?.["opportunities"] || "No data"}
+      />
     </div>
   </details>
 );
@@ -840,9 +903,10 @@ const AboutSection: React.FC<AboutSectionProps> = ({ companyData }) => (
 
 interface SummaryItemProps {
   title: string;
+  content: string;
 }
 
-const SummaryItem: React.FC<SummaryItemProps> = ({ title }) => (
+const SummaryItem: React.FC<SummaryItemProps> = ({ title, content }) => (
   <details
     className="mb-2 bg-gray-50 overflow-hidden rounded border border-gray-200"
     open
@@ -850,7 +914,7 @@ const SummaryItem: React.FC<SummaryItemProps> = ({ title }) => (
     <summary className="px-3 py-2 cursor-pointer text-gray-600 hover:bg-gray-100">
       {title}
     </summary>
-    <div className="px-3 py-2 text-gray-700">{title} content goes here...</div>
+    <div className="px-3 py-2 text-gray-700">{content}</div>
   </details>
 );
 
