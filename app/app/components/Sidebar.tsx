@@ -79,6 +79,7 @@ const Sidebar: React.FC = () => {
                 href={`/app${
                   watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
                 }`}
+                onClick={() => setIsExpanded(false)}
                 className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
               >
                 <IoHomeOutline className={`text-2xl`} />
@@ -91,6 +92,7 @@ const Sidebar: React.FC = () => {
             <li>
               <Link
                 href="/app/company-profile"
+                onClick={() => setIsExpanded(false)}
                 className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
               >
                 <IoPersonOutline className={`text-2xl`} />
@@ -125,6 +127,7 @@ const Sidebar: React.FC = () => {
                   <li key={item.uuid} className="mb-0.5">
                     <Link
                       href={`/app/watchlist/${item.uuid}`}
+                      onClick={() => setIsExpanded(false)}
                       className={`flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ${
                         paramUUID === item.uuid
                           ? "bg-indigo-50"
