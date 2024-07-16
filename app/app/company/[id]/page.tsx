@@ -212,13 +212,13 @@ const CompanyDetailPage: React.FC = () => {
       </div>
 
       <h1 className="text-2xl text-gray-800">{companyData.name}</h1>
-      <div className="flex gap-4 items-start">
-        <div className="w-3/5 h-full space-y-4">
+      <div className="flex gap-4 w-full">
+        <div className="h-full space-y-4 overflow-hidden">
           <OpportunitiesTable companyName={companyData.name} />
           <IncomeStatementSection />
           <RecentNewsSection newsItems={newsItems} isLoading={isLoadingNews} />
         </div>
-        <div className="flex-1 h-full space-y-4">
+        <div className="w-[30rem] h-full space-y-4 shrink-0">
           <YearQuarterSelector
             yearQuarters={yearQuarters}
             setSelectedYear={setSelectedYear}
@@ -688,13 +688,11 @@ const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({
         Recent News
       </h3>
       {isLoading ? (
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-4 p-4">
           <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
-          <h1>Loading News</h1>
         </div>
       ) : (
         <Swiper
-          slidesPerView={3}
           pagination={{ clickable: true }}
           onInit={(swiper) => {
             swiper.navigation.init();
@@ -707,6 +705,15 @@ const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({
             nextEl: ".swiper-button-next",
           }}
           modules={[Navigation]}
+          breakpoints={{
+            320: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
+            1440: { slidesPerView: 5 },
+            1600: { slidesPerView: 6 },
+            1920: { slidesPerView: 7 },
+          }}
           className="gap-2 items-center flex !py-5 !px-7"
         >
           <div className="swiper-button-prev border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
