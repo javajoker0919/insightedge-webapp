@@ -38,6 +38,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
 interface CompanyData {
   id: string;
   symbol: string;
@@ -78,7 +79,6 @@ interface TranscriptData {
 const CompanyDetailPage: React.FC = () => {
   const { id: companyId } = useParams<{ id: string }>();
   const [companyData, setCompanyData] = useState<CompanyData | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [yearQuarters, setYearQuarters] = useState<YearQuarter[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
@@ -86,6 +86,12 @@ const CompanyDetailPage: React.FC = () => {
   const [transcriptData, setTranscriptData] = useState<TranscriptData | null>(
     null
   );
+  const [isLoadingCompany, setIsLoadingCompany] = useState<boolean>(true);
+  const [isLoadingYearQuarters, setIsLoadingYearQuarters] =
+    useState<boolean>(true);
+  const [isLoadingGeneralSummary, setIsLoadingGeneralSummary] =
+    useState<boolean>(false);
+  const [isLoadingNews, setIsLoadingNews] = useState<boolean>(true);
 
   const watchlist = useAtomValue(watchlistAtom);
 
@@ -100,8 +106,15 @@ const CompanyDetailPage: React.FC = () => {
 
         if (error) throw error;
         setCompanyData(data as CompanyData);
+      } catch (error) {
+        console.error("Error fetching company data:", error);
+      } finally {
+        setIsLoadingCompany(false);
+      }
+    };
 
-        // Fetch news items
+    const fetchNewsItems = async () => {
+      try {
         const { data: newsData, error: newsError } = await supabase
           .from("stock_news_sentiments")
           .select("published_date, title, image, url")
@@ -110,8 +123,15 @@ const CompanyDetailPage: React.FC = () => {
 
         if (newsError) throw newsError;
         setNewsItems(newsData as NewsItem[]);
+      } catch (error) {
+        console.error("Error fetching news items:", error);
+      } finally {
+        setIsLoadingNews(false);
+      }
+    };
 
-        // Fetch year and quarter data
+    const fetchYearQuarters = async () => {
+      try {
         const { data: yearQuarterData, error: yearQuarterError } =
           await supabase
             .from("earnings_transcripts")
@@ -123,18 +143,21 @@ const CompanyDetailPage: React.FC = () => {
         if (yearQuarterError) throw yearQuarterError;
         setYearQuarters(yearQuarterData as YearQuarter[]);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching year quarters:", error);
       } finally {
-        setIsLoading(false);
+        setIsLoadingYearQuarters(false);
       }
     };
 
     fetchCompanyData();
+    fetchNewsItems();
+    fetchYearQuarters();
   }, [companyId]);
 
   useEffect(() => {
     const fetchTranscriptData = async () => {
       if (selectedYear && selectedQuarter) {
+        setIsLoadingGeneralSummary(true);
         try {
           const { data, error } = await supabase
             .from("earnings_transcripts")
@@ -151,6 +174,8 @@ const CompanyDetailPage: React.FC = () => {
         } catch (error) {
           console.error("Error fetching transcript data:", error);
           setTranscriptData(null);
+        } finally {
+          setIsLoadingGeneralSummary(false);
         }
       }
     };
@@ -158,7 +183,7 @@ const CompanyDetailPage: React.FC = () => {
     fetchTranscriptData();
   }, [companyId, selectedYear, selectedQuarter]);
 
-  if (isLoading)
+  if (isLoadingCompany) {
     return (
       <div className="flex w-full h-full items-center justify-center bg-gray-100">
         <div className="flex flex-col items-center gap-4">
@@ -167,6 +192,8 @@ const CompanyDetailPage: React.FC = () => {
         </div>
       </div>
     );
+  }
+
   if (!companyData) return <div>Company not found</div>;
 
   return (
@@ -189,16 +216,20 @@ const CompanyDetailPage: React.FC = () => {
         <div className="w-3/5 h-full space-y-4">
           <OpportunitiesTable companyName={companyData.name} />
           <IncomeStatementSection />
-          <RecentNewsSection newsItems={newsItems} />
+          <RecentNewsSection newsItems={newsItems} isLoading={isLoadingNews} />
         </div>
         <div className="flex-1 h-full space-y-4">
           <YearQuarterSelector
             yearQuarters={yearQuarters}
             setSelectedYear={setSelectedYear}
             setSelectedQuarter={setSelectedQuarter}
+            isLoading={isLoadingYearQuarters}
           />
           <SpecificSummarySection />
-          <GeneralSummarySection transcriptData={transcriptData} />
+          <GeneralSummarySection
+            transcriptData={transcriptData}
+            isLoading={isLoadingGeneralSummary}
+          />
           <AboutSection companyData={companyData} />
         </div>
       </div>
@@ -620,9 +651,13 @@ const OpportunitiesTable: React.FC<OpportunitiesTableProps> = () => {
 
 interface RecentNewsSectionProps {
   newsItems: NewsItem[];
+  isLoading: boolean;
 }
 
-const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({ newsItems }) => {
+const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({
+  newsItems,
+  isLoading,
+}) => {
   const getTimeAgo = (date: string) => {
     const now = new Date();
     const publishedDate = new Date(date);
@@ -652,52 +687,59 @@ const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({ newsItems }) => {
       <h3 className="px-4 py-3 font-medium text-gray-700 bg-gray-50">
         Recent News
       </h3>
-      <Swiper
-        slidesPerView={3}
-        pagination={{ clickable: true }}
-        onInit={(swiper) => {
-          swiper.navigation.init();
-          swiper.navigation.update();
-        }}
-        watchOverflow={false}
-        spaceBetween={15}
-        navigation={{
-          prevEl: ".swiper-button-prev",
-          nextEl: ".swiper-button-next",
-        }}
-        modules={[Navigation]}
-        className="gap-2 items-center flex !py-5 !px-7"
-      >
-        <div className="swiper-button-prev border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
-        <div className="swiper-button-next border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
-        {newsItems.map((item, index) => (
-          <SwiperSlide key={index}>
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex hover:shadow-md border border-transparent hover:border-gray-200 flex-col overflow-hidden rounded-lg"
-            >
-              <div className="w-full overflow-hidden">
-                <img
-                  className="object-cover w-full"
-                  src={
-                    item.image ||
-                    `https://picsum.photos/200/300?random=${index}`
-                  }
-                  alt={item.title}
-                />
-              </div>
-              <div className="p-3 border space-y-2 rounded-b-lg">
-                <h4 className="font-medium line-clamp-3">{item.title}</h4>
-                <p className="text-sm text-gray-500">
-                  {getTimeAgo(item.published_date)}
-                </p>
-              </div>
-            </a>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {isLoading ? (
+        <div className="flex flex-col items-center gap-4">
+          <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+          <h1>Loading News</h1>
+        </div>
+      ) : (
+        <Swiper
+          slidesPerView={3}
+          pagination={{ clickable: true }}
+          onInit={(swiper) => {
+            swiper.navigation.init();
+            swiper.navigation.update();
+          }}
+          watchOverflow={false}
+          spaceBetween={15}
+          navigation={{
+            prevEl: ".swiper-button-prev",
+            nextEl: ".swiper-button-next",
+          }}
+          modules={[Navigation]}
+          className="gap-2 items-center flex !py-5 !px-7"
+        >
+          <div className="swiper-button-prev border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
+          <div className="swiper-button-next border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
+          {newsItems.map((item, index) => (
+            <SwiperSlide key={index}>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex hover:shadow-md border border-transparent hover:border-gray-200 flex-col overflow-hidden rounded-lg"
+              >
+                <div className="w-full overflow-hidden">
+                  <img
+                    className="object-cover w-full"
+                    src={
+                      item.image ||
+                      `https://picsum.photos/200/300?random=${index}`
+                    }
+                    alt={item.title}
+                  />
+                </div>
+                <div className="p-3 border space-y-2 rounded-b-lg">
+                  <h4 className="font-medium line-clamp-3">{item.title}</h4>
+                  <p className="text-sm text-gray-500">
+                    {getTimeAgo(item.published_date)}
+                  </p>
+                </div>
+              </a>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 };
@@ -706,7 +748,20 @@ const YearQuarterSelector: React.FC<{
   yearQuarters: YearQuarter[];
   setSelectedYear: React.Dispatch<React.SetStateAction<number | null>>;
   setSelectedQuarter: React.Dispatch<React.SetStateAction<number | null>>;
-}> = ({ yearQuarters, setSelectedYear, setSelectedQuarter }) => {
+  isLoading: boolean;
+}> = ({ yearQuarters, setSelectedYear, setSelectedQuarter, isLoading }) => {
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+      </div>
+    );
+  }
+
+  if (yearQuarters.length === 0) {
+    return <></>;
+  }
+
   const [year, setYear] = useState<number>(
     yearQuarters[yearQuarters.length - 1].year
   );
@@ -794,10 +849,12 @@ const SpecificSummarySection: React.FC = () => (
 
 interface GeneralSummarySectionProps {
   transcriptData: TranscriptData | null;
+  isLoading: boolean;
 }
 
 const GeneralSummarySection: React.FC<GeneralSummarySectionProps> = ({
   transcriptData,
+  isLoading,
 }) => (
   <details
     className="bg-white border border-gray-300 rounded-lg overflow-hidden"
@@ -807,26 +864,34 @@ const GeneralSummarySection: React.FC<GeneralSummarySectionProps> = ({
       Summary
     </summary>
     <div className="px-4 py-3">
-      <SummaryItem
-        key={"Priorities"}
-        title={"Priorities"}
-        content={transcriptData?.["priorities"] || "No data"}
-      />
-      <SummaryItem
-        key={"Challenges"}
-        title={"Challenges"}
-        content={transcriptData?.["challenges"] || "No data"}
-      />
-      <SummaryItem
-        key={"Pain Points"}
-        title={"Pain Points"}
-        content={transcriptData?.["pain_points"] || "No data"}
-      />
-      <SummaryItem
-        key={"Opportunities"}
-        title={"Opportunities"}
-        content={transcriptData?.["opportunities"] || "No data"}
-      />
+      {isLoading ? (
+        <div className="flex justify-center items-center pb-4">
+          <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+        </div>
+      ) : (
+        <>
+          <SummaryItem
+            key={"Priorities"}
+            title={"Priorities"}
+            content={transcriptData?.["priorities"] || "No data"}
+          />
+          <SummaryItem
+            key={"Challenges"}
+            title={"Challenges"}
+            content={transcriptData?.["challenges"] || "No data"}
+          />
+          <SummaryItem
+            key={"Pain Points"}
+            title={"Pain Points"}
+            content={transcriptData?.["pain_points"] || "No data"}
+          />
+          <SummaryItem
+            key={"Opportunities"}
+            title={"Opportunities"}
+            content={transcriptData?.["opportunities"] || "No data"}
+          />
+        </>
+      )}
     </div>
   </details>
 );
@@ -911,10 +976,10 @@ const SummaryItem: React.FC<SummaryItemProps> = ({ title, content }) => (
     className="mb-2 bg-gray-50 overflow-hidden rounded border border-gray-200"
     open
   >
-    <summary className="px-3 py-2 cursor-pointer text-gray-600 hover:bg-gray-100">
+    <summary className="px-3 py-2 cursor-pointer text-base text-gray-600 hover:bg-gray-100">
       {title}
     </summary>
-    <div className="px-3 py-2 text-gray-700">{content}</div>
+    <div className="px-3 py-2 text-gray-700 text-sm">{content}</div>
   </details>
 );
 
