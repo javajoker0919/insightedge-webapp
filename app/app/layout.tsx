@@ -9,12 +9,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full h-full flex-grow max-w-full flex">
+    <div className="w-screen relative h-screen flex-col flex">
       <Sidebar />
-      <div className="flex overflow-hidden flex-1 flex-col max-h-screen">
-        <Header />
-        <div className="flex overflow-y-auto flex-1 text-black">{children}</div>
-      </div>
+
+      <Header />
+      <div className="flex overflow-y-auto flex-1 text-black">{children}</div>
     </div>
   );
 }

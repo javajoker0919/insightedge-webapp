@@ -42,3 +42,4 @@ export const watchlistAtom = atomWithStorage<Watchlist[] | null>(
   "watchlists",
   null
 );
+export const isSidebarExpandedAtom = atom<boolean>(false);

@@ -8,14 +8,17 @@ import {
   userInfoAtom,
   orgInfoAtom,
   watchlistAtom,
+  isSidebarExpandedAtom,
 } from "@/utils/atoms";
 import Image from "next/image";
 import Link from "next/link";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
+import { IoMenu } from "react-icons/io5";
 
 const Header: React.FC = () => {
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const setIsSidebarExpanded = useSetAtom(isSidebarExpandedAtom);
   const router = useRouter();
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
@@ -65,9 +68,34 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="py-3 bg-white z-10 shadow-md">
-      <nav className="mx-auto flex justify-between items-center px-4">
-        <div></div>
+    <header className="py-3 bg-white z-10 shadow-md sticky top-0">
+      <nav className="mx-auto flex justify-between items-center pr-4 pl-2">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setIsSidebarExpanded(true)}
+            className="hover:bg-gray-100 rounded-full p-3"
+          >
+            <IoMenu className="text-2xl" />
+          </button>
+          <Link
+            href="/"
+            className={`text-2xl font-bold gap-2 text-indigo-600 flex items-center`}
+          >
+            {/* <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-8 w-8"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                clipRule="evenodd"
+              />
+            </svg> */}
+            {"InsightEdge"}
+          </Link>
+        </div>
 
         <div className="relative h-10 w-[700px]">
           <CompanySearchbar
