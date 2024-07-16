@@ -27,11 +27,17 @@ const CompanySearchbar = ({
   const searchBarRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const watchlist = useAtomValue(watchlistAtom);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchType, setSearchType] = useState("all");
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchType, setSearchType] = useState<string>("all");
   const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+
+  const [hasNews, setHasNews] = useState<boolean>(false);
+  const [hasSummary, setHasSummary] = useState<boolean>(false);
+
+  const [newsCompanyIds, setNewsCompanyIds] = useState<number[]>([]);
+  const [summaryCompanyIds, setSummaryCompanyIds] = useState<number[]>([]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,6 +53,40 @@ const CompanySearchbar = ({
         }
       }
     };
+
+    // const fetchNewsCompanyIds = async () => {
+    //   const { data: newsData, error: newsError } = await supabase
+    //     .from("stock_news_sentiments")
+    //     .select("company_id");
+
+    //   if (newsError) {
+    //     console.error(newsError);
+    //   } else {
+    //     const companyIds = Array.from(
+    //       new Set(newsData?.map((item: any) => item.company_id) || [])
+    //     );
+    //     setNewsCompanyIds(companyIds);
+    //   }
+    // };
+
+    const fetchSummaryCompanyIds = async () => {
+      const { data: summaryData, error: summaryError } = await supabase
+        .from("earnings_transcripts")
+        .select("company_id")
+        .not("summary", "is", null);
+
+      if (summaryError) {
+        console.error(summaryError);
+      } else {
+        const companyIds = Array.from(
+          new Set(summaryData?.map((item: any) => item.company_id) || [])
+        );
+        setSummaryCompanyIds(companyIds);
+      }
+    };
+
+    // fetchNewsCompanyIds();
+    fetchSummaryCompanyIds();
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -67,6 +107,16 @@ const CompanySearchbar = ({
         .from("companies")
         .select("id, name, symbol")
         .limit(5);
+
+      // if (hasNews) {
+      //   const formattedCompanyIds = `(${newsCompanyIds.join(",")})`;
+      //   query = query.filter("id", "in", formattedCompanyIds);
+      // }
+
+      if (hasSummary) {
+        const formattedCompanyIds = `(${summaryCompanyIds.join(",")})`;
+        query = query.filter("id", "in", formattedCompanyIds);
+      }
 
       if (searchInput.length > 0) {
         if (searchType === "all") {
@@ -95,7 +145,7 @@ const CompanySearchbar = ({
     }, 800);
 
     return () => clearTimeout(debounce);
-  }, [searchInput, searchType]);
+  }, [searchInput, searchType, hasNews, hasSummary]);
 
   const handleCloseSearchBar = () => {
     if (type === "header") {
@@ -208,22 +258,49 @@ const CompanySearchbar = ({
 
         {isInputFocused && (
           <>
-            <div className="flex space-x-2 py-2 px-4 border-t">
-              {["all", "name", "symbol"].map((type) => (
-                <button
-                  key={type}
-                  className={`px-3 py-0.5 text-gray-500 rounded-full ${
-                    searchType === type
-                      ? "bg-indigo-100 text-indigo-700"
-                      : "bg-white hover:bg-gray-100"
-                  }`}
-                  onClick={() =>
-                    setSearchType(type as "symbol" | "all" | "name")
-                  }
-                >
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </button>
-              ))}
+            <div className="flex justify-between space-x-2 py-2 px-4 border-t">
+              <div className="flex space-x-2 items-center">
+                {["all", "name", "symbol"].map((type) => (
+                  <button
+                    key={type}
+                    className={`px-3 py-0.5 text-gray-500 rounded-full ${
+                      searchType === type
+                        ? "bg-indigo-100 text-indigo-700"
+                        : "bg-white hover:bg-gray-100"
+                    }`}
+                    onClick={() =>
+                      setSearchType(type as "symbol" | "all" | "name")
+                    }
+                  >
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </button>
+                ))}
+              </div>
+
+              {type == "header" && (
+                <div className="flex space-x-2">
+                  {/* <button
+                    className={`px-3 py-0.5 text-gray-500 rounded-full ${
+                      hasNews
+                        ? "bg-indigo-100 text-indigo-700"
+                        : "bg-white hover:bg-gray-100"
+                    }`}
+                    onClick={() => setHasNews(!hasNews)}
+                  >
+                    Has News
+                  </button> */}
+                  <button
+                    className={`px-3 border text-gray-500 rounded-full ${
+                      hasSummary
+                        ? "bg-indigo-100 text-indigo-700"
+                        : "bg-white hover:bg-gray-100"
+                    }`}
+                    onClick={() => setHasSummary(!hasSummary)}
+                  >
+                    Has Summary
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="divide-y">
