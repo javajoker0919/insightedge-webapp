@@ -24,7 +24,7 @@ import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
 import SpecificSummarySection from "./SpecificSummarySection";
 import GeneralSummarySection from "./GeneralSummarySection";
 import AboutSection from "./AboutSection";
-import { PlusSvg, ShareSvg } from "./components";
+import { FollowButton, ShareSvg } from "./components";
 
 ChartJS.register(
   CategoryScale,
@@ -71,7 +71,6 @@ const CompanyDetailPage: React.FC = () => {
   const [isLoadingGeneralSummary, setIsLoadingGeneralSummary] =
     useState<boolean>(false);
   const [isLoadingNews, setIsLoadingNews] = useState<boolean>(true);
-
   const watchlist = useAtomValue(watchlistAtom);
 
   useEffect(() => {
@@ -196,11 +195,8 @@ const CompanyDetailPage: React.FC = () => {
         </div>
 
         <div className="flex space-x-2">
-          <button className="px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 shadow-md bg-white rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center">
-            <PlusSvg />
-            Follow
-          </button>
-          <button className="px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 shadow-md bg-white rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center">
+          <FollowButton />
+          <button className="px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 shadow-md bg-white rounded-full hover:bg-gray-100 focus:outline-none flex items-center">
             <ShareSvg />
             Share
           </button>
