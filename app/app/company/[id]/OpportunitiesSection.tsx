@@ -5,7 +5,7 @@ interface OpportunitiesTableProps {
   companyName: string;
 }
 
-const OpportunitiesTable: React.FC<OpportunitiesTableProps> = () => {
+const OpportunitiesSection: React.FC<OpportunitiesTableProps> = () => {
   const [isGenerated, setIsGenerated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -321,4 +321,4 @@ const OpportunitiesTable: React.FC<OpportunitiesTableProps> = () => {
   );
 };
 
-export default OpportunitiesTable;
+export default OpportunitiesSection;

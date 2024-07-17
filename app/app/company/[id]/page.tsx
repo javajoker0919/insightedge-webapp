@@ -17,7 +17,7 @@ import {
 import { useAtomValue } from "jotai";
 
 import { watchlistAtom } from "@/utils/atoms";
-import OpportunitiesTable from "./OpportunitiesTable";
+import OpportunitiesSection from "./OpportunitiesSection";
 import IncomeStatementSection from "./IncomeStatementSection";
 import RecentNewsSection, { NewsItem } from "./RecentNewsSection";
 import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
@@ -201,7 +201,7 @@ const CompanyDetailPage: React.FC = () => {
       </div>
       <div className="flex gap-4 w-full">
         <div className="h-full w-full space-y-4 overflow-hidden">
-          <OpportunitiesTable companyName={companyData.name} />
+          <OpportunitiesSection companyName={companyData.name} />
           <IncomeStatementSection />
           <RecentNewsSection newsItems={newsItems} isLoading={isLoadingNews} />
         </div>
