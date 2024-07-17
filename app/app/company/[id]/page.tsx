@@ -24,7 +24,7 @@ import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
 import SpecificSummarySection from "./SpecificSummarySection";
 import GeneralSummarySection from "./GeneralSummarySection";
 import AboutSection from "./AboutSection";
-import { FollowButton, ShareSvg } from "./components";
+import { FollowButton, ShareButton } from "./components";
 
 ChartJS.register(
   CategoryScale,
@@ -196,10 +196,7 @@ const CompanyDetailPage: React.FC = () => {
 
         <div className="flex space-x-2">
           <FollowButton />
-          <button className="px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 shadow-md bg-white rounded-full hover:bg-gray-100 focus:outline-none flex items-center">
-            <ShareSvg />
-            Share
-          </button>
+          <ShareButton />
         </div>
       </div>
       <div className="flex gap-4 w-full">

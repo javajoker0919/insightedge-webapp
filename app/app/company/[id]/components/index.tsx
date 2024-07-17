@@ -6,6 +6,7 @@ import SelectInput from "./SelectInput";
 import ShareSvg from "./ShareSvg";
 import SummaryItem from "./SummaryItem";
 import FollowButton from "./FollowButton";
+import ShareButton from "./ShareButton";
 
 export {
   FinancialTable,
@@ -16,4 +17,5 @@ export {
   ShareSvg,
   SummaryItem,
   FollowButton,
+  ShareButton,
 };
