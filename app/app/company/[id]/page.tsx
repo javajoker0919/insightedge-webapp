@@ -7,7 +7,10 @@ import { supabase } from "@/utils/supabaseClient";
 import {
   FaArrowRight,
   FaBuilding,
+  FaExternalLinkAlt,
   FaGlobe,
+  FaPlus,
+  FaShare,
   FaUserTie,
   FaUsers,
 } from "react-icons/fa";
@@ -198,22 +201,63 @@ const CompanyDetailPage: React.FC = () => {
 
   return (
     <div className="w-full p-4 h-full overflow-y-auto bg-indigo-50 bg-opacity-50 flex flex-col gap-4">
-      <div className="flex text-sm items-center gap-2 text-gray-400">
-        <Link
-          href={`/app${
-            watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
-          }`}
-          className="hover:underline"
-        >
-          Home
-        </Link>
-        <FaArrowRight className="w-3 h-3" />
-        <p className="text-black">{companyData.symbol}</p>
-      </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex text-sm items-center gap-2 text-gray-400">
+            <Link
+              href={`/app${
+                watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
+              }`}
+              className="hover:underline"
+            >
+              Home
+            </Link>
+            <FaArrowRight className="w-3 h-3" />
+            <p className="text-black">{companyData.symbol}</p>
+          </div>
 
-      <h1 className="text-2xl text-gray-800">{companyData.name}</h1>
+          <h1 className="text-2xl text-gray-800">{companyData.name}</h1>
+        </div>
+
+        <div className="flex space-x-2">
+          <button className="px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 shadow-md bg-white rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="blue"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Follow
+          </button>
+          <button className="px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 shadow-md bg-white rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="blue"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+              />
+            </svg>
+            Share
+          </button>
+        </div>
+      </div>
       <div className="flex gap-4 w-full">
-        <div className="h-full space-y-4 overflow-hidden">
+        <div className="h-full w-full space-y-4 overflow-hidden">
           <OpportunitiesTable companyName={companyData.name} />
           <IncomeStatementSection />
           <RecentNewsSection newsItems={newsItems} isLoading={isLoadingNews} />
@@ -367,6 +411,9 @@ interface OpportunitiesTableProps {
 }
 
 const OpportunitiesTable: React.FC<OpportunitiesTableProps> = () => {
+  const [isGenerated, setIsGenerated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const opportunities = [
     {
       opportunityName:
@@ -565,85 +612,115 @@ const OpportunitiesTable: React.FC<OpportunitiesTableProps> = () => {
     },
   ];
 
+  const handleGenerateOpportunities = () => {
+    setIsLoading(true);
+    setIsGenerated(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 4000);
+  };
+
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
       <h3 className="px-4 py-3 font-medium text-gray-700 bg-gray-50">
         Opportunities
       </h3>
-      <div className="overflow-x-auto overflow-y-auto max-h-96 text-sm">
-        <table className="w-full relative border-collapse">
-          <thead className="sticky top-0">
-            <tr className="bg-gray-200 text-black">
-              <th className="px-4 py-3 text-center font-medium">Opportunity</th>
-              <th className="px-4 py-3 text-center font-medium">Score</th>
-              <th className="px-4 py-3 text-center font-medium">
-                Target Buyer Role
-              </th>
-              <th className="px-4 py-3 text-center font-medium">
-                Target Buyer Department
-              </th>
-              <th className="px-4 py-3 text-center font-medium">
-                Tips & Tricks
-              </th>
-              <th className="px-4 py-3 text-center font-medium">Search URL</th>
-            </tr>
-          </thead>
-          <tbody className="text-center">
-            {opportunities.map((opp, index) => (
-              <tr
-                key={index}
-                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-              >
-                <td className="px-4 py-3 border-b text-left border-gray-200">
-                  {opp.opportunityName}
-                </td>
-                <td className="px-4 py-3 border-b border-gray-200">
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-sm font-medium ${
-                      opp.opportunityScore >= 90
-                        ? "bg-green-100 text-green-800"
-                        : opp.opportunityScore >= 70
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {opp.opportunityScore}
-                  </span>
-                </td>
-                <td className="px-4 py-3 border-b border-gray-200">
-                  {opp.targetBuyer.role}
-                </td>
-                <td className="px-4 py-3 border-b border-gray-200">
-                  {opp.targetBuyer.department}
-                </td>
-                <td className="px-4 text-left py-3 border-b border-gray-200">
-                  <ul className="list-none space-y-1">
-                    {opp.engagementTips.map((tip, tipIndex) => (
-                      <li key={tipIndex} className="flex items-start">
-                        <span className="mr-2 text-indigo-500">•</span>
-                        <span className="text-sm">{tip}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </td>
-                <td className="px-4 py-3 border-b border-gray-200">
-                  <a
-                    href={`https://www.google.com/search?q=${encodeURIComponent(
-                      opp.targetBuyer.role
-                    )}+${encodeURIComponent(
-                      opp.targetBuyer.department
-                    )}+"LinkedIn"`}
-                    className="text-blue-500"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Search on Google
-                  </a>
-                </td>
+
+      <div className="overflow-x-auto overflow-y-auto max-h-[1200px] text-sm">
+        {isLoading ? (
+          <div className="px-4 py-10 w-full flex justify-center">
+            <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+          </div>
+        ) : isGenerated ? (
+          <table className="w-full relative border-collapse">
+            <thead className="sticky top-0">
+              <tr className="bg-gray-200 text-black">
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+                  Opportunity
+                </th>
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+                  Score
+                </th>
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+                  Target Buyer Role
+                </th>
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+                  Target Buyer Department
+                </th>
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+                  Prospecting Tactics
+                </th>
+                <th className="px-4 py-3 text-center font-medium w-36 border-x border-gray-300"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="text-center">
+              {opportunities.map((opp, index) => (
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                >
+                  <td className="px-4 py-3 border text-left border-gray-300">
+                    {opp.opportunityName}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
+                    <span
+                      className={`inline-block px-2 py-1 rounded-full text-sm font-medium ${
+                        opp.opportunityScore >= 90
+                          ? "bg-green-100 text-green-800"
+                          : opp.opportunityScore >= 70
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {opp.opportunityScore}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
+                    {opp.targetBuyer.role}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
+                    {opp.targetBuyer.department}
+                  </td>
+                  <td className="px-4 text-left py-3 border border-gray-300">
+                    <ul className="list-none space-y-1">
+                      {opp.engagementTips.map((tip, tipIndex) => (
+                        <li key={tipIndex} className="flex items-start">
+                          <span className="mr-2 text-indigo-500">•</span>
+                          <span className="text-sm">{tip}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
+                    <a
+                      href={`https://www.google.com/search?q=${encodeURIComponent(
+                        opp.targetBuyer.role
+                      )}+${encodeURIComponent(
+                        opp.targetBuyer.department
+                      )}+"LinkedIn"`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-indigo-500 hover:text-white font-semibold justify-center border-indigo-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-indigo-500"
+                    >
+                      Find Buyer
+                      <FaExternalLinkAlt />
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="px-4 py-10 w-full flex justify-center">
+            <button
+              onClick={handleGenerateOpportunities}
+              className="w-full text-base px-4 max-w-96 py-2 bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+            >
+              Generate
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
