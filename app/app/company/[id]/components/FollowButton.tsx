@@ -105,7 +105,7 @@ const FollowButton: React.FC = () => {
   return (
     <div className="relative" ref={watchlistRef}>
       <button
-        className={`px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 shadow-md rounded-full hover:bg-gray-100 focus:outline-none flex items-center ${
+        className={`px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 shadow-sm rounded-full hover:bg-gray-100 focus:outline-none flex items-center ${
           checkedWatchlists !== null && checkedWatchlists.size > 0
             ? "bg-blue-100"
             : "bg-white"
