@@ -21,8 +21,7 @@ import OpportunitiesSection from "./OpportunitiesSection";
 import IncomeStatementSection from "./IncomeStatementSection";
 import RecentNewsSection, { NewsItem } from "./RecentNewsSection";
 import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
-import SpecificSummarySection from "./SpecificSummarySection";
-import GeneralSummarySection from "./GeneralSummarySection";
+import SummarySection from "./SummarySection";
 import AboutSection from "./AboutSection";
 import { FollowButton, ShareButton } from "./components";
 
@@ -212,8 +211,7 @@ const CompanyDetailPage: React.FC = () => {
             setSelectedQuarter={setSelectedQuarter}
             isLoading={isLoadingYearQuarters}
           />
-          <SpecificSummarySection />
-          <GeneralSummarySection
+          <SummarySection
             transcriptData={transcriptData}
             isLoading={isLoadingGeneralSummary}
           />
