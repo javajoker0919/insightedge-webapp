@@ -24,7 +24,6 @@ const SummarySection: React.FC<SummarySectionProps> = ({
     null
   );
   const [isButtonLoading, setIsButtonLoading] = useState(false);
-  const [showTabs, setShowTabs] = useState(false);
   const [activeTab, setActiveTab] = useState("general summary");
   const [showFullSummary, setShowFullSummary] = useState(false);
 
@@ -45,6 +44,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
 
           if (error) throw error;
           setGeneralSummary(data as TranscriptData);
+          setShowFullSummary(false);
         } catch (error) {
           console.error("Error fetching transcript data:", error);
           setGeneralSummary(null);
@@ -54,19 +54,31 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       }
     };
 
+    setActiveTab("general summary");
     fetchTranscriptData();
+    setTailoredSummary(null);
   }, [companyId, selectedYear, selectedQuarter]);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     setIsButtonLoading(true);
-    setTimeout(() => {
-      setIsButtonLoading(false);
-      setShowTabs(true);
+    try {
+      const { data, error } = await supabase
+        .from("earnings_transcripts")
+        .select("summary, challenges, pain_points, opportunities, priorities")
+        .eq("company_id", companyId)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .single();
+
+      if (error) throw error;
+      setTailoredSummary(data as TranscriptData);
       setActiveTab("tailored summary");
-      // Here you would typically fetch or generate the tailored summary
-      // For now, we'll just use the same data as the general summary
-      setTailoredSummary(generalSummary);
-    }, 2000);
+    } catch (error) {
+      console.error("Error fetching tailored summary:", error);
+      setTailoredSummary(null);
+    } finally {
+      setIsButtonLoading(false);
+    }
   };
 
   const renderSummaryContent = (data: TranscriptData | null) => (
@@ -115,10 +127,10 @@ const SummarySection: React.FC<SummarySectionProps> = ({
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
       <summary
         className={`bg-gray-100 font-medium text-gray-700 flex items-center justify-between ${
-          showTabs ? "" : "p-2"
+          tailoredSummary ? "" : "p-2"
         }`}
       >
-        {showTabs ? (
+        {tailoredSummary ? (
           <div className="flex">
             <button
               className={`px-4 py-4 border-b-2 ${
@@ -144,18 +156,16 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         ) : (
           <div className="flex items-center justify-between w-full">
             <p className="text-gray-700 px-2">Summary</p>
-            {!showTabs && (
-              <button
-                onClick={handleButtonClick}
-                className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-indigo-600 text-white rounded-md text-sm"
-              >
-                {isButtonLoading ? (
-                  <span className="ml-2 inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
-                ) : (
-                  <p>Generate Tailored Summary</p>
-                )}
-              </button>
-            )}
+            <button
+              onClick={handleButtonClick}
+              className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-indigo-600 text-white rounded-md text-sm"
+            >
+              {isButtonLoading ? (
+                <span className="ml-2 inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
+              ) : (
+                <p>Generate Tailored Summary</p>
+              )}
+            </button>
           </div>
         )}
       </summary>
