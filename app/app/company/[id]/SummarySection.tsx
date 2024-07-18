@@ -83,19 +83,21 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             {activeTab === "summary" && (
               <>
                 {transcriptData?.["summary"] && (
-                  <button
-                    disabled={showFullSummary}
-                    onClick={() => setShowFullSummary((prev) => !prev)}
-                    className="px-1.5 py-3"
-                  >
-                    <p
-                      className={`text-left w-full text-gray-700 ${
-                        showFullSummary ? "" : "hover:underline line-clamp-2"
-                      }`}
-                    >
-                      {transcriptData?.summary ?? "No summary available"}
+                  <div className="px-1.5 py-3">
+                    <p className="text-left w-full text-gray-700">
+                      {showFullSummary
+                        ? transcriptData.summary
+                        : `${transcriptData.summary.slice(0, 100)}...`}
+                      {!showFullSummary && (
+                        <button
+                          onClick={() => setShowFullSummary(true)}
+                          className="text-blue-500 hover:underline ml-1"
+                        >
+                          more
+                        </button>
+                      )}
                     </p>
-                  </button>
+                  </div>
                 )}
                 <Details key={"Priorities"} title={"Priorities"}>
                   <div className="px-3 py-2 text-gray-700 text-sm">
