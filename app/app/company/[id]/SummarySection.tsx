@@ -41,7 +41,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
               }`}
               onClick={() => setActiveTab("summary")}
             >
-              Summary
+              General Summary
             </button>
             <button
               className={`px-4 py-3 border-b-2 ${
@@ -51,7 +51,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
               }`}
               onClick={() => setActiveTab("details")}
             >
-              Details
+              Tailored Summary
             </button>
           </div>
         ) : (
@@ -118,7 +118,11 @@ const SummarySection: React.FC<SummarySectionProps> = ({
                 />
               </>
             )}
-            {activeTab === "details" && <div>Details</div>}
+            {activeTab === "details" && (
+              <div className="w-full flex justify-center py-10">
+                Tailored Summary should be here
+              </div>
+            )}
           </>
         )}
       </div>

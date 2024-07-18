@@ -66,7 +66,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         </svg>
       </div>
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+        <div className="absolute overflow-hidden z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
           {options.map(({ value, label }) => (
             <div
               key={value}

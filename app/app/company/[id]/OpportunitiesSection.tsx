@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaExternalLinkAlt } from "react-icons/fa";
 
 import Modal from "@/app/components/Modal";
@@ -109,8 +109,11 @@ const OpportunitiesSection: React.FC<OpportunitiesTableProps> = () => {
   const [isGenerated, setIsGenerated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<"opportunities" | "summary">(
+    "opportunities"
+  );
 
-  const opportunities = [
+  const generalOpportunities = [
     {
       opportunityName:
         "Develop comprehensive RWE strategy for olanzapine LAI post-approval studies",
@@ -124,186 +127,20 @@ const OpportunitiesSection: React.FC<OpportunitiesTableProps> = () => {
         "Reach out with a tailored proposal highlighting the benefits of partnering with Genesis Research",
       ],
     },
+  ];
+
+  const tailoredOpportunities = [
     {
       opportunityName:
-        "Support HEOR evidence generation for olanzapine LAI global value dossiers",
-      opportunityScore: 90,
+        "Conduct post-marketing safety study for recently approved antipsychotic",
+      opportunityScore: 98,
       targetBuyer: {
-        role: "Global HEOR Director",
-        department: "Market Access",
-      },
-      engagementTips: [
-        "Develop an interactive tool demonstrating the potential HEOR impact of olanzapine LAI",
-        "Schedule a targeted presentation to showcase Genesis Research's HEOR capabilities",
-      ],
-    },
-    {
-      opportunityName:
-        "Conduct payer research to inform olanzapine LAI pricing and access strategy",
-      opportunityScore: 85,
-      targetBuyer: {
-        role: "Head of Global Pricing",
-        department: "Commercial",
-      },
-      engagementTips: [
-        "Create a personalized payer research proposal based on Teva's specific needs",
-        "Initiate contact with a compelling case study demonstrating Genesis Research's payer research expertise",
-      ],
-    },
-    {
-      opportunityName:
-        "Develop integrated evidence plan for Teva's Anti-IL15 program in Celiac disease",
-      opportunityScore: 80,
-      targetBuyer: {
-        role: "Head of Immunology R&D",
+        role: "Director of Pharmacovigilance",
         department: "R&D",
       },
       engagementTips: [
-        "Host a webinar on innovative evidence generation strategies for rare diseases",
-        "Reach out with a customized integrated evidence plan outline for Teva's Anti-IL15 program",
-      ],
-    },
-    {
-      opportunityName:
-        "Conduct systematic literature review on IL-15 in Celiac disease pathophysiology",
-      opportunityScore: 75,
-      targetBuyer: {
-        role: "Medical Director, Immunology",
-        department: "Medical Affairs",
-      },
-      engagementTips: [
-        "Provide a sample AI-powered literature review on IL-15 in autoimmune diseases",
-        "Proactively share a targeted proposal for conducting a comprehensive literature review on IL-15",
-      ],
-    },
-    {
-      opportunityName:
-        "Perform HTA landscaping for Teva's biosimilar portfolio in key markets",
-      opportunityScore: 90,
-      targetBuyer: {
-        role: "Head of Global Biosimilars",
-        department: "Commercial",
-      },
-      engagementTips: [
-        "Develop a biosimilar HTA toolkit tailored to Teva's portfolio and target markets",
-        "Initiate contact with a strategic HTA landscaping plan customized for Teva's biosimilar portfolio",
-      ],
-    },
-    {
-      opportunityName:
-        "Develop payer engagement strategy for Teva's biosimilar portfolio",
-      opportunityScore: 85,
-      targetBuyer: {
-        role: "Director of Biosimilar Market Access",
-        department: "Market Access",
-      },
-      engagementTips: [
-        "Create a personalized biosimilar payer engagement plan based on Teva's unique needs",
-        "Reach out with a compelling case study showcasing Genesis Research's biosimilar market access expertise",
-      ],
-    },
-    {
-      opportunityName:
-        "Design RWE studies to differentiate AJOVY in competitive migraine market",
-      opportunityScore: 80,
-      targetBuyer: {
-        role: "Head of Migraine Franchise",
-        department: "R&D",
-      },
-      engagementTips: [
-        "Develop a custom RWE study protocol showcasing innovative designs for AJOVY",
-        "Proactively share a targeted proposal for designing differentiated RWE studies for AJOVY",
-      ],
-    },
-    {
-      opportunityName:
-        "Conduct market access landscape assessment for TEV-248 (ICS/SABA) in asthma",
-      opportunityScore: 75,
-      targetBuyer: {
-        role: "Director of Respiratory Marketing",
-        department: "Commercial",
-      },
-      engagementTips: [
-        "Provide a complimentary market access landscape report for TEV-248's target markets",
-        "Schedule a targeted presentation to showcase Genesis Research's asthma market access expertise",
-      ],
-    },
-    {
-      opportunityName:
-        "Develop HEOR strategy for Teva's innovative CNS pipeline assets",
-      opportunityScore: 85,
-      targetBuyer: {
-        role: "VP of CNS HEOR",
-        department: "Market Access",
-      },
-      engagementTips: [
-        "Create a personalized CNS HEOR strategy roadmap based on Teva's pipeline",
-        "Reach out with a customized proposal for developing a comprehensive HEOR strategy for Teva's CNS assets",
-      ],
-    },
-    {
-      opportunityName:
-        "Build integrated evidence plan for Teva's biosimilar Stelara (ustekinumab)",
-      opportunityScore: 80,
-      targetBuyer: {
-        role: "Head of Biosimilar Medical Affairs",
-        department: "Medical Affairs",
-      },
-      engagementTips: [
-        "Develop a custom integrated evidence plan template tailored to biosimilar Stelara",
-        "Proactively share a targeted proposal for building a robust evidence plan for biosimilar Stelara",
-      ],
-    },
-    {
-      opportunityName:
-        "Conduct payer advisory boards to inform AUSTEDO growth strategy",
-      opportunityScore: 90,
-      targetBuyer: {
-        role: "AUSTEDO Brand Lead",
-        department: "Commercial",
-      },
-      engagementTips: [
-        "Create a personalized payer advisory board agenda focusing on AUSTEDO's unique value proposition",
-        "Initiate contact with a compelling case study demonstrating the impact of payer advisory boards",
-      ],
-    },
-    {
-      opportunityName:
-        "Perform systematic literature review on TL1A in ulcerative colitis and Crohn's",
-      opportunityScore: 70,
-      targetBuyer: {
-        role: "Medical Director, Gastroenterology",
-        department: "Medical Affairs",
-      },
-      engagementTips: [
-        "Provide a sample AI-powered literature review on TL1A in inflammatory bowel disease",
-        "Reach out with a customized proposal for conducting a comprehensive literature review on TL1A",
-      ],
-    },
-    {
-      opportunityName:
-        "Develop global value dossiers for Teva's innovative pipeline assets",
-      opportunityScore: 85,
-      targetBuyer: {
-        role: "Head of Global Value & Access",
-        department: "Market Access",
-      },
-      engagementTips: [
-        "Create a custom global value dossier template tailored to Teva's pipeline assets",
-        "Schedule a targeted presentation to showcase Genesis Research's value dossier development expertise",
-      ],
-    },
-    {
-      opportunityName:
-        "Create integrated evidence roadmap for Teva's generic portfolio",
-      opportunityScore: 75,
-      targetBuyer: {
-        role: "Head of Global Generic R&D",
-        department: "R&D",
-      },
-      engagementTips: [
-        "Develop a personalized integrated evidence roadmap for Teva's generic portfolio",
-        "Proactively share a targeted proposal for creating a comprehensive evidence roadmap for Teva's generics",
+        "Share case studies of similar post-marketing safety studies conducted by Genesis Research",
+        "Offer a complimentary consultation to discuss potential study designs",
       ],
     },
   ];
@@ -314,37 +151,78 @@ const OpportunitiesSection: React.FC<OpportunitiesTableProps> = () => {
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 4000);
+    }, 2000);
   };
 
   const handleQuickAction = (opp: any) => {
     setSelectedOpportunity(opp);
   };
 
+  useEffect(() => {
+    if (isLoading) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-      <div className="w-full flex items-center bg-gray-100 justify-between pr-4 py-2">
-        <h3 className="px-4 py-3 font-medium text-gray-700">Opportunities</h3>
-
-        <button
-          onClick={handleGenerateOpportunities}
-          className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out"
-        >
-          Generate Tailored Opportunities
-        </button>
+      <div className="w-full flex items-center bg-gray-100 justify-between">
+        {isGenerated && !isLoading ? (
+          <div className="flex">
+            <button
+              onClick={() => setActiveTab("opportunities")}
+              className={`px-4 py-4 border-indigo-600 border-b-2 ${
+                activeTab === "opportunities"
+                  ? "text-indigo-600 border-opacity-100"
+                  : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
+              }`}
+            >
+              General Opportunities
+            </button>
+            <button
+              onClick={() => setActiveTab("summary")}
+              className={`px-4 py-4 border-indigo-600 border-b-2 ${
+                activeTab === "summary"
+                  ? "text-indigo-600 border-opacity-100"
+                  : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
+              }`}
+            >
+              Tailored Opportunities
+            </button>
+          </div>
+        ) : (
+          <div className="flex w-full justify-between items-center pr-4 py-1">
+            <h3 className="px-4 py-3 font-medium text-gray-700">
+              Opportunities
+            </h3>
+            <button
+              onClick={handleGenerateOpportunities}
+              disabled={isLoading}
+              className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+            >
+              {isLoading ? (
+                <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
+              ) : (
+                "Generate Tailored Opportunities"
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="overflow-x-auto overflow-y-auto max-h-[700px] text-sm">
-        {isLoading ? (
-          <div className="px-4 py-10 w-full flex justify-center">
-            <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
-          </div>
-        ) : (
-          <OpportunitiesTable
-            opportunities={opportunities}
-            onQuickAction={handleQuickAction}
-          />
-        )}
+        <OpportunitiesTable
+          opportunities={
+            activeTab === "opportunities"
+              ? generalOpportunities
+              : tailoredOpportunities
+          }
+          onQuickAction={handleQuickAction}
+        />
       </div>
 
       <Modal
