@@ -4,7 +4,7 @@ import CheckSvg from "./CheckSvg";
 import QuarterlyChart from "./QuarterlyChart";
 import Dropdown from "./Dropdown";
 import ShareSvg from "./ShareSvg";
-import SummaryItem from "./SummaryItem";
+import Details from "./Details";
 import FollowButton from "./FollowButton";
 import ShareButton from "./ShareButton";
 
@@ -15,7 +15,7 @@ export {
   QuarterlyChart,
   Dropdown,
   ShareSvg,
-  SummaryItem,
+  Details,
   FollowButton,
   ShareButton,
 };

@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
-import SummaryItem from "./components/SummaryItem";
+import { useState } from "react";
+
 import { TranscriptData } from "./page";
+import { Details } from "./components";
 
 interface SummarySectionProps {
   transcriptData: TranscriptData | null;
@@ -34,7 +35,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         {showTabs ? (
           <div className="flex">
             <button
-              className={`px-4 py-3 border-b-2 ${
+              className={`px-4 py-4 border-b-2 ${
                 activeTab === "summary"
                   ? "border-indigo-600 text-indigo-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -44,7 +45,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
               General Summary
             </button>
             <button
-              className={`px-4 py-3 border-b-2 ${
+              className={`px-4 py-4 border-b-2 ${
                 activeTab === "details"
                   ? "border-indigo-600 text-indigo-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -82,40 +83,42 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             {activeTab === "summary" && (
               <>
                 {transcriptData?.["summary"] && (
-                  <button
-                    disabled={showFullSummary}
-                    onClick={() => setShowFullSummary((prev) => !prev)}
-                    className="px-1.5 py-3"
-                  >
-                    <p
-                      className={`text-left w-full text-gray-700 ${
-                        showFullSummary ? "" : "hover:underline line-clamp-2"
-                      }`}
-                    >
-                      {transcriptData?.summary ?? "No summary available"}
+                  <div className="px-1.5 py-3">
+                    <p className="text-left w-full text-gray-700">
+                      {showFullSummary
+                        ? transcriptData.summary
+                        : `${transcriptData.summary.slice(0, 100)}...`}
+                      {!showFullSummary && (
+                        <button
+                          onClick={() => setShowFullSummary(true)}
+                          className="text-blue-500 hover:underline ml-1"
+                        >
+                          more
+                        </button>
+                      )}
                     </p>
-                  </button>
+                  </div>
                 )}
-                <SummaryItem
-                  key={"Priorities"}
-                  title={"Priorities"}
-                  content={transcriptData?.["priorities"] || "No data"}
-                />
-                <SummaryItem
-                  key={"Challenges"}
-                  title={"Challenges"}
-                  content={transcriptData?.["challenges"] || "No data"}
-                />
-                <SummaryItem
-                  key={"Pain Points"}
-                  title={"Pain Points"}
-                  content={transcriptData?.["pain_points"] || "No data"}
-                />
-                <SummaryItem
-                  key={"Opportunities"}
-                  title={"Opportunities"}
-                  content={transcriptData?.["opportunities"] || "No data"}
-                />
+                <Details key={"Priorities"} title={"Priorities"}>
+                  <div className="px-3 py-2 text-gray-700 text-sm">
+                    {transcriptData?.["priorities"] || "No data"}
+                  </div>
+                </Details>
+                <Details key={"Challenges"} title={"Challenges"}>
+                  <div className="px-3 py-2 text-gray-700 text-sm">
+                    {transcriptData?.["challenges"] || "No data"}
+                  </div>
+                </Details>
+                <Details key={"Pain Points"} title={"Pain Points"}>
+                  <div className="px-3 py-2 text-gray-700 text-sm">
+                    {transcriptData?.["pain_points"] || "No data"}
+                  </div>
+                </Details>
+                <Details key={"Opportunities"} title={"Opportunities"}>
+                  <div className="px-3 py-2 text-gray-700 text-sm">
+                    {transcriptData?.["opportunities"] || "No data"}
+                  </div>
+                </Details>
               </>
             )}
             {activeTab === "details" && (
