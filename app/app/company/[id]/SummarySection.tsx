@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
-import SummaryItem from "./components/SummaryItem";
+import { useState } from "react";
+
 import { TranscriptData } from "./page";
+import { Details } from "./components";
 
 interface SummarySectionProps {
   transcriptData: TranscriptData | null;
@@ -96,26 +97,26 @@ const SummarySection: React.FC<SummarySectionProps> = ({
                     </p>
                   </button>
                 )}
-                <SummaryItem
-                  key={"Priorities"}
-                  title={"Priorities"}
-                  content={transcriptData?.["priorities"] || "No data"}
-                />
-                <SummaryItem
-                  key={"Challenges"}
-                  title={"Challenges"}
-                  content={transcriptData?.["challenges"] || "No data"}
-                />
-                <SummaryItem
-                  key={"Pain Points"}
-                  title={"Pain Points"}
-                  content={transcriptData?.["pain_points"] || "No data"}
-                />
-                <SummaryItem
-                  key={"Opportunities"}
-                  title={"Opportunities"}
-                  content={transcriptData?.["opportunities"] || "No data"}
-                />
+                <Details key={"Priorities"} title={"Priorities"}>
+                  <div className="px-3 py-2 text-gray-700 text-sm">
+                    {transcriptData?.["priorities"] || "No data"}
+                  </div>
+                </Details>
+                <Details key={"Challenges"} title={"Challenges"}>
+                  <div className="px-3 py-2 text-gray-700 text-sm">
+                    {transcriptData?.["challenges"] || "No data"}
+                  </div>
+                </Details>
+                <Details key={"Pain Points"} title={"Pain Points"}>
+                  <div className="px-3 py-2 text-gray-700 text-sm">
+                    {transcriptData?.["pain_points"] || "No data"}
+                  </div>
+                </Details>
+                <Details key={"Opportunities"} title={"Opportunities"}>
+                  <div className="px-3 py-2 text-gray-700 text-sm">
+                    {transcriptData?.["opportunities"] || "No data"}
+                  </div>
+                </Details>
               </>
             )}
             {activeTab === "details" && (

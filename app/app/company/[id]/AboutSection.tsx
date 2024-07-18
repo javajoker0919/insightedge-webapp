@@ -1,18 +1,13 @@
 import { FaUserTie, FaBuilding, FaGlobe, FaUsers } from "react-icons/fa";
 import { CompanyData } from "./page";
+import { Details } from "./components";
 
 interface AboutSectionProps {
   companyData: CompanyData;
 }
 
 const AboutSection: React.FC<AboutSectionProps> = ({ companyData }) => (
-  <details
-    className="bg-white border border-gray-300 rounded-lg overflow-hidden"
-    open
-  >
-    <summary className="px-4 py-3 cursor-pointer font-medium text-gray-700 hover:bg-gray-50">
-      About
-    </summary>
+  <Details title="About">
     <div className="px-3 pt-1 pb-2 text-sm text-gray-700">
       <p className="pb-2">{companyData.description}</p>
       <hr></hr>
@@ -68,7 +63,7 @@ const AboutSection: React.FC<AboutSectionProps> = ({ companyData }) => (
         <p className="font-medium">{companyData.full_time_employees}</p>
       </div>
     </div>
-  </details>
+  </Details>
 );
 
 export default AboutSection;
