@@ -212,8 +212,8 @@ const CompanyDetailPage: React.FC = () => {
             isLoading={isLoadingYearQuarters}
           />
           <SummarySection
-            transcriptData={transcriptData}
-            isLoading={isLoadingGeneralSummary}
+            selectedYear={selectedYear}
+            selectedQuarter={selectedQuarter}
           />
           <AboutSection companyData={companyData} />
         </div>
