@@ -27,8 +27,8 @@ const OpportunitiesTable: React.FC<{
           <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
             Target Buyer Department
           </th>
-          <th className="px-4 py-3 text-center font-medium w-64 border-x border-gray-300">
-            Actions
+          <th className="px-4 py-3 text-center font-medium w-60 border-x border-gray-300">
+            Quick Actions
           </th>
         </tr>
       </thead>
@@ -80,7 +80,7 @@ const OpportunitiesTable: React.FC<{
                   onClick={() => onQuickAction(opp)}
                   className="text-indigo-500 hover:text-white font-semibold justify-center border-indigo-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-indigo-500"
                 >
-                  Quick Action
+                  Prospect 💡
                 </button>
 
                 <a
@@ -323,29 +323,27 @@ const OpportunitiesSection: React.FC<OpportunitiesTableProps> = () => {
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-      <h3 className="px-4 py-3 font-medium text-gray-700 bg-gray-50">
-        Opportunities
-      </h3>
+      <div className="w-full flex items-center bg-gray-100 justify-between pr-4 py-2">
+        <h3 className="px-4 py-3 font-medium text-gray-700">Opportunities</h3>
+
+        <button
+          onClick={handleGenerateOpportunities}
+          className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+        >
+          Generate Tailored Opportunities
+        </button>
+      </div>
 
       <div className="overflow-x-auto overflow-y-auto max-h-[700px] text-sm">
         {isLoading ? (
           <div className="px-4 py-10 w-full flex justify-center">
             <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
           </div>
-        ) : isGenerated ? (
+        ) : (
           <OpportunitiesTable
             opportunities={opportunities}
             onQuickAction={handleQuickAction}
           />
-        ) : (
-          <div className="px-4 py-10 w-full flex justify-center">
-            <button
-              onClick={handleGenerateOpportunities}
-              className="w-full text-base px-4 max-w-96 py-2 bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out"
-            >
-              Generate Opportunities
-            </button>
-          </div>
         )}
       </div>
 
