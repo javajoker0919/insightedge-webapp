@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaExternalLinkAlt } from "react-icons/fa";
+import { IoPerson } from "react-icons/io5";
 
 import Modal from "@/app/components/Modal";
 import { generalOpportunities, tailoredOpportunities } from "./Constants";
@@ -95,7 +95,7 @@ const OpportunitiesTable: React.FC<{
                   className="text-indigo-500 hover:text-white font-semibold justify-center border-indigo-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-indigo-500"
                 >
                   Find Buyer
-                  <FaExternalLinkAlt />
+                  <IoPerson />
                 </a>
               </div>
             </td>
