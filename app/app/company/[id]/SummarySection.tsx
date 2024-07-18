@@ -34,7 +34,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         {showTabs ? (
           <div className="flex">
             <button
-              className={`px-4 py-3 border-b-2 ${
+              className={`px-4 py-4 border-b-2 ${
                 activeTab === "summary"
                   ? "border-indigo-600 text-indigo-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -44,7 +44,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
               General Summary
             </button>
             <button
-              className={`px-4 py-3 border-b-2 ${
+              className={`px-4 py-4 border-b-2 ${
                 activeTab === "details"
                   ? "border-indigo-600 text-indigo-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
