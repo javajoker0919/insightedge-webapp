@@ -15,7 +15,7 @@ const GeneralSummarySection: React.FC<GeneralSummarySectionProps> = ({
     open
   >
     <summary className="px-4 py-3 cursor-pointer font-medium text-gray-700 hover:bg-gray-50">
-      Summary
+      General Summary
     </summary>
     <div className="px-4 py-3">
       {isLoading ? (
@@ -24,6 +24,11 @@ const GeneralSummarySection: React.FC<GeneralSummarySectionProps> = ({
         </div>
       ) : (
         <>
+          <SummaryItem
+            key={"Summary"}
+            title={"Summary"}
+            content={transcriptData?.["summary"] || "No data"}
+          />
           <SummaryItem
             key={"Priorities"}
             title={"Priorities"}
