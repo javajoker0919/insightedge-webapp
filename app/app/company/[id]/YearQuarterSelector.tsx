@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import SelectInput from "./components/SelectInput";
+import Dropdown from "./components/Dropdown";
 
 export interface YearQuarter {
   year: number;
@@ -39,7 +39,7 @@ const YearQuarterSelector: React.FC<{
 
   return (
     <div className="flex space-x-4">
-      <SelectInput
+      <Dropdown
         defaultValue={year || undefined}
         value={year}
         options={yearQuarters
@@ -57,7 +57,7 @@ const YearQuarterSelector: React.FC<{
         }}
       />
       {year && (
-        <SelectInput
+        <Dropdown
           defaultValue={yearQuarters.find((yq) => yq.year === year)?.quarter}
           value={quarter}
           options={yearQuarters

@@ -2,7 +2,7 @@ import FinancialTable from "./FinancialTable";
 import PlusSvg from "./PlusSvg";
 import CheckSvg from "./CheckSvg";
 import QuarterlyChart from "./QuarterlyChart";
-import SelectInput from "./SelectInput";
+import Dropdown from "./Dropdown";
 import ShareSvg from "./ShareSvg";
 import SummaryItem from "./SummaryItem";
 import FollowButton from "./FollowButton";
@@ -13,7 +13,7 @@ export {
   PlusSvg,
   CheckSvg,
   QuarterlyChart,
-  SelectInput,
+  Dropdown,
   ShareSvg,
   SummaryItem,
   FollowButton,
