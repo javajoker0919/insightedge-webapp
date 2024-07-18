@@ -18,16 +18,16 @@ const OpportunitiesTable: React.FC<{
           <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
             Opportunity
           </th>
-          <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+          <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-10">
             Score
           </th>
-          <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+          <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
             Target Buyer Role
           </th>
-          <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+          <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-52">
             Target Buyer Department
           </th>
-          <th className="px-4 py-3 text-center font-medium w-60 border-x border-gray-300">
+          <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
             Quick Actions
           </th>
         </tr>
@@ -312,6 +312,135 @@ const OpportunitiesSection: React.FC<OpportunitiesTableProps> = () => {
   ];
 
   const tailoredOpportunities = [
+    {
+      opportunityName:
+        "Develop AI-driven drug discovery platform for neurological disorders",
+      opportunityScore: 95,
+      targetBuyer: {
+        role: "Chief Scientific Officer",
+        department: "R&D",
+      },
+      engagementTips: [
+        "Present a demo of the AI platform's capabilities in identifying novel drug targets",
+        "Offer a pilot project to demonstrate the platform's effectiveness in Teva's specific research areas",
+      ],
+    },
+    {
+      opportunityName:
+        "Implement blockchain technology for supply chain optimization",
+      opportunityScore: 90,
+      targetBuyer: {
+        role: "VP of Supply Chain",
+        department: "Operations",
+      },
+      engagementTips: [
+        "Develop a case study showing potential cost savings and efficiency improvements",
+        "Organize a workshop to demonstrate the blockchain solution's integration with existing systems",
+      ],
+    },
+    {
+      opportunityName:
+        "Create personalized medicine program for respiratory diseases",
+      opportunityScore: 88,
+      targetBuyer: {
+        role: "Head of Precision Medicine",
+        department: "R&D",
+      },
+      engagementTips: [
+        "Present a roadmap for implementing personalized medicine approaches in Teva's respiratory portfolio",
+        "Offer to conduct a pilot study demonstrating the benefits of personalized treatment in asthma patients",
+      ],
+    },
+    {
+      opportunityName:
+        "Develop digital therapeutics for mental health management",
+      opportunityScore: 85,
+      targetBuyer: {
+        role: "Director of Digital Health",
+        department: "Innovation",
+      },
+      engagementTips: [
+        "Showcase a prototype of the digital therapeutic for depression or anxiety",
+        "Propose a collaboration to integrate the digital therapeutic with Teva's existing CNS treatments",
+      ],
+    },
+    {
+      opportunityName:
+        "Implement advanced analytics for real-time manufacturing optimization",
+      opportunityScore: 82,
+      targetBuyer: {
+        role: "Head of Manufacturing",
+        department: "Operations",
+      },
+      engagementTips: [
+        "Provide a simulation demonstrating potential improvements in production efficiency",
+        "Offer a site visit to a facility already using the advanced analytics system",
+      ],
+    },
+    {
+      opportunityName:
+        "Develop gene therapy program for rare genetic disorders",
+      opportunityScore: 80,
+      targetBuyer: {
+        role: "Head of Rare Diseases",
+        department: "R&D",
+      },
+      engagementTips: [
+        "Present a comprehensive overview of the gene therapy platform and its potential applications",
+        "Propose a collaborative research project focusing on a specific rare genetic disorder",
+      ],
+    },
+    {
+      opportunityName: "Create AI-powered drug repurposing initiative",
+      opportunityScore: 78,
+      targetBuyer: {
+        role: "Chief Innovation Officer",
+        department: "R&D",
+      },
+      engagementTips: [
+        "Demonstrate the AI system's ability to identify new indications for existing Teva drugs",
+        "Offer a pilot project to validate the AI's predictions for a selected drug candidate",
+      ],
+    },
+    {
+      opportunityName:
+        "Implement IoT-enabled smart packaging for improved patient adherence",
+      opportunityScore: 75,
+      targetBuyer: {
+        role: "Head of Patient Solutions",
+        department: "Commercial",
+      },
+      engagementTips: [
+        "Showcase a prototype of the smart packaging solution and its companion app",
+        "Propose a clinical study to measure the impact on patient adherence in a key therapeutic area",
+      ],
+    },
+    {
+      opportunityName:
+        "Develop biosimilars using advanced protein engineering techniques",
+      opportunityScore: 72,
+      targetBuyer: {
+        role: "Head of Biosimilars",
+        department: "R&D",
+      },
+      engagementTips: [
+        "Present case studies demonstrating the success of the protein engineering platform",
+        "Offer to conduct a feasibility study for developing a high-value biosimilar in Teva's portfolio",
+      ],
+    },
+    {
+      opportunityName:
+        "Create virtual clinical trial platform for decentralized studies",
+      opportunityScore: 70,
+      targetBuyer: {
+        role: "Head of Clinical Operations",
+        department: "R&D",
+      },
+      engagementTips: [
+        "Provide a demo of the virtual clinical trial platform and its features",
+        "Propose a pilot study to compare the efficiency of virtual vs. traditional clinical trials",
+      ],
+    },
     {
       opportunityName:
         "Develop AI-driven drug discovery platform for neurological disorders",
