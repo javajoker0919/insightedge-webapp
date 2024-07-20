@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { IoPerson } from "react-icons/io5";
+import { IoBulb, IoPerson } from "react-icons/io5";
 
 import Modal from "@/app/components/Modal";
 import { generalOpportunities, tailoredOpportunities } from "./Constants";
@@ -81,7 +81,7 @@ const OpportunitiesTable: React.FC<{
                   onClick={() => onQuickAction(opp)}
                   className="text-indigo-500 hover:text-white font-semibold justify-center border-indigo-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-indigo-500"
                 >
-                  Prospect 💡
+                  Prospect <IoBulb />
                 </button>
 
                 <a
@@ -184,6 +184,9 @@ const OpportunitiesSection: React.FC<OpportunitiesTableProps> = () => {
       </div>
 
       <div className="overflow-x-auto overflow-y-auto max-h-[700px] text-sm">
+        <div className="h-28 text-gray-500 flex justify-center items-center">
+          Description here
+        </div>
         <OpportunitiesTable
           opportunities={
             activeTab === "opportunities"

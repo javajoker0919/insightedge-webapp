@@ -19,7 +19,9 @@ const YearQuarterSelector: React.FC<{
     if (yearQuarters.length > 0) {
       const latestYear = yearQuarters[yearQuarters.length - 1].year;
       const latestQuarter = yearQuarters[yearQuarters.length - 1].quarter;
+
       setYear(latestYear);
+      setQuarter(latestQuarter);
       setSelectedYear(latestYear);
       setSelectedQuarter(latestQuarter);
     }
