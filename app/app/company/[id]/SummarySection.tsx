@@ -100,22 +100,22 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           </p>
         </div>
       )}
-      <Details key={"Priorities"} title={"Priorities"}>
+      <Details key={"Priorities"} title={"Priorities"} type="sub">
         <div className="px-3 py-2 text-gray-700 text-sm">
           {data?.["priorities"] || "No data"}
         </div>
       </Details>
-      <Details key={"Challenges"} title={"Challenges"}>
+      <Details key={"Challenges"} title={"Challenges"} type="sub">
         <div className="px-3 py-2 text-gray-700 text-sm">
           {data?.["challenges"] || "No data"}
         </div>
       </Details>
-      <Details key={"Pain Points"} title={"Pain Points"}>
+      <Details key={"Pain Points"} title={"Pain Points"} type="sub">
         <div className="px-3 py-2 text-gray-700 text-sm">
           {data?.["pain_points"] || "No data"}
         </div>
       </Details>
-      <Details key={"Opportunities"} title={"Opportunities"}>
+      <Details key={"Opportunities"} title={"Opportunities"} type="sub">
         <div className="px-3 py-2 text-gray-700 text-sm">
           {data?.["opportunities"] || "No data"}
         </div>
