@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface DetailsProps {
   title: string;
+  type?: string;
   children: React.ReactNode;
 }
 
-const Details = ({ title, children }: DetailsProps) => {
+const Details = ({ title, type = "main", children }: DetailsProps) => {
   const [isOpen, setIsOpen] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState(0);
@@ -27,19 +28,43 @@ const Details = ({ title, children }: DetailsProps) => {
         className="px-3 py-2 cursor-pointer text-base font-medium text-gray-600 hover:bg-gray-100 flex items-center"
         onClick={toggleOpen}
       >
-        <motion.svg
-          animate={{ rotate: isOpen ? 0 : -90 }}
-          transition={{ duration: 0.1 }}
-          className="mr-2 text-gray-500 w-4 h-4"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </motion.svg>
+        {type === "main" ? (
+          <motion.svg
+            animate={{ rotate: isOpen ? 0 : -90 }}
+            transition={{ duration: 0.1 }}
+            className="mr-2 text-gray-500 w-4 h-4"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </motion.svg>
+        ) : (
+          <motion.svg
+            animate={{ rotate: isOpen ? 0 : -90 }}
+            transition={{ duration: 0.1 }}
+            className="mr-2 text-gray-500 w-4 h-4"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            {isOpen ? (
+              <path
+                fillRule="evenodd"
+                d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"
+                clipRule="evenodd"
+              />
+            ) : (
+              <path
+                fillRule="evenodd"
+                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                clipRule="evenodd"
+              />
+            )}
+          </motion.svg>
+        )}
         {title}
       </div>
 

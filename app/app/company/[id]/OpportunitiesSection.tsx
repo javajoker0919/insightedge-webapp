@@ -184,7 +184,7 @@ const OpportunitiesSection: React.FC<OpportunitiesTableProps> = () => {
       </div>
 
       <div className="overflow-x-auto overflow-y-auto max-h-[700px] text-sm">
-        <div className="h-28 text-gray-500 flex justify-center items-center">
+        <div className="h-12 text-gray-500 flex p-4 items-center">
           Description here
         </div>
         <OpportunitiesTable
