@@ -1,14 +1,17 @@
 import { IoBulb, IoPerson } from "react-icons/io5";
 import { OpportunityProps } from "./OpportunitiesSection";
+import { generalOpportunities } from "../Constants";
 
 const OpportunitiesTable: React.FC<{
   companyName: string;
   opportunities: OpportunityProps[];
   onQuickAction: (opp: OpportunityProps) => void;
 }> = ({ companyName, opportunities, onQuickAction }) => {
+  const opps = opportunities.length > 0 ? opportunities : generalOpportunities;
+
   return (
     <>
-      {opportunities.length > 0 ? (
+      {opps.length > 0 ? (
         <table className="w-full relative border-collapse">
           <thead className="sticky top-0">
             <tr className="bg-gray-200 text-black">
@@ -29,11 +32,13 @@ const OpportunitiesTable: React.FC<{
               </th>
             </tr>
           </thead>
-          <tbody className="text-center">
-            {opportunities.map((opp, index) => (
+          <tbody className="text-center relative">
+            {opps.map((opp, index) => (
               <tr
                 key={index}
-                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} ${
+                  opportunities.length > 0 ? "" : "blur"
+                }`}
               >
                 <td className="px-4 py-3 border text-left border-gray-300">
                   {opp.opportunityName}
@@ -103,6 +108,11 @@ const OpportunitiesTable: React.FC<{
                 </td>
               </tr>
             ))}
+            {opportunities.length === 0 && (
+              <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
+                <span className="text-4xl text-gray-600">No data</span>
+              </div>
+            )}
           </tbody>
         </table>
       ) : (

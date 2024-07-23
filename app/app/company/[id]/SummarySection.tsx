@@ -208,7 +208,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             <p className="text-gray-700 p-2">Summary</p>
             {orgInfo && selectedYear && selectedQuarter && !isTSLoading && (
               <button
-                onClick={generateTailoredSummary}
+                // onClick={generateTailoredSummary}
                 className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-indigo-600 text-white rounded-md text-sm"
               >
                 {isTSGenerating ? (
