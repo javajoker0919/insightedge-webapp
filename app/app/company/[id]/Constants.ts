@@ -64,6 +64,7 @@ export const generalOpportunities = [
       "Proactively share a targeted proposal for conducting a comprehensive literature review on IL-15",
     ],
   },
+  /*
   {
     opportunityName:
       "Perform HTA landscaping for Teva's biosimilar portfolio in key markets",
@@ -194,6 +195,7 @@ export const generalOpportunities = [
       "Proactively share a targeted proposal for creating a comprehensive evidence roadmap for Teva's generics",
     ],
   },
+  */
 ];
 
 export const tailoredOpportunities = [

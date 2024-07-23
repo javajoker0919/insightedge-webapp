@@ -15,9 +15,10 @@ import {
   Legend,
 } from "chart.js";
 import { useAtomValue } from "jotai";
+import axios from "axios";
 
-import { watchlistAtom } from "@/utils/atoms";
-import OpportunitiesSection from "./OpportunitiesSection";
+import { watchlistAtom, orgInfoAtom } from "@/utils/atoms";
+import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
 import IncomeStatementSection from "./IncomeStatementSection";
 import RecentNewsSection, { NewsItem } from "./RecentNewsSection";
 import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
@@ -46,14 +47,6 @@ export interface CompanyData {
   full_time_employees: number;
 }
 
-export interface TranscriptData {
-  summary: string;
-  challenges: string;
-  pain_points: string;
-  opportunities: string;
-  priorities: string;
-}
-
 const CompanyDetailPage: React.FC = () => {
   const { id: companyId } = useParams<{ id: string }>();
   const [companyData, setCompanyData] = useState<CompanyData | null>(null);
@@ -61,16 +54,57 @@ const CompanyDetailPage: React.FC = () => {
   const [yearQuarters, setYearQuarters] = useState<YearQuarter[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedQuarter, setSelectedQuarter] = useState<number | null>(null);
-  const [transcriptData, setTranscriptData] = useState<TranscriptData | null>(
-    null
-  );
   const [isLoadingCompany, setIsLoadingCompany] = useState<boolean>(true);
   const [isLoadingYearQuarters, setIsLoadingYearQuarters] =
     useState<boolean>(true);
-  const [isLoadingGeneralSummary, setIsLoadingGeneralSummary] =
-    useState<boolean>(false);
   const [isLoadingNews, setIsLoadingNews] = useState<boolean>(true);
   const watchlist = useAtomValue(watchlistAtom);
+  const orgInfo = useAtomValue(orgInfoAtom);
+
+  useEffect(() => {
+    const fetchProtectedData = async () => {
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+        if (error || !session) throw new Error("No user logged in");
+
+        const token = session.provider_token || session.access_token;
+
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/opportunities/${companyId}?org_id=${orgInfo?.id}&year=${selectedYear}&quarter=${selectedQuarter}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
+        if (response.status !== 200) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = response.data;
+        console.log(data);
+        return data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
+          console.error(
+            "Request timed out. The backend operation might take longer than expected."
+          );
+        } else {
+          console.error("Error fetching protected data:", error);
+        }
+      }
+    };
+
+    if (orgInfo && companyId && selectedYear && selectedQuarter) {
+      // fetchProtectedData();
+    }
+  }, [orgInfo, companyId, selectedYear, selectedQuarter]);
 
   useEffect(() => {
     const fetchCompanyData = async () => {
@@ -131,35 +165,6 @@ const CompanyDetailPage: React.FC = () => {
     fetchYearQuarters();
   }, [companyId]);
 
-  useEffect(() => {
-    const fetchTranscriptData = async () => {
-      if (selectedYear && selectedQuarter) {
-        setIsLoadingGeneralSummary(true);
-        try {
-          const { data, error } = await supabase
-            .from("earnings_transcripts")
-            .select(
-              "summary, challenges, pain_points, opportunities, priorities"
-            )
-            .eq("company_id", companyId)
-            .eq("year", selectedYear)
-            .eq("quarter", selectedQuarter)
-            .single();
-
-          if (error) throw error;
-          setTranscriptData(data as TranscriptData);
-        } catch (error) {
-          console.error("Error fetching transcript data:", error);
-          setTranscriptData(null);
-        } finally {
-          setIsLoadingGeneralSummary(false);
-        }
-      }
-    };
-
-    fetchTranscriptData();
-  }, [companyId, selectedYear, selectedQuarter]);
-
   if (isLoadingCompany) {
     return (
       <div className="flex w-full h-full items-center justify-center bg-gray-100">
@@ -198,13 +203,20 @@ const CompanyDetailPage: React.FC = () => {
           <ShareButton />
         </div>
       </div>
+
       <div className="flex gap-4 w-full">
         <div className="h-full w-full space-y-4 overflow-hidden">
-          <OpportunitiesSection companyName={companyData.name} />
+          <OpportunitiesSection
+            companyID={parseInt(companyId)}
+            companyName={companyData.name}
+            year={selectedYear}
+            quarter={selectedQuarter}
+          />
           <IncomeStatementSection />
           <RecentNewsSection newsItems={newsItems} isLoading={isLoadingNews} />
         </div>
-        <div className="w-[30rem] h-full space-y-4 shrink-0">
+
+        <div className="xl:w-[30rem] w-96 h-full space-y-4 shrink-0">
           <YearQuarterSelector
             yearQuarters={yearQuarters}
             setSelectedYear={setSelectedYear}
