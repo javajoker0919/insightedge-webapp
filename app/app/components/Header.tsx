@@ -68,7 +68,7 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="py-3 bg-white z-10 shadow-md sticky top-0">
+    <header className="py-3 bg-white z-20 shadow-md sticky top-0">
       <nav className="mx-auto flex justify-between items-center pr-4 pl-2">
         <div className="flex items-center gap-1">
           <button

@@ -36,7 +36,7 @@ const RenderSummaryContent = ({
           {!showFullSummary && data.summary.length > 2 && (
             <button
               onClick={() => setShowFullSummary(true)}
-              className="text-blue-500 hover:underline mt-2"
+              className="text-blue-500 hover:underline"
             >
               Show more
             </button>
