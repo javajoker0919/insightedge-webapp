@@ -13,7 +13,7 @@ const OpportunitiesTable: React.FC<{
     <>
       {opps.length > 0 ? (
         <table className="w-full relative border-collapse">
-          <thead className="sticky top-0">
+          <thead className="sticky z-10 top-0">
             <tr className="bg-gray-200 text-black">
               <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
                 Opportunity
@@ -109,9 +109,13 @@ const OpportunitiesTable: React.FC<{
               </tr>
             ))}
             {opportunities.length === 0 && (
-              <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
-                <span className="text-4xl text-gray-600">No data</span>
-              </div>
+              <tr>
+                <td colSpan={5}>
+                  <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
+                    <span className="text-4xl text-gray-600">No data</span>
+                  </div>
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -137,10 +141,16 @@ const OpportunitiesTable: React.FC<{
                 </th>
               </tr>
             </thead>
+            <tbody>
+              <tr>
+                <td colSpan={5}>
+                  <div className="w-full p-10 text-gray-500 text-xl flex items-center justify-center">
+                    No data
+                  </div>
+                </td>
+              </tr>
+            </tbody>
           </table>
-          <div className="w-full p-10 text-gray-500 text-xl flex items-center justify-center">
-            No data
-          </div>
         </div>
       )}
     </>

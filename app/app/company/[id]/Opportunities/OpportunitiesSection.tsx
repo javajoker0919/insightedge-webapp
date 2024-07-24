@@ -7,6 +7,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { orgInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTailoredOpportunitiesAPI } from "@/utils/apiClient";
+import { useToastContext } from "@/contexts/toastContext";
 
 interface OpportunitiesProps {
   companyID: number;
@@ -22,7 +23,7 @@ export interface OpportunityProps {
     role: string;
     department: string;
   };
-  engagementTips: string[];
+  tactics: string[];
 }
 
 const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
@@ -35,6 +36,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     return null;
   }
 
+  const { invokeToast } = useToastContext();
   const orgInfo = useAtomValue(orgInfoAtom);
   const [etID, setETID] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
@@ -45,14 +47,15 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   const [tailoredOpps, setTailoredOpps] = useState<OpportunityProps[] | null>(
     null
   );
-  const [isGeneralOppLoading, setIsGenalOppLoading] = useState<boolean>(false);
+  const [isGeneralOppLoading, setIsGeneralOppLoading] =
+    useState<boolean>(false);
   const [isTailoredOppLoading, setIsTailoredOppLoading] =
     useState<boolean>(false);
   const [isTailoredOppGenerating, setIsTailoredOppGenerating] =
     useState<boolean>(false);
 
   useEffect(() => {
-    setIsGenalOppLoading(true);
+    setIsGeneralOppLoading(true);
     setIsTailoredOppLoading(true);
 
     setGeneralOpps(null);
@@ -106,13 +109,13 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           role: item.buyer_role,
           department: item.buyer_department,
         },
-        engagementTips: item.tactics,
+        tactics: item.tactics.split("\n"),
       }));
       setGeneralOpps(formattedData);
     } catch (error) {
       console.error("Unexpected error in fetchGeneralOpportunities:", error);
     } finally {
-      setIsGenalOppLoading(false);
+      setIsGeneralOppLoading(false);
     }
   };
 
@@ -133,7 +136,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           role: item.buyer_role,
           department: item.buyer_department,
         },
-        engagementTips: item.tactics,
+        tactics: item.tactics.split("\n"),
       }));
       setTailoredOpps(formattedData);
     } catch (error) {
@@ -154,19 +157,28 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         quarter,
       });
 
-      const formattedData: OpportunityProps[] = data.opportunities.map(
-        (item: any) => ({
-          opportunityName: item.name,
-          opportunityScore: item.score,
-          targetBuyer: {
-            role: item.buyer_role,
-            department: item.buyer_department,
-          },
-          engagementTips: item.tactics,
-        })
-      );
-      setTailoredOpps(formattedData);
-      setActiveTab("tailored");
+      if (data.status === "success") {
+        const formattedData: OpportunityProps[] = data.opportunities.map(
+          (item: any) => ({
+            opportunityName: item.name,
+            opportunityScore: item.score,
+            targetBuyer: {
+              role: item.buyer_role,
+              department: item.buyer_department,
+            },
+            tactics: item.tactics.split("\n"),
+          })
+        );
+        setTailoredOpps(formattedData);
+        setActiveTab("tailored");
+        invokeToast(
+          "success",
+          "Tailored opportunities generated successfully",
+          "top"
+        );
+      } else {
+        invokeToast("error", data.message, "top");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNABORTED") {
@@ -283,7 +295,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       <Modal isOpen={!!selectedOpp} onClose={() => setSelectedOpp(null)}>
         <h4 className="text-lg font-bold mb-4">Prospecting Tactics</h4>
         <ul className="list-disc pl-5 mb-4">
-          {selectedOpp?.engagementTips.map((tip: string, index: number) => (
+          {selectedOpp?.tactics.map((tip: string, index: number) => (
             <li key={index} className="mb-2">
               {tip}
             </li>

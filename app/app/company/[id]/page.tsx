@@ -223,10 +223,7 @@ const CompanyDetailPage: React.FC = () => {
             setSelectedQuarter={setSelectedQuarter}
             isLoading={isLoadingYearQuarters}
           />
-          <SummarySection
-            selectedYear={selectedYear}
-            selectedQuarter={selectedQuarter}
-          />
+          <SummarySection year={selectedYear} quarter={selectedQuarter} />
           <AboutSection companyData={companyData} />
         </div>
       </div>

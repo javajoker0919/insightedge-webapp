@@ -12,7 +12,7 @@ const RenderSummaryContent = ({
 }) => {
   const renderList = (items: string[] | undefined, maxItems?: number) => (
     <ul className="list-disc pl-8 py-2 text-gray-700 text-sm">
-      {items && items.length > 0 ? (
+      {items && Array.isArray(items) && items.length > 0 ? (
         (maxItems ? items.slice(0, maxItems) : items).map((item, index) => (
           <li key={index}>{item}</li>
         ))
