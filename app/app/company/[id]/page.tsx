@@ -15,9 +15,8 @@ import {
   Legend,
 } from "chart.js";
 import { useAtomValue } from "jotai";
-import axios from "axios";
 
-import { watchlistAtom, orgInfoAtom } from "@/utils/atoms";
+import { watchlistAtom } from "@/utils/atoms";
 import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
 import IncomeStatementSection from "./IncomeStatementSection";
 import RecentNewsSection, { NewsItem } from "./RecentNewsSection";
@@ -59,52 +58,6 @@ const CompanyDetailPage: React.FC = () => {
     useState<boolean>(true);
   const [isLoadingNews, setIsLoadingNews] = useState<boolean>(true);
   const watchlist = useAtomValue(watchlistAtom);
-  const orgInfo = useAtomValue(orgInfoAtom);
-
-  useEffect(() => {
-    const fetchProtectedData = async () => {
-      try {
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.getSession();
-        if (error || !session) throw new Error("No user logged in");
-
-        const token = session.provider_token || session.access_token;
-
-        const response = await axios.get(
-          `http://localhost:8000/api/v1/opportunities/${companyId}?org_id=${orgInfo?.id}&year=${selectedYear}&quarter=${selectedQuarter}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
-        );
-
-        if (response.status !== 200) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = response.data;
-        console.log(data);
-        return data;
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
-          console.error(
-            "Request timed out. The backend operation might take longer than expected."
-          );
-        } else {
-          console.error("Error fetching protected data:", error);
-        }
-      }
-    };
-
-    if (orgInfo && companyId && selectedYear && selectedQuarter) {
-      // fetchProtectedData();
-    }
-  }, [orgInfo, companyId, selectedYear, selectedQuarter]);
 
   useEffect(() => {
     const fetchCompanyData = async () => {
