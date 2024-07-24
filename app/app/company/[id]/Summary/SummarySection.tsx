@@ -5,27 +5,30 @@ import { useAtomValue } from "jotai";
 import { supabase } from "@/utils/supabaseClient";
 import { generateTailoredSummaryAPI } from "@/utils/apiClient";
 import { orgInfoAtom } from "@/utils/atoms";
-import { Details } from "./components";
+import RenderSummaryContent from "./RenderSummaryContent";
+import { useToastContext } from "@/contexts/toastContext";
 
 interface SummarySectionProps {
-  selectedYear: number | null;
-  selectedQuarter: number | null;
+  year: number | null;
+  quarter: number | null;
 }
 
-interface SummaryProps {
-  summary: string;
-  challenges: string;
-  pain_points: string;
-  opportunities: string;
-  priorities: string;
+export interface SummaryProps {
+  summary: string[];
+  challenges: string[];
+  pain_points: string[];
+  opportunities: string[];
+  priorities: string[];
 }
 
-const SummarySection: React.FC<SummarySectionProps> = ({
-  selectedYear,
-  selectedQuarter,
-}) => {
+const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
+  if (!year || !quarter) {
+    return null;
+  }
+
   const { id: companyId } = useParams<{ id: string }>();
 
+  const { invokeToast } = useToastContext();
   const orgInfo = useAtomValue(orgInfoAtom);
   const [generalSummary, setGeneralSummary] = useState<SummaryProps | null>(
     null
@@ -44,25 +47,30 @@ const SummarySection: React.FC<SummarySectionProps> = ({
     fetchGeneralSummary();
     fetchTailoredlSummary();
     setTailoredSummary(null);
-  }, [companyId, selectedYear, selectedQuarter]);
+  }, [companyId, year, quarter]);
 
   const fetchGeneralSummary = async () => {
-    if (!selectedYear || !selectedQuarter) {
-      return;
-    }
-
     setIsGSLoading(true);
     try {
       const { data, error } = await supabase
         .from("earnings_transcripts")
         .select("summary, challenges, pain_points, opportunities, priorities")
         .eq("company_id", companyId)
-        .eq("year", selectedYear)
-        .eq("quarter", selectedQuarter)
+        .eq("year", year)
+        .eq("quarter", quarter)
         .single();
 
       if (error) throw error;
-      setGeneralSummary(data as SummaryProps);
+
+      const processedData: SummaryProps = {
+        summary: data.summary.split("\n"),
+        challenges: data.challenges.split("\n"),
+        pain_points: data.pain_points.split("\n"),
+        opportunities: data.opportunities.split("\n"),
+        priorities: data.priorities.split("\n"),
+      };
+
+      setGeneralSummary(processedData);
       setShowFullSummary(false);
     } catch (error) {
       console.error("Error fetching transcript data:", error);
@@ -73,7 +81,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   };
 
   const fetchTailoredlSummary = async () => {
-    if (!selectedYear || !selectedQuarter || !orgInfo) {
+    if (!orgInfo) {
       return;
     }
 
@@ -83,8 +91,8 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         .from("earnings_transcripts")
         .select("id")
         .eq("company_id", companyId)
-        .eq("year", selectedYear)
-        .eq("quarter", selectedQuarter)
+        .eq("year", year)
+        .eq("quarter", quarter)
         .limit(1);
 
       if (etError) throw etError;
@@ -97,7 +105,19 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         .eq("earnings_transcript_id", earningsTranscriptId);
 
       if (tsError) throw tsError;
-      setTailoredSummary(tsData[0] as SummaryProps);
+      if (tsData.length > 0) {
+        const processedData: SummaryProps = {
+          summary: tsData[0].summary.split("\n"),
+          challenges: tsData[0].challenges.split("\n"),
+          pain_points: tsData[0].pain_points.split("\n"),
+          opportunities: tsData[0].opportunities.split("\n"),
+          priorities: tsData[0].priorities.split("\n"),
+        };
+
+        setTailoredSummary(processedData);
+      } else {
+        setTailoredSummary(null);
+      }
       setShowFullSummary(false);
     } catch (error) {
       console.error("Error fetching transcript data:", error);
@@ -108,7 +128,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   };
 
   const generateTailoredSummary = async () => {
-    if (!orgInfo || !selectedYear || !selectedQuarter) {
+    if (!orgInfo) {
       return;
     }
 
@@ -117,12 +137,30 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       const { data } = await generateTailoredSummaryAPI({
         companyID: companyId,
         orgID: orgInfo?.id.toString(),
-        year: selectedYear,
-        quarter: selectedQuarter,
+        year: year,
+        quarter: quarter,
       });
 
-      setTailoredSummary(data.summary as SummaryProps);
-      setActiveTab("tailored");
+      if (data.status === "success") {
+        const processedData: SummaryProps = {
+          summary: data.summary.summary.split("\n"),
+          challenges: data.summary.challenges.split("\n"),
+          pain_points: data.summary.pain_points.split("\n"),
+          opportunities: data.summary.opportunities.split("\n"),
+          priorities: data.summary.priorities.split("\n"),
+        };
+
+        setTailoredSummary(processedData);
+
+        invokeToast(
+          "success",
+          "Tailored summary generated successfully",
+          "top"
+        );
+        setActiveTab("tailored");
+      } else if (data.status === "error") {
+        invokeToast("error", `${data.message}`, "top");
+      }
     } catch (error) {
       console.error("Error fetching tailored summary:", error);
       setTailoredSummary(null);
@@ -130,48 +168,6 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       setIsTSGenerating(false);
     }
   };
-
-  const renderSummaryContent = (data: SummaryProps | null) => (
-    <>
-      {data?.["summary"] && (
-        <div className="px-1.5 py-3">
-          <p className="text-left w-full text-gray-700">
-            {showFullSummary
-              ? data.summary
-              : `${data.summary.slice(0, 100)}...`}
-            {!showFullSummary && (
-              <button
-                onClick={() => setShowFullSummary(true)}
-                className="text-blue-500 hover:underline ml-1"
-              >
-                more
-              </button>
-            )}
-          </p>
-        </div>
-      )}
-      <Details key={"Priorities"} title={"Priorities"} type="sub">
-        <div className="px-3 py-2 text-gray-700 text-sm">
-          {data?.["priorities"] || "No data"}
-        </div>
-      </Details>
-      <Details key={"Challenges"} title={"Challenges"} type="sub">
-        <div className="px-3 py-2 text-gray-700 text-sm">
-          {data?.["challenges"] || "No data"}
-        </div>
-      </Details>
-      <Details key={"Pain Points"} title={"Pain Points"} type="sub">
-        <div className="px-3 py-2 text-gray-700 text-sm">
-          {data?.["pain_points"] || "No data"}
-        </div>
-      </Details>
-      <Details key={"Opportunities"} title={"Opportunities"} type="sub">
-        <div className="px-3 py-2 text-gray-700 text-sm">
-          {data?.["opportunities"] || "No data"}
-        </div>
-      </Details>
-    </>
-  );
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
@@ -206,9 +202,9 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         ) : (
           <div className="flex items-center justify-between w-full">
             <p className="text-gray-700 p-2">Summary</p>
-            {orgInfo && selectedYear && selectedQuarter && !isTSLoading && (
+            {orgInfo && !isTSLoading && (
               <button
-                // onClick={generateTailoredSummary}
+                onClick={generateTailoredSummary}
                 className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-indigo-600 text-white rounded-md text-sm"
               >
                 {isTSGenerating ? (
@@ -228,9 +224,17 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
           </div>
         ) : activeTab === "general" ? (
-          renderSummaryContent(generalSummary)
+          <RenderSummaryContent
+            data={generalSummary}
+            showFullSummary={showFullSummary}
+            setShowFullSummary={setShowFullSummary}
+          />
         ) : activeTab === "tailored" ? (
-          renderSummaryContent(tailoredSummary)
+          <RenderSummaryContent
+            data={tailoredSummary}
+            showFullSummary={showFullSummary}
+            setShowFullSummary={setShowFullSummary}
+          />
         ) : null}
       </div>
     </div>

@@ -13,53 +13,40 @@ const getAuthToken = async () => {
 const createApiClient = async () => {
   const token = await getAuthToken();
   return axios.create({
-    baseURL: process.env.SERVER_BASE_API,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    baseURL: process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:8000",
+    headers: { Authorization: `Bearer ${token}` },
   });
 };
 
-const generateTailoredOpportunitiesAPI = async ({
-  companyID,
-  orgID,
-  year,
-  quarter,
-}: {
+const generateTailoredAPI = async (
+  endpoint: string,
+  params: {
+    companyID: string;
+    orgID: string;
+    year: number;
+    quarter: number;
+  }
+) => {
+  const { companyID, ...queryParams } = params;
+  const apiClient = await createApiClient();
+  const url = `/api/v1/${endpoint}/${companyID}`;
+  return apiClient.get(url, {
+    params: { org_id: queryParams.orgID, ...queryParams },
+  });
+};
+
+const generateTailoredOpportunitiesAPI = (params: {
   companyID: string;
   orgID: string;
   year: number;
   quarter: number;
-}) => {
-  const apiClient = await createApiClient();
-  const url = `${
-    process.env.API_BASE_URL || "http://localhost:8000"
-  }/api/v1/opportunities/${companyID}`;
+}) => generateTailoredAPI("opportunities", params);
 
-  return apiClient.get(url, {
-    params: { org_id: orgID, year, quarter },
-  });
-};
-
-const generateTailoredSummaryAPI = async ({
-  companyID,
-  orgID,
-  year,
-  quarter,
-}: {
+const generateTailoredSummaryAPI = (params: {
   companyID: string;
   orgID: string;
   year: number;
   quarter: number;
-}) => {
-  const apiClient = await createApiClient();
-  const url = `${
-    process.env.API_BASE_URL || "http://localhost:8000"
-  }/api/v1/summary/${companyID}`;
-
-  return apiClient.get(url, {
-    params: { org_id: orgID, year, quarter },
-  });
-};
+}) => generateTailoredAPI("summary", params);
 
 export { generateTailoredOpportunitiesAPI, generateTailoredSummaryAPI };

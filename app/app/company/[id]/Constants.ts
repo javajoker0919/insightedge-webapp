@@ -7,7 +7,7 @@ export const generalOpportunities = [
       role: "Head of Real-World Evidence",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Create a personalized video showcasing Genesis Research's expertise in CNS RWE studies",
       "Reach out with a tailored proposal highlighting the benefits of partnering with Genesis Research",
     ],
@@ -20,7 +20,7 @@ export const generalOpportunities = [
       role: "Global HEOR Director",
       department: "Market Access",
     },
-    engagementTips: [
+    tactics: [
       "Develop an interactive tool demonstrating the potential HEOR impact of olanzapine LAI",
       "Schedule a targeted presentation to showcase Genesis Research's HEOR capabilities",
     ],
@@ -33,7 +33,7 @@ export const generalOpportunities = [
       role: "Head of Global Pricing",
       department: "Commercial",
     },
-    engagementTips: [
+    tactics: [
       "Create a personalized payer research proposal based on Teva's specific needs",
       "Initiate contact with a compelling case study demonstrating Genesis Research's payer research expertise",
     ],
@@ -46,7 +46,7 @@ export const generalOpportunities = [
       role: "Head of Immunology R&D",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Host a webinar on innovative evidence generation strategies for rare diseases",
       "Reach out with a customized integrated evidence plan outline for Teva's Anti-IL15 program",
     ],
@@ -59,7 +59,7 @@ export const generalOpportunities = [
       role: "Medical Director, Immunology",
       department: "Medical Affairs",
     },
-    engagementTips: [
+    tactics: [
       "Provide a sample AI-powered literature review on IL-15 in autoimmune diseases",
       "Proactively share a targeted proposal for conducting a comprehensive literature review on IL-15",
     ],
@@ -73,7 +73,7 @@ export const generalOpportunities = [
       role: "Head of Global Biosimilars",
       department: "Commercial",
     },
-    engagementTips: [
+    tactics: [
       "Develop a biosimilar HTA toolkit tailored to Teva's portfolio and target markets",
       "Initiate contact with a strategic HTA landscaping plan customized for Teva's biosimilar portfolio",
     ],
@@ -86,7 +86,7 @@ export const generalOpportunities = [
       role: "Director of Biosimilar Market Access",
       department: "Market Access",
     },
-    engagementTips: [
+    tactics: [
       "Create a personalized biosimilar payer engagement plan based on Teva's unique needs",
       "Reach out with a compelling case study showcasing Genesis Research's biosimilar market access expertise",
     ],
@@ -99,7 +99,7 @@ export const generalOpportunities = [
       role: "Head of Migraine Franchise",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Develop a custom RWE study protocol showcasing innovative designs for AJOVY",
       "Proactively share a targeted proposal for designing differentiated RWE studies for AJOVY",
     ],
@@ -112,7 +112,7 @@ export const generalOpportunities = [
       role: "Director of Respiratory Marketing",
       department: "Commercial",
     },
-    engagementTips: [
+    tactics: [
       "Provide a complimentary market access landscape report for TEV-248's target markets",
       "Schedule a targeted presentation to showcase Genesis Research's asthma market access expertise",
     ],
@@ -125,7 +125,7 @@ export const generalOpportunities = [
       role: "VP of CNS HEOR",
       department: "Market Access",
     },
-    engagementTips: [
+    tactics: [
       "Create a personalized CNS HEOR strategy roadmap based on Teva's pipeline",
       "Reach out with a customized proposal for developing a comprehensive HEOR strategy for Teva's CNS assets",
     ],
@@ -138,7 +138,7 @@ export const generalOpportunities = [
       role: "Head of Biosimilar Medical Affairs",
       department: "Medical Affairs",
     },
-    engagementTips: [
+    tactics: [
       "Develop a custom integrated evidence plan template tailored to biosimilar Stelara",
       "Proactively share a targeted proposal for building a robust evidence plan for biosimilar Stelara",
     ],
@@ -151,7 +151,7 @@ export const generalOpportunities = [
       role: "AUSTEDO Brand Lead",
       department: "Commercial",
     },
-    engagementTips: [
+    tactics: [
       "Create a personalized payer advisory board agenda focusing on AUSTEDO's unique value proposition",
       "Initiate contact with a compelling case study demonstrating the impact of payer advisory boards",
     ],
@@ -164,7 +164,7 @@ export const generalOpportunities = [
       role: "Medical Director, Gastroenterology",
       department: "Medical Affairs",
     },
-    engagementTips: [
+    tactics: [
       "Provide a sample AI-powered literature review on TL1A in inflammatory bowel disease",
       "Reach out with a customized proposal for conducting a comprehensive literature review on TL1A",
     ],
@@ -177,7 +177,7 @@ export const generalOpportunities = [
       role: "Head of Global Value & Access",
       department: "Market Access",
     },
-    engagementTips: [
+    tactics: [
       "Create a custom global value dossier template tailored to Teva's pipeline assets",
       "Schedule a targeted presentation to showcase Genesis Research's value dossier development expertise",
     ],
@@ -190,7 +190,7 @@ export const generalOpportunities = [
       role: "Head of Global Generic R&D",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Develop a personalized integrated evidence roadmap for Teva's generic portfolio",
       "Proactively share a targeted proposal for creating a comprehensive evidence roadmap for Teva's generics",
     ],
@@ -207,7 +207,7 @@ export const tailoredOpportunities = [
       role: "Chief Scientific Officer",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Present a demo of the AI platform's capabilities in identifying novel drug targets",
       "Offer a pilot project to demonstrate the platform's effectiveness in Teva's specific research areas",
     ],
@@ -220,7 +220,7 @@ export const tailoredOpportunities = [
       role: "VP of Supply Chain",
       department: "Operations",
     },
-    engagementTips: [
+    tactics: [
       "Develop a case study showing potential cost savings and efficiency improvements",
       "Organize a workshop to demonstrate the blockchain solution's integration with existing systems",
     ],
@@ -233,7 +233,7 @@ export const tailoredOpportunities = [
       role: "Head of Precision Medicine",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Present a roadmap for implementing personalized medicine approaches in Teva's respiratory portfolio",
       "Offer to conduct a pilot study demonstrating the benefits of personalized treatment in asthma patients",
     ],
@@ -246,7 +246,7 @@ export const tailoredOpportunities = [
       role: "Director of Digital Health",
       department: "Innovation",
     },
-    engagementTips: [
+    tactics: [
       "Showcase a prototype of the digital therapeutic for depression or anxiety",
       "Propose a collaboration to integrate the digital therapeutic with Teva's existing CNS treatments",
     ],
@@ -259,7 +259,7 @@ export const tailoredOpportunities = [
       role: "Head of Manufacturing",
       department: "Operations",
     },
-    engagementTips: [
+    tactics: [
       "Provide a simulation demonstrating potential improvements in production efficiency",
       "Offer a site visit to a facility already using the advanced analytics system",
     ],
@@ -271,7 +271,7 @@ export const tailoredOpportunities = [
       role: "Head of Rare Diseases",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Present a comprehensive overview of the gene therapy platform and its potential applications",
       "Propose a collaborative research project focusing on a specific rare genetic disorder",
     ],
@@ -283,7 +283,7 @@ export const tailoredOpportunities = [
       role: "Chief Innovation Officer",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Demonstrate the AI system's ability to identify new indications for existing Teva drugs",
       "Offer a pilot project to validate the AI's predictions for a selected drug candidate",
     ],
@@ -296,7 +296,7 @@ export const tailoredOpportunities = [
       role: "Head of Patient Solutions",
       department: "Commercial",
     },
-    engagementTips: [
+    tactics: [
       "Showcase a prototype of the smart packaging solution and its companion app",
       "Propose a clinical study to measure the impact on patient adherence in a key therapeutic area",
     ],
@@ -309,7 +309,7 @@ export const tailoredOpportunities = [
       role: "Head of Biosimilars",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Present case studies demonstrating the success of the protein engineering platform",
       "Offer to conduct a feasibility study for developing a high-value biosimilar in Teva's portfolio",
     ],
@@ -322,7 +322,7 @@ export const tailoredOpportunities = [
       role: "Head of Clinical Operations",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Provide a demo of the virtual clinical trial platform and its features",
       "Propose a pilot study to compare the efficiency of virtual vs. traditional clinical trials",
     ],
@@ -335,7 +335,7 @@ export const tailoredOpportunities = [
       role: "Chief Scientific Officer",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Present a demo of the AI platform's capabilities in identifying novel drug targets",
       "Offer a pilot project to demonstrate the platform's effectiveness in Teva's specific research areas",
     ],
@@ -348,7 +348,7 @@ export const tailoredOpportunities = [
       role: "VP of Supply Chain",
       department: "Operations",
     },
-    engagementTips: [
+    tactics: [
       "Develop a case study showing potential cost savings and efficiency improvements",
       "Organize a workshop to demonstrate the blockchain solution's integration with existing systems",
     ],
@@ -361,7 +361,7 @@ export const tailoredOpportunities = [
       role: "Head of Precision Medicine",
       department: "R&D",
     },
-    engagementTips: [
+    tactics: [
       "Present a roadmap for implementing personalized medicine approaches in Teva's respiratory portfolio",
       "Offer to conduct a pilot study demonstrating the benefits of personalized treatment in asthma patients",
     ],
@@ -374,7 +374,7 @@ export const tailoredOpportunities = [
       role: "Director of Digital Health",
       department: "Innovation",
     },
-    engagementTips: [
+    tactics: [
       "Showcase a prototype of the digital therapeutic for depression or anxiety",
       "Propose a collaboration to integrate the digital therapeutic with Teva's existing CNS treatments",
     ],
@@ -387,7 +387,7 @@ export const tailoredOpportunities = [
       role: "Head of Manufacturing",
       department: "Operations",
     },
-    engagementTips: [
+    tactics: [
       "Provide a simulation demonstrating potential improvements in production efficiency",
       "Offer a site visit to a facility already using the advanced analytics system",
     ],
