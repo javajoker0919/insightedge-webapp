@@ -40,7 +40,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
   const [isGSLoading, setIsGSLoading] = useState(false);
   const [isTSLoading, setIsTSLoading] = useState(false);
   const [isTSGenerating, setIsTSGenerating] = useState(false);
-  const [showFullSummary, setShowFullSummary] = useState(false);
+  const [showFullSummary, setShowFullSummary] = useState(true);
 
   useEffect(() => {
     setActiveTab("general");
@@ -71,7 +71,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
       };
 
       setGeneralSummary(processedData);
-      setShowFullSummary(false);
+      setShowFullSummary(true);
     } catch (error) {
       console.error("Error fetching transcript data:", error);
       setGeneralSummary(null);
@@ -118,7 +118,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
       } else {
         setTailoredSummary(null);
       }
-      setShowFullSummary(false);
+      setShowFullSummary(true);
     } catch (error) {
       console.error("Error fetching transcript data:", error);
       setTailoredSummary(null);
