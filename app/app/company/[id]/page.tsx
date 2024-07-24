@@ -22,7 +22,7 @@ import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
 import IncomeStatementSection from "./IncomeStatementSection";
 import RecentNewsSection, { NewsItem } from "./RecentNewsSection";
 import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
-import SummarySection from "./SummarySection";
+import SummarySection from "./Summary/SummarySection";
 import AboutSection from "./AboutSection";
 import { FollowButton, ShareButton } from "./components";
 

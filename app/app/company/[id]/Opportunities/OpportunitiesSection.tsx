@@ -220,7 +220,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             </h3>
             {!isGeneralOppLoading && !isTailoredOppLoading && (
               <button
-                // onClick={generateTailoredOpportunities}
+                onClick={generateTailoredOpportunities}
                 disabled={isTailoredOppGenerating}
                 className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none transition duration-150 ease-in-out"
               >
@@ -241,13 +241,12 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 text-gray-500">
-                <b>{companyName}</b>'s top opportunities.
+              <div className="p-4 bg-gray-300 text-black">
+                {companyName}'s top opportunities.
                 {tailoredOpps?.length === 0 && (
                   <span>
                     To find the best ways to sell your solutions to{" "}
-                    <b>{companyName}</b>, click "Generate Tailored
-                    Opportunities."
+                    {companyName}, click "Generate Tailored Opportunities."
                   </span>
                 )}
               </div>
@@ -265,10 +264,10 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 text-gray-500">
+              <div className="p-4 bg-gray-300 text-black">
                 Below is your company specific opportunity table. You can
                 explore the top sales opportunities for selling your solutions
-                to <b>{companyName}</b>
+                to {companyName}
               </div>
               {tailoredOpps && (
                 <OpportunitiesTable

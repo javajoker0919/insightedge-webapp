@@ -5,19 +5,19 @@ import { useAtomValue } from "jotai";
 import { supabase } from "@/utils/supabaseClient";
 import { generateTailoredSummaryAPI } from "@/utils/apiClient";
 import { orgInfoAtom } from "@/utils/atoms";
-import { Details } from "./components";
+import RenderSummaryContent from "./RenderSummaryContent";
 
 interface SummarySectionProps {
   selectedYear: number | null;
   selectedQuarter: number | null;
 }
 
-interface SummaryProps {
-  summary: string;
-  challenges: string;
-  pain_points: string;
-  opportunities: string;
-  priorities: string;
+export interface SummaryProps {
+  summary: string[];
+  challenges: string[];
+  pain_points: string[];
+  opportunities: string[];
+  priorities: string[];
 }
 
 const SummarySection: React.FC<SummarySectionProps> = ({
@@ -62,7 +62,16 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         .single();
 
       if (error) throw error;
-      setGeneralSummary(data as SummaryProps);
+
+      const processedData: SummaryProps = {
+        summary: data.summary.split("\n"),
+        challenges: data.challenges.split("\n"),
+        pain_points: data.pain_points.split("\n"),
+        opportunities: data.opportunities.split("\n"),
+        priorities: data.priorities.split("\n"),
+      };
+
+      setGeneralSummary(processedData);
       setShowFullSummary(false);
     } catch (error) {
       console.error("Error fetching transcript data:", error);
@@ -97,7 +106,15 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         .eq("earnings_transcript_id", earningsTranscriptId);
 
       if (tsError) throw tsError;
-      setTailoredSummary(tsData[0] as SummaryProps);
+      const processedData: SummaryProps = {
+        summary: tsData[0].summary.split("\n"),
+        challenges: tsData[0].challenges.split("\n"),
+        pain_points: tsData[0].pain_points.split("\n"),
+        opportunities: tsData[0].opportunities.split("\n"),
+        priorities: tsData[0].priorities.split("\n"),
+      };
+
+      setTailoredSummary(processedData);
       setShowFullSummary(false);
     } catch (error) {
       console.error("Error fetching transcript data:", error);
@@ -130,48 +147,6 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       setIsTSGenerating(false);
     }
   };
-
-  const renderSummaryContent = (data: SummaryProps | null) => (
-    <>
-      {data?.["summary"] && (
-        <div className="px-1.5 py-3">
-          <p className="text-left w-full text-gray-700">
-            {showFullSummary
-              ? data.summary
-              : `${data.summary.slice(0, 100)}...`}
-            {!showFullSummary && (
-              <button
-                onClick={() => setShowFullSummary(true)}
-                className="text-blue-500 hover:underline ml-1"
-              >
-                more
-              </button>
-            )}
-          </p>
-        </div>
-      )}
-      <Details key={"Priorities"} title={"Priorities"} type="sub">
-        <div className="px-3 py-2 text-gray-700 text-sm">
-          {data?.["priorities"] || "No data"}
-        </div>
-      </Details>
-      <Details key={"Challenges"} title={"Challenges"} type="sub">
-        <div className="px-3 py-2 text-gray-700 text-sm">
-          {data?.["challenges"] || "No data"}
-        </div>
-      </Details>
-      <Details key={"Pain Points"} title={"Pain Points"} type="sub">
-        <div className="px-3 py-2 text-gray-700 text-sm">
-          {data?.["pain_points"] || "No data"}
-        </div>
-      </Details>
-      <Details key={"Opportunities"} title={"Opportunities"} type="sub">
-        <div className="px-3 py-2 text-gray-700 text-sm">
-          {data?.["opportunities"] || "No data"}
-        </div>
-      </Details>
-    </>
-  );
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
@@ -208,7 +183,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             <p className="text-gray-700 p-2">Summary</p>
             {orgInfo && selectedYear && selectedQuarter && !isTSLoading && (
               <button
-                // onClick={generateTailoredSummary}
+                onClick={generateTailoredSummary}
                 className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-indigo-600 text-white rounded-md text-sm"
               >
                 {isTSGenerating ? (
@@ -228,9 +203,17 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
           </div>
         ) : activeTab === "general" ? (
-          renderSummaryContent(generalSummary)
+          <RenderSummaryContent
+            data={generalSummary}
+            showFullSummary={showFullSummary}
+            setShowFullSummary={setShowFullSummary}
+          />
         ) : activeTab === "tailored" ? (
-          renderSummaryContent(tailoredSummary)
+          <RenderSummaryContent
+            data={tailoredSummary}
+            showFullSummary={showFullSummary}
+            setShowFullSummary={setShowFullSummary}
+          />
         ) : null}
       </div>
     </div>
