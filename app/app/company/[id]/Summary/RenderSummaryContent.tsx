@@ -23,7 +23,7 @@ const RenderSummaryContent = ({
   );
 
   const renderDetails = (title: string, items: string[] | undefined) => (
-    <Details key={title} title={title} type="sub">
+    <Details key={title} title={title} type="sub" open={false}>
       {renderList(items)}
     </Details>
   );

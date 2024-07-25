@@ -4,11 +4,17 @@ import { motion, AnimatePresence } from "framer-motion";
 interface DetailsProps {
   title: string;
   type?: string;
+  open?: boolean;
   children: React.ReactNode;
 }
 
-const Details = ({ title, type = "main", children }: DetailsProps) => {
-  const [isOpen, setIsOpen] = useState(true);
+const Details = ({
+  title,
+  type = "main",
+  open = true,
+  children,
+}: DetailsProps) => {
+  const [isOpen, setIsOpen] = useState(open);
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState(0);
 
