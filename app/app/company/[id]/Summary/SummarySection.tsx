@@ -204,13 +204,14 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
             <p className="text-gray-700 p-2">Summary</p>
             {orgInfo && !isTSLoading && (
               <button
+                title="Get custom earnings report summaries tailored to your business needs"
                 onClick={generateTailoredSummary}
                 className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-indigo-600 text-white rounded-md text-sm"
               >
                 {isTSGenerating ? (
                   <span className="ml-2 inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
                 ) : (
-                  <p>Generate Tailored Summary</p>
+                  <span>Generate Tailored Summary</span>
                 )}
               </button>
             )}

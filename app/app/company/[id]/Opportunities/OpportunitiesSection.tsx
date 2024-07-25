@@ -232,6 +232,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             </h3>
             {!isGeneralOppLoading && !isTailoredOppLoading && (
               <button
+                title={`Discover the top opportunities for selling your solutions to ${companyName}`}
                 onClick={generateTailoredOpportunities}
                 disabled={isTailoredOppGenerating}
                 className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none transition duration-150 ease-in-out"
