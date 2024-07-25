@@ -14,7 +14,7 @@ const Details = ({
   open = true,
   children,
 }: DetailsProps) => {
-  const [isOpen, setIsOpen] = useState(open);
+  const [isOpen, setIsOpen] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState(0);
 
@@ -23,6 +23,10 @@ const Details = ({
       setContentHeight(contentRef.current.scrollHeight);
     }
   }, [children]);
+
+  useEffect(() => {
+    setIsOpen(open);
+  }, [open]);
 
   const toggleOpen = () => {
     setIsOpen(!isOpen);
