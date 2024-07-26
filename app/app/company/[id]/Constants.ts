@@ -456,3 +456,156 @@ export const tailoredOpportunities = [
     ],
   },
 ];
+
+export const tailoredOpportunities_v2 = [
+  {
+    opportunityName:
+      "Identify ideal SaaS customers for Loops.so using ProspectEdge's AI-driven profiling",
+    opportunityScore: 95,
+    opportunityKeywords: [
+      "Customer profiling",
+      "SaaS targeting",
+      "AI analysis",
+    ],
+    targetBuyer: {
+      role: "Director",
+      department: "Marketing",
+    },
+    engagementTips: {
+      inbound: [
+        "Create a case study showcasing how ProspectEdge's customer identification improved user acquisition for a SaaS email platform similar to Loops.so.",
+        "Develop a webinar series on 'Identifying High-Value SaaS Customers with AI' to attract Loops.so's marketing team and demonstrate ProspectEdge's expertise.",
+        "Offer a free trial of ProspectEdge's customer profiling tool tailored for email platform providers, showing potential ROI for Loops.so.",
+      ],
+      outbound: [
+        "Reach out with a personalized analysis of Loops.so's current customer base, suggesting untapped market segments identified by ProspectEdge's AI.",
+        "Send a comparison report showing how Loops.so's customer profile compares to top-performing SaaS email platforms, highlighting growth opportunities.",
+        "Offer a custom demo of ProspectEdge, focusing on how it can help Loops.so identify and prioritize high-potential SaaS accounts for their email platform.",
+      ],
+    },
+    outboundEmail: {
+      subject: "Uncover Loops.so's Ideal SaaS Customers with AI",
+      body: "Hi [Name],\n\nI noticed Loops.so is revolutionizing email for SaaS companies. Our AI-driven platform, ProspectEdge, could help you identify and prioritize high-potential SaaS accounts that would benefit most from your email solution. Interested in a brief demo tailored to Loops.so's growth goals?\n\nBest,\n[Your Name]",
+    },
+  },
+  {
+    opportunityName:
+      "Discover new selling opportunities for Loops.so in untapped SaaS verticals",
+    opportunityScore: 92,
+    opportunityKeywords: [
+      "Market expansion",
+      "SaaS verticals",
+      "Sales opportunities",
+    ],
+    targetBuyer: {
+      role: "VP",
+      department: "Sales",
+    },
+    engagementTips: {
+      inbound: [
+        "Publish a comprehensive report on 'Emerging SaaS Verticals for Email Platform Providers' using ProspectEdge's market analysis capabilities.",
+        "Host an exclusive roundtable for SaaS sales leaders, focusing on identifying new market opportunities, and invite Loops.so's sales team.",
+        "Create an interactive tool that allows Loops.so to explore potential selling opportunities in different SaaS verticals based on ProspectEdge's data.",
+      ],
+      outbound: [
+        "Offer a personalized market opportunity analysis for Loops.so, highlighting untapped SaaS verticals that could benefit from their email platform.",
+        "Propose a joint strategy session to align ProspectEdge's opportunity discovery process with Loops.so's product roadmap and expansion plans.",
+        "Develop a custom ROI calculator for Loops.so, showing potential revenue growth from entering new SaaS verticals identified by ProspectEdge.",
+      ],
+    },
+    outboundEmail: {
+      subject: "Unlock New Markets for Loops.so's Email Platform",
+      body: "Hello [Name],\n\nProspectEdge has identified several high-potential SaaS verticals where Loops.so could expand its market presence. Our AI-driven analysis suggests these opportunities could increase your addressable market by 30%. Would you like to explore these new selling opportunities together?\n\nBest regards,\n[Your Name]",
+    },
+  },
+  {
+    opportunityName:
+      "Optimize Loops.so's account prioritization with ProspectEdge's AI-driven scoring",
+    opportunityScore: 93,
+    opportunityKeywords: [
+      "Account prioritization",
+      "AI scoring",
+      "Sales efficiency",
+    ],
+    targetBuyer: {
+      role: "Director",
+      department: "Sales Operations",
+    },
+    engagementTips: {
+      inbound: [
+        "Create an interactive demo showcasing how ProspectEdge's AI scoring can prioritize SaaS accounts based on their likelihood to adopt an email platform like Loops.so.",
+        "Publish a case study on how AI-driven account prioritization improved sales efficiency for a B2B SaaS company, highlighting potential benefits for Loops.so.",
+        "Offer a free account scoring assessment for a sample of Loops.so's prospects, demonstrating the power of ProspectEdge's prioritization algorithms.",
+      ],
+      outbound: [
+        "Propose a pilot program to implement ProspectEdge's account scoring for a subset of Loops.so's sales team, with a focus on measuring improvements in conversion rates and sales velocity.",
+        "Offer a personalized analysis of Loops.so's current account prioritization methods, with recommendations on how ProspectEdge's AI can enhance their approach.",
+        "Arrange a collaborative workshop with Loops.so's sales operations team to customize ProspectEdge's scoring model to their specific ideal customer profile.",
+      ],
+    },
+    outboundEmail: {
+      subject: "Prioritize Your Best Prospects with AI-Powered Insights",
+      body: "Hi [Name],\n\nImagine if your sales team could focus on the SaaS accounts most likely to convert. ProspectEdge's AI-driven scoring can help Loops.so prioritize high-potential accounts, potentially increasing your win rates by 25%. Would you like to explore how this could optimize your sales efforts?\n\nBest,\n[Your Name]",
+    },
+  },
+  {
+    opportunityName:
+      "Enhance Loops.so's customer retention strategies with ProspectEdge's churn prediction",
+    opportunityScore: 91,
+    opportunityKeywords: [
+      "Churn prediction",
+      "Customer retention",
+      "AI analytics",
+    ],
+    targetBuyer: {
+      role: "Director",
+      department: "Customer Success",
+    },
+    engagementTips: {
+      inbound: [
+        "Publish a whitepaper on 'Leveraging AI for Proactive Customer Retention in SaaS' featuring ProspectEdge's churn prediction capabilities.",
+        "Host a customer success webinar showcasing how AI-driven insights can help identify at-risk customers before they churn.",
+        "Develop a free basic churn risk assessment tool for SaaS companies, encouraging Loops.so to explore ProspectEdge's more advanced predictive capabilities.",
+      ],
+      outbound: [
+        "Offer a complimentary churn risk analysis for a sample of Loops.so's customer base, highlighting potential at-risk accounts and retention opportunities.",
+        "Propose a pilot integration of ProspectEdge's churn prediction model with Loops.so's customer success platform to enable proactive retention efforts.",
+        "Arrange a workshop with Loops.so's customer success team to demonstrate how ProspectEdge's AI can enhance their existing retention strategies and improve overall customer lifetime value.",
+      ],
+    },
+    outboundEmail: {
+      subject: "Predict and Prevent Churn with AI-Powered Insights",
+      body: "Hi [Name],\n\nWhat if you could predict which customers are at risk of churning before they show any signs? ProspectEdge's AI-driven churn prediction model can help Loops.so identify at-risk accounts and take proactive measures. Interested in seeing how this could boost your retention rates?\n\nBest,\n[Your Name]",
+    },
+  },
+  {
+    opportunityName:
+      "Enhance Loops.so's sales intelligence with ProspectEdge's decision-maker identification",
+    opportunityScore: 88,
+    opportunityKeywords: [
+      "Sales intelligence",
+      "Decision-makers",
+      "B2B outreach",
+    ],
+    targetBuyer: {
+      role: "VP",
+      department: "Sales",
+    },
+    engagementTips: {
+      inbound: [
+        "Publish a whitepaper on 'Navigating the B2B SaaS Sales Landscape: Identifying and Engaging Key Decision-Makers' featuring ProspectEdge's AI capabilities.",
+        "Host a webinar on 'Optimizing B2B Sales Outreach in the SaaS Industry' showcasing how ProspectEdge identifies and profiles key decision-makers.",
+        "Develop a free tool that provides basic insights into decision-making structures within SaaS companies, encouraging Loops.so to explore ProspectEdge's more advanced capabilities.",
+      ],
+      outbound: [
+        "Offer a complimentary analysis of Loops.so's current sales targets, identifying key decision-makers and influencers that might have been overlooked.",
+        "Propose a pilot integration of ProspectEdge's decision-maker identification tool with Loops.so's CRM system for a select group of high-value prospects.",
+        "Arrange a workshop with Loops.so's sales team to demonstrate how ProspectEdge's sales intelligence can shorten sales cycles and improve conversion rates.",
+      ],
+    },
+    outboundEmail: {
+      subject: "Supercharge Loops.so's Sales with AI-Powered Intelligence",
+      body: "Hello [Name],\n\nWhat if your sales team could instantly identify and profile key decision-makers at every SaaS company they target? ProspectEdge's AI can provide this level of sales intelligence, potentially reducing your sales cycle by 20%. Interested in seeing how this could work for Loops.so?\n\nBest regards,\n[Your Name]",
+    },
+  },
+];
