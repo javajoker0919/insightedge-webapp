@@ -36,7 +36,6 @@ const CompanySearchbar = ({
   const [hasNews, setHasNews] = useState<boolean>(false);
   const [hasSummary, setHasSummary] = useState<boolean>(false);
 
-  const [newsCompanyIds, setNewsCompanyIds] = useState<number[]>([]);
   const [summaryCompanyIds, setSummaryCompanyIds] = useState<number[]>([]);
 
   useEffect(() => {
@@ -105,7 +104,7 @@ const CompanySearchbar = ({
       setIsSearching(true);
       let query = supabase
         .from("companies")
-        .select("id, name, symbol")
+        .select("id, name, symbol, industry")
         .limit(5);
 
       // if (hasNews) {
@@ -130,11 +129,22 @@ const CompanySearchbar = ({
         }
       }
 
+      if (searchType === "symbol") {
+        query = query
+          .order("symbol", { ascending: true })
+          .order("name", { ascending: true });
+      } else {
+        query = query
+          .order("name", { ascending: true })
+          .order("symbol", { ascending: true });
+      }
+
       const { data, error } = await query;
 
       if (error) {
         console.error("Error fetching search results:", error);
       } else {
+        console.log(data);
         setSearchResults(data || []);
       }
       setIsSearching(false);
@@ -307,11 +317,16 @@ const CompanySearchbar = ({
               {searchResults.map((company) => (
                 <div
                   key={company.id}
-                  className="py-2 px-5 bg-white hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+                  className="py-2 px-5 bg-white hover:bg-gray-100 transition-colors duration-200 cursor-pointer flex justify-between items-center"
                   onClick={() => handleCompanyClick(company.id)}
                 >
-                  <p className="font-medium">{company.name}</p>
-                  <p className="text-gray-500 text-sm">{company.symbol}</p>
+                  <div>
+                    <p className="font-medium">{company.name}</p>
+                    <p className="text-gray-500 text-sm">{company.symbol}</p>
+                  </div>
+                  <p className="text-gray-500 text-sm rounded-full py-1 px-3 bg-yellow-50 border-yellow-200 border">
+                    {company.industry}
+                  </p>
                 </div>
               ))}
             </div>

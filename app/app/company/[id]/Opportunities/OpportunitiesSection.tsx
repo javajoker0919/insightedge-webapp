@@ -8,6 +8,8 @@ import { orgInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTailoredOpportunitiesAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
+import { Details } from "../components";
+import { tailoredOpportunities_v2 } from "../Constants";
 
 interface OpportunitiesProps {
   companyID: number;
@@ -24,6 +26,14 @@ export interface OpportunityProps {
     department: string;
   };
   tactics: string[];
+  engagementTips?: {
+    inbound: string[];
+    outbound: string[];
+  };
+  outboundEmail?: {
+    subject: string;
+    body: string;
+  };
 }
 
 const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
@@ -47,6 +57,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   const [tailoredOpps, setTailoredOpps] = useState<OpportunityProps[] | null>(
     null
   );
+  const [openedSection, setOpenedSection] = useState<1 | 2 | 3>(1);
   const [isGeneralOppLoading, setIsGeneralOppLoading] =
     useState<boolean>(false);
   const [isTailoredOppLoading, setIsTailoredOppLoading] =
@@ -97,7 +108,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     try {
       const { data, error } = await supabase
         .from("general_opportunities")
-        .select("name, score, buyer_role, buyer_department, tactics")
+        .select("name, score, buyer_role, buyer_department")
         .eq("earnings_transcript_id", etID);
 
       if (error) throw error;
@@ -128,16 +139,19 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         .eq("organization_id", orgID);
 
       if (error) throw error;
-
-      const formattedData: OpportunityProps[] = data.map((item: any) => ({
-        opportunityName: item.name,
-        opportunityScore: item.score,
-        targetBuyer: {
-          role: item.buyer_role,
-          department: item.buyer_department,
-        },
-        tactics: item.tactics.split("\n"),
-      }));
+      // added mock data : tailoredOpportunities_v2
+      const formattedData: OpportunityProps[] = data.map(
+        (item: any, indx: number) => ({
+          ...tailoredOpportunities_v2[indx % tailoredOpportunities_v2.length],
+          opportunityName: item.name,
+          opportunityScore: item.score,
+          targetBuyer: {
+            role: item.buyer_role,
+            department: item.buyer_department,
+          },
+          tactics: item.tactics.split("\n"),
+        })
+      );
       setTailoredOpps(formattedData);
     } catch (error) {
       console.error("Unexpected error in fetchTailoredOpportunities:", error);
@@ -293,15 +307,68 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           ))}
       </div>
 
-      <Modal isOpen={!!selectedOpp} onClose={() => setSelectedOpp(null)}>
-        <h4 className="text-lg font-bold mb-4">Prospecting Tactics</h4>
-        <ul className="list-disc pl-5 mb-4">
-          {selectedOpp?.tactics.map((tip: string, index: number) => (
-            <li key={index} className="mb-2">
-              {tip}
-            </li>
-          ))}
-        </ul>
+      <Modal
+        wrapperClass="backdrop-blur-[2px]"
+        modalClass="min-w-[555px] max-w-full"
+        isOpen={!!selectedOpp}
+        onClose={() => setSelectedOpp(null)}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-xl font-bold text-indigo-600">
+            Prospecting Tactics
+          </h4>
+        </div>
+        <Details
+          key={"stratagy-1-" + (openedSection === 1 ? "open" : "close")}
+          open={openedSection === 1}
+          onToggle={(open) => open && setOpenedSection(1)}
+          title="Inbound Strategies"
+          wrapperClass="border-indigo-600 bg-[#f5f5ff]"
+          className="hover:bg-[#f5f5ff] text-gray-800"
+        >
+          <ul className="list-disc pl-8 mb-4 text-gray-600">
+            {selectedOpp?.engagementTips?.inbound.map(
+              (tip: string, index: number) => (
+                <li key={"engagementTips_inbound_" + index} className="mb-2">
+                  {tip}
+                </li>
+              )
+            )}
+          </ul>
+        </Details>
+        <Details
+          key={"stratagy-2-" + (openedSection === 2 ? "open" : "close")}
+          open={openedSection === 2}
+          onToggle={(open) => open && setOpenedSection(2)}
+          title="Outbound Strategies"
+          wrapperClass="border-indigo-600 bg-[#f5f5ff]"
+          className="hover:bg-[#f5f5ff] text-gray-800"
+        >
+          <ul className="list-disc pl-8 mb-4 text-gray-600">
+            {selectedOpp?.engagementTips?.outbound.map(
+              (tip: string, index: number) => (
+                <li key={"engagementTips_outbound_" + index} className="mb-2">
+                  {tip}
+                </li>
+              )
+            )}
+          </ul>
+        </Details>
+        <Details
+          key={"stratagy-3-" + (openedSection === 3 ? "open" : "close")}
+          open={openedSection === 3}
+          onToggle={(open) => open && setOpenedSection(3)}
+          title="Outbound Email"
+          wrapperClass="border-indigo-600 bg-[#f5f5ff]"
+          className="hover:bg-[#f5f5ff] text-gray-800"
+        >
+          <div className="px-3 pb-3 pt-2">
+            <h4 className="text-lg font-semibold text-gray-600 mb-3">
+              {selectedOpp?.outboundEmail?.subject}
+            </h4>
+            <p className="text-gray-600">{selectedOpp?.outboundEmail?.body}</p>
+          </div>
+        </Details>
       </Modal>
     </div>
   );
