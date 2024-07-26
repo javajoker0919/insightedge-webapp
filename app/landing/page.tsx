@@ -49,7 +49,7 @@ export default function LandingPage() {
                 clipRule="evenodd"
               />
             </svg>
-            InsightEdge
+            ProspectEdge
           </div>
           <div className="sm:hidden">
             <button onClick={toggleMenu} className="text-indigo-600">
@@ -123,7 +123,7 @@ export default function LandingPage() {
             Supercharge Your B2B Sales with AI Insights
           </h1>
           <p className="text-lg sm:text-xl mb-12 animate-fade-in-up max-w-3xl mx-auto">
-            InsightEdge is the ultimate sales intelligence platform for B2B
+            ProspectEdge is the ultimate sales intelligence platform for B2B
             teams. Our AI-powered solution analyzes data from various sources to
             give you actionable insights and a competitive edge.
           </p>
@@ -223,7 +223,7 @@ export default function LandingPage() {
           </h2>
           <p className="text-xl text-center">
             Leading B2B organizations across various industries trust
-            InsightEdge for their sales intelligence needs.
+            ProspectEdge for their sales intelligence needs.
           </p>
 
           {/* Add logos or testimonials here */}
@@ -262,7 +262,7 @@ export default function LandingPage() {
         <div className="container mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8">Get Started Today</h2>
           <p className="text-2xl mb-12">
-            Sign up for InsightEdge now and unlock the power of AI-driven sales
+            Sign up for ProspectEdge now and unlock the power of AI-driven sales
             insights.
           </p>
           <form className="mb-8 flex justify-center">
@@ -279,7 +279,7 @@ export default function LandingPage() {
             </button>
           </form>
           <p className="text-lg">
-            &copy; 2024 InsightEdge. All rights reserved.
+            &copy; 2024 ProspectEdge. All rights reserved.
           </p>
         </div>
       </footer>
