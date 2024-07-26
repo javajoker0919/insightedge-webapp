@@ -97,7 +97,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     try {
       const { data, error } = await supabase
         .from("general_opportunities")
-        .select("name, score, buyer_role, buyer_department, tactics")
+        .select("name, score, buyer_role, buyer_department")
         .eq("earnings_transcript_id", etID);
 
       if (error) throw error;
