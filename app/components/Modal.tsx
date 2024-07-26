@@ -4,9 +4,17 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  wrapperClass?: string;
+  modalClass?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  children,
+  wrapperClass = "",
+  modalClass = "",
+}) => {
   const [isVisible, setIsVisible] = useState(isOpen);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -38,8 +46,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div ref={modalRef} className="bg-white rounded-lg p-6 max-w-md w-full">
+    <div
+      className={
+        "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 " +
+        wrapperClass
+      }
+    >
+      <div
+        ref={modalRef}
+        className={"bg-white rounded-lg p-6 max-w-md w-full " + modalClass}
+      >
         {children}
       </div>
     </div>

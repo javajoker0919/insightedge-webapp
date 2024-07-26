@@ -5,14 +5,20 @@ interface DetailsProps {
   title: string;
   type?: string;
   open?: boolean;
+  onToggle?: (open: Boolean) => void;
   children: React.ReactNode;
+  className?: string;
+  wrapperClass?: string;
 }
 
 const Details = ({
   title,
   type = "main",
   open = true,
+  onToggle,
   children,
+  className,
+  wrapperClass,
 }: DetailsProps) => {
   const [isOpen, setIsOpen] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -30,12 +36,21 @@ const Details = ({
 
   const toggleOpen = () => {
     setIsOpen(!isOpen);
+    if (typeof onToggle === "function") onToggle(!isOpen);
   };
 
   return (
-    <div className="mb-2 bg-gray-50 overflow-hidden rounded border border-gray-200">
+    <div
+      className={
+        "mb-2 bg-gray-50 overflow-hidden rounded border border-gray-200 " +
+        wrapperClass
+      }
+    >
       <div
-        className="px-3 py-2 cursor-pointer text-base font-medium text-gray-600 hover:bg-gray-100 flex items-center"
+        className={
+          "px-3 py-2 cursor-pointer text-base font-medium text-gray-600 hover:bg-gray-100 flex items-center " +
+          className
+        }
         onClick={toggleOpen}
       >
         {type === "main" ? (
