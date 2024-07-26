@@ -4,6 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 
 import { supabase } from "@/utils/supabaseClient";
+import Image from "next/image";
 
 export default function Navbar() {
   const router = useRouter();
@@ -34,19 +35,12 @@ export default function Navbar() {
     <header className="py-4 fixed top-0 left-0 right-0 bg-white z-10 shadow-md">
       <nav className="container mx-auto flex justify-between items-center px-4">
         <div className="text-2xl font-bold text-blue-600 flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8 mr-2"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-              clipRule="evenodd"
-            />
-          </svg>
-          InsightEdge
+          <Image
+            src={"/logo.png"}
+            alt={"ProspectEdge"}
+            width={200}
+            height={40}
+          />
         </div>
         <div className="sm:hidden">
           <button onClick={toggleMenu} className="text-blue-600">
