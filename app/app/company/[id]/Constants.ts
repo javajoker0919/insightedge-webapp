@@ -198,265 +198,6 @@ export const generalOpportunities = [
   */
 ];
 
-export const tailoredOpportunities = [
-  {
-    opportunityName:
-      "Develop AI-driven drug discovery platform for neurological disorders",
-    opportunityScore: 95,
-    targetBuyer: {
-      role: "Chief Scientific Officer",
-      department: "R&D",
-    },
-    tactics: [
-      "Present a demo of the AI platform's capabilities in identifying novel drug targets",
-      "Offer a pilot project to demonstrate the platform's effectiveness in Teva's specific research areas",
-    ],
-  },
-  {
-    opportunityName:
-      "Implement blockchain technology for supply chain optimization",
-    opportunityScore: 90,
-    targetBuyer: {
-      role: "VP of Supply Chain",
-      department: "Operations",
-    },
-    tactics: [
-      "Develop a case study showing potential cost savings and efficiency improvements",
-      "Organize a workshop to demonstrate the blockchain solution's integration with existing systems",
-    ],
-  },
-  {
-    opportunityName:
-      "Create personalized medicine program for respiratory diseases",
-    opportunityScore: 88,
-    targetBuyer: {
-      role: "Head of Precision Medicine",
-      department: "R&D",
-    },
-    tactics: [
-      "Present a roadmap for implementing personalized medicine approaches in Teva's respiratory portfolio",
-      "Offer to conduct a pilot study demonstrating the benefits of personalized treatment in asthma patients",
-    ],
-  },
-  {
-    opportunityName:
-      "Develop digital therapeutics for mental health management",
-    opportunityScore: 85,
-    targetBuyer: {
-      role: "Director of Digital Health",
-      department: "Innovation",
-    },
-    tactics: [
-      "Showcase a prototype of the digital therapeutic for depression or anxiety",
-      "Propose a collaboration to integrate the digital therapeutic with Teva's existing CNS treatments",
-    ],
-  },
-  {
-    opportunityName:
-      "Implement advanced analytics for real-time manufacturing optimization",
-    opportunityScore: 82,
-    targetBuyer: {
-      role: "Head of Manufacturing",
-      department: "Operations",
-    },
-    tactics: [
-      "Provide a simulation demonstrating potential improvements in production efficiency",
-      "Offer a site visit to a facility already using the advanced analytics system",
-    ],
-  },
-  {
-    opportunityName: "Develop gene therapy program for rare genetic disorders",
-    opportunityScore: 80,
-    targetBuyer: {
-      role: "Head of Rare Diseases",
-      department: "R&D",
-    },
-    tactics: [
-      "Present a comprehensive overview of the gene therapy platform and its potential applications",
-      "Propose a collaborative research project focusing on a specific rare genetic disorder",
-    ],
-  },
-  {
-    opportunityName: "Create AI-powered drug repurposing initiative",
-    opportunityScore: 78,
-    targetBuyer: {
-      role: "Chief Innovation Officer",
-      department: "R&D",
-    },
-    tactics: [
-      "Demonstrate the AI system's ability to identify new indications for existing Teva drugs",
-      "Offer a pilot project to validate the AI's predictions for a selected drug candidate",
-    ],
-  },
-  {
-    opportunityName:
-      "Implement IoT-enabled smart packaging for improved patient adherence",
-    opportunityScore: 75,
-    targetBuyer: {
-      role: "Head of Patient Solutions",
-      department: "Commercial",
-    },
-    tactics: [
-      "Showcase a prototype of the smart packaging solution and its companion app",
-      "Propose a clinical study to measure the impact on patient adherence in a key therapeutic area",
-    ],
-  },
-  {
-    opportunityName:
-      "Develop biosimilars using advanced protein engineering techniques",
-    opportunityScore: 72,
-    targetBuyer: {
-      role: "Head of Biosimilars",
-      department: "R&D",
-    },
-    tactics: [
-      "Present case studies demonstrating the success of the protein engineering platform",
-      "Offer to conduct a feasibility study for developing a high-value biosimilar in Teva's portfolio",
-    ],
-  },
-  {
-    opportunityName:
-      "Create virtual clinical trial platform for decentralized studies",
-    opportunityScore: 70,
-    targetBuyer: {
-      role: "Head of Clinical Operations",
-      department: "R&D",
-    },
-    tactics: [
-      "Provide a demo of the virtual clinical trial platform and its features",
-      "Propose a pilot study to compare the efficiency of virtual vs. traditional clinical trials",
-    ],
-  },
-  {
-    opportunityName:
-      "Develop AI-driven drug discovery platform for neurological disorders",
-    opportunityScore: 95,
-    targetBuyer: {
-      role: "Chief Scientific Officer",
-      department: "R&D",
-    },
-    tactics: [
-      "Present a demo of the AI platform's capabilities in identifying novel drug targets",
-      "Offer a pilot project to demonstrate the platform's effectiveness in Teva's specific research areas",
-    ],
-  },
-  {
-    opportunityName:
-      "Implement blockchain technology for supply chain optimization",
-    opportunityScore: 90,
-    targetBuyer: {
-      role: "VP of Supply Chain",
-      department: "Operations",
-    },
-    tactics: [
-      "Develop a case study showing potential cost savings and efficiency improvements",
-      "Organize a workshop to demonstrate the blockchain solution's integration with existing systems",
-    ],
-  },
-  {
-    opportunityName:
-      "Create personalized medicine program for respiratory diseases",
-    opportunityScore: 88,
-    targetBuyer: {
-      role: "Head of Precision Medicine",
-      department: "R&D",
-    },
-    tactics: [
-      "Present a roadmap for implementing personalized medicine approaches in Teva's respiratory portfolio",
-      "Offer to conduct a pilot study demonstrating the benefits of personalized treatment in asthma patients",
-    ],
-  },
-  {
-    opportunityName:
-      "Develop digital therapeutics for mental health management",
-    opportunityScore: 85,
-    targetBuyer: {
-      role: "Director of Digital Health",
-      department: "Innovation",
-    },
-    tactics: [
-      "Showcase a prototype of the digital therapeutic for depression or anxiety",
-      "Propose a collaboration to integrate the digital therapeutic with Teva's existing CNS treatments",
-    ],
-  },
-  {
-    opportunityName:
-      "Implement advanced analytics for real-time manufacturing optimization",
-    opportunityScore: 82,
-    targetBuyer: {
-      role: "Head of Manufacturing",
-      department: "Operations",
-    },
-    tactics: [
-      "Provide a simulation demonstrating potential improvements in production efficiency",
-      "Offer a site visit to a facility already using the advanced analytics system",
-    ],
-  },
-  {
-    opportunityName: "Develop gene therapy program for rare genetic disorders",
-    opportunityScore: 80,
-    targetBuyer: {
-      role: "Head of Rare Diseases",
-      department: "R&D",
-    },
-    engagementTips: [
-      "Present a comprehensive overview of the gene therapy platform and its potential applications",
-      "Propose a collaborative research project focusing on a specific rare genetic disorder",
-    ],
-  },
-  {
-    opportunityName: "Create AI-powered drug repurposing initiative",
-    opportunityScore: 78,
-    targetBuyer: {
-      role: "Chief Innovation Officer",
-      department: "R&D",
-    },
-    engagementTips: [
-      "Demonstrate the AI system's ability to identify new indications for existing Teva drugs",
-      "Offer a pilot project to validate the AI's predictions for a selected drug candidate",
-    ],
-  },
-  {
-    opportunityName:
-      "Implement IoT-enabled smart packaging for improved patient adherence",
-    opportunityScore: 75,
-    targetBuyer: {
-      role: "Head of Patient Solutions",
-      department: "Commercial",
-    },
-    engagementTips: [
-      "Showcase a prototype of the smart packaging solution and its companion app",
-      "Propose a clinical study to measure the impact on patient adherence in a key therapeutic area",
-    ],
-  },
-  {
-    opportunityName:
-      "Develop biosimilars using advanced protein engineering techniques",
-    opportunityScore: 72,
-    targetBuyer: {
-      role: "Head of Biosimilars",
-      department: "R&D",
-    },
-    engagementTips: [
-      "Present case studies demonstrating the success of the protein engineering platform",
-      "Offer to conduct a feasibility study for developing a high-value biosimilar in Teva's portfolio",
-    ],
-  },
-  {
-    opportunityName:
-      "Create virtual clinical trial platform for decentralized studies",
-    opportunityScore: 70,
-    targetBuyer: {
-      role: "Head of Clinical Operations",
-      department: "R&D",
-    },
-    engagementTips: [
-      "Provide a demo of the virtual clinical trial platform and its features",
-      "Propose a pilot study to compare the efficiency of virtual vs. traditional clinical trials",
-    ],
-  },
-];
-
 export const tailoredOpportunities_v2 = [
   {
     opportunityName:
@@ -607,5 +348,141 @@ export const tailoredOpportunities_v2 = [
       subject: "Supercharge Loops.so's Sales with AI-Powered Intelligence",
       body: "Hello [Name],\n\nWhat if your sales team could instantly identify and profile key decision-makers at every SaaS company they target? ProspectEdge's AI can provide this level of sales intelligence, potentially reducing your sales cycle by 20%. Interested in seeing how this could work for Loops.so?\n\nBest regards,\n[Your Name]",
     },
+  },
+];
+
+export const marketingStrategy = [
+  {
+    marketingTactic: "Thought Leadership Webinars on Healthcare Innovation",
+    tacticScore: 95,
+    tacticType: "Inbound",
+    relevantAudience:
+      "Chief Innovation Officer, Vice President of Product Development, Director of Innovation Strategy, Senior Scientist, Chief Medical Officer, Executive Vice President of Innovative Medicine",
+    channels: ["Digital Webinars", "LinkedIn"],
+    tacticalDetails: {
+      description:
+        "Host webinars featuring industry experts discussing the future of healthcare innovation, aligning with J&J's focus on leading the next wave of healthcare innovation.",
+      keyMessages: [
+        "Cutting-edge advancements in medical technology and pharmaceuticals",
+        "Strategies for maintaining market leadership through innovation",
+      ],
+      callToAction:
+        "Register for our exclusive healthcare innovation webinar series",
+      expectedROI: "High engagement from J&J's R&D and innovation teams",
+      implementationTimeframe: "Quarterly webinars",
+      requiredResources: [
+        "Industry expert speakers",
+        "Webinar platform",
+        "Content marketing team",
+      ],
+      successMetrics: [
+        "Number of J&J attendees",
+        "Engagement rate",
+        "Follow-up meetings scheduled",
+      ],
+    },
+    alignmentWithCompanyGoals: [
+      "Support J&J's position as a leader in healthcare innovation",
+      "Address J&J's focus on advancing their differentiated portfolio",
+    ],
+  },
+  {
+    marketingTactic: "Personalized Email Campaign on Cardiovascular Solutions",
+    tacticScore: 90,
+    tacticType: "Outbound",
+    relevantAudience:
+      "Executive Vice President of MedTech, Director of Cardiovascular Products, Chief Technology Officer, Vice President of R&D, Product Manager of Electrophysiology",
+    channels: ["Email Marketing", "LinkedIn"],
+    tacticalDetails: {
+      description:
+        "Develop a highly personalized email campaign showcasing innovative cardiovascular solutions, targeting J&J's growing focus on this area.",
+      keyMessages: [
+        "Cutting-edge technologies in electrophysiology and heart recovery",
+        "Solutions to complement J&J's recent acquisitions like Shockwave",
+      ],
+      callToAction:
+        "Schedule a personalized demo of our cardiovascular solutions",
+      expectedROI: "High-value leads from J&J's cardiovascular division",
+      implementationTimeframe: "Monthly emails over 6 months",
+      requiredResources: [
+        "Email marketing platform",
+        "Content writers",
+        "Design team",
+      ],
+      successMetrics: ["Open rates", "Click-through rates", "Demo requests"],
+    },
+    alignmentWithCompanyGoals: [
+      "Support J&J's expansion in high-growth cardiovascular markets",
+      "Complement J&J's recent acquisitions in the cardiovascular space",
+    ],
+  },
+  {
+    marketingTactic: "Targeted LinkedIn Advertising for Orthopedic Innovations",
+    tacticScore: 85,
+    tacticType: "Inbound",
+    relevantAudience:
+      "Vice President of Orthopedics, Orthopedic Product Manager, Director of R&D, Chief Medical Officer, Surgeon Relations Manager",
+    channels: ["LinkedIn"],
+    tacticalDetails: {
+      description:
+        "Create targeted LinkedIn ad campaigns showcasing orthopedic innovations, particularly in robotics and navigation systems.",
+      keyMessages: [
+        "Advanced robotic solutions for orthopedic procedures",
+        "Innovative navigation systems for improved surgical precision",
+      ],
+      callToAction:
+        "Download our white paper on the future of orthopedic robotics",
+      expectedROI:
+        "Increased awareness and leads from J&J's orthopedics division",
+      implementationTimeframe: "Ongoing campaign with monthly optimization",
+      requiredResources: [
+        "LinkedIn advertising budget",
+        "Ad creative team",
+        "White paper authors",
+      ],
+      successMetrics: [
+        "Ad impressions",
+        "Click-through rates",
+        "White paper downloads",
+      ],
+    },
+    alignmentWithCompanyGoals: [
+      "Support J&J's focus on innovation-driven growth in orthopedics",
+      "Complement J&J's expansion of VELYS robotic system",
+    ],
+  },
+  {
+    marketingTactic: "Sponsored Content in Pharma Industry Publications",
+    tacticScore: 80,
+    tacticType: "Inbound",
+    relevantAudience:
+      "Chief Executive Officer, Executive Vice President of Innovative Medicine, Chief Scientific Officer, Vice President of Clinical Development, Director of Regulatory Affairs",
+    channels: ["Industry-specific publications"],
+    tacticalDetails: {
+      description:
+        "Develop sponsored content for leading pharmaceutical industry publications, focusing on innovative approaches to drug development and commercialization.",
+      keyMessages: [
+        "Cutting-edge technologies in drug discovery and development",
+        "Strategies for successful commercialization of innovative medicines",
+      ],
+      callToAction:
+        "Contact us to learn more about our pharma innovation solutions",
+      expectedROI: "Increased brand awareness among J&J's top executives",
+      implementationTimeframe: "Quarterly articles",
+      requiredResources: [
+        "Content writers",
+        "Industry publication partnerships",
+        "Subject matter experts",
+      ],
+      successMetrics: [
+        "Article views",
+        "Engagement rates",
+        "Inquiries from J&J executives",
+      ],
+    },
+    alignmentWithCompanyGoals: [
+      "Support J&J's focus on innovative medicine",
+      "Address J&J's goal of sustained growth through 2025 and beyond",
+    ],
   },
 ];
