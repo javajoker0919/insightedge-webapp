@@ -21,11 +21,12 @@ interface OpportunitiesProps {
 export interface OpportunityProps {
   opportunityName: string;
   opportunityScore: number;
+  keywords?: string[];
   targetBuyer: {
     role: string;
     department: string;
   };
-  tactics: string[];
+  tactics?: string[];
   engagementTips?: {
     inbound: string[];
     outbound: string[];
@@ -134,7 +135,9 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     try {
       const { data, error } = await supabase
         .from("tailored_opportunities")
-        .select("name, score, buyer_role, buyer_department, tactics")
+        .select(
+          "name, score, keywords, buyer_role, buyer_department, tactics, engagement_inbounds, engagement_outbounds, email_subject, email_body"
+        )
         .eq("earnings_transcript_id", etID)
         .eq("organization_id", orgID);
 
@@ -145,11 +148,20 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           ...tailoredOpportunities_v2[indx % tailoredOpportunities_v2.length],
           opportunityName: item.name,
           opportunityScore: item.score,
+          keywords: item.keywords,
           targetBuyer: {
             role: item.buyer_role,
             department: item.buyer_department,
           },
           tactics: item.tactics.split("\n"),
+          engagementTips: {
+            inbound: item.engagement_inbounds.split("\n"),
+            outbound: item.engagement_outbounds.split("\n"),
+          },
+          outboundEmail: {
+            subject: item.email_subject,
+            body: item.email_body,
+          },
         })
       );
       setTailoredOpps(formattedData);
@@ -176,11 +188,20 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           (item: any) => ({
             opportunityName: item.name,
             opportunityScore: item.score,
+            keywords: item.keywords.split("\n"),
             targetBuyer: {
               role: item.buyer_role,
               department: item.buyer_department,
             },
-            tactics: item.tactics.split("\n"),
+            tactics: item.tactics?.split("\n"),
+            engagementTips: {
+              inbound: item.engagement_inbounds.split("\n"),
+              outbound: item.engagement_outbounds.split("\n"),
+            },
+            outboundEmail: {
+              subject: item.email_subject,
+              body: item.email_body,
+            },
           })
         );
         setTailoredOpps(formattedData);
