@@ -27,11 +27,11 @@ const generateTailoredAPI = async (
     quarter: number;
   }
 ) => {
-  const { companyID, ...queryParams } = params;
+  const { companyID, orgID, ...queryParams } = params;
   const apiClient = await createApiClient();
   const url = `/api/v1/${endpoint}/${companyID}`;
   return apiClient.get(url, {
-    params: { org_id: queryParams.orgID, ...queryParams },
+    params: { org_id: orgID, ...queryParams },
   });
 };
 
