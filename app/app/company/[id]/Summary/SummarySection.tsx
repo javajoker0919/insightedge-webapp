@@ -62,16 +62,23 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
 
       if (error) throw error;
 
-      const processedData: SummaryProps = {
-        summary: data.summary.split("\n"),
-        challenges: data.challenges.split("\n"),
-        pain_points: data.pain_points.split("\n"),
-        opportunities: data.opportunities.split("\n"),
-        priorities: data.priorities.split("\n"),
-      };
+      if (data) {
+        const processedData: SummaryProps = {
+          summary: data.summary ? data.summary.split("\n") : [],
+          challenges: data.challenges ? data.challenges.split("\n") : [],
+          pain_points: data.pain_points ? data.pain_points.split("\n") : [],
+          opportunities: data.opportunities
+            ? data.opportunities.split("\n")
+            : [],
+          priorities: data.priorities ? data.priorities.split("\n") : [],
+        };
 
-      setGeneralSummary(processedData);
-      setShowFullSummary(true);
+        setGeneralSummary(processedData);
+        setShowFullSummary(true);
+      } else {
+        setGeneralSummary(null);
+        setShowFullSummary(false);
+      }
     } catch (error) {
       console.error("Error fetching transcript data:", error);
       setGeneralSummary(null);

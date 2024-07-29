@@ -142,29 +142,34 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         .eq("organization_id", orgID);
 
       if (error) throw error;
-      // added mock data : tailoredOpportunities_v2
-      const formattedData: OpportunityProps[] = data.map(
-        (item: any, indx: number) => ({
-          ...tailoredOpportunities_v2[indx % tailoredOpportunities_v2.length],
-          opportunityName: item.name,
-          opportunityScore: item.score,
-          keywords: item.keywords,
-          targetBuyer: {
-            role: item.buyer_role,
-            department: item.buyer_department,
-          },
-          tactics: item.tactics.split("\n"),
-          engagementTips: {
-            inbound: item.engagement_inbounds.split("\n"),
-            outbound: item.engagement_outbounds.split("\n"),
-          },
-          outboundEmail: {
-            subject: item.email_subject,
-            body: item.email_body,
-          },
-        })
-      );
-      setTailoredOpps(formattedData);
+
+      if (data) {
+        // added mock data : tailoredOpportunities_v2
+        const formattedData: OpportunityProps[] = data.map(
+          (item: any, indx: number) => ({
+            ...tailoredOpportunities_v2[indx % tailoredOpportunities_v2.length],
+            opportunityName: item.name,
+            opportunityScore: item.score,
+            keywords: item.keywords,
+            targetBuyer: {
+              role: item.buyer_role,
+              department: item.buyer_department,
+            },
+            tactics: item.tactics?.split("\n") || [],
+            engagementTips: {
+              inbound: item.engagement_inbounds?.split("\n") || [],
+              outbound: item.engagement_outbounds?.split("\n") || [],
+            },
+            outboundEmail: {
+              subject: item.email_subject,
+              body: item.email_body,
+            },
+          })
+        );
+        setTailoredOpps(formattedData);
+      } else {
+        setTailoredOpps([]);
+      }
     } catch (error) {
       console.error("Unexpected error in fetchTailoredOpportunities:", error);
     } finally {
@@ -212,7 +217,11 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           "top"
         );
       } else {
-        invokeToast("error", data.message, "top");
+        invokeToast(
+          "error",
+          "An error occured while generating tailored opportunities",
+          "top"
+        );
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

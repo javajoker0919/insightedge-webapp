@@ -26,11 +26,6 @@ const ForgotPassword = () => {
     setIsValidForm(!!email && !error.email);
   }, [email, error]);
 
-  /// Effect for debugging (consider removing in production)
-  useEffect(() => {
-    console.log(!isValidForm || isLoading);
-  }, [isValidForm, isLoading]);
-
   /// Handle input change and validate email
   const handleInputChange = (value: string) => {
     setEmail(value);
@@ -49,15 +44,19 @@ const ForgotPassword = () => {
 
     try {
       /// Attempt to send password reset email
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) throw error;
 
-      /// Show success message and redirect
+      console.log("Password reset response:", data); // Log the response data
       invokeToast("success", "Password reset link sent to your email!", "top");
       router.push("/auth/sign-in");
     } catch (error: any) {
-      console.error("Password reset error:", error);
-      invokeToast("error", "An error occurred during password reset", "top");
+      console.error("Password reset error:", error.message, error.status);
+      invokeToast(
+        "error",
+        `Error: ${error.message || "An error occurred during password reset"}`,
+        "top"
+      );
     } finally {
       setIsLoading(false);
     }
