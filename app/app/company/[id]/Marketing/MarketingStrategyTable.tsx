@@ -15,7 +15,7 @@ const PILL_COLORS = [
   "bg-orange-100 text-orange-800 border border-1 border-white hover:border-orange-400",
   "bg-teal-100 text-teal-800 border border-1 border-white hover:border-teal-400",
   "bg-pink-100 text-pink-800 border border-1 border-white hover:border-pink-400",
-  "bg-primary-100 text-primary-800 border border-1 border-white hover:border-primary-400",
+  "bg-indigo-100 text-indigo-800 border border-1 border-white hover:border-indigo-400",
   "bg-yellow-100 text-yellow-800 border border-1 border-white hover:border-yellow-400",
   "bg-green-100 text-green-800 border border-1 border-white hover:border-green-400",
   "bg-red-100 text-red-800 border border-1 border-white hover:border-red-400",
@@ -61,62 +61,89 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
             <TableHeadingRow />
           </thead>
           <tbody className="text-center relative">
-            {strats.map((strt, index) => (
-              <tr
-                key={`market-strategy-${index}`}
-                className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} ${
-                  strategies.length > 0 ? "" : "blur"
-                }`}
-              >
-                <td className="px-4 py-3 border text-left border-gray-300">
-                  {strt.marketingTactic}
-                </td>
-                <td className="px-4 py-3 border border-gray-300">
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-sm font-medium ${
-                      strt.tacticScore >= 90
-                        ? "bg-green-100 text-green-800"
-                        : strt.tacticScore >= 70
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {strt.tacticScore}
-                  </span>
-                </td>
-                <td className="px-4 py-3 border border-gray-300 ">
-                  {strt.relevantAudience.split(", ").map((aud, indx) => (
+            {strats.map((strgy, index) => {
+              const audience = strgy.relevantAudience.split(", ");
+              return (
+                <tr
+                  key={`market-strategy-${index}`}
+                  className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} ${
+                    strategies.length > 0 ? "" : "blur"
+                  }`}
+                >
+                  <td className="px-4 py-3 border text-left border-gray-300">
+                    {strgy.marketingTactic}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
                     <span
-                      className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium ${(() =>
-                        PILL_COLORS[indx % PILL_COLORS.length])()}`}
+                      className={`inline-block px-2 py-1 rounded-full text-sm font-medium ${
+                        strgy.tacticScore >= 90
+                          ? "bg-green-100 text-green-800"
+                          : strgy.tacticScore >= 70
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
                     >
-                      {aud}
+                      {strgy.tacticScore}
                     </span>
-                  ))}
-                </td>
-                <td className="px-4 py-3 border border-gray-300">
-                  {strt.channels.map((ch) => (
-                    <span
-                      className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium ${(() => {
-                        return PILL_COLORS[index % PILL_COLORS.length];
-                      })()}`}
-                    >
-                      {ch}
-                    </span>
-                  ))}
-                </td>
-                <td className="px-4 py-3 border border-gray-300">
-                  <div className="flex justify-center space-x-2">
-                    <button
-                      onClick={() => onQuickAction(strt)}
-                      className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
-                    >
-                      Addional Details <FaLightbulb />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300 ">
+                    {(expandRowIndx !== null && expandRowIndx === index
+                      ? audience
+                      : audience?.slice(0, 2)
+                    ).map((aud, indx) => (
+                      <span
+                        title={`audience-${indx}-${aud}`}
+                        className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium ${(() =>
+                          PILL_COLORS[indx % PILL_COLORS.length])()}`}
+                      >
+                        {aud}
+                      </span>
+                    ))}
+                    {expandRowIndx !== index && audience?.length > 2 && (
+                      <span
+                        className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium bg-white text-black-800 border border-1 border-white cursor-pointer`}
+                        onClick={() => setExpandRow(index)}
+                      >
+                        ...
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
+                    {(expandRowIndx !== null && expandRowIndx === index
+                      ? strgy.channels
+                      : strgy.channels?.slice(0, 2)
+                    ).map((chnl, indx) => (
+                      <span
+                        title={`channel-${indx}-${chnl}`}
+                        className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium ${(() => {
+                          return PILL_COLORS[index % PILL_COLORS.length];
+                        })()}`}
+                      >
+                        {chnl}
+                      </span>
+                    ))}
+                    {expandRowIndx !== index && strgy.channels?.length > 2 && (
+                      <span
+                        className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium bg-white text-black-800 border border-1 border-white cursor-pointer`}
+                        onClick={() => setExpandRow(index)}
+                      >
+                        ...
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        onClick={() => onQuickAction(strgy)}
+                        className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
+                      >
+                        Addional Details <FaLightbulb />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
             {strategies.length === 0 && (
               <tr>
                 <td colSpan={5}>
