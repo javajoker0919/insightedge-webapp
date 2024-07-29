@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
         <div className="p-3">
           <Link
             href="/"
-            className={`text-2xl font-bold gap-2 text-indigo-600 flex items-center p-3`}
+            className={`text-2xl font-bold gap-2 text-primary-600 flex items-center p-3`}
           >
             <Image
               src={"/logo.png"}
@@ -124,7 +124,7 @@ const Sidebar: React.FC = () => {
                       onClick={() => setIsExpanded(false)}
                       className={`flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ${
                         paramUUID === item.uuid
-                          ? "bg-indigo-50"
+                          ? "bg-primary-50"
                           : "hover:bg-gray-100"
                       }`}
                     >
@@ -148,7 +148,7 @@ const Sidebar: React.FC = () => {
 
             <button
               onClick={toggleSidebar}
-              className="text-indigo-600 border border-indigo-200 hover:text-indigo-800 focus:outline-none transition-colors duration-200 px-2 py-1 rounded-full hover:bg-gray-100 text-2xl"
+              className="text-primary-600 border border-primary-200 hover:text-primary-800 focus:outline-none transition-colors duration-200 px-2 py-1 rounded-full hover:bg-gray-100 text-2xl"
             >
               {"←"}
             </button>

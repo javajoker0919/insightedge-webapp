@@ -123,7 +123,7 @@ const CompanyDetailPage: React.FC = () => {
     return (
       <div className="flex w-full h-full items-center justify-center bg-gray-100">
         <div className="flex flex-col items-center gap-4">
-          <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+          <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
           <h1>Loading</h1>
         </div>
       </div>
@@ -133,7 +133,7 @@ const CompanyDetailPage: React.FC = () => {
   if (!companyData) return <div>Company not found</div>;
 
   return (
-    <div className="w-full p-4 h-full overflow-y-auto bg-indigo-50 bg-opacity-50 flex flex-col gap-4">
+    <div className="w-full p-4 h-full overflow-y-auto bg-primary-50 bg-opacity-50 flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
           <div className="flex text-sm items-center gap-2 text-gray-400">

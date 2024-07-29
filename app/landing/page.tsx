@@ -30,14 +30,14 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="w-full text-black bg-gradient-to-b from-white to-indigo-50">
+    <div className="w-full text-black bg-gradient-to-b from-white to-primary-50">
       <header
         className={`py-4 fixed top-0 left-0 right-0 bg-white z-10 shadow-md transition-transform duration-300 ${
           isHeaderVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
         <nav className="container mx-auto flex justify-between items-center px-4">
-          <div className="text-2xl font-bold text-indigo-600 flex items-center">
+          <div className="text-2xl font-bold text-primary-600 flex items-center">
             <Image
               src={"/logo.png"}
               alt={"ProspectEdge"}
@@ -46,7 +46,7 @@ export default function LandingPage() {
             />
           </div>
           <div className="sm:hidden">
-            <button onClick={toggleMenu} className="text-indigo-600">
+            <button onClick={toggleMenu} className="text-primary-600">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -71,7 +71,7 @@ export default function LandingPage() {
             <li className="flex items-center">
               <a
                 href="/auth/sign-in"
-                className="hover:text-indigo-600 transition-colors flex items-center justify-center"
+                className="hover:text-primary-600 transition-colors flex items-center justify-center"
               >
                 {/* <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +91,7 @@ export default function LandingPage() {
             <li>
               <a
                 href="/auth/sign-up"
-                className="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition-colors flex items-center justify-center"
+                className="bg-primary-600 text-white px-4 py-2 rounded-full hover:bg-primary-700 transition-colors flex items-center justify-center"
               >
                 {/* <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +111,7 @@ export default function LandingPage() {
       <main className="mt-16 sm:mt-16">
         <section
           id="hero"
-          className="py-24 px-4 text-center bg-gradient-to-r from-indigo-500 to-purple-600 text-white"
+          className="py-24 px-4 text-center bg-gradient-to-r from-primary-500 to-purple-600 text-white"
         >
           <h1 className="text-4xl sm:text-5xl font-bold mb-8 animate-fade-in-down">
             Supercharge Your B2B Sales with AI Insights
@@ -123,7 +123,7 @@ export default function LandingPage() {
           </p>
           <a
             href="/auth/sign-in"
-            className="bg-white text-indigo-600 px-8 py-4 w-fit rounded-full text-lg hover:bg-gray-100 transition-colors animate-pulse flex items-center justify-center mx-auto"
+            className="bg-white text-primary-600 px-8 py-4 w-fit rounded-full text-lg hover:bg-gray-100 transition-colors animate-pulse flex items-center justify-center mx-auto"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -158,7 +158,7 @@ export default function LandingPage() {
                 <p className="text-lg flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 mr-2 text-indigo-600"
+                    className="h-6 w-6 mr-2 text-primary-600"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -194,7 +194,7 @@ export default function LandingPage() {
                 <p className="text-lg flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 mr-2 text-indigo-600"
+                    className="h-6 w-6 mr-2 text-primary-600"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -233,7 +233,7 @@ export default function LandingPage() {
               <p className="mb-4">Access general AI summaries and insights</p>
               <a
                 href="#cta"
-                className="block text-center bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition-colors"
+                className="block text-center bg-primary-600 text-white px-4 py-2 rounded-full hover:bg-primary-700 transition-colors"
               >
                 Get Started
               </a>
@@ -243,7 +243,7 @@ export default function LandingPage() {
               <p className="mb-4">Unlock unlimited, personalized AI insights</p>
               <a
                 href="#cta"
-                className="block text-center bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition-colors"
+                className="block text-center bg-primary-600 text-white px-4 py-2 rounded-full hover:bg-primary-700 transition-colors"
               >
                 Get Started
               </a>
@@ -252,7 +252,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer id="cta" className="bg-indigo-600 text-white py-20 px-8">
+      <footer id="cta" className="bg-primary-600 text-white py-20 px-8">
         <div className="container mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8">Get Started Today</h2>
           <p className="text-2xl mb-12">
@@ -267,7 +267,7 @@ export default function LandingPage() {
             />
             <button
               type="submit"
-              className="bg-indigo-600 text-white px-6 py-2 w-fit min-w-fit rounded-r-full hover:bg-indigo-700 transition-colors flex items-center text-base font-semibold border border-white"
+              className="bg-primary-600 text-white px-6 py-2 w-fit min-w-fit rounded-r-full hover:bg-primary-700 transition-colors flex items-center text-base font-semibold border border-white"
             >
               Get Started
             </button>

@@ -132,7 +132,7 @@ export default function WatchlistPage() {
       <div className="flex-1 w-full items-center flex justify-center">
         {isLoading ? (
           <div className="flex flex-col items-center gap-4">
-            <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+            <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
             <h1>Loading</h1>
           </div>
         ) : (
@@ -142,7 +142,7 @@ export default function WatchlistPage() {
               <div className="flex items-center gap-2">
                 {watchlistCompanies.length > 0 && (
                   <button
-                    className="rounded-full p-2 text-indigo-500 hover:bg-gray-100 flex items-center gap-2"
+                    className="rounded-full p-2 text-primary-500 hover:bg-gray-100 flex items-center gap-2"
                     onClick={handleAddInvestments}
                   >
                     <IoAddOutline className="text-xl" />
@@ -194,7 +194,7 @@ export default function WatchlistPage() {
                     Track investments you care about here
                   </p>
                   <button
-                    className="rounded-full p-2 text-indigo-500 hover:bg-gray-100 flex items-center gap-2"
+                    className="rounded-full p-2 text-primary-500 hover:bg-gray-100 flex items-center gap-2"
                     onClick={handleAddInvestments}
                   >
                     <IoAddOutline className="text-xl" />

@@ -124,7 +124,7 @@ const SignUp = () => {
       <div className="flex flex-col lg:flex-row justify-center h-full">
         <div className="h-full px-5 flex items-center justify-center">
           <div className="flex flex-col gap-8 mb-16">
-            <div className="md:w-[400px] w-full md:m-auto shadow-indigo-200 rounded-xl md:shadow-2xl md:p-8">
+            <div className="md:w-[400px] w-full md:m-auto shadow-primary-200 rounded-xl md:shadow-2xl md:p-8">
               <header className="text-center mb-8">
                 <h2 className="text-gray-900 text-2xl font-semibold mb-2">
                   Create your account
@@ -176,7 +176,7 @@ const SignUp = () => {
                     className="text-slate-600 text-base flex flex-col items-center"
                   >
                     <p>By creating an account, you agree to our</p>
-                    <span className="text-indigo-500 font-semibold">
+                    <span className="text-primary-500 font-semibold">
                       Terms of Use
                     </span>
                   </label>
@@ -185,7 +185,7 @@ const SignUp = () => {
                 <button
                   type="submit"
                   disabled={!isValidate || isLoading}
-                  className="py-3.5 mt-2 flex items-center justify-center text-white bg-indigo-600 hover:bg-indigo-700 transition-all rounded-lg w-full disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  className="py-3.5 mt-2 flex items-center justify-center text-white bg-primary-600 hover:bg-primary-700 transition-all rounded-lg w-full disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></span>
@@ -213,7 +213,7 @@ const SignUp = () => {
             <div className="text-center flex items-center gap-2 justify-center text-gray-900 text-base font-medium">
               <Link
                 href="/auth/sign-in"
-                className="font-semibold text-indigo-400"
+                className="font-semibold text-primary-400"
               >
                 Sign In
               </Link>

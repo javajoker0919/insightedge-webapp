@@ -90,9 +90,9 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
         <div className="flex">
           <button
             onClick={() => setActiveTab("general")}
-            className={`px-4 py-4 border-indigo-600 border-b-2 ${
+            className={`px-4 py-4 border-primary border-b-2 ${
               activeTab === "general"
-                ? "text-indigo-600 border-opacity-100"
+                ? "text-primary border-opacity-100"
                 : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
             }`}
           >
@@ -100,9 +100,9 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
           </button>
           <button
             onClick={() => setActiveTab("tailored")}
-            className={`px-4 py-4 border-indigo-600 border-b-2 ${
+            className={`px-4 py-4 border-primary border-b-2 ${
               activeTab === "tailored"
-                ? "text-indigo-600 border-opacity-100"
+                ? "text-primary border-opacity-100"
                 : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
             }`}
           >
@@ -165,7 +165,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
         onClose={() => setSelectedStrats(null)}
       >
         <Fieldset className="rounded-lg bg-white shadow-sm">
-          <Legend className="text-xl font-bold text-indigo-600 p-4">
+          <Legend className="text-xl font-bold text-primary p-4">
             Account-Based Marketing Plan
           </Legend>
           <div className="max-h-[500px] overflow-y-auto space-y-4 px-4 pb-4">
@@ -176,7 +176,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Input
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Enter tactic"
                   />
                   <FaRegLightbulb className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -188,7 +188,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Input
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Enter score"
                   />
                   <FiStar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -200,7 +200,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Input
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Enter type"
                   />
                   <LuTags className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -212,7 +212,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Input
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Enter audience"
                   />
                   <PiUsersThree className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -224,7 +224,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Input
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Seperate with commas"
                   />
                   <TfiSignal className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -236,7 +236,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Input
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Enter timeframe"
                   />
                   <HiOutlineSpeakerphone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -248,7 +248,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Input
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Enter ROI"
                   />
                   <LuLineChart className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -260,7 +260,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Input
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Enter timeframe"
                   />
                   <FiCalendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -272,7 +272,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Textarea
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                     rows={3}
                     placeholder="Describe the tactic"
                   />
@@ -285,7 +285,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Textarea
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                     rows={2}
                     placeholder="One per line"
                   />
@@ -298,7 +298,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Textarea
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                     rows={2}
                     placeholder="One per line"
                   />
@@ -311,7 +311,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Textarea
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                     rows={2}
                     placeholder="One per line"
                   />
@@ -324,7 +324,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 </Label>
                 <div className="relative mt-1">
                   <Textarea
-                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                    className="block w-full rounded-md bg-gray-100 py-2 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                     rows={2}
                     placeholder="One per line"
                   />
@@ -334,7 +334,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
             </div>
           </div>
           {/* <div className="flex justify-end p-4">
-            <button className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-md shadow-md hover:bg-indigo-700">
+            <button className="px-4 py-2 bg-primary text-white font-medium rounded-md shadow-md hover:bg-primary">
               Go Peroform Action
             </button>
           </div> */}
@@ -347,7 +347,7 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
 const LoadingSection: React.FC = () => {
   return (
     <div className="flex justify-center items-center h-44">
-      <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+      <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary" />
     </div>
   );
 };

@@ -49,7 +49,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <div
-        className="w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out cursor-pointer flex justify-between items-center"
+        className="w-full px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150 ease-in-out cursor-pointer flex justify-between items-center"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>

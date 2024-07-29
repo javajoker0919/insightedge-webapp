@@ -177,7 +177,7 @@ const WatchlistModal = ({
                 ref={inputRef}
                 type="text"
                 placeholder="List name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 mb-4"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
               />
@@ -200,7 +200,7 @@ const WatchlistModal = ({
                   disabled={!inputValue.trim() || isLoading}
                   className={`px-4 py-2 rounded transition-colors duration-200 w-24 flex items-center justify-center ${
                     inputValue.trim() && !isLoading
-                      ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                      ? "bg-primary-600 text-white hover:bg-primary-700"
                       : "bg-gray-300 text-white cursor-not-allowed"
                   }`}
                 >

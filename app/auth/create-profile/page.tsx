@@ -241,7 +241,7 @@ export default function CreateProfile() {
                 <div className="space-y-1">
                   <p className="text-slate-600">Company Overview*</p>
                   <textarea
-                    className="w-full p-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full p-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-primary-500"
                     rows={3}
                     onChange={(e: any) =>
                       handleInputChange("companyOverview", e.target.value)
@@ -257,7 +257,7 @@ export default function CreateProfile() {
                 <div className="space-y-1">
                   <p className="text-slate-600">Products & Services*</p>
                   <textarea
-                    className="w-full p-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full p-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-primary-500"
                     rows={3}
                     onChange={(e: any) =>
                       handleInputChange("productsServices", e.target.value)
@@ -273,7 +273,7 @@ export default function CreateProfile() {
                 <button
                   onClick={handleCreateProfile}
                   disabled={isLoading || !isFormValid}
-                  className="py-3.5 mt-2 flex items-center justify-center text-white bg-success-300 hover:bg-success-400 transition-all rounded-lg w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  className="py-3.5 mt-2 flex items-center justify-center text-white bg-success-300 hover:bg-success-400 transition-all rounded-lg w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></span>

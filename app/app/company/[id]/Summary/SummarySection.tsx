@@ -181,7 +181,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
             <button
               className={`px-4 py-4 border-b-2 ${
                 activeTab === "general"
-                  ? "border-indigo-600 text-indigo-600"
+                  ? "border-primary-600 text-primary-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
               onClick={() => setActiveTab("general")}
@@ -191,7 +191,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
             <button
               className={`px-4 py-4 border-b-2 ${
                 activeTab === "tailored"
-                  ? "border-indigo-600 text-indigo-600"
+                  ? "border-primary-600 text-primary-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
               onClick={() => setActiveTab("tailored")}
@@ -206,7 +206,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
               <button
                 title="Get custom earnings report summaries tailored to your business needs"
                 onClick={generateTailoredSummary}
-                className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-indigo-600 text-white rounded-md text-sm"
+                className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-primary-600 text-white rounded-md text-sm"
               >
                 {isTSGenerating ? (
                   <span className="ml-2 inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
@@ -222,7 +222,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
         {(activeTab === "general" && isGSLoading) ||
         (activeTab === "tailored" && isTSLoading) ? (
           <div className="flex justify-center items-center h-40">
-            <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+            <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
           </div>
         ) : activeTab === "general" ? (
           <RenderSummaryContent

@@ -79,7 +79,7 @@ const Header: React.FC = () => {
           </button>
           <Link
             href="/"
-            className={`text-2xl font-bold gap-2 text-indigo-600 flex items-center`}
+            className={`text-2xl font-bold gap-2 text-primary-600 flex items-center`}
           >
             <Image
               src={"/logo.png"}
@@ -101,7 +101,7 @@ const Header: React.FC = () => {
 
         <div className="flex items-center space-x-4">
           <Link href="/upgrade">
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200">
+            <button className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-colors duration-200">
               Upgrade
             </button>
           </Link>

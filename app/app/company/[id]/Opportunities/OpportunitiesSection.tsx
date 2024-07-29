@@ -241,9 +241,9 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           <div className="flex">
             <button
               onClick={() => setActiveTab("general")}
-              className={`px-4 py-4 border-indigo-600 border-b-2 ${
+              className={`px-4 py-4 border-primary-600 border-b-2 ${
                 activeTab === "general"
-                  ? "text-indigo-600 border-opacity-100"
+                  ? "text-primary-600 border-opacity-100"
                   : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
               }`}
             >
@@ -251,9 +251,9 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             </button>
             <button
               onClick={() => setActiveTab("tailored")}
-              className={`px-4 py-4 border-indigo-600 border-b-2 ${
+              className={`px-4 py-4 border-primary-600 border-b-2 ${
                 activeTab === "tailored"
-                  ? "text-indigo-600 border-opacity-100"
+                  ? "text-primary-600 border-opacity-100"
                   : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
               }`}
             >
@@ -270,7 +270,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
                 title={`Discover the top opportunities for selling your solutions to ${companyName}`}
                 onClick={generateTailoredOpportunities}
                 disabled={isTailoredOppGenerating}
-                className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-indigo-600 text-white rounded-md border border-indigo-700 hover:bg-indigo-700 focus:outline-none transition duration-150 ease-in-out"
+                className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
                 {isTailoredOppGenerating ? (
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
@@ -335,7 +335,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         onClose={() => setSelectedOpp(null)}
       >
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-xl font-bold text-indigo-600">
+          <h4 className="text-xl font-bold text-primary-600">
             Prospecting Tactics
           </h4>
         </div>
@@ -344,7 +344,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           open={openedSection === 1}
           onToggle={(open) => open && setOpenedSection(1)}
           title="Inbound Strategies"
-          wrapperClass="border-indigo-600 bg-[#f5f5ff]"
+          wrapperClass="border-primary-600 bg-[#f5f5ff]"
           className="hover:bg-[#f5f5ff] text-gray-800"
         >
           <ul className="list-disc pl-8 mb-4 text-gray-600">
@@ -362,7 +362,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           open={openedSection === 2}
           onToggle={(open) => open && setOpenedSection(2)}
           title="Outbound Strategies"
-          wrapperClass="border-indigo-600 bg-[#f5f5ff]"
+          wrapperClass="border-primary-600 bg-[#f5f5ff]"
           className="hover:bg-[#f5f5ff] text-gray-800"
         >
           <ul className="list-disc pl-8 mb-4 text-gray-600">
@@ -380,7 +380,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           open={openedSection === 3}
           onToggle={(open) => open && setOpenedSection(3)}
           title="Outbound Email"
-          wrapperClass="border-indigo-600 bg-[#f5f5ff]"
+          wrapperClass="border-primary-600 bg-[#f5f5ff]"
           className="hover:bg-[#f5f5ff] text-gray-800"
         >
           <div className="px-3 pb-3 pt-2">
@@ -398,7 +398,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 const LoadingSection: React.FC = () => {
   return (
     <div className="flex justify-center items-center h-44">
-      <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+      <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
     </div>
   );
 };

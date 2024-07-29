@@ -98,7 +98,7 @@ const ForgotPassword = () => {
                 <button
                   onClick={handleForgotPassword}
                   disabled={!isValidForm || isLoading}
-                  className="py-3.5 mt-2 flex items-center justify-center text-white bg-success-300 hover:bg-success-400 transition-all rounded-lg w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  className="py-3.5 mt-2 flex items-center justify-center text-white bg-success-300 hover:bg-success-400 transition-all rounded-lg w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></span>
@@ -113,7 +113,7 @@ const ForgotPassword = () => {
             <div className="text-center flex items-center gap-2 justify-center text-gray-900 text-base font-medium">
               <button
                 onClick={handleGoBack}
-                className="font-semibold text-indigo-400"
+                className="font-semibold text-primary-400"
               >
                 Go Back
               </button>

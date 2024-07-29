@@ -11,9 +11,9 @@ interface PlanProps {
 
 const Plan: React.FC<PlanProps> = ({ title, price, features, icon }) => (
   <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
-    <div className="text-4xl text-indigo-600 mb-4">{icon}</div>
+    <div className="text-4xl text-primary-600 mb-4">{icon}</div>
     <h2 className="text-2xl font-bold mb-2">{title}</h2>
-    <p className="text-3xl font-bold text-indigo-600 mb-4">{price}</p>
+    <p className="text-3xl font-bold text-primary-600 mb-4">{price}</p>
     <ul className="text-left mb-6">
       {features.map((feature, index) => (
         <li key={index} className="flex items-center mb-2">
@@ -32,7 +32,7 @@ const Plan: React.FC<PlanProps> = ({ title, price, features, icon }) => (
         </li>
       ))}
     </ul>
-    <button className="bg-indigo-600 text-white px-6 py-2 rounded-full hover:bg-indigo-700 transition-colors duration-200">
+    <button className="bg-primary-600 text-white px-6 py-2 rounded-full hover:bg-primary-700 transition-colors duration-200">
       Upgrade Now
     </button>
   </div>
@@ -67,7 +67,7 @@ export default function UpgradePage() {
     <div className="max-w-6xl m-auto px-4 py-12">
       <Link
         href="/app"
-        className="inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-8"
+        className="inline-flex items-center text-primary-600 hover:text-primary-800 mb-8"
       >
         <FaArrowLeft className="mr-2" />
         Back to Dashboard

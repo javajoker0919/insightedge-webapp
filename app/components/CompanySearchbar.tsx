@@ -241,7 +241,7 @@ const CompanySearchbar = ({
             } flex items-center`}
           >
             {isSearching && (
-              <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-500 mr-2" />
+              <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary-500 mr-2" />
             )}
             <button
               onClick={handleCloseSearchBar}
@@ -275,7 +275,7 @@ const CompanySearchbar = ({
                     key={type}
                     className={`px-3 py-0.5 text-gray-500 rounded-full ${
                       searchType === type
-                        ? "bg-indigo-100 text-indigo-700"
+                        ? "bg-primary-100 text-primary-700"
                         : "bg-white hover:bg-gray-100"
                     }`}
                     onClick={() =>
@@ -292,7 +292,7 @@ const CompanySearchbar = ({
                   {/* <button
                     className={`px-3 py-0.5 text-gray-500 rounded-full ${
                       hasNews
-                        ? "bg-indigo-100 text-indigo-700"
+                        ? "bg-primary-100 text-primary-700"
                         : "bg-white hover:bg-gray-100"
                     }`}
                     onClick={() => setHasNews(!hasNews)}
@@ -302,7 +302,7 @@ const CompanySearchbar = ({
                   <button
                     className={`px-3 border text-gray-500 rounded-full ${
                       hasSummary
-                        ? "bg-indigo-100 text-indigo-700"
+                        ? "bg-primary-100 text-primary-700"
                         : "bg-white hover:bg-gray-100"
                     }`}
                     onClick={() => setHasSummary(!hasSummary)}

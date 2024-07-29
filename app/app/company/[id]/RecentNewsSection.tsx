@@ -50,7 +50,7 @@ const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({
       </h3>
       {isLoading ? (
         <div className="flex flex-col items-center gap-4 p-4">
-          <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500" />
+          <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
         </div>
       ) : (
         <Swiper

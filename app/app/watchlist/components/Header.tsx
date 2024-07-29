@@ -61,7 +61,7 @@ const Header = () => {
               href={`/app/watchlist/${item.uuid}`}
               className={`flex items-center gap-2 p-2 bg-white text-gray-700 rounded-lg w-full border transition-all duration-200 ${
                 paramUUID === item.uuid
-                  ? "border-b-2 border-b-indigo-500"
+                  ? "border-b-2 border-b-primary-500"
                   : "hover:shadow-md"
               }`}
             >
@@ -75,7 +75,7 @@ const Header = () => {
         <SwiperSlide className="py-1">
           <button
             onClick={handleAddWatchlist}
-            className="flex items-center min-w-fit w-full gap-2 rounded-md hover:bg-gray-100 text-indigo-500 p-2"
+            className="flex items-center min-w-fit w-full gap-2 rounded-md hover:bg-gray-100 text-primary-500 p-2"
           >
             <IoAddOutline className="text-xl" />
             <p>New list</p>
