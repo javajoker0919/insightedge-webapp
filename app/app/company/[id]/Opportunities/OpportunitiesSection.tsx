@@ -121,7 +121,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           role: item.buyer_role,
           department: item.buyer_department,
         },
-        tactics: item.tactics.split("\n"),
+        tactics: item.tactics?.split("\n"),
       }));
       setGeneralOpps(formattedData);
     } catch (error) {
@@ -354,7 +354,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           onToggle={(open) => open && setOpenedSection(1)}
           title="Inbound Strategies"
           wrapperClass="border-primary-600 bg-[#f5f5ff]"
-          className="hover:bg-[#f5f5ff] text-gray-800"
+          headClass="hover:bg-[#f5f5ff] text-gray-800"
         >
           <ul className="list-disc pl-8 mb-4 text-gray-600">
             {selectedOpp?.engagementTips?.inbound.map(
@@ -372,7 +372,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           onToggle={(open) => open && setOpenedSection(2)}
           title="Outbound Strategies"
           wrapperClass="border-primary-600 bg-[#f5f5ff]"
-          className="hover:bg-[#f5f5ff] text-gray-800"
+          headClass="hover:bg-[#f5f5ff] text-gray-800"
         >
           <ul className="list-disc pl-8 mb-4 text-gray-600">
             {selectedOpp?.engagementTips?.outbound.map(
@@ -390,7 +390,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           onToggle={(open) => open && setOpenedSection(3)}
           title="Outbound Email"
           wrapperClass="border-primary-600 bg-[#f5f5ff]"
-          className="hover:bg-[#f5f5ff] text-gray-800"
+          headClass="hover:bg-[#f5f5ff] text-gray-800"
         >
           <div className="px-3 pb-3 pt-2">
             <h4 className="text-lg font-semibold text-gray-600 mb-3">
