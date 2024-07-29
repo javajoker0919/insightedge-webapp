@@ -70,8 +70,7 @@ const OpportunitiesTable: React.FC<{
                       if (sum % 9 === 2) return "bg-orange-100 text-orange-800";
                       if (sum % 9 === 3) return "bg-teal-100 text-teal-800";
                       if (sum % 9 === 4) return "bg-pink-100 text-pink-800";
-                      if (sum % 9 === 5)
-                        return "bg-primary-100 text-primary-800";
+                      if (sum % 9 === 5) return "bg-indigo-100 text-indigo-800";
                       if (sum % 9 === 6) return "bg-yellow-100 text-yellow-800";
                       if (sum % 9 === 7) return "bg-green-100 text-green-800";
                       if (sum % 9 === 8) return "bg-red-100 text-red-800";

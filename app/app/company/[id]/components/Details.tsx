@@ -7,8 +7,10 @@ interface DetailsProps {
   open?: boolean;
   onToggle?: (open: Boolean) => void;
   children: React.ReactNode;
-  className?: string;
+  headClass?: string;
   wrapperClass?: string;
+  innerClass?: string;
+  iconClass?: string;
 }
 
 const Details = ({
@@ -17,8 +19,10 @@ const Details = ({
   open = true,
   onToggle,
   children,
-  className,
+  headClass,
+  innerClass,
   wrapperClass,
+  iconClass,
 }: DetailsProps) => {
   const [isOpen, setIsOpen] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -56,7 +60,7 @@ const Details = ({
       <div
         className={
           "px-3 py-2 cursor-pointer text-base font-medium text-gray-600 hover:bg-gray-100 flex items-center " +
-          className
+          headClass
         }
         onClick={toggleOpen}
       >
@@ -64,7 +68,7 @@ const Details = ({
           <motion.svg
             animate={{ rotate: isOpen ? 0 : -90 }}
             transition={{ duration: 0.1 }}
-            className="mr-2 text-gray-500 w-4 h-4"
+            className={"mr-2 text-gray-500 w-4 h-4 " + iconClass}
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -78,7 +82,7 @@ const Details = ({
           <motion.svg
             animate={{ rotate: isOpen ? 0 : -90 }}
             transition={{ duration: 0.1 }}
-            className="mr-2 text-gray-500 w-4 h-4"
+            className={"mr-2 text-gray-500 w-4 h-4 " + iconClass}
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -109,7 +113,9 @@ const Details = ({
             transition={{ duration: 0.2, ease: "easeInOut" }}
             style={{ overflow: "hidden" }}
           >
-            <div ref={contentRef}>{children}</div>
+            <div className={innerClass || ""} ref={contentRef}>
+              {children}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

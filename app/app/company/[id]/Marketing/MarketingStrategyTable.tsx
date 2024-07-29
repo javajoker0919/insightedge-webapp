@@ -1,7 +1,7 @@
+import { useCallback } from "react";
 import { FaLightbulb } from "react-icons/fa";
-import { marketingStrategy } from "../Constants";
+import { coloredChannelList, marketingStrategy } from "../Constants";
 import { MarketingProps } from "./MarketingSection";
-import { useCallback, useState } from "react";
 
 interface MSTableCompProps {
   companyName: string;
@@ -9,25 +9,11 @@ interface MSTableCompProps {
   onQuickAction: (opp: MarketingProps) => void;
 }
 
-const PILL_COLORS = [
-  "bg-blue-100 text-blue-800 border border-1 border-white hover:border-blue-400",
-  "bg-purple-100 text-purple-800 border border-1 border-white hover:border-purple-400",
-  "bg-orange-100 text-orange-800 border border-1 border-white hover:border-orange-400",
-  "bg-teal-100 text-teal-800 border border-1 border-white hover:border-teal-400",
-  "bg-pink-100 text-pink-800 border border-1 border-white hover:border-pink-400",
-  "bg-indigo-100 text-indigo-800 border border-1 border-white hover:border-indigo-400",
-  "bg-yellow-100 text-yellow-800 border border-1 border-white hover:border-yellow-400",
-  "bg-green-100 text-green-800 border border-1 border-white hover:border-green-400",
-  "bg-red-100 text-red-800 border border-1 border-white hover:border-red-400",
-  "bg-gray-100 text-gray-800 border border-1 border-white hover:border-gray-400",
-];
-
 const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
   companyName,
   strategies,
   onQuickAction,
 }) => {
-  const [expandRowIndx, setExpandRow] = useState<number | null>(null);
   const strats = strategies.length > 0 ? strategies : marketingStrategy;
 
   const TableHeadingRow = useCallback(
@@ -39,13 +25,13 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-10">
           Score
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-5/12">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 ">
           Audience
         </th>
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-2/12">
           Channels
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/5">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 ">
           Quick Actions
         </th>
       </tr>
@@ -86,50 +72,38 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                       {strgy.tacticScore}
                     </span>
                   </td>
-                  <td className="px-4 py-3 border border-gray-300 ">
-                    {(expandRowIndx !== null && expandRowIndx === index
-                      ? audience
-                      : audience?.slice(0, 2)
-                    ).map((aud, indx) => (
+                  <td className="px-4 py-3 border border-gray-300 text-left ">
+                    {audience.map((aud, indx) => (
                       <span
-                        title={`audience-${indx}-${aud}`}
-                        className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium ${(() =>
-                          PILL_COLORS[indx % PILL_COLORS.length])()}`}
+                        key={`audience-${indx}-${aud}`}
+                        className={`text-xs font-medium`}
                       >
-                        {aud}
+                        {aud + (audience?.length - 1 !== indx ? ", " : "")}
                       </span>
                     ))}
-                    {expandRowIndx !== index && audience?.length > 2 && (
-                      <span
-                        className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium bg-white text-black-800 border border-1 border-white cursor-pointer`}
-                        onClick={() => setExpandRow(index)}
-                      >
-                        ...
-                      </span>
-                    )}
                   </td>
                   <td className="px-4 py-3 border border-gray-300">
-                    {(expandRowIndx !== null && expandRowIndx === index
-                      ? strgy.channels
-                      : strgy.channels?.slice(0, 2)
-                    ).map((chnl, indx) => (
-                      <span
-                        title={`channel-${indx}-${chnl}`}
-                        className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium ${(() => {
-                          return PILL_COLORS[index % PILL_COLORS.length];
-                        })()}`}
-                      >
-                        {chnl}
-                      </span>
-                    ))}
-                    {expandRowIndx !== index && strgy.channels?.length > 2 && (
-                      <span
-                        className={`inline-block min-w-7 px-2 py-1 rounded-full text-xs font-medium bg-white text-black-800 border border-1 border-white cursor-pointer`}
-                        onClick={() => setExpandRow(index)}
-                      >
-                        ...
-                      </span>
-                    )}
+                    {strgy.channels.map((chnl, indx) => {
+                      const coloredChnl = coloredChannelList.find((el) =>
+                        el.content.includes(chnl)
+                      );
+                      const foundColor =
+                        coloredChnl?.color?.toLowerCase() || `#004AAD`;
+
+                      return (
+                        <span
+                          key={`channel-${indx}-${chnl}`}
+                          style={{
+                            backgroundColor: `${foundColor}80`,
+                          }}
+                          className={
+                            "inline-block min-w-7 px-2 py-1 m-[2px] rounded-full text-xs font-medium"
+                          }
+                        >
+                          {chnl}
+                        </span>
+                      );
+                    })}
                   </td>
                   <td className="px-4 py-3 border border-gray-300">
                     <div className="flex justify-center space-x-2">
@@ -137,7 +111,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                         onClick={() => onQuickAction(strgy)}
                         className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
                       >
-                        Addional Details <FaLightbulb />
+                        Details <FaLightbulb />
                       </button>
                     </div>
                   </td>
