@@ -226,7 +226,7 @@ const CompanySearchbar = ({
       id="search-bar"
       ref={searchBarRef}
       className={`absolute w-full max-w-[900px] flex justify-center ${
-        type === "header" ? "" : "p-2"
+        type === "header" ? "" : "p-2 top-8 w-8/12 z-50 max-w-full"
       }`}
     >
       <div
