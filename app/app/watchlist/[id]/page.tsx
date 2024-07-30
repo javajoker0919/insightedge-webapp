@@ -9,10 +9,75 @@ import { supabase } from "@/utils/supabaseClient";
 import { watchlistAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
-import OpportunitiesSection from "../../company/[id]/Opportunities/OpportunitiesSection";
-import MarketingSection from "../../company/[id]/Marketing/MarketingSection";
+
 import { LuCalendarPlus } from "react-icons/lu";
 import { MdAddCircleOutline, MdContentPaste } from "react-icons/md";
+import { FaSortAlphaDown } from "react-icons/fa";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { Details } from "../../company/[id]/components";
+import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
+import MarketingSection from "../../company/[id]/Marketing/MarketingSection";
+
+const sortAlphabetically = (arr: Array<{ name: string }>) =>
+  [...arr].sort((elA, elB) => {
+    const nameA = elA.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    const nameB = elB.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+
+    const numberPattern = /^\d+/;
+    const numA = nameA.match(numberPattern);
+    const numB = nameB.match(numberPattern);
+
+    if (numA && numB) {
+      const numComparison = parseInt(numA[0], 10) - parseInt(numB[0], 10);
+      if (numComparison !== 0) return numComparison;
+    }
+
+    return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
+  });
+
+const randomColor = [
+  "bg-fuchsia-800",
+  "bg-teal-800",
+  "bg-gray-800",
+  "bg-red-800",
+  "bg-blue-800",
+  "bg-green-800",
+  "bg-purple-800",
+];
+
+const incomeStmtData = [
+  { field: "revenue", label: "Revenue", value: "90.75B", change: -4.31 },
+  {
+    field: "revenue_yoy_growth",
+    label: "Revenue Growth",
+    value: "14.37B",
+    change: 5.22,
+  },
+  {
+    field: "gross_profit",
+    label: "Profit",
+    value: "23.64B",
+    change: -2.17,
+  },
+  {
+    field: "net_income_yoy_growth",
+    label: "Profit Growth",
+    value: 26.04,
+    change: 2.2,
+  },
+  {
+    field: "operating_expenses",
+    label: "Expenses",
+    value: 1.53,
+    change: 0.66,
+  },
+  {
+    field: "op_expense_yoy_growth",
+    label: "Expense Growth",
+    value: "30.74B",
+    change: -1.54,
+  },
+];
 
 export default function WatchlistPage() {
   const params = useParams();
@@ -30,6 +95,7 @@ export default function WatchlistPage() {
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState<boolean>(false);
   const optionsModalRef = useRef<HTMLDivElement>(null);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState<boolean>(false);
+  const [isCompSortAlpha, setIsComptortAlpha] = useState<boolean>(false);
   const [watchlistCompanies, setWatchlistCompanies] = useState<any[]>([]);
 
   useEffect(() => {
@@ -112,6 +178,10 @@ export default function WatchlistPage() {
     setIsSearchBarOpen(true);
   };
 
+  const handleSortCompaniesAlpha = () => {
+    setIsComptortAlpha((prev) => !prev);
+  };
+
   const handleRemoveCompanyFromWatchlist = async (
     watchlistCompanyId: number
   ) => {
@@ -140,17 +210,26 @@ export default function WatchlistPage() {
         </div>
       ) : (
         <div className="container mx-auto relative">
-          <div className="flex items-center justify-between relative px-4 py-2">
-            {/* w-8/12  */}
-            <h1>{watchlistName}</h1>
+          <div className="flex items-center justify-between relative pl-4 py-2 w-8/12">
+            <h1 className="font-bold text-lg">{watchlistName}</h1>
             <div className="flex">
+              <button
+                className={
+                  "rounded-full p-2 flex items-center gap-2 hover:text-primary-700 " +
+                  (isCompSortAlpha ? "text-primary-500" : "text-gray-500")
+                }
+                onClick={handleSortCompaniesAlpha}
+              >
+                <FaSortAlphaDown />
+                <p>Sort by Name</p>
+              </button>
               {watchlistCompanies.length > 0 && (
                 <button
-                  className="rounded-full p-2 text-primary-500 hover:bg-gray-100 flex items-center gap-2"
+                  className="rounded-full py-2 px-4 bg-primary-500 text-gray-100 flex items-center"
                   onClick={handleAddInvestments}
                 >
                   <IoAddOutline className="text-xl" />
-                  <p>Add companies</p>
+                  <p>Company</p>
                 </button>
               )}
               {watchlist && watchlist[0] && paramID !== watchlist[0].uuid && (
@@ -158,12 +237,7 @@ export default function WatchlistPage() {
                   onClick={toggleOptionsModal}
                   className="hover:bg-gray-100 rounded-full w-12 h-12 items-center justify-center gap-0.5 bg-white flex flex-col"
                 >
-                  {[...Array(3)].map((_, index) => (
-                    <div
-                      key={index}
-                      className="rounded-full w-1 h-1 bg-black mb-0.5"
-                    />
-                  ))}
+                  <BsThreeDotsVertical />
                 </button>
               )}
             </div>
@@ -205,42 +279,92 @@ export default function WatchlistPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-4 mb-5">
-              <div className="col-span-2 flex flex-col gap-4">
-                {watchlistCompanies.map((company) => (
-                  <div
-                    key={company.id}
-                    onClick={() => router.push(`/app/company/${company.id}`)}
-                    className="py-2 hover:cursor-pointer px-4  hover:bg-gray-50 border-t last:border-b-0 flex justify-between items-center group"
-                  >
-                    <div>
-                      <p className="font-medium">{company.name}</p>
-                      <p className="text-gray-500 text-sm">{company.symbol}</p>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        handleRemoveCompanyFromWatchlist(
-                          company.watchlist_company_id
-                        );
-                        e.stopPropagation();
-                      }}
-                      className="text-gray-500 hover:bg-gray-200 p-2.5 rounded-full hidden group-hover:block"
-                    >
-                      <IoClose className="text-2xl" />
-                    </button>
-                  </div>
-                ))}
+            <div className="grid grid-cols-3 gap-4 my-2">
+              <div className="col-span-2 flex flex-col gap-4 pb-5">
+                <div className="flex flex-col">
+                  {(isCompSortAlpha
+                    ? sortAlphabetically(watchlistCompanies)
+                    : watchlistCompanies
+                  ).map((company, indx) => {
+                    const symbolClass = `${
+                      randomColor[indx % randomColor.length]
+                    } text-white text-xs p-1`;
+                    return (
+                      <div
+                        key={company.id}
+                        onClick={() =>
+                          router.push(`/app/company/${company.id}`)
+                        }
+                        className="py-2 hover:cursor-pointer px-4 hover:bg-primary-50 border-t last:border-b-0 flex justify-between items-center group"
+                      >
+                        <div className="flex gap-2 items-center w-2/6">
+                          <p className={symbolClass}>{company.symbol}</p>
+                          <p className="font-medium text-sm">{company.name}</p>
+                        </div>
+                        <p className="text-sm">Revenue/ Rev Growth</p>
+                        <p className="text-sm">Income/ Inc Growth</p>
+                        <button
+                          onClick={(e) => {
+                            handleRemoveCompanyFromWatchlist(
+                              company.watchlist_company_id
+                            );
+                            e.stopPropagation();
+                          }}
+                          className="text-white hover:bg-gray-200 p-0.5 rounded-full group-hover:text-gray-500"
+                        >
+                          <IoClose className="text-lg" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
 
-                <OpportunitiesSection
-                  companyID={30321}
-                  companyName={"Tesla, Inc"}
-                  year={2024}
-                  quarter={1}
-                />
-                <MarketingSection
-                  companyID={30321}
-                  companyName={"Tesla, Inc"}
-                />
+                {watchlistCompanies?.length > 0 && (
+                  <>
+                    <OpportunitiesSection
+                      companyID={30321} // watchlistCompanies[0].id}
+                      watchlistName={watchlistName}
+                      year={2024}
+                      quarter={1}
+                    />
+                    <MarketingSection
+                      companyID={30321} // watchlistCompanies[0].id}
+                      companyName={watchlistName}
+                    />
+                  </>
+                )}
+
+                <Details title={"Income Statement"}>
+                  <div className="px-4 py-3 mx-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="text-left p-2">(USD)</th>
+                          <th className="text-right p-2">MAR 2024</th>
+                          <th className="text-right p-2">Y/Y CHANGE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {incomeStmtData.map((item, index) => (
+                          <tr key={index} className="border-b">
+                            <td className="p-2">{item.label}</td>
+                            <td className="text-right p-2">{item.value}</td>
+                            <td
+                              className={`text-right p-2 ${
+                                item.change >= 0
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {item.change >= 0 ? "↑" : "↓"}
+                              {Math.abs(item.change).toFixed(2)}%
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </Details>
               </div>
               <div className="flex flex-col gap-4">
                 <div className="border border-gray-300 rounded-lg p-3">
