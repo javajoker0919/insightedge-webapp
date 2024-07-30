@@ -1,149 +1,86 @@
 import React from "react";
-import { FiCheck } from "react-icons/fi";
-import { IoCheckmarkCircleOutline, IoClose } from "react-icons/io5";
+import { IoCheckmarkCircleOutline, IoCloseOutline } from "react-icons/io5";
 
-interface Feature {
-  title: string;
-  icon: "check" | "cross";
-  value?: string;
+interface PlanFeature {
+  name: string;
+  free: string | boolean;
+  standard: string | boolean;
 }
 
-interface Credit {
-  title: string;
-  icon?: "check" | "cross";
-  value?: string;
-}
+const PricingTable: React.FC = () => {
+  const features: PlanFeature[] = [
+    { name: "General AI insights", free: true, standard: true },
+    { name: "General AI recommendations", free: true, standard: true },
+    { name: "Personalized AI insights", free: true, standard: true },
+    { name: "Personalized sales opportunit", free: true, standard: true },
+    { name: "Email newsletters", free: false, standard: false },
+    { name: "Prospect recommendations", free: "upto 10", standard: "upto 20" },
+  ];
 
-interface PricingPlanProps {
-  title: string;
-  price: string;
-  features: Feature[];
-  credits: Credit[];
-}
+  const credits: PlanFeature[] = [
+    { name: "AI credits", free: "10", standard: "20" },
+    { name: "Additional AI credits", free: false, standard: "$x/ 10 credits" },
+  ];
 
-const PricingCard: React.FC = () => {
   return (
-    <div className="flex flex-col w-full h-full items-center justify-center gap-8 pb-8">
-      <div className="flex gap-16">
-        <PricingPlan
-          title="FREE"
-          price="$0"
-          features={[
-            { title: "General AI insights", icon: "check" },
-            { title: "General AI recommendations", icon: "check" },
-            { title: "Personalized AI insights", icon: "check" },
-            { title: "Personalized sales opportunit", icon: "check" },
-            { title: "Email newsletters", icon: "cross" },
-            {
-              title: "Prospect recommendations",
-              icon: "check",
-              value: "upto 10",
-            },
-          ]}
-          credits={[
-            { title: "AI credits", value: "10" },
-            { title: "Additional AI credits", icon: "cross" },
-          ]}
-        />
-        <PricingPlan
-          title="STANDARD"
-          price="$99"
-          features={[
-            { title: "General AI insights", icon: "check" },
-            { title: "General AI recommendations", icon: "check" },
-            { title: "Personalized AI insights", icon: "check" },
-            { title: "Personalized sales opportunit", icon: "check" },
-            { title: "Email newsletters", icon: "cross" },
-            {
-              title: "Prospect recommendations",
-              icon: "check",
-              value: "upto 20",
-            },
-          ]}
-          credits={[
-            { title: "AI credits", value: "20" },
-            {
-              title: "Additional AI credits",
-              icon: "check",
-              value: "$x / 10 credits",
-            },
-          ]}
-        />
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="grid grid-cols-3 gap-6">
+        <div className="col-span-1"></div>
+        <PlanHeader title="FREE" price="$0" />
+        <PlanHeader title="STANDARD" price="$99" />
+
+        {features.map((feature, index) => (
+          <FeatureRow key={index} feature={feature} />
+        ))}
+
+        <div className="col-span-3 mt-6 mb-2">
+          <h3 className="text-xl font-bold">Credits</h3>
+        </div>
+
+        {credits.map((credit, index) => (
+          <FeatureRow key={index} feature={credit} />
+        ))}
       </div>
     </div>
   );
 };
 
-const PricingPlan: React.FC<PricingPlanProps> = ({
+const PlanHeader: React.FC<{ title: string; price: string }> = ({
   title,
   price,
-  features,
-  credits,
-}) => {
-  return (
-    <div className="flex border border-gray-100 flex-col gap-6 rounded-xl shadow-md p-6 w-96 bg-white">
-      <div className="flex justify-between items-center gap-2">
-        <h3 className="text-xl font-bold text-gray-800">{title}</h3>
-        <div className="flex items-center gap-2">
-          <div className="text-3xl font-bold text-primary-500">{price}</div>
-          <div className="text-sm text-gray-500">/ user / month</div>
-        </div>
-      </div>
-      <button className="bg-primary-500 text-white font-bold py-2 px-4 rounded-md">
-        Subscribe
-      </button>
-      <div className="flex flex-col gap-4">
-        <h4 className="text-lg font-bold text-gray-800">Key features</h4>
-        {features.map((feature, index) => (
-          <Feature
-            key={index}
-            title={feature.title}
-            icon={feature.icon}
-            value={feature.value}
-          />
-        ))}
-      </div>
-      <div className="flex flex-col gap-4">
-        <h4 className="text-lg font-bold text-gray-800">Credits</h4>
-        {credits.map((credit, index) => (
-          <Credit
-            key={index}
-            title={credit.title}
-            icon={credit.icon}
-            value={credit.value}
-          />
-        ))}
-      </div>
+}) => (
+  <div className="text-center space-y-4 p-2 pt-4">
+    <h2 className="text-xl font-bold mb-2">{title}</h2>
+    <div className="flex items-center justify-center gap-2">
+      <p className="text-3xl font-bold">{price}</p>
+      <p className="text-sm text-gray-500">/ user / month</p>
     </div>
-  );
-};
+    <button className="w-full py-2 px-4 border border-gray-300 rounded-md text-white hover:bg-primary-600 bg-primary-500">
+      Subscribe
+    </button>
+  </div>
+);
 
-const Feature: React.FC<Feature> = ({ title, icon, value }) => {
-  return (
-    <div className="flex gap-2 items-center">
-      {icon === "check" ? (
-        <FiCheck className="text-green-500" />
+const FeatureRow: React.FC<{ feature: PlanFeature }> = ({ feature }) => (
+  <>
+    <div className="flex items-center">{feature.name}</div>
+    <FeatureCell value={feature.free} />
+    <FeatureCell value={feature.standard} />
+  </>
+);
+
+const FeatureCell: React.FC<{ value: string | boolean }> = ({ value }) => (
+  <div className="flex justify-center items-center">
+    {typeof value === "boolean" ? (
+      value ? (
+        <IoCheckmarkCircleOutline className="text-green-500 text-xl" />
       ) : (
-        <IoClose className="text-gray-500" />
-      )}
-      <span className="text-gray-800">{title}</span>
-      {value && <span className="text-gray-500 ml-auto">{value}</span>}
-    </div>
-  );
-};
+        <IoCloseOutline className="text-gray-400 text-xl" />
+      )
+    ) : (
+      <span>{value}</span>
+    )}
+  </div>
+);
 
-const Credit: React.FC<Credit> = ({ title, icon, value }) => {
-  return (
-    <div className="flex gap-2 items-center">
-      <span className="text-gray-800">{title}</span>
-      {icon === "check" ? (
-        <FiCheck className="text-green-500" />
-      ) : icon === "cross" ? (
-        <IoClose className="text-gray-500" />
-      ) : null}
-      {value && <span className="text-gray-500 ml-auto">{value}</span>}
-    </div>
-  );
-};
-
-export default PricingCard;
+export default PricingTable;
