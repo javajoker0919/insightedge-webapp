@@ -94,7 +94,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                         <span
                           key={`channel-${indx}-${chnl}`}
                           style={{
-                            backgroundColor: `${foundColor}80`,
+                            backgroundColor: `${foundColor}4d`,
                           }}
                           className={
                             "inline-block min-w-7 px-2 py-1 m-[2px] rounded-full text-xs font-medium"

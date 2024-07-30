@@ -69,6 +69,9 @@ const Header = () => {
               <span className="w-36 transition-colors duration-200 text-sm truncate font-medium">
                 {item.name}
               </span>
+              {item?.company_count !== undefined && (
+                <span className="text-gray-500">{item.company_count}</span>
+              )}
             </Link>
           </SwiperSlide>
         ))}

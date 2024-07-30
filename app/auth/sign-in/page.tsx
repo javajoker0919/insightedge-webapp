@@ -131,7 +131,8 @@ const SignIn = () => {
           name, 
           organization_id, 
           creator_id,
-          uuid
+          uuid,
+          watchlist_companies!inner(id, company_id)
           `
         )
         .eq("creator_id", data.user.id);
@@ -146,6 +147,7 @@ const SignIn = () => {
             organizationID: item.organization_id,
             creatorID: item.creator_id,
             uuid: item.uuid,
+            company_count: item.watchlist_companies?.length,
           };
         })
       );

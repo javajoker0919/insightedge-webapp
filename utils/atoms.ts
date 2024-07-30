@@ -26,6 +26,7 @@ interface Watchlist {
   organizationID: number;
   creatorID: string;
   uuid: string;
+  company_count?: number;
 }
 
 export const userMetadataAtom = atomWithStorage<UserMetadata | null>(
