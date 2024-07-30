@@ -202,6 +202,7 @@ export const tailoredOpportunities_v2 = [
   {
     opportunityName:
       "Identify ideal SaaS customers for Loops.so using ProspectEdge's AI-driven profiling",
+    companyName: "Apple Inc.",
     opportunityScore: 95,
     opportunityKeywords: [
       "Customer profiling",
@@ -232,6 +233,7 @@ export const tailoredOpportunities_v2 = [
   {
     opportunityName:
       "Discover new selling opportunities for Loops.so in untapped SaaS verticals",
+    companyName: "Tesla Inc.",
     opportunityScore: 92,
     opportunityKeywords: [
       "Market expansion",
@@ -263,6 +265,7 @@ export const tailoredOpportunities_v2 = [
     opportunityName:
       "Optimize Loops.so's account prioritization with ProspectEdge's AI-driven scoring",
     opportunityScore: 93,
+    companyName: "Alphabet Inc.",
     opportunityKeywords: [
       "Account prioritization",
       "AI scoring",
@@ -292,6 +295,7 @@ export const tailoredOpportunities_v2 = [
   {
     opportunityName:
       "Enhance Loops.so's customer retention strategies with ProspectEdge's churn prediction",
+    companyName: "Microsoft Inc.",
     opportunityScore: 91,
     opportunityKeywords: [
       "Churn prediction",
@@ -322,6 +326,7 @@ export const tailoredOpportunities_v2 = [
   {
     opportunityName:
       "Enhance Loops.so's sales intelligence with ProspectEdge's decision-maker identification",
+    companyName: "Apple Inc.",
     opportunityScore: 88,
     opportunityKeywords: [
       "Sales intelligence",
