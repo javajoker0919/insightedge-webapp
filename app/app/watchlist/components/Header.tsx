@@ -59,7 +59,7 @@ const Header = () => {
           >
             <Link
               href={`/app/watchlist/${item.uuid}`}
-              className={`flex items-center gap-2 p-2 bg-white text-gray-700 rounded-lg w-full border transition-all duration-200 ${
+              className={`flex items-center gap-2 p-2 bg-white text-gray-700 rounded-lg w-full max-w-56 border transition-all duration-200 ${
                 paramUUID === item.uuid
                   ? "border-b-2 border-b-primary-500"
                   : "hover:shadow-md"
@@ -70,7 +70,9 @@ const Header = () => {
                 {item.name}
               </span>
               {item?.company_count !== undefined && (
-                <span className="text-gray-500">{item.company_count}</span>
+                <span className="text-gray-500 text-sm">
+                  {item.company_count}
+                </span>
               )}
             </Link>
           </SwiperSlide>
