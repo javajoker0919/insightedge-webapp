@@ -14,7 +14,12 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const userInfo = useAtomValue(userInfoAtom);
 
   // Define paths that don't require authentication
-  const authPaths = ["/auth/sign-in", "/auth/sign-up", "/auth/forgot-password"];
+  const authPaths = [
+    "/auth/sign-in",
+    "/auth/sign-up",
+    "/auth/forgot-password",
+    "/subscription",
+  ];
   const landingPath = "/";
 
   useEffect(() => {

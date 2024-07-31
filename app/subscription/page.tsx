@@ -1,5 +1,8 @@
+"use client";
 import React from "react";
 import { IoCheckmarkCircleOutline, IoCloseOutline } from "react-icons/io5";
+import { createCheckoutSession } from "@/utils/apiClient";
+import { useRouter } from "next/navigation";
 
 interface PlanFeature {
   name: string;
@@ -8,6 +11,7 @@ interface PlanFeature {
 }
 
 const PricingTable: React.FC = () => {
+  const router = useRouter();
   const features: PlanFeature[] = [
     { name: "General AI insights", free: true, standard: true },
     { name: "General AI recommendations", free: true, standard: true },
@@ -23,7 +27,13 @@ const PricingTable: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl m-auto pb-6">
+      <button
+        onClick={() => router.back()}
+        className="mb-4 text-sm font-medium text-gray-700 bg-white p-2 rounded-md hover:bg-gray-50"
+      >
+        ← Go Back
+      </button>
       <div className="grid grid-cols-3 gap-6">
         <div className="col-span-1"></div>
         <PlanHeader title="FREE" price="$0" />
@@ -48,18 +58,34 @@ const PricingTable: React.FC = () => {
 const PlanHeader: React.FC<{ title: string; price: string }> = ({
   title,
   price,
-}) => (
-  <div className="text-center space-y-4 p-2 pt-4">
-    <h2 className="text-xl font-bold mb-2">{title}</h2>
-    <div className="flex items-center justify-center gap-2">
-      <p className="text-3xl font-bold">{price}</p>
-      <p className="text-sm text-gray-500">/ user / month</p>
+}) => {
+  const handleSubscribe = async (plan: string) => {
+    if (plan === "STANDARD") {
+      try {
+        const response = await createCheckoutSession(plan);
+        window.location.href = response.url;
+      } catch (error) {
+        console.error("Error creating checkout session:", error);
+      }
+    }
+  };
+
+  return (
+    <div className="text-center space-y-4 p-2 pt-4">
+      <h2 className="text-xl font-bold mb-2">{title}</h2>
+      <div className="flex items-center justify-center gap-2">
+        <p className="text-3xl font-bold">{price}</p>
+        <p className="text-sm text-gray-500">/ user / month</p>
+      </div>
+      <button
+        className="w-full py-2 px-4 border border-gray-300 rounded-md text-white hover:bg-primary-600 bg-primary-500"
+        onClick={() => handleSubscribe(title)}
+      >
+        Subscribe
+      </button>
     </div>
-    <button className="w-full py-2 px-4 border border-gray-300 rounded-md text-white hover:bg-primary-600 bg-primary-500">
-      Subscribe
-    </button>
-  </div>
-);
+  );
+};
 
 const FeatureRow: React.FC<{ feature: PlanFeature }> = ({ feature }) => (
   <>
