@@ -123,7 +123,7 @@ export default function WatchlistPage() {
           organization_id, 
           creator_id,
           uuid,
-          watchlist_companies!inner(id, company_id)
+          watchlist_companies!left(id, company_id)
           `
         )
         .eq("creator_id", userId);
