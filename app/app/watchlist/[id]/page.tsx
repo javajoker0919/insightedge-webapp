@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { IoAddOutline, IoPencil, IoTrash, IoClose } from "react-icons/io5";
 
 import { supabase } from "@/utils/supabaseClient";
-import { watchlistAtom } from "@/utils/atoms";
+import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
 
@@ -85,7 +85,9 @@ export default function WatchlistPage() {
 
   const router = useRouter();
 
+  const userInfo = useAtomValue(userInfoAtom);
   const watchlist = useAtomValue(watchlistAtom);
+  const setWatchlist = useSetAtom(watchlistAtom);
   const [watchlistName, setWatchlistName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -200,6 +202,40 @@ export default function WatchlistPage() {
       );
     }
   };
+
+  useEffect(() => {
+    async function fetchLatestWatchlistsData(userId: string) {
+      const { data: watchlistData, error: watchlistError } = await supabase
+        .from("watchlists")
+        .select(
+          `
+          id, 
+          name, 
+          organization_id, 
+          creator_id,
+          uuid,
+          watchlist_companies!inner(id, company_id)
+          `
+        )
+        .eq("creator_id", userId);
+
+      if (watchlistError) throw watchlistError;
+
+      setWatchlist(
+        watchlistData.map((item) => {
+          return {
+            id: item.id,
+            name: item.name,
+            organizationID: item.organization_id,
+            creatorID: item.creator_id,
+            uuid: item.uuid,
+            company_count: item.watchlist_companies?.length,
+          };
+        })
+      );
+    }
+    if (userInfo?.id) fetchLatestWatchlistsData(userInfo.id);
+  }, [userInfo?.id, isSearchBarOpen, handleRemoveCompanyFromWatchlist]);
 
   return (
     <div className="flex justify-center p-4 h-full overflow-auto">
