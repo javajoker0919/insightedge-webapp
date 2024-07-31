@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { IoCheckmarkCircleOutline, IoCloseOutline } from "react-icons/io5";
 import { createCheckoutSession } from "@/utils/apiClient";
 import { useRouter } from "next/navigation";
@@ -55,17 +55,25 @@ const PricingTable: React.FC = () => {
   );
 };
 
-const PlanHeader: React.FC<{ title: string; price: string }> = ({
-  title,
-  price,
-}) => {
-  const handleSubscribe = async (plan: string) => {
+interface PlanHeaderProps {
+  title: string;
+  price: string;
+}
+
+const PlanHeader: React.FC<PlanHeaderProps> = ({ title, price }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
+
+  const handleSubscribe = async (plan: string): Promise<void> => {
     if (plan === "STANDARD") {
+      setIsLoading(true);
       try {
         const response = await createCheckoutSession(plan);
-        window.location.href = response.url;
+        router.push(response.url);
       } catch (error) {
         console.error("Error creating checkout session:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -80,14 +88,23 @@ const PlanHeader: React.FC<{ title: string; price: string }> = ({
       <button
         className="w-full py-2 px-4 border border-gray-300 rounded-md text-white hover:bg-primary-600 bg-primary-500"
         onClick={() => handleSubscribe(title)}
+        disabled={isLoading}
       >
-        Subscribe
+        {isLoading ? (
+          <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
+        ) : (
+          "Subscribe"
+        )}
       </button>
     </div>
   );
 };
 
-const FeatureRow: React.FC<{ feature: PlanFeature }> = ({ feature }) => (
+interface FeatureRowProps {
+  feature: PlanFeature;
+}
+
+const FeatureRow: React.FC<FeatureRowProps> = ({ feature }) => (
   <>
     <div className="flex items-center">{feature.name}</div>
     <FeatureCell value={feature.free} />
@@ -95,7 +112,11 @@ const FeatureRow: React.FC<{ feature: PlanFeature }> = ({ feature }) => (
   </>
 );
 
-const FeatureCell: React.FC<{ value: string | boolean }> = ({ value }) => (
+interface FeatureCellProps {
+  value: string | boolean;
+}
+
+const FeatureCell: React.FC<FeatureCellProps> = ({ value }) => (
   <div className="flex justify-center items-center">
     {typeof value === "boolean" ? (
       value ? (
