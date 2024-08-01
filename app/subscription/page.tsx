@@ -38,11 +38,9 @@ const PricingTable: React.FC = () => {
 
   useEffect(() => {
     const status = searchParams.get("status");
-    if (status === "success") {
+    if (status === "success" && watchlist && watchlist.length > 0) {
       invokeToast("success", "Subscription successful!", "top");
-      if (watchlist && watchlist.length > 0) {
-        router.replace(`/app/watchlist/${watchlist[0].uuid}`);
-      }
+      router.replace(`/app/watchlist/${watchlist[0].uuid}`);
     } else if (status === "cancel") {
       invokeToast("error", "Subscription cancelled.", "top");
       router.replace("/subscription");
