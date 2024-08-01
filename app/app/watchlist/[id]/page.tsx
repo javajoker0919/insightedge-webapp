@@ -10,15 +10,23 @@ import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
 
-import { LuCalendarPlus } from "react-icons/lu";
 import { MdAddCircleOutline, MdContentPaste } from "react-icons/md";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { Details } from "../../company/[id]/components";
+import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
+
 import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
 import MarketingSection from "../../company/[id]/Marketing/MarketingSection";
+import EarningsCalendar from "./EarningsCalendar";
 
-const sortAlphabetically = (arr: Array<{ name: string }>) =>
+export interface CompanyDataType {
+  id: number;
+  name: string;
+  symbol: string;
+  watchlist_company_id: number;
+}
+
+const sortAlphabetically = (arr: CompanyDataType[]) =>
   [...arr].sort((elA, elB) => {
     const nameA = elA.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
     const nameB = elB.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
@@ -45,40 +53,6 @@ const randomColor = [
   "bg-purple-800",
 ];
 
-const incomeStmtData = [
-  { field: "revenue", label: "Revenue", value: "90.75B", change: -4.31 },
-  {
-    field: "revenue_yoy_growth",
-    label: "Revenue Growth",
-    value: "14.37B",
-    change: 5.22,
-  },
-  {
-    field: "gross_profit",
-    label: "Profit",
-    value: "23.64B",
-    change: -2.17,
-  },
-  {
-    field: "net_income_yoy_growth",
-    label: "Profit Growth",
-    value: 26.04,
-    change: 2.2,
-  },
-  {
-    field: "operating_expenses",
-    label: "Expenses",
-    value: 1.53,
-    change: 0.66,
-  },
-  {
-    field: "op_expense_yoy_growth",
-    label: "Expense Growth",
-    value: "30.74B",
-    change: -1.54,
-  },
-];
-
 export default function WatchlistPage() {
   const params = useParams();
   const paramID = params.id as string;
@@ -98,7 +72,9 @@ export default function WatchlistPage() {
   const optionsModalRef = useRef<HTMLDivElement>(null);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState<boolean>(false);
   const [isCompSortAlpha, setIsComptortAlpha] = useState<boolean>(false);
-  const [watchlistCompanies, setWatchlistCompanies] = useState<any[]>([]);
+  const [watchlistCompanies, setWatchlistCompanies] = useState<
+    CompanyDataType[] | []
+  >([]);
 
   useEffect(() => {
     async function fetchWatchlistData() {
@@ -131,12 +107,14 @@ export default function WatchlistPage() {
         if (companiesError) {
           console.error("Error fetching watchlist companies:", companiesError);
         } else {
-          setWatchlistCompanies(
-            companiesData.map((item) => ({
-              ...item.companies,
+          const res = companiesData.map((item: any) => ({
+            id: item.companies.id,
+            name: item.companies.name,
+            symbol: item.companies.symbol,
               watchlist_company_id: item.id,
-            }))
-          );
+          })) as CompanyDataType[];
+
+          setWatchlistCompanies(res);
         }
       }
       setIsLoading(false);
@@ -144,6 +122,40 @@ export default function WatchlistPage() {
 
     fetchWatchlistData();
   }, [paramID]);
+
+  useEffect(() => {
+    async function fetchLatestWatchlistsData(userId: string) {
+      const { data: watchlistData, error: watchlistError } = await supabase
+        .from("watchlists")
+        .select(
+          `
+          id, 
+          name, 
+          organization_id, 
+          creator_id,
+          uuid,
+          watchlist_companies!left(id, company_id)
+          `
+        )
+        .eq("creator_id", userId);
+
+      if (watchlistError) throw watchlistError;
+
+      setWatchlist(
+        watchlistData.map((item) => {
+          return {
+            id: item.id,
+            name: item.name,
+            organizationID: item.organization_id,
+            creatorID: item.creator_id,
+            uuid: item.uuid,
+            company_count: item.watchlist_companies?.length,
+          };
+        })
+      );
+    }
+    if (userInfo?.id) fetchLatestWatchlistsData(userInfo.id);
+  }, [userInfo?.id, isSearchBarOpen, watchlistCompanies]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -202,40 +214,6 @@ export default function WatchlistPage() {
       );
     }
   };
-
-  useEffect(() => {
-    async function fetchLatestWatchlistsData(userId: string) {
-      const { data: watchlistData, error: watchlistError } = await supabase
-        .from("watchlists")
-        .select(
-          `
-          id, 
-          name, 
-          organization_id, 
-          creator_id,
-          uuid,
-          watchlist_companies!inner(id, company_id)
-          `
-        )
-        .eq("creator_id", userId);
-
-      if (watchlistError) throw watchlistError;
-
-      setWatchlist(
-        watchlistData.map((item) => {
-          return {
-            id: item.id,
-            name: item.name,
-            organizationID: item.organization_id,
-            creatorID: item.creator_id,
-            uuid: item.uuid,
-            company_count: item.watchlist_companies?.length,
-          };
-        })
-      );
-    }
-    if (userInfo?.id) fetchLatestWatchlistsData(userInfo.id);
-  }, [userInfo?.id, isSearchBarOpen, handleRemoveCompanyFromWatchlist]);
 
   return (
     <div className="flex justify-center p-4 h-full overflow-auto">
@@ -321,10 +299,30 @@ export default function WatchlistPage() {
                   {(isCompSortAlpha
                     ? sortAlphabetically(watchlistCompanies)
                     : watchlistCompanies
-                  ).map((company, indx) => {
+                  ).map((company: CompanyDataType, indx) => {
                     const symbolClass = `${
                       randomColor[indx % randomColor.length]
                     } text-white text-xs p-1`;
+                    const randomValues = [
+                      {
+                        value: Math.round(Math.random() * (120 - 20) + 20),
+                        percentage: (Math.random() * (25 - 5.1) + 5.1).toFixed(
+                          1
+                        ),
+                      },
+                      {
+                        value: Math.round(Math.random() * (120 - 50) + 50),
+                        percentage: (Math.random() * (25 - 5.1) + 5.1).toFixed(
+                          1
+                        ),
+                      },
+                      {
+                        value: Math.round(Math.random() * (100 - 25) + 25),
+                        percentage: (Math.random() * (25 - 5.1) + 5.1).toFixed(
+                          1
+                        ),
+                      },
+                    ];
                     return (
                       <div
                         key={company.id}
@@ -333,12 +331,73 @@ export default function WatchlistPage() {
                         }
                         className="py-2 hover:cursor-pointer px-4 hover:bg-primary-50 border-t last:border-b-0 flex justify-between items-center group"
                       >
-                        <div className="flex gap-2 items-center w-2/6">
+                        <div className="flex gap-2 items-center w-3/6">
                           <p className={symbolClass}>{company.symbol}</p>
                           <p className="font-medium text-sm">{company.name}</p>
                         </div>
-                        <p className="text-sm">Revenue/ Rev Growth</p>
-                        <p className="text-sm">Income/ Inc Growth</p>
+                        <span
+                          title="Revenue/ Rev Growth"
+                          className="text-sm flex items-center justify-end w-1/6"
+                        >
+                          ${randomValues[0].value}
+                          {Number(randomValues[0].percentage) > 7.5 ? (
+                            <>
+                              <MdArrowUpward className="text-green-700" />
+                              <p className="text-xs text-green-700">
+                                ({randomValues[0].percentage})%
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <MdArrowDownward className="text-red-700" />
+                              <p className="text-xs text-red-700">
+                                ({randomValues[0].percentage})%
+                              </p>
+                            </>
+                          )}
+                        </span>
+                        <span
+                          title="Income/ Inc Growth"
+                          className="text-sm flex items-center justify-end w-1/6"
+                        >
+                          ${randomValues[1].value}
+                          {Number(randomValues[1].percentage) > 12.5 ? (
+                            <>
+                              <MdArrowUpward className="text-green-700" />
+                              <p className="text-xs text-green-700">
+                                ({randomValues[1].percentage})%
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <MdArrowDownward className="text-red-700" />
+                              <p className="text-xs text-red-700">
+                                ({randomValues[1].percentage})%
+                              </p>
+                            </>
+                          )}
+                        </span>
+                        <span
+                          title="Expense/ Exp Growth"
+                          className="text-sm flex items-center justify-end w-1/6"
+                        >
+                          ${randomValues[2].value}
+                          {Number(randomValues[2].percentage) > 20 ? (
+                            <>
+                              <MdArrowUpward className="text-green-700" />
+                              <p className="text-xs text-green-700">
+                                ({randomValues[2].percentage})%
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <MdArrowDownward className="text-red-700" />
+                              <p className="text-xs text-red-700">
+                                ({randomValues[2].percentage})%
+                              </p>
+                            </>
+                          )}
+                        </span>
                         <button
                           onClick={(e) => {
                             handleRemoveCompanyFromWatchlist(
@@ -369,38 +428,6 @@ export default function WatchlistPage() {
                     />
                   </>
                 )}
-
-                <Details title={"Income Statement"}>
-                  <div className="px-4 py-3 mx-auto">
-                    <table className="w-full border-collapse">
-                      <thead>
-                        <tr className="bg-gray-100">
-                          <th className="text-left p-2">(USD)</th>
-                          <th className="text-right p-2">MAR 2024</th>
-                          <th className="text-right p-2">Y/Y CHANGE</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {incomeStmtData.map((item, index) => (
-                          <tr key={index} className="border-b">
-                            <td className="p-2">{item.label}</td>
-                            <td className="text-right p-2">{item.value}</td>
-                            <td
-                              className={`text-right p-2 ${
-                                item.change >= 0
-                                  ? "text-green-600"
-                                  : "text-red-600"
-                              }`}
-                            >
-                              {item.change >= 0 ? "↑" : "↓"}
-                              {Math.abs(item.change).toFixed(2)}%
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </Details>
               </div>
               <div className="flex flex-col gap-4">
                 <div className="border border-gray-300 rounded-lg p-3">
@@ -428,55 +455,11 @@ export default function WatchlistPage() {
                     </div>
                   </div>
                 </div>
-                <div className="border border-gray-300 rounded-lg p-3">
-                  <div className="mb-2">
-                    <h2 className="text-base font-semibold text-gray-800">
-                      Earnings Calendar
-                    </h2>
-                    <h5 className="text-xs font-semibold text-gray-400">
-                      Based on your watchlist
-                    </h5>
-                  </div>
 
-                  <div className="flex flex-col">
-                    {[
-                      {
-                        eventName: "Abb Vie",
-                        eventDate: "jul 25, 2024 09:30 AM",
-                      },
-                      { eventName: "Merck Sharp", eventDate: "jul 30, 2024" },
-                    ].map(({ eventName, eventDate }) => {
-                      const [month, date] = eventDate.split(", ")[0].split(" ");
-                      return (
-                        <div
-                          key={`event-${eventDate}`}
-                          className="flex items-center p-2 justify-between border-t border-gray-300 pb-2 mb-2 last:mb-0 "
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="flex w-12 flex-col items-center bg-primary-50 text-primary-500 py-1 px-2 rounded">
-                              <span className="text-xs uppercase">{month}</span>
-                              <span className="text-xl font-semibold">
-                                {date}
-                              </span>
-                            </div>
-                            <div className="flex flex-col">
-                              <h6 className="text-base text-gray-700 font-semibold">
-                                {eventName}
-                              </h6>
-                              <span className="text-sm text-gray-500 capitalize">
-                                {eventDate}
-                              </span>
-                            </div>
-                          </div>
-                          <LuCalendarPlus
-                            size={25}
-                            className="cursor-pointer text-gray-500 hover:text-primary-500 transition-all duration-300"
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                <EarningsCalendar
+                  key={watchlistName}
+                  companiesList={watchlistCompanies}
+                />
                 <div className="border border-gray-300 rounded-lg p-3">
                   <h2 className="text-base font-semibold border-b border-gray-300 pb-2 mb-2 text-gray-800">
                     Similar Company To Follow
