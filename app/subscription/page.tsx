@@ -42,14 +42,12 @@ const PricingTable: React.FC = () => {
       invokeToast("success", "Subscription successful!", "top");
       if (watchlist && watchlist.length > 0) {
         router.replace(`/app/watchlist/${watchlist[0].uuid}`);
-      } else {
-        router.replace("/subscription");
       }
     } else if (status === "cancel") {
       invokeToast("error", "Subscription cancelled.", "top");
       router.replace("/subscription");
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, watchlist]);
 
   return (
     <div className="max-w-4xl m-auto pb-6">
