@@ -159,16 +159,13 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
 
         setTailoredSummary(processedData);
 
-        invokeToast(
-          "success",
-          "Tailored summary generated successfully",
-          "top"
-        );
+        invokeToast("success", data.message, "top");
         setActiveTab("tailored");
       } else if (data.status === "error") {
         invokeToast("error", `${data.message}`, "top");
       }
     } catch (error) {
+      invokeToast("error", "Failed to generate tailored summary", "top");
       console.error("Error fetching tailored summary:", error);
       setTailoredSummary(null);
     } finally {

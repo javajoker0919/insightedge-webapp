@@ -211,11 +211,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         );
         setTailoredOpps(formattedData);
         setActiveTab("tailored");
-        invokeToast(
-          "success",
-          "Tailored opportunities generated successfully",
-          "top"
-        );
+        invokeToast("success", data.message, "top");
       } else {
         invokeToast(
           "error",
@@ -224,6 +220,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         );
       }
     } catch (error) {
+      invokeToast("error", "Failred to generate tailored opportunities", "top");
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNABORTED") {
           console.error(
