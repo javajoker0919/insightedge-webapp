@@ -11,6 +11,7 @@ import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 import useValidation from "@/hooks/useValidation";
 import AuthInput from "@/app/components/SignInput";
+import { createCustomer } from "@/utils/apiClient";
 
 /// SignUp component for user registration
 const SignUp = () => {
@@ -98,6 +99,8 @@ const SignUp = () => {
       if (userError) throw userError;
 
       setUserMetadata(authData.user?.user_metadata || null);
+
+      createCustomer();
 
       // Set user data using the userInfoAtom
       setUserData({

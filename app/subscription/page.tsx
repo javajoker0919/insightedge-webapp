@@ -1,8 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoCheckmarkCircleOutline, IoCloseOutline } from "react-icons/io5";
 import { createCheckoutSession } from "@/utils/apiClient";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAtomValue } from "jotai";
+import { toast } from "react-toastify";
+
+import { useToastContext } from "@/contexts/toastContext";
+import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
 
 interface PlanFeature {
   name: string;
@@ -12,6 +17,11 @@ interface PlanFeature {
 
 const PricingTable: React.FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { invokeToast } = useToastContext();
+
+  const watchlist = useAtomValue(watchlistAtom);
+
   const features: PlanFeature[] = [
     { name: "General AI insights", free: true, standard: true },
     { name: "General AI recommendations", free: true, standard: true },
@@ -25,6 +35,21 @@ const PricingTable: React.FC = () => {
     { name: "AI credits", free: "10", standard: "20" },
     { name: "Additional AI credits", free: false, standard: "$x/ 10 credits" },
   ];
+
+  useEffect(() => {
+    const status = searchParams.get("status");
+    if (status === "success") {
+      invokeToast("success", "Subscription successful!", "top");
+      if (watchlist && watchlist.length > 0) {
+        router.replace(`/app/watchlist/${watchlist[0].uuid}`);
+      } else {
+        router.replace("/subscription");
+      }
+    } else if (status === "cancel") {
+      invokeToast("error", "Subscription cancelled.", "top");
+      router.replace("/subscription");
+    }
+  }, [searchParams, router]);
 
   return (
     <div className="max-w-4xl m-auto pb-6">
@@ -63,15 +88,20 @@ interface PlanHeaderProps {
 const PlanHeader: React.FC<PlanHeaderProps> = ({ title, price }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
+  const userInfo = useAtomValue(userInfoAtom);
 
   const handleSubscribe = async (plan: string): Promise<void> => {
-    if (plan === "STANDARD") {
+    if (plan === "STANDARD" && userInfo) {
       setIsLoading(true);
       try {
-        const response = await createCheckoutSession(plan);
+        const response = await createCheckoutSession(
+          plan.toLowerCase(),
+          userInfo.id
+        );
         router.push(response.url);
       } catch (error) {
         console.error("Error creating checkout session:", error);
+        toast.error("Failed to create checkout session. Please try again.");
       } finally {
         setIsLoading(false);
       }
