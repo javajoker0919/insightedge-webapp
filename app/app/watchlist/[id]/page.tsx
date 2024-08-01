@@ -19,7 +19,14 @@ import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
 import MarketingSection from "../../company/[id]/Marketing/MarketingSection";
 import EarningsCalendar from "./EarningsCalendar";
 
-const sortAlphabetically = (arr: Array<{ name: string }>) =>
+export interface CompanyDataType {
+  id: number;
+  name: string;
+  symbol: string;
+  watchlist_company_id: number;
+}
+
+const sortAlphabetically = (arr: CompanyDataType[]) =>
   [...arr].sort((elA, elB) => {
     const nameA = elA.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
     const nameB = elB.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
@@ -65,7 +72,9 @@ export default function WatchlistPage() {
   const optionsModalRef = useRef<HTMLDivElement>(null);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState<boolean>(false);
   const [isCompSortAlpha, setIsComptortAlpha] = useState<boolean>(false);
-  const [watchlistCompanies, setWatchlistCompanies] = useState<any[]>([]);
+  const [watchlistCompanies, setWatchlistCompanies] = useState<
+    CompanyDataType[] | []
+  >([]);
 
   useEffect(() => {
     async function fetchWatchlistData() {
@@ -98,12 +107,14 @@ export default function WatchlistPage() {
         if (companiesError) {
           console.error("Error fetching watchlist companies:", companiesError);
         } else {
-          setWatchlistCompanies(
-            companiesData.map((item) => ({
-              ...item.companies,
+          const res = companiesData.map((item: any) => ({
+            id: item.companies.id,
+            name: item.companies.name,
+            symbol: item.companies.symbol,
               watchlist_company_id: item.id,
-            }))
-          );
+          })) as CompanyDataType[];
+
+          setWatchlistCompanies(res);
         }
       }
       setIsLoading(false);
@@ -288,7 +299,7 @@ export default function WatchlistPage() {
                   {(isCompSortAlpha
                     ? sortAlphabetically(watchlistCompanies)
                     : watchlistCompanies
-                  ).map((company, indx) => {
+                  ).map((company: CompanyDataType, indx) => {
                     const symbolClass = `${
                       randomColor[indx % randomColor.length]
                     } text-white text-xs p-1`;
@@ -444,21 +455,11 @@ export default function WatchlistPage() {
                     </div>
                   </div>
                 </div>
-                <div className="border border-gray-300 rounded-lg p-3">
-                  <div className="mb-2">
-                    <h2 className="text-base font-semibold text-gray-800">
-                      Earnings Calendar
-                    </h2>
-                    <h5 className="text-xs font-semibold text-gray-400">
-                      Based on your watchlist
-                    </h5>
-                  </div>
 
-                  <EarningsCalendar
-                    key={watchlistName}
-                    companiesList={watchlistCompanies}
-                  />
-                </div>
+                <EarningsCalendar
+                  key={watchlistName}
+                  companiesList={watchlistCompanies}
+                />
                 <div className="border border-gray-300 rounded-lg p-3">
                   <h2 className="text-base font-semibold border-b border-gray-300 pb-2 mb-2 text-gray-800">
                     Similar Company To Follow
