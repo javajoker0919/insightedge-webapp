@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 import { useToastContext } from "@/contexts/toastContext";
 import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
+import { supabase } from "@/utils/supabaseClient";
 
 interface PlanFeature {
   name: string;
@@ -19,8 +20,10 @@ const PricingTable: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { invokeToast } = useToastContext();
-
+  const userInfo = useAtomValue(userInfoAtom);
   const watchlist = useAtomValue(watchlistAtom);
+  const [currentPlan, setCurrentPlan] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const features: PlanFeature[] = [
     { name: "General AI insights", free: true, standard: true },
@@ -37,6 +40,42 @@ const PricingTable: React.FC = () => {
   ];
 
   useEffect(() => {
+    const fetchCurrentPlan = async () => {
+      if (userInfo) {
+        const { data: userPlan, error: userPlanError } = await supabase
+          .from("user_plans")
+          .select("plan_id")
+          .eq("user_id", userInfo.id)
+          .single();
+
+        if (userPlanError) {
+          console.error("Error fetching user plan:", userPlanError);
+          return;
+        }
+
+        if (userPlan) {
+          const { data: plan, error: planError } = await supabase
+            .from("plans")
+            .select("name")
+            .eq("id", userPlan.plan_id)
+            .single();
+
+          if (planError) {
+            console.error("Error fetching plan:", planError);
+            return;
+          }
+
+          setCurrentPlan(plan.name.toUpperCase());
+        }
+
+        setIsLoading(false);
+      }
+    };
+
+    fetchCurrentPlan();
+  }, [userInfo]);
+
+  useEffect(() => {
     const status = searchParams.get("status");
     if (status === "success" && watchlist && watchlist.length > 0) {
       invokeToast("success", "Subscription successful!", "top");
@@ -46,6 +85,14 @@ const PricingTable: React.FC = () => {
       router.replace("/subscription");
     }
   }, [searchParams, router, watchlist]);
+
+  if (isLoading) {
+    return (
+      <div className="m-auto">
+        <span className="ml-2 inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl m-auto pb-6">
@@ -57,8 +104,8 @@ const PricingTable: React.FC = () => {
       </button>
       <div className="grid grid-cols-3 gap-6">
         <div className="col-span-1"></div>
-        <PlanHeader title="FREE" price="$0" />
-        <PlanHeader title="STANDARD" price="$99" />
+        <PlanHeader title="FREE" price="$0" currentPlan={currentPlan} />
+        <PlanHeader title="STANDARD" price="$99" currentPlan={currentPlan} />
 
         {features.map((feature, index) => (
           <FeatureRow key={index} feature={feature} />
@@ -79,9 +126,14 @@ const PricingTable: React.FC = () => {
 interface PlanHeaderProps {
   title: string;
   price: string;
+  currentPlan: string | null;
 }
 
-const PlanHeader: React.FC<PlanHeaderProps> = ({ title, price }) => {
+const PlanHeader: React.FC<PlanHeaderProps> = ({
+  title,
+  price,
+  currentPlan,
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const userInfo = useAtomValue(userInfoAtom);
@@ -112,12 +164,16 @@ const PlanHeader: React.FC<PlanHeaderProps> = ({ title, price }) => {
         <p className="text-sm text-gray-500">/ user / month</p>
       </div>
       <button
-        className="w-full py-2 px-4 border border-gray-300 rounded-md text-white hover:bg-primary-600 bg-primary-500"
+        className={`w-full py-2 px-4 border border-gray-300 rounded-md text-white ${
+          title == currentPlan?.toUpperCase() ? "bg-gray-500" : "bg-primary-500"
+        }`}
         onClick={() => handleSubscribe(title)}
-        disabled={isLoading}
+        disabled={isLoading || currentPlan?.toUpperCase() == title}
       >
         {isLoading ? (
           <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
+        ) : title == currentPlan?.toUpperCase() ? (
+          "Current plan"
         ) : (
           "Subscribe"
         )}
