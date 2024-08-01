@@ -10,7 +10,6 @@ import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
 
-import { LuCalendarPlus } from "react-icons/lu";
 import { MdAddCircleOutline, MdContentPaste } from "react-icons/md";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -18,6 +17,7 @@ import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
 
 import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
 import MarketingSection from "../../company/[id]/Marketing/MarketingSection";
+import EarningsCalendar from "./EarningsCalendar";
 
 const sortAlphabetically = (arr: Array<{ name: string }>) =>
   [...arr].sort((elA, elB) => {
@@ -454,44 +454,10 @@ export default function WatchlistPage() {
                     </h5>
                   </div>
 
-                  <div className="flex flex-col">
-                    {[
-                      {
-                        eventName: "Abb Vie",
-                        eventDate: "jul 25, 2024 09:30 AM",
-                      },
-                      { eventName: "Merck Sharp", eventDate: "jul 30, 2024" },
-                    ].map(({ eventName, eventDate }) => {
-                      const [month, date] = eventDate.split(", ")[0].split(" ");
-                      return (
-                        <div
-                          key={`event-${eventDate}`}
-                          className="flex items-center p-2 justify-between border-t border-gray-300 pb-2 mb-2 last:mb-0 "
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="flex w-12 flex-col items-center bg-primary-50 text-primary-500 py-1 px-2 rounded">
-                              <span className="text-xs uppercase">{month}</span>
-                              <span className="text-xl font-semibold">
-                                {date}
-                              </span>
-                            </div>
-                            <div className="flex flex-col">
-                              <h6 className="text-base text-gray-700 font-semibold">
-                                {eventName}
-                              </h6>
-                              <span className="text-sm text-gray-500 capitalize">
-                                {eventDate}
-                              </span>
-                            </div>
-                          </div>
-                          <LuCalendarPlus
-                            size={25}
-                            className="cursor-pointer text-gray-500 hover:text-primary-500 transition-all duration-300"
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <EarningsCalendar
+                    key={watchlistName}
+                    companiesList={watchlistCompanies}
+                  />
                 </div>
                 <div className="border border-gray-300 rounded-lg p-3">
                   <h2 className="text-base font-semibold border-b border-gray-300 pb-2 mb-2 text-gray-800">
