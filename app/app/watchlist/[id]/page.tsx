@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useAtomValue, useSetAtom } from "jotai";
 import { IoAddOutline, IoPencil, IoTrash, IoClose } from "react-icons/io5";
 
@@ -13,11 +13,11 @@ import CompanySearchbar from "@/app/components/CompanySearchbar";
 import { MdAddCircleOutline, MdContentPaste } from "react-icons/md";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
 
 import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
 import MarketingSection from "../../company/[id]/Marketing/MarketingSection";
 import EarningsCalendar from "./EarningsCalendar";
+import WLIncomeStatement from "./WLIncomeStatement";
 
 export interface CompanyDataType {
   id: number;
@@ -56,8 +56,6 @@ const randomColor = [
 export default function WatchlistPage() {
   const params = useParams();
   const paramID = params.id as string;
-
-  const router = useRouter();
 
   const userInfo = useAtomValue(userInfoAtom);
   const watchlist = useAtomValue(watchlistAtom);
@@ -111,7 +109,7 @@ export default function WatchlistPage() {
             id: item.companies.id,
             name: item.companies.name,
             symbol: item.companies.symbol,
-              watchlist_company_id: item.id,
+            watchlist_company_id: item.id,
           })) as CompanyDataType[];
 
           setWatchlistCompanies(res);
@@ -295,124 +293,13 @@ export default function WatchlistPage() {
           ) : (
             <div className="grid grid-cols-3 gap-4 my-2">
               <div className="col-span-2 flex flex-col gap-4 pb-5">
-                <div className="flex flex-col">
-                  {(isCompSortAlpha
-                    ? sortAlphabetically(watchlistCompanies)
-                    : watchlistCompanies
-                  ).map((company: CompanyDataType, indx) => {
-                    const symbolClass = `${
-                      randomColor[indx % randomColor.length]
-                    } text-white text-xs p-1`;
-                    const randomValues = [
-                      {
-                        value: Math.round(Math.random() * (120 - 20) + 20),
-                        percentage: (Math.random() * (25 - 5.1) + 5.1).toFixed(
-                          1
-                        ),
-                      },
-                      {
-                        value: Math.round(Math.random() * (120 - 50) + 50),
-                        percentage: (Math.random() * (25 - 5.1) + 5.1).toFixed(
-                          1
-                        ),
-                      },
-                      {
-                        value: Math.round(Math.random() * (100 - 25) + 25),
-                        percentage: (Math.random() * (25 - 5.1) + 5.1).toFixed(
-                          1
-                        ),
-                      },
-                    ];
-                    return (
-                      <div
-                        key={company.id}
-                        onClick={() =>
-                          router.push(`/app/company/${company.id}`)
-                        }
-                        className="py-2 hover:cursor-pointer px-4 hover:bg-primary-50 border-t last:border-b-0 flex justify-between items-center group"
-                      >
-                        <div className="flex gap-2 items-center w-3/6">
-                          <p className={symbolClass}>{company.symbol}</p>
-                          <p className="font-medium text-sm">{company.name}</p>
-                        </div>
-                        <span
-                          title="Revenue/ Rev Growth"
-                          className="text-sm flex items-center justify-end w-1/6"
-                        >
-                          ${randomValues[0].value}
-                          {Number(randomValues[0].percentage) > 7.5 ? (
-                            <>
-                              <MdArrowUpward className="text-green-700" />
-                              <p className="text-xs text-green-700">
-                                ({randomValues[0].percentage})%
-                              </p>
-                            </>
-                          ) : (
-                            <>
-                              <MdArrowDownward className="text-red-700" />
-                              <p className="text-xs text-red-700">
-                                ({randomValues[0].percentage})%
-                              </p>
-                            </>
-                          )}
-                        </span>
-                        <span
-                          title="Income/ Inc Growth"
-                          className="text-sm flex items-center justify-end w-1/6"
-                        >
-                          ${randomValues[1].value}
-                          {Number(randomValues[1].percentage) > 12.5 ? (
-                            <>
-                              <MdArrowUpward className="text-green-700" />
-                              <p className="text-xs text-green-700">
-                                ({randomValues[1].percentage})%
-                              </p>
-                            </>
-                          ) : (
-                            <>
-                              <MdArrowDownward className="text-red-700" />
-                              <p className="text-xs text-red-700">
-                                ({randomValues[1].percentage})%
-                              </p>
-                            </>
-                          )}
-                        </span>
-                        <span
-                          title="Expense/ Exp Growth"
-                          className="text-sm flex items-center justify-end w-1/6"
-                        >
-                          ${randomValues[2].value}
-                          {Number(randomValues[2].percentage) > 20 ? (
-                            <>
-                              <MdArrowUpward className="text-green-700" />
-                              <p className="text-xs text-green-700">
-                                ({randomValues[2].percentage})%
-                              </p>
-                            </>
-                          ) : (
-                            <>
-                              <MdArrowDownward className="text-red-700" />
-                              <p className="text-xs text-red-700">
-                                ({randomValues[2].percentage})%
-                              </p>
-                            </>
-                          )}
-                        </span>
-                        <button
-                          onClick={(e) => {
-                            handleRemoveCompanyFromWatchlist(
-                              company.watchlist_company_id
-                            );
-                            e.stopPropagation();
-                          }}
-                          className="text-white hover:bg-gray-200 p-0.5 rounded-full group-hover:text-gray-500"
-                        >
-                          <IoClose className="text-lg" />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
+                <WLIncomeStatement
+                  watchlistCompanies={watchlistCompanies}
+                  isCompSortAlpha={isCompSortAlpha}
+                  onRemoveCompany={(wl_compId: number) =>
+                    handleRemoveCompanyFromWatchlist(wl_compId)
+                  }
+                />
 
                 {watchlistCompanies?.length > 0 && (
                   <>
