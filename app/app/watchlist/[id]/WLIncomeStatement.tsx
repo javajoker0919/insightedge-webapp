@@ -110,7 +110,7 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
             (e) => e.symbol === curr.symbol
           )?.date;
           if (ec_date) {
-            updatedItem["date"] = moment(ec_date).format("L");
+            updatedItem["date"] = moment(ec_date).format("MM/DD/YYYY");
           }
 
           const index = acc.findIndex((item) => item?.symbol === curr.symbol);
@@ -139,7 +139,7 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
       <table>
         <thead>
           <tr>
-            <th className="text-left w-[320px]"></th>
+            <th className="text-left w-[300px]"></th>
             <th className="text-sm">As Of</th>
             <th className="text-left text-sm">
               Revenue <span className="text-xs">(YoY Change)</span>
