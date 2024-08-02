@@ -100,12 +100,12 @@ const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Link href="/upgrade">
+          {/* <Link href="/upgrade">
             <button className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-colors duration-200">
               Upgrade
             </button>
-          </Link>
-          <div className="relative" ref={dropdownRef}>
+          </Link> */}
+          <div className="relative min-h-10 min-w-10" ref={dropdownRef}>
             <Image
               onClick={toggleDropdown}
               src="/default_avatar.jpeg"

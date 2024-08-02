@@ -20,16 +20,24 @@ const ToastProvider = ({ children }: any) => {
   ) => {
     switch (type) {
       case "success":
-        toast.success(text);
+        toast.success(text, {
+          autoClose: 9000,
+        });
         break;
       case "warn":
-        toast.warn(text);
+        toast.warn(text, {
+          autoClose: 9000,
+        });
         break;
       case "error":
-        toast.error(text);
+        toast.error(text, {
+          autoClose: 9000,
+        });
         break;
       case "info":
-        toast.info(text);
+        toast.info(text, {
+          autoClose: 9000,
+        });
         break;
       default:
         break;
