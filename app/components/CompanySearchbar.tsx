@@ -146,7 +146,6 @@ const CompanySearchbar = ({
       if (error) {
         console.error("Error fetching search results:", error);
       } else {
-        console.log(data);
         setSearchResults(data || []);
       }
       setIsSearching(false);
@@ -183,7 +182,6 @@ const CompanySearchbar = ({
     if (error) {
       console.error("Error adding company to watchlist:", error);
     } else {
-      console.log("Company added to watchlist successfully");
       setIsSearchBarOpen(false);
 
       // Fetch the newly added company and update the state
