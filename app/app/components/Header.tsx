@@ -125,11 +125,11 @@ const Header: React.FC = () => {
                   My Profile
                 </Link>
                 <Link
-                  href="/subscription"
+                  href="/app/membership"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={closeDropdown}
                 >
-                  Subscription
+                  Membership Plan
                 </Link>
                 <Link
                   href="/app/manage-users"
