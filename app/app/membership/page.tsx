@@ -145,7 +145,7 @@ const Membership: React.FC = () => {
         <div className="w-full min-w-96">
           <div className="bg-white shadow-xl rounded-lg overflow-hidden">
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
-              <h2 className="text-2xl font-bold text-white">
+              <h2 className="text-2xl font-bold text-white text-center">
                 Your Current Plan Features
               </h2>
             </div>
@@ -166,10 +166,12 @@ const Membership: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full min-w-96">
+        <div className="w-full min-w-[30rem]">
           <div className="bg-white shadow-xl rounded-lg overflow-hidden">
             <div className="bg-gray-200 px-6 py-4">
-              <h2 className="text-2xl text-gray-600">Plan History</h2>
+              <h2 className="text-2xl text-gray-600 text-center">
+                Plan History
+              </h2>
             </div>
             <div className="px-6 py-8">
               <table className="w-full text-center">
@@ -184,7 +186,7 @@ const Membership: React.FC = () => {
                   {orderHistory.map((order) => (
                     <tr
                       key={order.order_number}
-                      className="border-b border-gray-200"
+                      className="border-b border-gray-200 hover:bg-gray-100"
                     >
                       <td className="py-2 text-gray-700">
                         {order.order_number}
