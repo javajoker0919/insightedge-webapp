@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
 import { supabase } from "@/utils/supabaseClient";
 import { generateTailoredSummaryAPI } from "@/utils/apiClient";
-import { orgInfoAtom } from "@/utils/atoms";
+import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import RenderSummaryContent from "./RenderSummaryContent";
 import { useToastContext } from "@/contexts/toastContext";
 
@@ -30,6 +30,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
 
   const { invokeToast } = useToastContext();
   const orgInfo = useAtomValue(orgInfoAtom);
+  const setUserInfo = useSetAtom(userInfoAtom);
   const [generalSummary, setGeneralSummary] = useState<SummaryProps | null>(
     null
   );
@@ -158,7 +159,13 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
         };
 
         setTailoredSummary(processedData);
-
+        setUserInfo((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            creditCount: prev.creditCount ? prev.creditCount - 1 : 0,
+          };
+        });
         invokeToast("success", data.message, "top");
         setActiveTab("tailored");
       } else if (data.status === "error") {

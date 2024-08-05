@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import {
   userMetadataAtom,
   userInfoAtom,
@@ -21,7 +21,7 @@ const Header: React.FC = () => {
   const setIsSidebarExpanded = useSetAtom(isSidebarExpandedAtom);
   const router = useRouter();
   const setUserMetadata = useSetAtom(userMetadataAtom);
-  const setUserInfo = useSetAtom(userInfoAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
   const setOrgInfo = useSetAtom(orgInfoAtom);
   const setWatchlist = useSetAtom(watchlistAtom);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -67,6 +67,36 @@ const Header: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchCreditCount = async () => {
+      try {
+        if (userInfo) {
+          const { data, error } = await supabase
+            .from("user_packages")
+            .select("value")
+            .eq("user_id", userInfo.id)
+            .eq("package_id", 1)
+            .single();
+          if (error) {
+            throw error;
+          }
+
+          setUserInfo((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              creditCount: parseInt(data.value),
+            };
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching credit count:", error);
+      }
+    };
+
+    fetchCreditCount();
+  }, [userInfo?.email]);
+
   return (
     <header className="py-3 bg-white z-20 shadow-md sticky top-0">
       <nav className="mx-auto flex justify-between items-center pr-4 pl-2">
@@ -100,11 +130,15 @@ const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* <Link href="/upgrade">
-            <button className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-colors duration-200">
-              Upgrade
-            </button>
-          </Link> */}
+          <button
+            onClick={() => {
+              router.push("/app/membership");
+            }}
+            className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-colors duration-200"
+          >
+            {`Credits: ${userInfo?.creditCount}`}
+          </button>
+
           <div className="relative min-h-10 min-w-10" ref={dropdownRef}>
             <Image
               onClick={toggleDropdown}
