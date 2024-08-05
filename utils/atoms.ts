@@ -47,3 +47,14 @@ export const watchlistAtom = atomWithStorage<Watchlist[] | null>(
 );
 export const isSidebarExpandedAtom = atom<boolean>(false);
 export const earningsCalendarAtom = atom<EarningsCalendarData[] | null>();
+
+export interface ICompanyData {
+  year: number;
+  quarter: number;
+  company_id: string;
+  symbol: string;
+}
+export const latestCompanyEarningsData = atomWithStorage<{
+  data: ICompanyData[] | null;
+  storedAt: string | null;
+}>("latest-company-earnings-data", { data: null, storedAt: null });
