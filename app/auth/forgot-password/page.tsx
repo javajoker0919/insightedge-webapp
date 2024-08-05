@@ -47,7 +47,6 @@ const ForgotPassword = () => {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) throw error;
 
-      console.log("Password reset response:", data); // Log the response data
       invokeToast("success", "Password reset link sent to your email!", "top");
       router.push("/auth/sign-in");
     } catch (error: any) {
