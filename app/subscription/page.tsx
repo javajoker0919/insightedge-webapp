@@ -98,8 +98,8 @@ const PricingTable: React.FC = () => {
       >
         ← Go Back
       </button>
-      <div className="grid grid-cols-3 gap-6">
-        <div>
+      <div className="grid grid-cols-3 gap-12">
+        <div className="py-4">
           <div className="h-44"></div>
           {features_1.map((item) => {
             return (
@@ -120,9 +120,9 @@ const PricingTable: React.FC = () => {
         </div>
 
         <div
-          className={`w-64 px-4 ${
+          className={`w-64 p-4 border rounded-lg border-gray-200 ${
             currentPlan == "free"
-              ? "rounded-lg shadow-primary-100 border shadow-md"
+              ? "shadow-primary-100 bg-green-100 shadow-xl"
               : ""
           }`}
         >
@@ -150,9 +150,9 @@ const PricingTable: React.FC = () => {
         </div>
 
         <div
-          className={`w-64 px-4 ${
+          className={`w-64 p-4 border rounded-lg border-gray-200 ${
             currentPlan == "standard"
-              ? "rounded-lg shadow-primary-100 border shadow-md"
+              ? "shadow-primary-100 bg-green-100 shadow-xl"
               : ""
           }`}
         >
