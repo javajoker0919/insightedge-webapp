@@ -24,9 +24,6 @@ const PricingTable: React.FC = () => {
   const watchlist = useAtomValue(watchlistAtom);
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [stripeSubscriptionId, setStripeSubscriptionId] = useState<
-    string | null
-  >(null);
 
   const features_1: string[] = [
     "General AI insights",
@@ -65,7 +62,6 @@ const PricingTable: React.FC = () => {
             return;
           }
           setCurrentPlan(plan.name);
-          setStripeSubscriptionId(userPlan[0].stripe_subscription_id);
         }
 
         setIsLoading(false);
@@ -102,8 +98,8 @@ const PricingTable: React.FC = () => {
       >
         ← Go Back
       </button>
-      <div className="grid grid-cols-3 gap-6">
-        <div>
+      <div className="grid grid-cols-3 gap-12">
+        <div className="py-4">
           <div className="h-44"></div>
           {features_1.map((item) => {
             return (
@@ -124,18 +120,13 @@ const PricingTable: React.FC = () => {
         </div>
 
         <div
-          className={`w-64 px-4 ${
+          className={`w-64 p-4 border rounded-lg border-gray-200 ${
             currentPlan == "free"
-              ? "rounded-lg shadow-primary-100 border shadow-md"
+              ? "shadow-primary-100 bg-green-100 shadow-xl"
               : ""
           }`}
         >
-          <PlanHeader
-            title="FREE"
-            price="$0"
-            currentPlan={currentPlan}
-            stripeSubscriptionId={stripeSubscriptionId}
-          />
+          <PlanHeader title="FREE" price="$0" currentPlan={currentPlan} />
 
           {[...Array(4)].map((_, index) => (
             <div key={index} className="flex items-center h-12 justify-center">
@@ -159,18 +150,13 @@ const PricingTable: React.FC = () => {
         </div>
 
         <div
-          className={`w-64 px-4 ${
+          className={`w-64 p-4 border rounded-lg border-gray-200 ${
             currentPlan == "standard"
-              ? "rounded-lg shadow-primary-100 border shadow-md"
+              ? "shadow-primary-100 bg-green-100 shadow-xl"
               : ""
           }`}
         >
-          <PlanHeader
-            title="STANDARD"
-            price="$99"
-            currentPlan={currentPlan}
-            stripeSubscriptionId={stripeSubscriptionId}
-          />
+          <PlanHeader title="STANDARD" price="$99" currentPlan={currentPlan} />
 
           {[...Array(4)].map((_, index) => (
             <div key={index} className="flex items-center h-12 justify-center">
@@ -201,14 +187,12 @@ interface PlanHeaderProps {
   title: string;
   price: string;
   currentPlan: string | null;
-  stripeSubscriptionId: string | null;
 }
 
 const PlanHeader: React.FC<PlanHeaderProps> = ({
   title,
   price,
   currentPlan,
-  stripeSubscriptionId,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();

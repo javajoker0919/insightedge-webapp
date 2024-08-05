@@ -5,6 +5,7 @@ import { createCheckoutSession } from "@/utils/apiClient";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { toast } from "react-toastify";
+import { format } from "date-fns";
 
 import { useToastContext } from "@/contexts/toastContext";
 import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
@@ -60,26 +61,33 @@ const Membership: React.FC = () => {
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+  const [orderHistory, setOrderHistory] = useState<
+    Array<{
+      order_number: number;
+      plan_name: string;
+      created_at: string;
+    }>
+  >([]);
 
   useEffect(() => {
     const fetchCurrentPlan = async () => {
       if (userInfo) {
-        const { data: userPlan, error: userPlanError } = await supabase
+        const { data: userPlans, error: userPlanError } = await supabase
           .from("user_plans")
-          .select("plan_id")
+          .select("id, plan_id, created_at")
           .eq("user_id", userInfo.id)
           .order("created_at", { ascending: false });
 
         if (userPlanError) {
-          console.error("Error fetching user plan:", userPlanError);
+          console.error("Error fetching user plans:", userPlanError);
           return;
         }
 
-        if (userPlan) {
+        if (userPlans && userPlans.length > 0) {
           const { data: plan, error: planError } = await supabase
             .from("plans")
             .select("name")
-            .eq("id", userPlan[0].plan_id)
+            .eq("id", userPlans[0].plan_id)
             .single();
 
           if (planError) {
@@ -88,6 +96,24 @@ const Membership: React.FC = () => {
           }
 
           setCurrentPlan(plan.name.toUpperCase());
+
+          const history = await Promise.all(
+            userPlans.map(async (userPlan, index) => {
+              const { data: planData } = await supabase
+                .from("plans")
+                .select("name")
+                .eq("id", userPlan.plan_id)
+                .single();
+
+              return {
+                order_number: userPlans.length - index,
+                plan_name: planData?.name || "Unknown",
+                created_at: format(new Date(userPlan.created_at), "yyyy-MM-dd"),
+              };
+            })
+          );
+
+          setOrderHistory(history);
         }
 
         setIsLoading(false);
@@ -114,27 +140,67 @@ const Membership: React.FC = () => {
   }
 
   return (
-    <div className="max-w-5xl m-auto px-4 py-8 pb-20">
-      <div className="bg-white shadow-xl rounded-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
-          <h2 className="text-2xl font-bold text-white">
-            Your Current Plan Features
-          </h2>
+    <div className="m-auto px-4 py-8 pb-20">
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="w-full min-w-96">
+          <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
+              <h2 className="text-2xl font-bold text-white text-center">
+                Your Current Plan Features
+              </h2>
+            </div>
+            <div className="px-6 py-8">
+              <ul className="space-y-4">
+                {planItems.map((item, index) => (
+                  <MembershipItem key={index} isAvailable={item.isAvailable}>
+                    {item.text}
+                  </MembershipItem>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-gray-50 px-6 py-4">
+              <p className="text-sm text-gray-600">
+                Current Plan:{" "}
+                <span className="font-semibold">{currentPlan || "Free"}</span>
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="px-6 py-8">
-          <ul className="space-y-4">
-            {planItems.map((item, index) => (
-              <MembershipItem key={index} isAvailable={item.isAvailable}>
-                {item.text}
-              </MembershipItem>
-            ))}
-          </ul>
-        </div>
-        <div className="bg-gray-50 px-6 py-4">
-          <p className="text-sm text-gray-600">
-            Current Plan:{" "}
-            <span className="font-semibold">{currentPlan || "Free"}</span>
-          </p>
+        <div className="w-full min-w-[30rem]">
+          <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+            <div className="bg-gray-200 px-6 py-4">
+              <h2 className="text-2xl text-gray-600 text-center">
+                Plan History
+              </h2>
+            </div>
+            <div className="px-6 py-8">
+              <table className="w-full text-center">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="pb-2 text-gray-600 font-semibold">NO</th>
+                    <th className="pb-2 text-gray-600 font-semibold">Plan</th>
+                    <th className="pb-2 text-gray-600 font-semibold">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orderHistory.map((order) => (
+                    <tr
+                      key={order.order_number}
+                      className="border-b border-gray-200 hover:bg-gray-100"
+                    >
+                      <td className="py-2 text-gray-700">
+                        {order.order_number}
+                      </td>
+                      <td className="py-2 text-gray-700">
+                        {order.plan_name.toUpperCase()}
+                      </td>
+                      <td className="py-2 text-gray-700">{order.created_at}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
       <div className="mt-12 text-center">

@@ -27,6 +27,7 @@ interface IncomeStatementType extends CompanyDataType {
   operating_expenses: number;
   op_expense_yoy_growth: number;
   date: string;
+  period: string;
 }
 
 const sortAlphabetically = (arr: IncomeStatementType[]) =>
@@ -69,7 +70,7 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
   >(null);
 
   useEffect(() => {
-    const fetchLatestWatchlistsData = async (companyIds: number[]) => {
+    const fetchLatestWatchlistsData = async (companyIds: string[]) => {
       setIsLoading(true);
       const { data: incomeStatementData, error: incomeStatementError } =
         await supabase
@@ -79,6 +80,7 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
             company_id,
             symbol,
             date,
+            period,
             revenue,
             revenue_yoy_growth,
             gross_profit,
@@ -87,7 +89,8 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
             op_expense_yoy_growth
           `
           )
-          .in("company_id", companyIds)
+          .in("symbol", companyIds)
+          .neq("period", "FY")
           .order("date", { ascending: false });
 
       if (incomeStatementError) throw incomeStatementError;
@@ -102,16 +105,17 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
           moment(curr.date).isAfter(moment(existingData.date))
         ) {
           const updatedItem = {
-            ...watchlistCompanies.find((e) => e.id === curr.company_id),
+            ...watchlistCompanies.find((e) => e.symbol === curr.symbol),
             ...curr,
           } as IncomeStatementType;
 
-          const ec_date = earningsCalendarData?.find(
+          // commented code: show latest date from earnings calendar
+          /* const ec_date = earningsCalendarData?.find(
             (e) => e.symbol === curr.symbol
           )?.date;
           if (ec_date) {
             updatedItem["date"] = moment(ec_date).format("MM/DD/YYYY");
-          }
+          } */
 
           const index = acc.findIndex((item) => item?.symbol === curr.symbol);
 
@@ -130,7 +134,7 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
     };
 
     if (watchlistCompanies.length) {
-      fetchLatestWatchlistsData(watchlistCompanies.map((item) => item.id));
+      fetchLatestWatchlistsData(watchlistCompanies.map((item) => item.symbol));
     }
   }, []);
 
@@ -183,7 +187,9 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
                     </div>
                   </td>
 
-                  <td className="text-xs p-2">{company.date}</td>
+                  <td title={company.period} className="text-xs p-2">
+                    {company.date}
+                  </td>
 
                   <td title="Revenue/ Rev Growth" className="text-sm p-2">
                     <div className="flex flex-col md:flex-row items-center justify-center gap-1 uppercase">
