@@ -23,7 +23,7 @@ const Header: React.FC = () => {
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
   const setOrgInfo = useSetAtom(orgInfoAtom);
-  const setWatchlist = useSetAtom(watchlistAtom);
+  const [watchlist, setWatchlist] = useAtom(watchlistAtom);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
@@ -152,32 +152,18 @@ const Header: React.FC = () => {
             {isDropdownOpen && (
               <div className="absolute border border-gray-200 right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                 <Link
+                  href={`/app/watchlist/${watchlist?.[0]?.uuid}`}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={closeDropdown}
+                >
+                  Dashboard
+                </Link>
+                <Link
                   href="/app/my-profile"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={closeDropdown}
                 >
-                  My Profile
-                </Link>
-                <Link
-                  href="/app/membership"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={closeDropdown}
-                >
-                  Membership Plan
-                </Link>
-                <Link
-                  href="/app/manage-users"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={closeDropdown}
-                >
-                  Manage users
-                </Link>
-                <Link
-                  href="/auth/forgot-password"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={closeDropdown}
-                >
-                  Forgot Password
+                  Settings
                 </Link>
                 <button
                   onClick={handleLogout}
