@@ -49,11 +49,10 @@ const generateTailoredSummaryAPI = (params: {
   quarter: number;
 }) => generateTailoredAPI("summary", params);
 
-const createCheckoutSession = async (plan: string, userId: string) => {
+const createCheckoutSession = async (plan: string) => {
   const apiClient = await createApiClient();
   const response = await apiClient.post("/api/v1/create-checkout-session", {
     plan,
-    user_id: userId,
   });
   return response.data;
 };

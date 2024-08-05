@@ -220,10 +220,7 @@ const PlanHeader: React.FC<PlanHeaderProps> = ({
     if (plan === "free") {
       setIsLoading(true);
       try {
-        const response = await createCheckoutSession(
-          plan.toLowerCase(),
-          userInfo.id
-        );
+        const response = await createCheckoutSession("standard");
         router.push(response.url);
       } catch (error) {
         console.error("Error creating checkout session:", error);
@@ -252,7 +249,7 @@ const PlanHeader: React.FC<PlanHeaderProps> = ({
         <p className="text-3xl font-bold">{price}</p>
         <p className="text-sm text-gray-500">/ user / month</p>
       </div>
-      {currentPlan === "free" && (
+      {title === "FREE" && currentPlan === "free" && (
         <p className="w-full py-2 px-4 border border-gray-300 bg-gray-400 rounded-md text-white">
           Current Plan
         </p>
