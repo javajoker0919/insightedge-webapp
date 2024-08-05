@@ -10,6 +10,7 @@ interface User {
   firstName: string;
   lastName: string;
   onboardingStatus: boolean | null;
+  creditCount?: number | null;
 }
 
 interface Organization {

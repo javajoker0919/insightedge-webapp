@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
 import Modal from "@/app/components/Modal";
 import { supabase } from "@/utils/supabaseClient";
-import { orgInfoAtom } from "@/utils/atoms";
+import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTailoredOpportunitiesAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
@@ -49,6 +49,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
   const { invokeToast } = useToastContext();
   const orgInfo = useAtomValue(orgInfoAtom);
+  const setUserInfo = useSetAtom(userInfoAtom);
   const [etID, setETID] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedOpp, setSelectedOpp] = useState<OpportunityProps | null>(null);
@@ -211,6 +212,13 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         );
         setTailoredOpps(formattedData);
         setActiveTab("tailored");
+        setUserInfo((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            creditCount: prev.creditCount ? prev.creditCount - 1 : 0,
+          };
+        });
         invokeToast("success", data.message, "top");
       } else {
         invokeToast(
