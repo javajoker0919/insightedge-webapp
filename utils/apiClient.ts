@@ -64,9 +64,16 @@ const createCustomer = async () => {
   return response.data;
 };
 
+const customerPortal = async () => {
+  const apiClient = await createApiClient();
+  const response = await apiClient.get("/api/v1/customer-portal");
+  return response.data;
+};
+
 export {
   generateTailoredOpportunitiesAPI,
   generateTailoredSummaryAPI,
   createCheckoutSession,
   createCustomer,
+  customerPortal,
 };

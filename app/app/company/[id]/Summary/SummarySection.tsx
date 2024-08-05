@@ -209,6 +209,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
             {orgInfo && !isTSLoading && (
               <button
                 title="Get custom earnings report summaries tailored to your business needs"
+                disabled={isTSGenerating}
                 onClick={generateTailoredSummary}
                 className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-primary-600 text-white rounded-md text-sm"
               >
