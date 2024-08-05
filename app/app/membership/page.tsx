@@ -143,7 +143,7 @@ const Membership: React.FC = () => {
     <div className="m-auto px-4 py-8 pb-20">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full min-w-96">
-          <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+          <div className="bg-white border rounded-lg overflow-hidden">
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
               <h2 className="text-2xl font-bold text-white text-center">
                 Your Current Plan Features
@@ -167,7 +167,7 @@ const Membership: React.FC = () => {
           </div>
         </div>
         <div className="w-full min-w-[30rem]">
-          <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+          <div className="bg-white border rounded-lg overflow-hidden">
             <div className="bg-gray-200 px-6 py-4">
               <h2 className="text-2xl text-gray-600 text-center">
                 Plan History
