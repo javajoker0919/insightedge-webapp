@@ -103,7 +103,7 @@ const MarketingPlanModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             open={openedSection === 1}
             onToggle={(open) => open && setOpenedSection(1)}
             title="Campaign Details"
-            headClass="bg-primary-600 text-gray-100 hover:bg-primary-800"
+            // headClass="bg-primary-600 text-gray-100 hover:bg-primary-800"
             innerClass="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4"
             wrapperClass="border-primary-600 bg-white"
             iconClass="text-gray-100"
@@ -144,7 +144,7 @@ const MarketingPlanModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             open={openedSection === 2}
             onToggle={(open) => open && setOpenedSection(2)}
             title="Strategy"
-            headClass="bg-primary-600 text-gray-100 hover:bg-primary-800"
+            // headClass="bg-primary-600 text-gray-100 hover:bg-primary-800"
             innerClass="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4"
             wrapperClass="border-primary-600 bg-white"
             iconClass="text-gray-100"
@@ -192,7 +192,7 @@ const MarketingPlanModal: React.FC<{ open: boolean; onClose: () => void }> = ({
             open={openedSection === 3}
             onToggle={(open) => open && setOpenedSection(3)}
             title="Success Measurements"
-            headClass="bg-primary-600 text-gray-100 hover:bg-primary-800"
+            // headClass="bg-primary-600 text-gray-100 hover:bg-primary-800"
             innerClass="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4"
             wrapperClass="border-primary-600 bg-white"
             iconClass="text-gray-100"
