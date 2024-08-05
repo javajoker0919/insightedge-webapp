@@ -6,7 +6,11 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { IoAddOutline, IoPencil, IoTrash, IoClose } from "react-icons/io5";
 
 import { supabase } from "@/utils/supabaseClient";
-import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
+import {
+  latestCompanyEarningsData,
+  userInfoAtom,
+  watchlistAtom,
+} from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
 
@@ -18,6 +22,8 @@ import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
 import MarketingSection from "../../company/[id]/Marketing/MarketingSection";
 import EarningsCalendar from "./EarningsCalendar";
 import WLIncomeStatement from "./WLIncomeStatement";
+import WatchlistHighlights from "./WatchlistHighlights";
+import moment from "moment";
 
 export interface CompanyDataType {
   id: number;
@@ -60,6 +66,7 @@ export default function WatchlistPage() {
   const userInfo = useAtomValue(userInfoAtom);
   const watchlist = useAtomValue(watchlistAtom);
   const setWatchlist = useSetAtom(watchlistAtom);
+  const setLastestETData = useSetAtom(latestCompanyEarningsData);
   const [watchlistName, setWatchlistName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -153,6 +160,11 @@ export default function WatchlistPage() {
       );
     }
     if (userInfo?.id) fetchLatestWatchlistsData(userInfo.id);
+    if (watchlistCompanies.length > 0) fetchCompanyData();
+
+    return () => {
+      setLastestETData({ data: null, storedAt: null });
+    };
   }, [userInfo?.id, isSearchBarOpen, watchlistCompanies]);
 
   useEffect(() => {
@@ -210,6 +222,40 @@ export default function WatchlistPage() {
           (company) => company.watchlist_company_id !== watchlistCompanyId
         )
       );
+    }
+  };
+
+  const fetchCompanyData = async () => {
+    // First Get Lates Year & Quarter
+    const { data: earningsTranscriptsData, error: earningsTranscriptsError } =
+      await supabase
+        .from("earnings_transcripts")
+        .select(`company_id, symbol, date, year, quarter`)
+        .in(
+          "company_id",
+          watchlistCompanies.map((el) => el.id)
+        )
+        .order("date", { ascending: true });
+
+    if (earningsTranscriptsError) {
+      console.error(
+        "Error fetching earnings_transcripts:",
+        earningsTranscriptsError
+      );
+    } else if (earningsTranscriptsData) {
+      const sortedETData = Object.values(
+        earningsTranscriptsData.reduce<
+          Record<number, (typeof earningsTranscriptsData)[0][]>
+        >((acc, curr) => {
+          acc[curr.company_id] = (acc[curr.company_id] || []).concat(curr);
+          return acc;
+        }, {})
+      ).map((group) =>
+        group.reduce((a, b) => (moment(a.date).isAfter(moment(b.date)) ? a : b))
+      );
+
+      setLastestETData({ data: sortedETData, storedAt: moment().format() });
+      // return sortedETData;
     }
   };
 
@@ -317,31 +363,10 @@ export default function WatchlistPage() {
                 )}
               </div>
               <div className="flex flex-col gap-4">
-                <div className="border border-gray-300 rounded-lg p-3">
-                  <h2 className="text-base font-semibold border-b border-gray-300 pb-2 mb-2 text-gray-800">
-                    Watchlist Highligths
-                  </h2>
-                  <div className="flex flex-col">
-                    <div className="flex items-center gap-3 p-2 border-b border-gray-300 last:border-b-0 rounded text-gray-700 transition-all duration-300 group hover:bg-primary-50 cursor-pointer">
-                      <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary-50 transition-all duration-300 group-hover:bg-white">
-                        <MdContentPaste size={20} color="#004aad" />
-                      </span>
-                      Content
-                    </div>
-                    <div className="flex items-center gap-3 p-2 border-b border-gray-300 last:border-b-0 rounded text-gray-700 transition-all duration-300 group hover:bg-primary-50 cursor-pointer">
-                      <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary-50 transition-all duration-300 group-hover:bg-white">
-                        <MdContentPaste size={20} color="#004aad" />
-                      </span>
-                      Content
-                    </div>
-                    <div className="flex items-center gap-3 p-2 border-b border-gray-300 last:border-b-0 rounded text-gray-700 transition-all duration-300 group hover:bg-primary-50 cursor-pointer">
-                      <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary-50 transition-all duration-300 group-hover:bg-white">
-                        <MdContentPaste size={20} color="#004aad" />
-                      </span>
-                      Content
-                    </div>
-                  </div>
-                </div>
+                <WatchlistHighlights
+                  watchlistName={watchlistName}
+                  companyList={watchlistCompanies}
+                />
 
                 <EarningsCalendar
                   key={watchlistName}
