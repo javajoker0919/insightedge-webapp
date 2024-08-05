@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { IoCheckmarkCircleOutline, IoCloseOutline } from "react-icons/io5";
-import { createCheckoutSession } from "@/utils/apiClient";
+import { createCheckoutSession, customerPortal } from "@/utils/apiClient";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { toast } from "react-toastify";
@@ -28,19 +28,16 @@ const PricingTable: React.FC = () => {
     string | null
   >(null);
 
-  const features: PlanFeature[] = [
-    { name: "General AI insights", free: true, standard: true },
-    { name: "General AI recommendations", free: true, standard: true },
-    { name: "Personalized AI insights", free: true, standard: true },
-    { name: "Personalized sales opportunit", free: true, standard: true },
-    { name: "Email newsletters", free: false, standard: false },
-    { name: "Prospect recommendations", free: "upto 10", standard: "upto 20" },
+  const features_1: string[] = [
+    "General AI insights",
+    "General AI recommendations",
+    "Personalized AI insights",
+    "Personalized sales opportunit",
+    "Email newsletters",
+    "Prospect recommendations",
   ];
 
-  const credits: PlanFeature[] = [
-    { name: "AI credits", free: "10", standard: "20" },
-    { name: "Additional AI credits", free: false, standard: "$x/ 10 credits" },
-  ];
+  const features_2: string[] = ["AI credits", "Additional AI credits"];
 
   useEffect(() => {
     const fetchCurrentPlan = async () => {
@@ -67,7 +64,7 @@ const PricingTable: React.FC = () => {
             console.error("Error fetching plan:", planError);
             return;
           }
-          setCurrentPlan(plan.name.toUpperCase());
+          setCurrentPlan(plan.name);
           setStripeSubscriptionId(userPlan[0].stripe_subscription_id);
         }
 
@@ -100,37 +97,101 @@ const PricingTable: React.FC = () => {
   return (
     <div className="max-w-4xl m-auto pb-6">
       <button
-        onClick={() => router.back()}
+        onClick={() => router.push("/app/membership")}
         className="mb-4 text-sm font-medium text-gray-700 bg-white p-2 rounded-md hover:bg-gray-50"
       >
         ← Go Back
       </button>
       <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-1"></div>
-        <PlanHeader
-          title="FREE"
-          price="$0"
-          currentPlan={currentPlan}
-          stripeSubscriptionId={stripeSubscriptionId}
-        />
-        <PlanHeader
-          title="STANDARD"
-          price="$99"
-          currentPlan={currentPlan}
-          stripeSubscriptionId={stripeSubscriptionId}
-        />
+        <div>
+          <div className="h-44"></div>
+          {features_1.map((item) => {
+            return (
+              <div className="flex items-center h-12">
+                <p>{item}</p>
+              </div>
+            );
+          })}
 
-        {features.map((feature, index) => (
-          <FeatureRow key={index} feature={feature} />
-        ))}
-
-        <div className="col-span-3 mt-6 mb-2">
-          <h3 className="text-xl font-bold">Credits</h3>
+          <p className="text-2xl font-medium h-20 items-center flex">Credits</p>
+          {features_2.map((item) => {
+            return (
+              <div className="flex items-center h-12">
+                <p>{item}</p>
+              </div>
+            );
+          })}
         </div>
 
-        {credits.map((credit, index) => (
-          <FeatureRow key={index} feature={credit} />
-        ))}
+        <div
+          className={`w-64 px-4 ${
+            currentPlan == "free"
+              ? "rounded-lg shadow-primary-100 border shadow-md"
+              : ""
+          }`}
+        >
+          <PlanHeader
+            title="FREE"
+            price="$0"
+            currentPlan={currentPlan}
+            stripeSubscriptionId={stripeSubscriptionId}
+          />
+
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="flex items-center h-12 justify-center">
+              <IoCheckmarkCircleOutline className="text-green-500 text-xl" />
+            </div>
+          ))}
+
+          <div className="flex items-center h-12 justify-center">
+            <IoCloseOutline className="text-gray-400 text-xl" />
+          </div>
+          <div className="flex items-center h-12 justify-center">
+            <p>up to 10</p>
+          </div>
+          <div className="h-20"></div>
+          <div className="flex items-center h-12 justify-center">
+            <p>10</p>
+          </div>
+          <div className="flex items-center h-12 justify-center">
+            <IoCloseOutline className="text-gray-400 text-xl" />
+          </div>
+        </div>
+
+        <div
+          className={`w-64 px-4 ${
+            currentPlan == "standard"
+              ? "rounded-lg shadow-primary-100 border shadow-md"
+              : ""
+          }`}
+        >
+          <PlanHeader
+            title="STANDARD"
+            price="$99"
+            currentPlan={currentPlan}
+            stripeSubscriptionId={stripeSubscriptionId}
+          />
+
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="flex items-center h-12 justify-center">
+              <IoCheckmarkCircleOutline className="text-green-500 text-xl" />
+            </div>
+          ))}
+
+          <div className="flex items-center h-12 justify-center">
+            <IoCloseOutline className="text-gray-400 text-xl" />
+          </div>
+          <div className="flex items-center h-12 justify-center">
+            <p>up to 20</p>
+          </div>
+          <div className="h-20"></div>
+          <div className="flex items-center h-12 justify-center">
+            <p>20</p>
+          </div>
+          <div className="flex items-center h-12 justify-center">
+            <p>$x / 10 credits</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -154,7 +215,9 @@ const PlanHeader: React.FC<PlanHeaderProps> = ({
   const userInfo = useAtomValue(userInfoAtom);
 
   const handleSubscribe = async (plan: string): Promise<void> => {
-    if (plan === "STANDARD" && userInfo) {
+    if (!userInfo) return;
+
+    if (plan === "free") {
       setIsLoading(true);
       try {
         const response = await createCheckoutSession(
@@ -168,29 +231,44 @@ const PlanHeader: React.FC<PlanHeaderProps> = ({
       } finally {
         setIsLoading(false);
       }
+    } else if (plan === "standard") {
+      setIsLoading(true);
+      try {
+        const response = await customerPortal();
+        router.push(response.url);
+      } catch (error) {
+        console.error("Error creating customer portal:", error);
+        toast.error("Failed to create customer portal. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
   return (
-    <div className="text-center space-y-4 p-2 pt-4">
+    <div className="text-center h-44 space-y-4 p-2 pt-4">
       <h2 className="text-xl font-bold mb-2">{title}</h2>
       <div className="flex items-center justify-center gap-2">
         <p className="text-3xl font-bold">{price}</p>
         <p className="text-sm text-gray-500">/ user / month</p>
       </div>
-      {title !== "FREE" && (
+      {currentPlan === "free" && (
+        <p className="w-full py-2 px-4 border border-gray-300 bg-gray-400 rounded-md text-white">
+          Current Plan
+        </p>
+      )}
+      {title === "STANDARD" && (
         <button
           className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-gray-400 rounded-md text-white disabled:cursor-not-allowed`}
-          onClick={() => handleSubscribe(title)}
-          disabled={
-            isLoading ||
-            (currentPlan?.toUpperCase() == title && !!stripeSubscriptionId)
+          onClick={() =>
+            handleSubscribe(currentPlan === "standard" ? "standard" : "free")
           }
+          disabled={isLoading}
         >
           {isLoading ? (
             <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
           ) : title == currentPlan?.toUpperCase() ? (
-            "Current plan"
+            "Check Subscription"
           ) : (
             "Subscribe"
           )}

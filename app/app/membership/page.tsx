@@ -143,7 +143,7 @@ const Membership: React.FC = () => {
             className="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded"
             onClick={() => router.push("/subscription")}
           >
-            Check Subscription
+            Check Plan
           </button>
         ) : (
           <button
