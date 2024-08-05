@@ -68,7 +68,7 @@ const Membership: React.FC = () => {
           .from("user_plans")
           .select("plan_id")
           .eq("user_id", userInfo.id)
-          .single();
+          .order("created_at", { ascending: false });
 
         if (userPlanError) {
           console.error("Error fetching user plan:", userPlanError);
@@ -79,7 +79,7 @@ const Membership: React.FC = () => {
           const { data: plan, error: planError } = await supabase
             .from("plans")
             .select("name")
-            .eq("id", userPlan.plan_id)
+            .eq("id", userPlan[0].plan_id)
             .single();
 
           if (planError) {

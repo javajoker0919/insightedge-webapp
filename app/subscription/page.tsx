@@ -24,6 +24,9 @@ const PricingTable: React.FC = () => {
   const watchlist = useAtomValue(watchlistAtom);
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [stripeSubscriptionId, setStripeSubscriptionId] = useState<
+    string | null
+  >(null);
 
   const features: PlanFeature[] = [
     { name: "General AI insights", free: true, standard: true },
@@ -44,9 +47,9 @@ const PricingTable: React.FC = () => {
       if (userInfo) {
         const { data: userPlan, error: userPlanError } = await supabase
           .from("user_plans")
-          .select("plan_id")
+          .select("plan_id, stripe_subscription_id")
           .eq("user_id", userInfo.id)
-          .single();
+          .order("created_at", { ascending: false });
 
         if (userPlanError) {
           console.error("Error fetching user plan:", userPlanError);
@@ -57,15 +60,15 @@ const PricingTable: React.FC = () => {
           const { data: plan, error: planError } = await supabase
             .from("plans")
             .select("name")
-            .eq("id", userPlan.plan_id)
+            .eq("id", userPlan[0].plan_id)
             .single();
 
           if (planError) {
             console.error("Error fetching plan:", planError);
             return;
           }
-
           setCurrentPlan(plan.name.toUpperCase());
+          setStripeSubscriptionId(userPlan[0].stripe_subscription_id);
         }
 
         setIsLoading(false);
@@ -104,8 +107,18 @@ const PricingTable: React.FC = () => {
       </button>
       <div className="grid grid-cols-3 gap-6">
         <div className="col-span-1"></div>
-        <PlanHeader title="FREE" price="$0" currentPlan={currentPlan} />
-        <PlanHeader title="STANDARD" price="$99" currentPlan={currentPlan} />
+        <PlanHeader
+          title="FREE"
+          price="$0"
+          currentPlan={currentPlan}
+          stripeSubscriptionId={stripeSubscriptionId}
+        />
+        <PlanHeader
+          title="STANDARD"
+          price="$99"
+          currentPlan={currentPlan}
+          stripeSubscriptionId={stripeSubscriptionId}
+        />
 
         {features.map((feature, index) => (
           <FeatureRow key={index} feature={feature} />
@@ -127,12 +140,14 @@ interface PlanHeaderProps {
   title: string;
   price: string;
   currentPlan: string | null;
+  stripeSubscriptionId: string | null;
 }
 
 const PlanHeader: React.FC<PlanHeaderProps> = ({
   title,
   price,
   currentPlan,
+  stripeSubscriptionId,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -163,19 +178,24 @@ const PlanHeader: React.FC<PlanHeaderProps> = ({
         <p className="text-3xl font-bold">{price}</p>
         <p className="text-sm text-gray-500">/ user / month</p>
       </div>
-      <button
-        className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-gray-400 rounded-md text-white disabled:cursor-not-allowed`}
-        onClick={() => handleSubscribe(title)}
-        disabled={isLoading || currentPlan?.toUpperCase() == title}
-      >
-        {isLoading ? (
-          <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
-        ) : title == currentPlan?.toUpperCase() ? (
-          "Current plan"
-        ) : (
-          "Subscribe"
-        )}
-      </button>
+      {title !== "FREE" && (
+        <button
+          className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-gray-400 rounded-md text-white disabled:cursor-not-allowed`}
+          onClick={() => handleSubscribe(title)}
+          disabled={
+            isLoading ||
+            (currentPlan?.toUpperCase() == title && !!stripeSubscriptionId)
+          }
+        >
+          {isLoading ? (
+            <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
+          ) : title == currentPlan?.toUpperCase() ? (
+            "Current plan"
+          ) : (
+            "Subscribe"
+          )}
+        </button>
+      )}
     </div>
   );
 };
