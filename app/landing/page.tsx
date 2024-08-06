@@ -1,8 +1,17 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
-import { FaArrowRight, FaClock, FaRecycle, FaUser } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaClock,
+  FaRecycle,
+  FaUser,
+  FaBookReader
+} from "react-icons/fa";
+import { FaPuzzlePiece } from "react-icons/fa6";
+import { LuBrainCircuit } from "react-icons/lu";
 import { MdOutlineToken } from "react-icons/md";
+import { IoTelescope } from "react-icons/io5";
 
 interface HeaderProps {
   isHeaderVisible: boolean;
@@ -47,7 +56,7 @@ const LandingPage: React.FC = () => {
 const Header: React.FC<HeaderProps> = ({
   isHeaderVisible,
   isMenuOpen,
-  toggleMenu,
+  toggleMenu
 }) => (
   <header
     className={`py-4 fixed top-0 left-0 right-0 bg-white z-10 shadow-md transition-transform duration-300 ${
@@ -89,7 +98,7 @@ const Header: React.FC<HeaderProps> = ({
 
 const NavMenu: React.FC<{ isMenuOpen: boolean; toggleMenu: () => void }> = ({
   isMenuOpen,
-  toggleMenu,
+  toggleMenu
 }) => (
   <div
     className={`sm:flex ${
@@ -131,6 +140,7 @@ const MainContent: React.FC = () => (
     <SummarySection />
     <BusinessSection />
     <NewSection />
+    <ScheduleDemo />
     <Footer />
   </main>
 );
@@ -159,7 +169,7 @@ const HeroSection: React.FC = () => (
 const SalesAndMarketingSection: React.FC = () => (
   <section
     id="salesandmarketing"
-    className="py-20 px-4 flex flex-col items-center"
+    className="pb-20 px-4 flex flex-col items-center"
   >
     <h1 className="text-4xl sm:text-5xl font-bold text-center max-w-[60rem] mb-16">
       Targeted sales & marketing opportunities, specific to each customer
@@ -168,26 +178,30 @@ const SalesAndMarketingSection: React.FC = () => (
       A comprehensive platform that transforms complex market and financial data
       into clear, actionable strategies for B2B sales and marketing teams
     </p>
-    <div className="flex items-center gap-12">
-      <div className="w-[30rem] h-[20rem] bg-primary-100"></div>
-      <div className="grid grid-cols-2 gap-8">
+    <div className="flex flex-col lg:flex-row items-center gap-20 min-w-[80rem]">
+      <img
+        src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2015&q=80"
+        alt="Business analytics dashboard"
+        className="w-full lg:w-[30rem] h-[20rem] object-cover rounded-lg shadow-lg mb-12 lg:mb-0"
+      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         <Feature
-          icon={<FaUser />}
+          icon={<IoTelescope className="w-8 h-8 text-primary-500" />}
           title="Opportunity discovery"
           description="Uncover selling opportunities aligned with your offerings."
         />
         <Feature
-          icon={<FaUser />}
+          icon={<FaPuzzlePiece className="w-8 h-8 text-primary-500" />}
           title="Marketing strategy development"
           description="Generate targeted tactics for each account"
         />
         <Feature
-          icon={<FaUser />}
+          icon={<FaBookReader className="w-8 h-8 text-primary-500" />}
           title="Earnings data summaries"
           description="Identify and prioritize high-potential accounts"
         />
         <Feature
-          icon={<FaUser />}
+          icon={<LuBrainCircuit className="w-8 h-8 text-primary-500" />}
           title="Competitive Intelligence"
           description="Stay ahead with real-time market insights"
         />
@@ -202,7 +216,7 @@ const Feature: React.FC<{
   description: string;
 }> = ({ icon, title, description }) => (
   <div className="flex gap-4">
-    <div className="rounded-full flex items-center justify-center w-16 h-16 bg-primary-50">
+    <div className="rounded-full flex items-center justify-center w-16 h-16 bg-primary-50 flex-shrink-0">
       {icon}
     </div>
     <div className="flex flex-col gap-1 max-w-80">
@@ -213,31 +227,59 @@ const Feature: React.FC<{
 );
 
 const SummarySection: React.FC = () => (
-  <section id="summary" className="py-20 px-4 flex flex-col items-center">
-    <h1 className="text-4xl sm:text-5xl font-bold text-center max-w-[60rem] mb-16">
+  <section id="summary" className="py-12 sm:py-16 md:py-20 px-4 flex flex-col items-center">
+    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] mb-8 sm:mb-12 md:mb-16">
       We focus on the data summaries, so you can focus on customer relationships
     </h1>
 
-    <div className="flex items-center gap-6">
+    <div className="flex flex-col md:flex-row items-center gap-6 mb-12 md:mb-16">
+      <div className="w-full md:w-1/2 h-[20rem] sm:h-[25rem] relative mb-6 md:mb-0">
+        <img
+          src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+          alt="Living education"
+          className="w-full h-full object-cover rounded-lg"
+        />
+      </div>
       <SummaryContent />
-      <div className="w-[30rem] h-[25rem] bg-primary-100"></div>
     </div>
-    <div className="flex items-center gap-6">
-      <div className="w-[30rem] h-[25rem] bg-primary-100"></div>
-      <SummaryContent />
+    <div className="flex flex-col md:flex-row-reverse items-center gap-6">
+      <div className="w-full md:w-1/2 h-[20rem] sm:h-[25rem] relative mb-6 md:mb-0">
+        <img
+          src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+          alt="Data analysis"
+          className="w-full h-full object-cover rounded-lg"
+        />
+      </div>
+      <DashboardContent />
     </div>
   </section>
 );
 
 const SummaryContent: React.FC = () => (
-  <div className="flex flex-col gap-6 p-10 pr-0 max-w-[30rem]">
-    <p className="text-gray-600">TAILORED ACCOUNT SPECIFIC STRATEGIES</p>
-    <p className="text-4xl font-bold">Actionable Summaries</p>
-    <p className="text-gray-600">
+  <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 md:p-10 md:pr-0 max-w-full md:max-w-[30rem]">
+    <p className="text-gray-600 text-sm sm:text-base">TAILORED ACCOUNT SPECIFIC STRATEGIES</p>
+    <p className="text-2xl sm:text-3xl md:text-4xl font-bold">Actionable Summaries</p>
+    <p className="text-gray-600 text-sm sm:text-base">
       AI generated summaries of market data and strategies to build your
       marketing & sales engagement
     </p>
-    <button className="flex text-primary-600 items-center gap-2">
+    <button className="flex text-primary-600 items-center gap-2 text-sm sm:text-base">
+      <span>Learn more</span>
+      <FaArrowRight />
+    </button>
+  </div>
+);
+
+const DashboardContent: React.FC = () => (
+  <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 md:p-10 md:pr-0 max-w-full md:max-w-[30rem]">
+    <p className="text-gray-600 text-sm sm:text-base">
+      REAL TIME DATA DRIVING CUSTOMER CONVERSATIONS
+    </p>
+    <p className="text-2xl sm:text-3xl md:text-4xl font-bold">Personalized dashboard</p>
+    <p className="text-gray-600 text-sm sm:text-base">
+      Real time summaries and strategies in a single view, personalized for you
+    </p>
+    <button className="flex text-primary-600 items-center gap-2 text-sm sm:text-base">
       <span>Learn more</span>
       <FaArrowRight />
     </button>
@@ -245,24 +287,24 @@ const SummaryContent: React.FC = () => (
 );
 
 const BusinessSection: React.FC = () => (
-  <section id="business" className="py-20 px-4 flex flex-col items-center">
-    <h1 className="text-4xl sm:text-5xl font-bold text-center max-w-[60rem] mb-32">
+  <section id="business" className="py-12 sm:py-16 md:py-20 px-4 flex flex-col items-center">
+    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] mb-16 sm:mb-24 md:mb-32">
       What it means for your business
     </h1>
 
-    <div className="flex w-full items-start justify-around gap-6">
+    <div className="flex flex-col sm:flex-row w-full items-center sm:items-start justify-around max-w-[80rem] gap-12 sm:gap-6">
       <BusinessFeature
-        icon={<FaClock className="text-primary-500 w-10 h-10" />}
+        icon={<FaClock className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />}
         title="INCREASED PRODUCTIVITY"
         description="Get more revenue per sales person"
       />
       <BusinessFeature
-        icon={<FaRecycle className="text-primary-500 w-10 h-10" />}
+        icon={<FaRecycle className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />}
         title="IMMEDIATE ROI"
         description="Start generating more value from your leads from day 1"
       />
       <BusinessFeature
-        icon={<MdOutlineToken className="text-primary-500 w-10 h-10" />}
+        icon={<MdOutlineToken className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />}
         title="REDUCED CHURN"
         description="When you can identify risks and opportunities for customers and partners"
       />
@@ -275,77 +317,177 @@ const BusinessFeature: React.FC<{
   title: string;
   description: string;
 }> = ({ icon, title, description }) => (
-  <div className="flex flex-col items-center gap-6 max-w-60">
+  <div className="flex flex-col items-center gap-4 sm:gap-6 max-w-[18rem] sm:max-w-60 w-full">
     {icon}
-    <p className="text-gray-600 text-lg">{title}</p>
-    <p className="text-center">{description}</p>
+    <p className="text-gray-600 text-base sm:text-lg text-center">{title}</p>
+    <p className="text-center text-sm sm:text-base">{description}</p>
   </div>
 );
 
 const NewSection: React.FC = () => (
-  <section id="new" className="py-20 px-4 flex flex-col items-center gap-16">
-    <h1 className="text-4xl sm:text-5xl font-bold text-center max-w-[60rem]">
+  <section id="new" className="py-20 px-4 flex flex-col items-center gap-10">
+    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem]">
       What's new?
     </h1>
 
     <p className="text-gray-600">Explore our blogs</p>
 
-    <div className="flex w-full max-w-6xl items-start justify-around gap-6">
+    <div className="flex flex-col md:flex-row w-full max-w-[80rem] items-center md:items-start justify-around gap-6">
       <BlogCard
         title="5 Game-Changing Ways AI-Powered Market Intelligence is Revolutionizing B2B Sales"
         description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
+        src="/image/blog-1.jpg"
       />
       <BlogCard
         title="7 Innovative Strategies AI-Driven Market Insights are Transforming B2B Sales"
         description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
+        src="/image/blog-2.jpg"
       />
       <BlogCard
         title="6 Innovative Approaches AI-Driven Market Intelligence is Shaping B2B Sales"
         description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
+        src="/image/blog-3.jpg"
       />
     </div>
   </section>
 );
 
-const BlogCard: React.FC<{ title: string; description: string }> = ({
-  title,
-  description,
-}) => (
-  <div className="border shadow rounded-md overflow-hidden">
-    <div className="w-full h-64 bg-primary-100"></div>
+const BlogCard: React.FC<{
+  title: string;
+  description: string;
+  src: string;
+}> = ({ title, description, src }) => (
+  <div className="border shadow rounded-md overflow-hidden w-full md:w-auto max-w-sm mx-auto">
+    <div className="w-full h-48 sm:h-64 bg-primary-100">
+      <Image
+        src={src}
+        alt="Blog image"
+        width={480}
+        height={400}
+        className="object-cover w-full h-full"
+      />
+    </div>
     <div className="p-4">
-      {/* <p className="font-medium">01</p> */}
-      <p className="font-bold line-clamp-2 mb-4">{title}</p>
+      <p className="font-bold text-lg sm:text-xl line-clamp-2 mb-4">{title}</p>
       <span>
-        <p className="text-gray-600 line-clamp-3 mb-2">{description}</p>
-        <button className="text-primary-500">Read more</button>
+        <p className="text-gray-600 text-sm sm:text-base line-clamp-3 mb-2">{description}</p>
+        <button className="text-primary-500 text-sm sm:text-base">Read more</button>
       </span>
     </div>
   </div>
 );
 
-const Footer: React.FC = () => (
-  <footer id="cta" className="bg-primary-600 text-white py-20 px-8">
-    <div className="container mx-auto text-center">
-      <h2 className="text-4xl font-bold mb-8">Get Started Today</h2>
-      <p className="text-2xl mb-12">
-        Sign up for ProspectEdge now and unlock the power of AI-driven sales
-        insights.
-      </p>
-      <form className="mb-8 flex justify-center">
+const ScheduleDemo: React.FC = () => (
+  <div className="flex flex-col lg:flex-row w-full justify-center items-center gap-8 lg:gap-20 py-20 px-4 lg:px-0">
+    <div className="w-full lg:w-[577px] h-[300px] lg:h-[512px] bg-primary-100 rounded-lg">
+      <img
+        src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+        alt="Business team collaborating"
+        className="w-full h-full object-cover rounded-lg"
+      />
+    </div>
+    <div className="flex flex-col w-full lg:max-w-[600px]">
+      <h2 className="text-4xl lg:text-6xl font-bold leading-tight lg:leading-[64px] text-[#171A1FFF] mb-6 lg:mb-8">
+        Generate your opportunities
+      </h2>
+      <div className="flex flex-col w-full gap-4 lg:gap-6">
         <input
-          type="email"
-          placeholder="Enter your email"
-          className="px-4 py-2 rounded-l-full text-black text-base w-56"
+          placeholder="Name"
+          className="peer px-4 lg:px-5 h-12 lg:h-14 w-full border-b border-blue-gray-200 bg-transparent font-sans text-base lg:text-lg font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
         />
-        <button
-          type="submit"
-          className="bg-primary-600 text-white px-6 py-2 w-fit min-w-fit rounded-r-full hover:bg-primary-700 transition-colors flex items-center text-base font-semibold border border-white"
-        >
-          Get Started
+        <input
+          placeholder="Company"
+          className="peer px-4 lg:px-5 h-12 lg:h-14 w-full border-b border-blue-gray-200 bg-transparent font-sans text-base lg:text-lg font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+        />
+        <input
+          placeholder="Email address"
+          className="peer px-4 lg:px-5 h-12 lg:h-14 w-full border-b border-blue-gray-200 bg-transparent font-sans text-base lg:text-lg font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+        />
+        <button className="mt-4 lg:mt-6 w-full bg-[#379AE6FF] text-white rounded-full text-base lg:text-lg font-semibold py-3 lg:py-4 hover:bg-[#197DCAFF] active:bg-[#166DB0FF] transition-colors">
+          Schedule a demo
         </button>
-      </form>
-      <p className="text-lg">&copy; 2024 ProspectEdge. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+);
+
+const Footer: React.FC = () => (
+  <footer id="cta" className="mt-20">
+    {/* <div className="flex w-full bg-[#004BADFF] h-16 mb-16">
+      <ul
+        typeof="square"
+        className="text-[#FFF] text-2xl font-normal leading-9 flex flex-row items-center gap-4"
+      >
+        <li>Subscribe</li>
+        <li>Join the community</li>
+        <li>Documentation</li>
+        <li>How it works</li>
+      </ul>
+    </div> */}
+    <div className="flex flex-col px-4 sm:px-6 lg:px-20 lg:flex-row justify-between items-center w-full">
+      <div className="flex flex-col items-center lg:items-start mb-8 lg:mb-0">
+        <div className="flex items-center">
+          <Image
+            src={"/favicon.png"}
+            alt={"ProspectEdge"}
+            width={40}
+            height={40}
+          />
+          <Image
+            src={"/logo.png"}
+            alt={"ProspectEdge"}
+            width={200}
+            height={40}
+          />
+        </div>
+        <div className="flex flex-row gap-4 mt-6 lg:mt-8 lg:ml-[100px]">
+          {[
+            { alt: "tiktok", src: "/icons/phosphor-tiktok-logo.svg" },
+            { alt: "facebook", src: "/icons/phosphor-facebook-logo.svg" },
+            { alt: "youtube", src: "/icons/phosphor-youtube-logo.svg" },
+            { alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" }
+          ].map((icon, index) => (
+            <div
+              key={index}
+              className="p-2 border border-solid border-[#F3F4F6FF] rounded-sm"
+            >
+              <Image width={24} height={24} alt={icon.alt} src={icon.src} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 lg:gap-20 lg:mr-20">
+        {[
+          { title: "Product", items: ["Features", "Pricing"] },
+          { title: "Resources", items: ["Blog", "User guides", "Webinars"] },
+          { title: "Company", items: ["About", "Join us"] }
+        ].map((section, index) => (
+          <div
+            key={index}
+            className="flex flex-col gap-3 text-sm font-medium text-[#171A1FFF]"
+          >
+            <p className="font-semibold">{section.title}</p>
+            {section.items.map((item, itemIndex) => (
+              <p key={itemIndex}>{item}</p>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+    <div className="flex flex-col mx-[200px] lg:flex-row justify-between items-center lg:mt-20 py-8 border-t border-[#F3F4F6FF]">
+      <div className="flex flex-col gap-1 text-center lg:text-left mb-4 lg:mb-0">
+        <p className="font-semibold text-base leading-[26px] text-[#171A1FFF]">
+          Ultimated with love
+        </p>
+        <p className="text-xs leading-5 font-normal text-[#6F7787FF]">
+          Quis labore ut labore proident in ea est aliqua
+        </p>
+      </div>
+      <div className="flex">
+        <p className="text-xs font-normal text-[#6F7787FF] leading-5">
+          @2024 ProspectEdge. All rights reserved.
+        </p>
+      </div>
     </div>
   </footer>
 );
