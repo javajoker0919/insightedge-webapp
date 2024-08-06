@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { IoCheckmarkCircleOutline, IoCloseOutline } from "react-icons/io5";
-import { createCheckoutSession, customerPortal } from "@/utils/apiClient";
+import { createCheckoutSession } from "@/utils/apiClient";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { toast } from "react-toastify";
 
 import { useToastContext } from "@/contexts/toastContext";
-import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
+import { userInfoAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 
 const Plans = () => {
@@ -15,7 +15,6 @@ const Plans = () => {
   const searchParams = useSearchParams();
   const { invokeToast } = useToastContext();
   const userInfo = useAtomValue(userInfoAtom);
-  const watchlist = useAtomValue(watchlistAtom);
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
