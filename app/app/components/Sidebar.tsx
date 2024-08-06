@@ -209,7 +209,7 @@ const SidebarMenu: React.FC<{
               </li>
               <li>
                 <Link
-                  href="/app/usage"
+                  href="/app/settings/usage"
                   onClick={() => setIsExpanded(false)}
                   className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                 >

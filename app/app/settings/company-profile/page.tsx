@@ -6,7 +6,7 @@ const CompanyProfile = () => {
   const orgInfo = useAtomValue(orgInfoAtom);
 
   return (
-    <div className="m-auto p-10 max-w-6xl bg-white">
+    <div className="m-auto p-10 max-w-xl bg-white">
       <h1 className="text-2xl text-center font-bold mb-10">Company Profile</h1>
       <div className="text-lg space-y-4">
         <div>
