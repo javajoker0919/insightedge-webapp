@@ -17,7 +17,7 @@ const Sidebar = () => {
             href="/app/settings/my-profile"
             className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
               activeItem === "my-profile"
-                ? "bg-primary-500 bg-opacity-10 text-primary-500"
+                ? "bg-primary-50 text-primary-500"
                 : ""
             }`}
           >
@@ -30,7 +30,7 @@ const Sidebar = () => {
             href="/app/settings/company-profile"
             className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
               activeItem === "company-profile"
-                ? "bg-primary-500 bg-opacity-10 text-primary-500"
+                ? "bg-primary-50 text-primary-500"
                 : ""
             }`}
           >
@@ -42,9 +42,7 @@ const Sidebar = () => {
           <Link
             href="/app/settings/billing"
             className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
-              activeItem === "billing"
-                ? "bg-primary-500 bg-opacity-10 text-primary-500"
-                : ""
+              activeItem === "billing" ? "bg-primary-50 text-primary-500" : ""
             }`}
           >
             <FaCreditCard className="mr-2" />
@@ -55,9 +53,7 @@ const Sidebar = () => {
           <Link
             href="/app/settings/plans"
             className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
-              activeItem === "plans"
-                ? "bg-primary-500 bg-opacity-10 text-primary-500"
-                : ""
+              activeItem === "plans" ? "bg-primary-50 text-primary-500" : ""
             }`}
           >
             <FaListAlt className="mr-2" />
