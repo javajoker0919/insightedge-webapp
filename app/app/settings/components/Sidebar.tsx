@@ -9,13 +9,13 @@ const Sidebar = () => {
   const activeItem = pathname.split("/").pop();
 
   return (
-    <div className="p-4">
-      <p className="mb-8 text-3xl font-semibold">Settings</p>
+    <div className="px-4 py-6">
+      <p className="mb-8 text-3xl font-semibold pl-1">Settings</p>
       <ul className="space-y-2">
         <li>
           <Link
             href="/app/settings/my-profile"
-            className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-lg bg-opacity-50 min-w-60 ${
+            className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
               activeItem === "my-profile"
                 ? "bg-primary-500 bg-opacity-10 text-primary-500"
                 : ""
@@ -28,7 +28,7 @@ const Sidebar = () => {
         <li>
           <Link
             href="/app/settings/company-profile"
-            className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-lg bg-opacity-50 min-w-60 ${
+            className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
               activeItem === "company-profile"
                 ? "bg-primary-500 bg-opacity-10 text-primary-500"
                 : ""
@@ -41,7 +41,7 @@ const Sidebar = () => {
         <li>
           <Link
             href="/app/settings/billing"
-            className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-lg bg-opacity-50 min-w-60 ${
+            className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
               activeItem === "billing"
                 ? "bg-primary-500 bg-opacity-10 text-primary-500"
                 : ""
@@ -54,7 +54,7 @@ const Sidebar = () => {
         <li>
           <Link
             href="/app/settings/plans"
-            className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-lg bg-opacity-50 min-w-60 ${
+            className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
               activeItem === "plans"
                 ? "bg-primary-500 bg-opacity-10 text-primary-500"
                 : ""

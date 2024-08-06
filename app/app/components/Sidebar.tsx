@@ -169,7 +169,7 @@ const SidebarMenu: React.FC<{
                   onClick={() => setIsExpanded(false)}
                   className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                 >
-                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                  <span className="text-gray-700 transition-colors duration-200 text-base">
                     My Profile
                   </span>
                 </Link>
@@ -180,7 +180,7 @@ const SidebarMenu: React.FC<{
                   onClick={() => setIsExpanded(false)}
                   className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                 >
-                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                  <span className="text-gray-700 transition-colors duration-200 text-base">
                     Company Profile
                   </span>
                 </Link>
@@ -191,7 +191,7 @@ const SidebarMenu: React.FC<{
                   onClick={() => setIsExpanded(false)}
                   className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                 >
-                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                  <span className="text-gray-700 transition-colors duration-200 text-base">
                     Billing
                   </span>
                 </Link>
@@ -202,7 +202,7 @@ const SidebarMenu: React.FC<{
                   onClick={() => setIsExpanded(false)}
                   className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                 >
-                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                  <span className="text-gray-700 transition-colors duration-200 text-base">
                     Plans
                   </span>
                 </Link>

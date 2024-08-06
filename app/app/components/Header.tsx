@@ -13,7 +13,15 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
-import { IoMenu } from "react-icons/io5";
+import {
+  IoAlert,
+  IoMenu,
+  IoNotifications,
+  IoNotificationsCircleOutline,
+  IoNotificationsOff,
+  IoNotificationsOutline,
+} from "react-icons/io5";
+import { ImNotification } from "react-icons/im";
 
 const Header: React.FC = () => {
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
@@ -134,9 +142,17 @@ const Header: React.FC = () => {
             onClick={() => {
               router.push("/app/settings/billing");
             }}
-            className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-colors duration-200"
+            className="relative"
           >
-            {`Credits: ${userInfo?.creditCount}`}
+            <IoNotificationsOutline className="w-8 h-8" />
+            <span
+              onClick={() => {
+                router.push("/app/settings/billing");
+              }}
+              className="h-5 w-5 flex absolute bottom-0 right-0 items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-700 transition-colors duration-200 text-xs"
+            >
+              {userInfo?.creditCount}
+            </span>
           </button>
 
           <div className="relative min-h-10 min-w-10" ref={dropdownRef}>
