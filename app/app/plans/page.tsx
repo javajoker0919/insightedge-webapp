@@ -10,13 +10,7 @@ import { useToastContext } from "@/contexts/toastContext";
 import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 
-interface PlanFeature {
-  name: string;
-  free: string | boolean;
-  standard: string | boolean;
-}
-
-const PricingTable: React.FC = () => {
+const Plans = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { invokeToast } = useToastContext();
@@ -90,110 +84,6 @@ const PricingTable: React.FC = () => {
     );
   }
 
-  return (
-    <div className="max-w-4xl m-auto pb-6">
-      {/* <button
-        onClick={() => router.push("/app/membership")}
-        className="mb-4 text-sm font-medium text-gray-700 bg-white p-2 rounded-md hover:bg-gray-50"
-      >
-        ← Go Back
-      </button> */}
-      <div className="grid grid-cols-3 gap-12">
-        <div className="py-4">
-          <div className="h-44"></div>
-          {features_1.map((item) => {
-            return (
-              <div className="flex items-center h-12">
-                <p>{item}</p>
-              </div>
-            );
-          })}
-
-          <p className="text-2xl font-medium h-20 items-center flex">Credits</p>
-          {features_2.map((item) => {
-            return (
-              <div className="flex items-center h-12">
-                <p>{item}</p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div
-          className={`w-64 p-4 border rounded-lg border-gray-200 ${
-            currentPlan == "free" ? "shadow-primary-100 shadow-xl" : ""
-          }`}
-        >
-          <PlanHeader title="FREE" price="$0" currentPlan={currentPlan} />
-
-          {[...Array(4)].map((_, index) => (
-            <div key={index} className="flex items-center h-12 justify-center">
-              <IoCheckmarkCircleOutline className="text-green-500 text-xl" />
-            </div>
-          ))}
-
-          <div className="flex items-center h-12 justify-center">
-            <IoCloseOutline className="text-gray-400 text-xl" />
-          </div>
-          <div className="flex items-center h-12 justify-center">
-            <p>up to 10</p>
-          </div>
-          <div className="h-20"></div>
-          <div className="flex items-center h-12 justify-center">
-            <p>10</p>
-          </div>
-          <div className="flex items-center h-12 justify-center">
-            <IoCloseOutline className="text-gray-400 text-xl" />
-          </div>
-        </div>
-
-        <div
-          className={`w-64 p-4 border rounded-lg border-gray-200 ${
-            currentPlan == "standard" ? "shadow-primary-100 shadow-xl" : ""
-          }`}
-        >
-          <PlanHeader title="STANDARD" price="$99" currentPlan={currentPlan} />
-
-          {[...Array(4)].map((_, index) => (
-            <div key={index} className="flex items-center h-12 justify-center">
-              <IoCheckmarkCircleOutline className="text-green-500 text-xl" />
-            </div>
-          ))}
-
-          <div className="flex items-center h-12 justify-center">
-            <IoCloseOutline className="text-gray-400 text-xl" />
-          </div>
-          <div className="flex items-center h-12 justify-center">
-            <p>up to 20</p>
-          </div>
-          <div className="h-20"></div>
-          <div className="flex items-center h-12 justify-center">
-            <p>20</p>
-          </div>
-          <div className="flex items-center h-12 justify-center">
-            <p>$x / 10 credits</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-interface PlanHeaderProps {
-  title: string;
-  price: string;
-  currentPlan: string | null;
-}
-
-const PlanHeader: React.FC<PlanHeaderProps> = ({
-  title,
-  price,
-  currentPlan,
-}) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
-  const userInfo = useAtomValue(userInfoAtom);
-
   const handleSubscribe = async (plan: string): Promise<void> => {
     if (!userInfo) return;
 
@@ -223,66 +113,120 @@ const PlanHeader: React.FC<PlanHeaderProps> = ({
   };
 
   return (
-    <div className="text-center h-44 space-y-4 p-2 pt-4">
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
-      <div className="flex items-center justify-center gap-2">
-        <p className="text-3xl font-bold">{price}</p>
-        <p className="text-sm text-gray-500">/ user / month</p>
-      </div>
-      {title === "FREE" && currentPlan === "free" && (
-        <p className="w-full py-2 px-4 border border-gray-300 bg-gray-400 rounded-md text-white">
-          Current Plan
-        </p>
-      )}
-      {title === "STANDARD" && (
-        <button
-          className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-gray-400 rounded-md text-white disabled:cursor-not-allowed`}
-          onClick={() =>
-            handleSubscribe(currentPlan === "standard" ? "standard" : "free")
-          }
-          disabled={isLoading}
+    <div className="max-w-4xl m-auto pb-6">
+      <div className="grid grid-cols-3 gap-12">
+        <div className="py-4">
+          <div className="h-44"></div>
+          {features_1.map((item) => {
+            return (
+              <div className="flex items-center h-12">
+                <p>{item}</p>
+              </div>
+            );
+          })}
+
+          <p className="text-2xl font-medium h-20 items-center flex">Credits</p>
+          {features_2.map((item) => {
+            return (
+              <div className="flex items-center h-12">
+                <p>{item}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <div
+          className={`w-64 p-4 border rounded-lg border-gray-200 ${
+            currentPlan == "free" ? "shadow-primary-100 shadow-xl" : ""
+          }`}
         >
-          {isLoading ? (
-            <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
-          ) : title == currentPlan?.toUpperCase() ? (
-            "Check Subscription"
-          ) : (
-            "Subscribe"
-          )}
-        </button>
-      )}
+          <div className="text-center h-44 space-y-4 p-2 pt-4">
+            <h2 className="text-xl font-bold mb-2">FREE</h2>
+            <div className="flex items-center justify-center gap-2">
+              <p className="text-3xl font-bold">$0</p>
+              <p className="text-sm text-gray-500">/ user / month</p>
+            </div>
+            {currentPlan === "free" && (
+              <p className="w-full py-2 px-4 border border-gray-300 bg-gray-400 rounded-md text-white">
+                Current Plan
+              </p>
+            )}
+          </div>
+
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="flex items-center h-12 justify-center">
+              <IoCheckmarkCircleOutline className="text-green-500 text-xl" />
+            </div>
+          ))}
+
+          <div className="flex items-center h-12 justify-center">
+            <IoCloseOutline className="text-gray-400 text-xl" />
+          </div>
+          <div className="flex items-center h-12 justify-center">
+            <p>up to 10</p>
+          </div>
+          <div className="h-20"></div>
+          <div className="flex items-center h-12 justify-center">
+            <p>10</p>
+          </div>
+          <div className="flex items-center h-12 justify-center">
+            <IoCloseOutline className="text-gray-400 text-xl" />
+          </div>
+        </div>
+
+        <div
+          className={`w-64 p-4 border rounded-lg border-gray-200 ${
+            currentPlan == "standard" ? "shadow-primary-100 shadow-xl" : ""
+          }`}
+        >
+          <div className="text-center h-44 space-y-4 p-2 pt-4">
+            <h2 className="text-xl font-bold mb-2">STANDARD</h2>
+            <div className="flex items-center justify-center gap-2">
+              <p className="text-3xl font-bold">$99</p>
+              <p className="text-sm text-gray-500">/ user / month</p>
+            </div>
+            <button
+              className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-gray-400 rounded-md text-white disabled:cursor-not-allowed`}
+              onClick={() =>
+                handleSubscribe(
+                  currentPlan === "standard" ? "standard" : "free"
+                )
+              }
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
+              ) : "STANDARD" == currentPlan?.toUpperCase() ? (
+                "Check Subscription"
+              ) : (
+                "Subscribe"
+              )}
+            </button>
+          </div>
+
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="flex items-center h-12 justify-center">
+              <IoCheckmarkCircleOutline className="text-green-500 text-xl" />
+            </div>
+          ))}
+
+          <div className="flex items-center h-12 justify-center">
+            <IoCloseOutline className="text-gray-400 text-xl" />
+          </div>
+          <div className="flex items-center h-12 justify-center">
+            <p>up to 20</p>
+          </div>
+          <div className="h-20"></div>
+          <div className="flex items-center h-12 justify-center">
+            <p>20</p>
+          </div>
+          <div className="flex items-center h-12 justify-center">
+            <p>$x / 10 credits</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-interface FeatureRowProps {
-  feature: PlanFeature;
-}
-
-const FeatureRow: React.FC<FeatureRowProps> = ({ feature }) => (
-  <>
-    <div className="flex items-center">{feature.name}</div>
-    <FeatureCell value={feature.free} />
-    <FeatureCell value={feature.standard} />
-  </>
-);
-
-interface FeatureCellProps {
-  value: string | boolean;
-}
-
-const FeatureCell: React.FC<FeatureCellProps> = ({ value }) => (
-  <div className="flex justify-center items-center">
-    {typeof value === "boolean" ? (
-      value ? (
-        <IoCheckmarkCircleOutline className="text-green-500 text-xl" />
-      ) : (
-        <IoCloseOutline className="text-gray-400 text-xl" />
-      )
-    ) : (
-      <span>{value}</span>
-    )}
-  </div>
-);
-
-export default PricingTable;
+export default Plans;
