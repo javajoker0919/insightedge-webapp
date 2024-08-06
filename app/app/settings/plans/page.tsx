@@ -88,16 +88,6 @@ const Plans = () => {
     if (!userInfo) return;
 
     if (plan === "free") {
-      setIsLoading(true);
-      try {
-        const response = await customerPortal();
-        router.push(response.url);
-      } catch (error) {
-        console.error("Error creating customer portal:", error);
-        toast.error("Failed to create customer portal. Please try again.");
-      } finally {
-        setIsLoading(false);
-      }
     } else {
       setIsLoading(true);
       try {
