@@ -78,7 +78,7 @@ const PricingTable: React.FC = () => {
       router.replace(`/app/membership`);
     } else if (status === "cancel") {
       invokeToast("error", "Subscription cancelled.", "top");
-      router.replace("/subscription");
+      router.replace("/app/plans");
     }
   }, [searchParams, router, userInfo]);
 
@@ -92,12 +92,12 @@ const PricingTable: React.FC = () => {
 
   return (
     <div className="max-w-4xl m-auto pb-6">
-      <button
+      {/* <button
         onClick={() => router.push("/app/membership")}
         className="mb-4 text-sm font-medium text-gray-700 bg-white p-2 rounded-md hover:bg-gray-50"
       >
         ← Go Back
-      </button>
+      </button> */}
       <div className="grid grid-cols-3 gap-12">
         <div className="py-4">
           <div className="h-44"></div>
@@ -121,9 +121,7 @@ const PricingTable: React.FC = () => {
 
         <div
           className={`w-64 p-4 border rounded-lg border-gray-200 ${
-            currentPlan == "free"
-              ? "shadow-primary-100 bg-green-100 shadow-xl"
-              : ""
+            currentPlan == "free" ? "shadow-primary-100 shadow-xl" : ""
           }`}
         >
           <PlanHeader title="FREE" price="$0" currentPlan={currentPlan} />
@@ -151,9 +149,7 @@ const PricingTable: React.FC = () => {
 
         <div
           className={`w-64 p-4 border rounded-lg border-gray-200 ${
-            currentPlan == "standard"
-              ? "shadow-primary-100 bg-green-100 shadow-xl"
-              : ""
+            currentPlan == "standard" ? "shadow-primary-100 shadow-xl" : ""
           }`}
         >
           <PlanHeader title="STANDARD" price="$99" currentPlan={currentPlan} />

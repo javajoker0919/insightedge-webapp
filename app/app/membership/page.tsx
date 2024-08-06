@@ -128,7 +128,7 @@ const Membership: React.FC = () => {
 
   const handleUpgradePlanClick = () => {
     setIsButtonLoading(true);
-    router.push("/subscription");
+    router.push("/app/plans");
   };
 
   if (isLoading) {
