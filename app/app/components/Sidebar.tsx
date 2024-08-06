@@ -207,7 +207,7 @@ const SidebarMenu: React.FC<{
                   </span>
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/app/settings/usage"
                   onClick={() => setIsExpanded(false)}
@@ -217,7 +217,7 @@ const SidebarMenu: React.FC<{
                     Usage
                   </span>
                 </Link>
-              </li>
+              </li> */}
             </ul>
           )}
         </div>

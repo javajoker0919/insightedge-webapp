@@ -1,13 +1,14 @@
 "use client";
 import { useAtomValue } from "jotai";
 import { userInfoAtom } from "@/utils/atoms";
+import SettingsSidebar from "../components/Sidebar";
 
 const MyProfile = () => {
   const userInfo = useAtomValue(userInfoAtom);
 
   return (
     <div className="m-auto p-10 max-w-lg bg-white">
-      <h1 className="text-2xl font-bold mb-10">My Profile</h1>
+      <h1 className="text-2xl font-bold mb-10 text-center">My Profile</h1>
       <div className="text-lg space-y-4">
         <div>
           <strong>Email:</strong>

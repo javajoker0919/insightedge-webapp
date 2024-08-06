@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
-import { createCheckoutSession } from "@/utils/apiClient";
+import { customerPortal } from "@/utils/apiClient";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { toast } from "react-toastify";
@@ -10,48 +9,6 @@ import { format } from "date-fns";
 import { useToastContext } from "@/contexts/toastContext";
 import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
-import { Router } from "next/router";
-
-interface PlanItemProps {
-  children: React.ReactNode;
-  isAvailable: boolean;
-}
-
-const MembershipItem: React.FC<PlanItemProps> = ({ children, isAvailable }) => (
-  <li className="mb-4 flex items-center justify-start gap-3">
-    {isAvailable ? (
-      <FaCheckCircle className="text-green-500 text-lg" />
-    ) : (
-      <FaTimesCircle className="text-red-500 text-lg" />
-    )}
-    <span className="text-gray-700">{children}</span>
-  </li>
-);
-
-const freePlanItems: { text: React.ReactNode; isAvailable: boolean }[] = [
-  { text: "General AI insights", isAvailable: true },
-  { text: "General AI recommendations", isAvailable: true },
-  { text: "Personalized AI insights", isAvailable: true },
-  { text: "Personalized sales opportunity", isAvailable: true },
-  { text: "Email newsletters", isAvailable: false },
-  { text: "Prospect recommendations (up to 10)", isAvailable: true },
-  { text: "AI credits (10)", isAvailable: true },
-  { text: "Additional AI credits", isAvailable: false },
-];
-
-const standardPlanItems: {
-  text: React.ReactNode;
-  isAvailable: boolean;
-}[] = [
-  { text: "General AI insights", isAvailable: true },
-  { text: "General AI recommendations", isAvailable: true },
-  { text: "Personalized AI insights", isAvailable: true },
-  { text: "Personalized sales opportunity", isAvailable: true },
-  { text: "Email newsletters", isAvailable: false },
-  { text: "Prospect recommendations (up to 20)", isAvailable: true },
-  { text: "AI credits (20)", isAvailable: true },
-  { text: "Additional AI credits ($x/ 10 credits)", isAvailable: true },
-];
 
 const Membership: React.FC = () => {
   const router = useRouter();
@@ -69,7 +26,6 @@ const Membership: React.FC = () => {
       created_at: string;
     }>
   >([]);
-  const [selectedTab, setSelectedTab] = useState<string>("features");
 
   useEffect(() => {
     const fetchCurrentPlan = async () => {
@@ -125,8 +81,17 @@ const Membership: React.FC = () => {
     fetchCurrentPlan();
   }, [userInfo]);
 
-  const planItems =
-    currentPlan === "standard" ? standardPlanItems : freePlanItems;
+  const handleCheckSubscription = async () => {
+    try {
+      const response = await customerPortal();
+      router.push(response.url);
+    } catch (error) {
+      console.error("Error creating customer portal:", error);
+      toast.error("Failed to create customer portal. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -153,8 +118,8 @@ const Membership: React.FC = () => {
           <div className="text-center">
             {currentPlan !== "free" && (
               <button
+                onClick={handleCheckSubscription}
                 className="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded"
-                onClick={() => router.push("/subscription")}
               >
                 Check Subscription
               </button>
@@ -163,87 +128,41 @@ const Membership: React.FC = () => {
         </div>
 
         <div className="border rounded-lg">
-          <div className="flex border-b justify-center space-x-4">
-            <button
-              className={`p-4 w-full ${
-                selectedTab === "features" ? "bg-gray-100" : ""
-              }`}
-              onClick={() => setSelectedTab("features")}
-            >
-              Features
-            </button>
-            <button
-              className={`p-4 w-full ${
-                selectedTab === "history" ? "bg-gray-100" : ""
-              }`}
-              onClick={() => setSelectedTab("history")}
-            >
-              History
-            </button>
-          </div>
-
           <div className="h-[30rem] overflow-auto">
-            {selectedTab === "features" ? (
-              <div className="flex flex-col m-auto h-full w-fit md:flex-row gap-8">
-                <div className="w-full flex flex-col justify-around h-full items-center">
-                  <ul className="space-y-4">
-                    {planItems.map((item, index) => (
-                      <MembershipItem
-                        key={index}
-                        isAvailable={item.isAvailable}
+            <div className="w-full min-w-[30rem]">
+              <div className="w-full p-4 bg-gray-50">
+                <p>Plan History</p>
+              </div>
+              <div className="px-6 py-8">
+                <table className="w-full text-center">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="pb-2 text-gray-600 font-semibold">NO</th>
+                      <th className="pb-2 text-gray-600 font-semibold">Plan</th>
+                      <th className="pb-2 text-gray-600 font-semibold">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orderHistory.map((order) => (
+                      <tr
+                        key={order.order_number}
+                        className="border-b border-gray-200 hover:bg-gray-50"
                       >
-                        {item.text}
-                      </MembershipItem>
-                    ))}
-                  </ul>
-
-                  <button
-                    onClick={() => {
-                      router.push("/app/settings/plans");
-                    }}
-                    className="rounded bg-primary-500 px-4 py-2 text-white"
-                  >
-                    Upgrade / Downgrade Plan
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="w-full min-w-[30rem]">
-                <div className="px-6 py-8">
-                  <table className="w-full text-center">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="pb-2 text-gray-600 font-semibold">NO</th>
-                        <th className="pb-2 text-gray-600 font-semibold">
-                          Plan
-                        </th>
-                        <th className="pb-2 text-gray-600 font-semibold">
-                          Date
-                        </th>
+                        <td className="py-2 text-gray-700">
+                          {order.order_number}
+                        </td>
+                        <td className="py-2 text-gray-700">
+                          {order.plan_name.toUpperCase()}
+                        </td>
+                        <td className="py-2 text-gray-700">
+                          {order.created_at}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {orderHistory.map((order) => (
-                        <tr
-                          key={order.order_number}
-                          className="border-b border-gray-200 hover:bg-gray-50"
-                        >
-                          <td className="py-2 text-gray-700">
-                            {order.order_number}
-                          </td>
-                          <td className="py-2 text-gray-700">
-                            {order.plan_name.toUpperCase()}
-                          </td>
-                          <td className="py-2 text-gray-700">
-                            {order.created_at}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

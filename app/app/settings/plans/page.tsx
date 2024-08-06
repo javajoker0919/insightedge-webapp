@@ -35,7 +35,7 @@ const Plans = () => {
       if (userInfo) {
         const { data: userPlan, error: userPlanError } = await supabase
           .from("user_plans")
-          .select("plan_id, stripe_subscription_id")
+          .select("plan_id")
           .eq("user_id", userInfo.id)
           .order("created_at", { ascending: false });
 
@@ -69,7 +69,7 @@ const Plans = () => {
     const status = searchParams.get("status");
     if (status === "success" && userInfo) {
       invokeToast("success", "Subscription successful!", "top");
-      router.replace(`/app/membership`);
+      router.replace(`/app/settings/billing`);
     } else if (status === "cancel") {
       invokeToast("error", "Subscription cancelled.", "top");
       router.replace("/app/settings/plans");
@@ -84,21 +84,10 @@ const Plans = () => {
     );
   }
 
-  const handleSubscribe = async (plan: string): Promise<void> => {
+  const handleChoosePlan = async (plan: string): Promise<void> => {
     if (!userInfo) return;
 
     if (plan === "free") {
-      setIsLoading(true);
-      try {
-        const response = await createCheckoutSession("standard");
-        router.push(response.url);
-      } catch (error) {
-        console.error("Error creating checkout session:", error);
-        toast.error("Failed to create checkout session. Please try again.");
-      } finally {
-        setIsLoading(false);
-      }
-    } else if (plan === "standard") {
       setIsLoading(true);
       try {
         const response = await customerPortal();
@@ -106,6 +95,17 @@ const Plans = () => {
       } catch (error) {
         console.error("Error creating customer portal:", error);
         toast.error("Failed to create customer portal. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoading(true);
+      try {
+        const response = await createCheckoutSession(plan);
+        router.push(response.url);
+      } catch (error) {
+        console.error("Error creating checkout session:", error);
+        toast.error("Failed to create checkout session. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -146,11 +146,20 @@ const Plans = () => {
               <p className="text-3xl font-bold">$0</p>
               <p className="text-sm text-gray-500">/ user / month</p>
             </div>
-            {currentPlan === "free" && (
-              <p className="w-full py-2 px-4 border border-gray-300 bg-gray-400 rounded-md text-white">
-                Current Plan
-              </p>
-            )}
+
+            <button
+              className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-opacity-65 rounded-md text-white disabled:cursor-not-allowed`}
+              onClick={() => handleChoosePlan("free")}
+              disabled={isLoading || currentPlan === "free"}
+            >
+              {isLoading ? (
+                <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
+              ) : currentPlan === "free" ? (
+                "Current Plan"
+              ) : (
+                "Choose Plan"
+              )}
+            </button>
           </div>
 
           {[...Array(4)].map((_, index) => (
@@ -186,20 +195,16 @@ const Plans = () => {
               <p className="text-sm text-gray-500">/ user / month</p>
             </div>
             <button
-              className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-gray-400 rounded-md text-white disabled:cursor-not-allowed`}
-              onClick={() =>
-                handleSubscribe(
-                  currentPlan === "standard" ? "standard" : "free"
-                )
-              }
-              disabled={isLoading}
+              className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-opacity-65 rounded-md text-white disabled:cursor-not-allowed`}
+              onClick={() => handleChoosePlan("standard")}
+              disabled={isLoading || currentPlan === "standard"}
             >
               {isLoading ? (
                 <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
-              ) : "STANDARD" == currentPlan?.toUpperCase() ? (
-                "Check Subscription"
+              ) : currentPlan == "standard" ? (
+                "Current Plan"
               ) : (
-                "Subscribe"
+                "Choose Plan"
               )}
             </button>
           </div>
