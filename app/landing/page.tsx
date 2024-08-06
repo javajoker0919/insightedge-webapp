@@ -1,282 +1,495 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import {
+  FaArrowRight,
+  FaClock,
+  FaRecycle,
+  FaUser,
+  FaBookReader
+} from "react-icons/fa";
+import { FaPuzzlePiece } from "react-icons/fa6";
+import { LuBrainCircuit } from "react-icons/lu";
+import { MdOutlineToken } from "react-icons/md";
+import { IoTelescope } from "react-icons/io5";
 
-export default function LandingPage() {
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+interface HeaderProps {
+  isHeaderVisible: boolean;
+  isMenuOpen: boolean;
+  toggleMenu: () => void;
+}
+
+const LandingPage: React.FC = () => {
+  const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true);
+  const [lastScrollY, setLastScrollY] = useState<number>(0);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+
+    setIsHeaderVisible(currentScrollY <= lastScrollY);
+    setLastScrollY(currentScrollY);
+  }, [lastScrollY]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > lastScrollY) {
-        setIsHeaderVisible(false);
-      } else {
-        setIsHeaderVisible(true);
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, [handleScroll]);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((prev) => !prev);
   };
 
   return (
-    <div className="w-full text-black bg-gradient-to-b from-white to-primary-50">
-      <header
-        className={`py-4 fixed top-0 left-0 right-0 bg-white z-10 shadow-md transition-transform duration-300 ${
-          isHeaderVisible ? "translate-y-0" : "-translate-y-full"
-        }`}
-      >
-        <nav className="container mx-auto flex justify-between items-center px-4">
-          <div className="text-2xl font-bold text-primary-600 flex items-center">
-            <Image
-              src={"/logo.png"}
-              alt={"ProspectEdge"}
-              width={200}
-              height={40}
-            />
-          </div>
-          <div className="sm:hidden">
-            <button onClick={toggleMenu} className="text-primary-600">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              </svg>
-            </button>
-          </div>
-          <ul
-            className={`sm:flex ${
-              isMenuOpen ? "block" : "hidden"
-            } flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 absolute sm:relative top-full left-0 right-0 bg-white sm:bg-transparent p-4 sm:p-0`}
-          >
-            <li className="flex items-center">
-              <a
-                href="/auth/sign-in"
-                className="hover:text-primary-600 transition-colors flex items-center justify-center"
-              >
-                {/* <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg> */}
-                Sign In
-              </a>
-            </li>
-            <li>
-              <a
-                href="/auth/sign-up"
-                className="bg-primary-600 text-white px-4 py-2 rounded-full hover:bg-primary-700 transition-colors flex items-center justify-center"
-              >
-                {/* <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                </svg> */}
-                Sign Up
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </header>
-
-      <main className="mt-16 sm:mt-16">
-        <section
-          id="hero"
-          className="py-24 px-4 text-center bg-gradient-to-r from-primary-500 to-purple-600 text-white"
-        >
-          <h1 className="text-4xl sm:text-5xl font-bold mb-8 animate-fade-in-down">
-            Supercharge Your B2B Sales with AI Insights
-          </h1>
-          <p className="text-lg sm:text-xl mb-12 animate-fade-in-up max-w-3xl mx-auto">
-            ProspectEdge is the ultimate sales intelligence platform for B2B
-            teams. Our AI-powered solution analyzes data from various sources to
-            give you actionable insights and a competitive edge.
-          </p>
-          <a
-            href="/auth/sign-in"
-            className="bg-white text-primary-600 px-8 py-4 w-fit rounded-full text-lg hover:bg-gray-100 transition-colors animate-pulse flex items-center justify-center mx-auto"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mr-3"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Get Started Today
-          </a>
-        </section>
-
-        <section id="benefits" className="py-20 px-4 md:px-20">
-          <h2 className="text-3xl font-bold text-center mb-12">Key Benefits</h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {[
-              "Prioritize high-value accounts based on data-driven insights",
-              "Understand customer needs through financial and market analysis",
-              "Stay ahead of industry trends and opportunities",
-              "Align sales and marketing efforts for personalized outreach",
-              "Make informed decisions backed by real-time data",
-            ].map((benefit, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-              >
-                <p className="text-lg flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 mr-2 text-primary-600"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  {benefit}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="features" className="py-20 px-4 md:px-20 bg-gray-100">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Powerful Features
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-8">
-            {[
-              "Intuitive dashboard with comprehensive insights",
-              "Detailed account profiles for a 360-degree view",
-              "Advanced AI algorithms to uncover opportunities and risks",
-              "Real-time alerts on critical changes",
-              "Easy integration with your existing sales workflow",
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-              >
-                <p className="text-lg flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 mr-2 text-primary-600"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  {feature}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="trust" className="py-20 px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Trusted by Top B2B Companies
-          </h2>
-          <p className="text-xl text-center">
-            Leading B2B organizations across various industries trust
-            ProspectEdge for their sales intelligence needs.
-          </p>
-
-          {/* Add logos or testimonials here */}
-        </section>
-
-        <section id="pricing" className="py-20 px-4 bg-gray-100">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Choose Your Plan
-          </h2>
-          <div className="flex flex-col md:flex-row justify-center gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-              <h3 className="text-2xl font-bold mb-4">Free</h3>
-              <p className="mb-4">Access general AI summaries and insights</p>
-              <a
-                href="#cta"
-                className="block text-center bg-primary-600 text-white px-4 py-2 rounded-full hover:bg-primary-700 transition-colors"
-              >
-                Get Started
-              </a>
-            </div>
-            <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-              <h3 className="text-2xl font-bold mb-4">Premium</h3>
-              <p className="mb-4">Unlock unlimited, personalized AI insights</p>
-              <a
-                href="#cta"
-                className="block text-center bg-primary-600 text-white px-4 py-2 rounded-full hover:bg-primary-700 transition-colors"
-              >
-                Get Started
-              </a>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer id="cta" className="bg-primary-600 text-white py-20 px-8">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-8">Get Started Today</h2>
-          <p className="text-2xl mb-12">
-            Sign up for ProspectEdge now and unlock the power of AI-driven sales
-            insights.
-          </p>
-          <form className="mb-8 flex justify-center">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="px-4 py-2 rounded-l-full text-black text-base w-56"
-            />
-            <button
-              type="submit"
-              className="bg-primary-600 text-white px-6 py-2 w-fit min-w-fit rounded-r-full hover:bg-primary-700 transition-colors flex items-center text-base font-semibold border border-white"
-            >
-              Get Started
-            </button>
-          </form>
-          <p className="text-lg">
-            &copy; 2024 ProspectEdge. All rights reserved.
-          </p>
-        </div>
-      </footer>
+    <div className="w-full text-black bg-gradient-to-b">
+      <Header
+        isHeaderVisible={isHeaderVisible}
+        isMenuOpen={isMenuOpen}
+        toggleMenu={toggleMenu}
+      />
+      <MainContent />
     </div>
   );
-}
+};
+
+const Header: React.FC<HeaderProps> = ({
+  isHeaderVisible,
+  isMenuOpen,
+  toggleMenu
+}) => (
+  <header
+    className={`py-4 fixed top-0 left-0 right-0 bg-white z-10 shadow-md transition-transform duration-300 ${
+      isHeaderVisible ? "translate-y-0" : "-translate-y-full"
+    }`}
+  >
+    <div className="flex justify-between items-center px-4">
+      <div className="flex items-center">
+        <Image
+          src={"/favicon.png"}
+          alt={"ProspectEdge"}
+          width={40}
+          height={40}
+        />
+        <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
+      </div>
+      {/* <div className="sm:hidden">
+        <button onClick={toggleMenu} className="text-primary-600">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16m-7 6h7"
+            />
+          </svg>
+        </button>
+      </div> */}
+      <NavMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+    </div>
+  </header>
+);
+
+const NavMenu: React.FC<{ isMenuOpen: boolean; toggleMenu: () => void }> = ({
+  isMenuOpen,
+  toggleMenu
+}) => (
+  <div
+    className={`sm:flex ${
+      isMenuOpen ? "block" : "hidden"
+    } flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-12 absolute sm:relative top-full left-0 right-0 bg-white sm:bg-transparent p-4 sm:p-0`}
+  >
+    <div className="flex items-center gap-10">
+      <a href="#" className="">
+        Docs
+      </a>
+      <a href="#" className="">
+        Pricing
+      </a>
+      <a href="#" className="">
+        Guides
+      </a>
+    </div>
+    <div className="flex items-center gap-6">
+      <a
+        href="/auth/sign-in"
+        className="w-20 hover:text-primary-600 transition-colors border px-4 py-2 rounded-full flex items-center justify-center"
+      >
+        Log In
+      </a>
+      <a
+        href="/auth/sign-up"
+        className="w-20 bg-primary-600 text-white px-4 py-2 rounded-full hover:bg-primary-700 transition-colors flex items-center justify-center"
+      >
+        Start
+      </a>
+    </div>
+  </div>
+);
+
+const MainContent: React.FC = () => (
+  <main className="mt-16 sm:mt-16">
+    <HeroSection />
+    <SalesAndMarketingSection />
+    <SummarySection />
+    <BusinessSection />
+    <NewSection />
+    <ScheduleDemo />
+    <Footer />
+  </main>
+);
+
+const HeroSection: React.FC = () => (
+  <section id="hero" className="py-40 px-4 gap-16 flex flex-col items-center">
+    <h1 className="text-4xl sm:text-5xl font-bold text-center text-primary-600 max-w-[60rem]">
+      Convert news and earnings transcripts to generate specific, actionable B2B
+      sales & marketing opportunities
+    </h1>
+    <p className="text-lg sm:text-xl text-center max-w-3xl mx-auto">
+      Use insights and recommendations to tailor sales & marketing strategy for
+      client specific needs
+    </p>
+    <div className="flex items-center gap-6">
+      <button className="px-4 py-2 rounded-full border bg-primary-500 border-primary-500 text-white">
+        Start for free
+      </button>
+      <button className="px-4 py-2 rounded-full border border-primary-500">
+        Schedule demo
+      </button>
+    </div>
+  </section>
+);
+
+const SalesAndMarketingSection: React.FC = () => (
+  <section
+    id="salesandmarketing"
+    className="pb-20 px-4 flex flex-col items-center"
+  >
+    <h1 className="text-4xl sm:text-5xl font-bold text-center max-w-[60rem] mb-16">
+      Targeted sales & marketing opportunities, specific to each customer
+    </h1>
+    <p className="text-lg sm:text-xl text-center max-w-3xl mx-auto mb-32">
+      A comprehensive platform that transforms complex market and financial data
+      into clear, actionable strategies for B2B sales and marketing teams
+    </p>
+    <div className="flex flex-col lg:flex-row items-center gap-20 min-w-[80rem]">
+      <img
+        src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2015&q=80"
+        alt="Business analytics dashboard"
+        className="w-full lg:w-[30rem] h-[20rem] object-cover rounded-lg shadow-lg mb-12 lg:mb-0"
+      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <Feature
+          icon={<IoTelescope className="w-8 h-8 text-primary-500" />}
+          title="Opportunity discovery"
+          description="Uncover selling opportunities aligned with your offerings."
+        />
+        <Feature
+          icon={<FaPuzzlePiece className="w-8 h-8 text-primary-500" />}
+          title="Marketing strategy development"
+          description="Generate targeted tactics for each account"
+        />
+        <Feature
+          icon={<FaBookReader className="w-8 h-8 text-primary-500" />}
+          title="Earnings data summaries"
+          description="Identify and prioritize high-potential accounts"
+        />
+        <Feature
+          icon={<LuBrainCircuit className="w-8 h-8 text-primary-500" />}
+          title="Competitive Intelligence"
+          description="Stay ahead with real-time market insights"
+        />
+      </div>
+    </div>
+  </section>
+);
+
+const Feature: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}> = ({ icon, title, description }) => (
+  <div className="flex gap-4">
+    <div className="rounded-full flex items-center justify-center w-16 h-16 bg-primary-50 flex-shrink-0">
+      {icon}
+    </div>
+    <div className="flex flex-col gap-1 max-w-80">
+      <p className="text-gray-600">{title}</p>
+      <p className="text-gray-400 text-sm">{description}</p>
+    </div>
+  </div>
+);
+
+const SummarySection: React.FC = () => (
+  <section id="summary" className="py-12 sm:py-16 md:py-20 px-4 flex flex-col items-center">
+    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] mb-8 sm:mb-12 md:mb-16">
+      We focus on the data summaries, so you can focus on customer relationships
+    </h1>
+
+    <div className="flex flex-col md:flex-row items-center gap-6 mb-12 md:mb-16">
+      <div className="w-full md:w-1/2 h-[20rem] sm:h-[25rem] relative mb-6 md:mb-0">
+        <img
+          src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+          alt="Living education"
+          className="w-full h-full object-cover rounded-lg"
+        />
+      </div>
+      <SummaryContent />
+    </div>
+    <div className="flex flex-col md:flex-row-reverse items-center gap-6">
+      <div className="w-full md:w-1/2 h-[20rem] sm:h-[25rem] relative mb-6 md:mb-0">
+        <img
+          src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+          alt="Data analysis"
+          className="w-full h-full object-cover rounded-lg"
+        />
+      </div>
+      <DashboardContent />
+    </div>
+  </section>
+);
+
+const SummaryContent: React.FC = () => (
+  <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 md:p-10 md:pr-0 max-w-full md:max-w-[30rem]">
+    <p className="text-gray-600 text-sm sm:text-base">TAILORED ACCOUNT SPECIFIC STRATEGIES</p>
+    <p className="text-2xl sm:text-3xl md:text-4xl font-bold">Actionable Summaries</p>
+    <p className="text-gray-600 text-sm sm:text-base">
+      AI generated summaries of market data and strategies to build your
+      marketing & sales engagement
+    </p>
+    <button className="flex text-primary-600 items-center gap-2 text-sm sm:text-base">
+      <span>Learn more</span>
+      <FaArrowRight />
+    </button>
+  </div>
+);
+
+const DashboardContent: React.FC = () => (
+  <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 md:p-10 md:pr-0 max-w-full md:max-w-[30rem]">
+    <p className="text-gray-600 text-sm sm:text-base">
+      REAL TIME DATA DRIVING CUSTOMER CONVERSATIONS
+    </p>
+    <p className="text-2xl sm:text-3xl md:text-4xl font-bold">Personalized dashboard</p>
+    <p className="text-gray-600 text-sm sm:text-base">
+      Real time summaries and strategies in a single view, personalized for you
+    </p>
+    <button className="flex text-primary-600 items-center gap-2 text-sm sm:text-base">
+      <span>Learn more</span>
+      <FaArrowRight />
+    </button>
+  </div>
+);
+
+const BusinessSection: React.FC = () => (
+  <section id="business" className="py-12 sm:py-16 md:py-20 px-4 flex flex-col items-center">
+    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] mb-16 sm:mb-24 md:mb-32">
+      What it means for your business
+    </h1>
+
+    <div className="flex flex-col sm:flex-row w-full items-center sm:items-start justify-around max-w-[80rem] gap-12 sm:gap-6">
+      <BusinessFeature
+        icon={<FaClock className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />}
+        title="INCREASED PRODUCTIVITY"
+        description="Get more revenue per sales person"
+      />
+      <BusinessFeature
+        icon={<FaRecycle className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />}
+        title="IMMEDIATE ROI"
+        description="Start generating more value from your leads from day 1"
+      />
+      <BusinessFeature
+        icon={<MdOutlineToken className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />}
+        title="REDUCED CHURN"
+        description="When you can identify risks and opportunities for customers and partners"
+      />
+    </div>
+  </section>
+);
+
+const BusinessFeature: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}> = ({ icon, title, description }) => (
+  <div className="flex flex-col items-center gap-4 sm:gap-6 max-w-[18rem] sm:max-w-60 w-full">
+    {icon}
+    <p className="text-gray-600 text-base sm:text-lg text-center">{title}</p>
+    <p className="text-center text-sm sm:text-base">{description}</p>
+  </div>
+);
+
+const NewSection: React.FC = () => (
+  <section id="new" className="py-20 px-4 flex flex-col items-center gap-10">
+    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem]">
+      What's new?
+    </h1>
+
+    <p className="text-gray-600">Explore our blogs</p>
+
+    <div className="flex flex-col md:flex-row w-full max-w-[80rem] items-center md:items-start justify-around gap-6">
+      <BlogCard
+        title="5 Game-Changing Ways AI-Powered Market Intelligence is Revolutionizing B2B Sales"
+        description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
+        src="/image/blog-1.jpg"
+      />
+      <BlogCard
+        title="7 Innovative Strategies AI-Driven Market Insights are Transforming B2B Sales"
+        description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
+        src="/image/blog-2.jpg"
+      />
+      <BlogCard
+        title="6 Innovative Approaches AI-Driven Market Intelligence is Shaping B2B Sales"
+        description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
+        src="/image/blog-3.jpg"
+      />
+    </div>
+  </section>
+);
+
+const BlogCard: React.FC<{
+  title: string;
+  description: string;
+  src: string;
+}> = ({ title, description, src }) => (
+  <div className="border shadow rounded-md overflow-hidden w-full md:w-auto max-w-sm mx-auto">
+    <div className="w-full h-48 sm:h-64 bg-primary-100">
+      <Image
+        src={src}
+        alt="Blog image"
+        width={480}
+        height={400}
+        className="object-cover w-full h-full"
+      />
+    </div>
+    <div className="p-4">
+      <p className="font-bold text-lg sm:text-xl line-clamp-2 mb-4">{title}</p>
+      <span>
+        <p className="text-gray-600 text-sm sm:text-base line-clamp-3 mb-2">{description}</p>
+        <button className="text-primary-500 text-sm sm:text-base">Read more</button>
+      </span>
+    </div>
+  </div>
+);
+
+const ScheduleDemo: React.FC = () => (
+  <div className="flex flex-col lg:flex-row w-full justify-center items-center gap-8 lg:gap-20 py-20 px-4 lg:px-0">
+    <div className="w-full lg:w-[577px] h-[300px] lg:h-[512px] bg-primary-100 rounded-lg">
+      <img
+        src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+        alt="Business team collaborating"
+        className="w-full h-full object-cover rounded-lg"
+      />
+    </div>
+    <div className="flex flex-col w-full lg:max-w-[600px]">
+      <h2 className="text-4xl lg:text-6xl font-bold leading-tight lg:leading-[64px] text-[#171A1FFF] mb-6 lg:mb-8">
+        Generate your opportunities
+      </h2>
+      <div className="flex flex-col w-full gap-4 lg:gap-6">
+        <input
+          placeholder="Name"
+          className="peer px-4 lg:px-5 h-12 lg:h-14 w-full border-b border-blue-gray-200 bg-transparent font-sans text-base lg:text-lg font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+        />
+        <input
+          placeholder="Company"
+          className="peer px-4 lg:px-5 h-12 lg:h-14 w-full border-b border-blue-gray-200 bg-transparent font-sans text-base lg:text-lg font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+        />
+        <input
+          placeholder="Email address"
+          className="peer px-4 lg:px-5 h-12 lg:h-14 w-full border-b border-blue-gray-200 bg-transparent font-sans text-base lg:text-lg font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+        />
+        <button className="mt-4 lg:mt-6 w-full bg-[#379AE6FF] text-white rounded-full text-base lg:text-lg font-semibold py-3 lg:py-4 hover:bg-[#197DCAFF] active:bg-[#166DB0FF] transition-colors">
+          Schedule a demo
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+const Footer: React.FC = () => (
+  <footer id="cta" className="mt-20">
+    {/* <div className="flex w-full bg-[#004BADFF] h-16 mb-16">
+      <ul
+        typeof="square"
+        className="text-[#FFF] text-2xl font-normal leading-9 flex flex-row items-center gap-4"
+      >
+        <li>Subscribe</li>
+        <li>Join the community</li>
+        <li>Documentation</li>
+        <li>How it works</li>
+      </ul>
+    </div> */}
+    <div className="flex flex-col px-4 sm:px-6 lg:px-20 lg:flex-row justify-between items-center w-full">
+      <div className="flex flex-col items-center lg:items-start mb-8 lg:mb-0">
+        <div className="flex items-center">
+          <Image
+            src={"/favicon.png"}
+            alt={"ProspectEdge"}
+            width={40}
+            height={40}
+          />
+          <Image
+            src={"/logo.png"}
+            alt={"ProspectEdge"}
+            width={200}
+            height={40}
+          />
+        </div>
+        <div className="flex flex-row gap-4 mt-6 lg:mt-8 lg:ml-[100px]">
+          {[
+            { alt: "tiktok", src: "/icons/phosphor-tiktok-logo.svg" },
+            { alt: "facebook", src: "/icons/phosphor-facebook-logo.svg" },
+            { alt: "youtube", src: "/icons/phosphor-youtube-logo.svg" },
+            { alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" }
+          ].map((icon, index) => (
+            <div
+              key={index}
+              className="p-2 border border-solid border-[#F3F4F6FF] rounded-sm"
+            >
+              <Image width={24} height={24} alt={icon.alt} src={icon.src} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 lg:gap-20 lg:mr-20">
+        {[
+          { title: "Product", items: ["Features", "Pricing"] },
+          { title: "Resources", items: ["Blog", "User guides", "Webinars"] },
+          { title: "Company", items: ["About", "Join us"] }
+        ].map((section, index) => (
+          <div
+            key={index}
+            className="flex flex-col gap-3 text-sm font-medium text-[#171A1FFF]"
+          >
+            <p className="font-semibold">{section.title}</p>
+            {section.items.map((item, itemIndex) => (
+              <p key={itemIndex}>{item}</p>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+    <div className="flex flex-col mx-[200px] lg:flex-row justify-between items-center lg:mt-20 py-8 border-t border-[#F3F4F6FF]">
+      <div className="flex flex-col gap-1 text-center lg:text-left mb-4 lg:mb-0">
+        <p className="font-semibold text-base leading-[26px] text-[#171A1FFF]">
+          Ultimated with love
+        </p>
+        <p className="text-xs leading-5 font-normal text-[#6F7787FF]">
+          Quis labore ut labore proident in ea est aliqua
+        </p>
+      </div>
+      <div className="flex">
+        <p className="text-xs font-normal text-[#6F7787FF] leading-5">
+          @2024 ProspectEdge. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+);
+
+export default LandingPage;

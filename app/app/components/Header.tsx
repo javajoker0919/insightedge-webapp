@@ -13,7 +13,15 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
-import { IoMenu } from "react-icons/io5";
+import {
+  IoAlert,
+  IoMenu,
+  IoNotifications,
+  IoNotificationsCircleOutline,
+  IoNotificationsOff,
+  IoNotificationsOutline,
+} from "react-icons/io5";
+import { ImNotification } from "react-icons/im";
 
 const Header: React.FC = () => {
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
@@ -23,7 +31,7 @@ const Header: React.FC = () => {
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
   const setOrgInfo = useSetAtom(orgInfoAtom);
-  const setWatchlist = useSetAtom(watchlistAtom);
+  const [watchlist, setWatchlist] = useAtom(watchlistAtom);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
@@ -132,11 +140,19 @@ const Header: React.FC = () => {
         <div className="flex items-center space-x-4">
           <button
             onClick={() => {
-              router.push("/app/membership");
+              router.push("/app/settings/billing");
             }}
-            className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-700 transition-colors duration-200"
+            className="relative"
           >
-            {`Credits: ${userInfo?.creditCount}`}
+            <IoNotificationsOutline className="w-8 h-8" />
+            <span
+              onClick={() => {
+                router.push("/app/settings/billing");
+              }}
+              className="h-5 w-5 flex absolute bottom-0 right-0 items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-700 transition-colors duration-200 text-xs"
+            >
+              {userInfo?.creditCount}
+            </span>
           </button>
 
           <div className="relative min-h-10 min-w-10" ref={dropdownRef}>
@@ -152,32 +168,18 @@ const Header: React.FC = () => {
             {isDropdownOpen && (
               <div className="absolute border border-gray-200 right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                 <Link
-                  href="/app/my-profile"
+                  href={`/app/watchlist/${watchlist?.[0]?.uuid}`}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={closeDropdown}
                 >
-                  My Profile
+                  Dashboard
                 </Link>
                 <Link
-                  href="/app/membership"
+                  href="/app/settings/my-profile"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={closeDropdown}
                 >
-                  Membership Plan
-                </Link>
-                <Link
-                  href="/app/manage-users"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={closeDropdown}
-                >
-                  Manage users
-                </Link>
-                <Link
-                  href="/auth/forgot-password"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={closeDropdown}
-                >
-                  Forgot Password
+                  Settings
                 </Link>
                 <button
                   onClick={handleLogout}
