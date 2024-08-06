@@ -9,6 +9,9 @@ import {
   IoPersonOutline,
   IoAddOutline,
   IoMenu,
+  IoSettingsOutline,
+  IoChevronDownOutline,
+  IoChevronForwardOutline,
 } from "react-icons/io5";
 import { watchlistAtom, isSidebarExpandedAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
@@ -19,6 +22,7 @@ const Sidebar: React.FC = () => {
   const paramUUID = params.id as string;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useAtom(isSidebarExpandedAtom);
+  const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const watchlist = useAtomValue(watchlistAtom);
@@ -29,6 +33,10 @@ const Sidebar: React.FC = () => {
 
   const openModal = () => {
     setIsModalOpen(true);
+  };
+
+  const toggleSettings = () => {
+    setIsSettingsExpanded(!isSettingsExpanded);
   };
 
   useEffect(() => {
@@ -55,110 +63,21 @@ const Sidebar: React.FC = () => {
           isExpanded ? "left-0" : "-left-64"
         } transition-all overflow-y-auto overflow-x-hidden duration-300 border-r border-gray-200 shadow-md flex flex-col`}
       >
-        <div className="p-3">
-          <Link
-            href="/"
-            className={`text-2xl font-bold gap-2 text-primary-600 flex items-center p-3`}
-          >
-            <Image
-              src={"/logo.png"}
-              alt={"ProspectEdge"}
-              width={200}
-              height={40}
-            />
-          </Link>
-          <ul>
-            <li className="mb-1">
-              <Link
-                href={`/app${
-                  watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
-                }`}
-                onClick={() => setIsExpanded(false)}
-                className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
-              >
-                <IoHomeOutline className={`text-2xl`} />
-
-                <span className="text-gray-700 transition-colors duration-200 text-lg">
-                  Home
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/app/company-profile"
-                onClick={() => setIsExpanded(false)}
-                className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
-              >
-                <IoPersonOutline className={`text-2xl`} />
-
-                <span className="text-gray-700 transition-colors duration-200 text-lg">
-                  Company Profile
-                </span>
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <hr />
-
-        <div className="p-3">
-          <div className={`flex items-center justify-between w-full gap-4`}>
-            <span className="text-gray-500 pl-4 transition-colors duration-200 text-base">
-              WATCHLISTS
-            </span>
-
-            <button
-              onClick={openModal}
-              className="p-3 rounded-full hover:bg-gray-100 transition-all duration-200"
-            >
-              <IoAddOutline className={`text-2xl`} />
-            </button>
-          </div>
-          <ul>
-            {watchlist &&
-              watchlist.map((item) => {
-                return (
-                  <li key={item.uuid} className="mb-0.5">
-                    <Link
-                      href={`/app/watchlist/${item.uuid}`}
-                      onClick={() => setIsExpanded(false)}
-                      className={`flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ${
-                        paramUUID === item.uuid
-                          ? "bg-primary-50"
-                          : "hover:bg-gray-100"
-                      }`}
-                    >
-                      <IoMenu className={`text-2xl shrink-0`} />
-
-                      <span className="text-gray-700 truncate transition-colors duration-200 text-lg">
-                        {item.name}
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-          </ul>
-        </div>
-        {/* <div className="mt-auto border-t p-4">
-          <div className={`flex items-center space-x-2 justify-between`}>
-            <div className="w-full space-y-3">
-              <hr className="border" />
-              <hr className="border" />
-            </div>
-
-            <button
-              onClick={toggleSidebar}
-              className="text-primary-600 border border-primary-200 hover:text-primary-800 focus:outline-none transition-colors duration-200 px-2 py-1 rounded-full hover:bg-gray-100 text-2xl"
-            >
-              {"←"}
-            </button>
-
-            <div className="w-full space-y-3">
-              <hr className="border" />
-              <hr className="border" />
-            </div>
-          </div>
-        </div> */}
+        <SidebarHeader />
+        <SidebarMenu
+          watchlist={watchlist}
+          paramUUID={paramUUID}
+          setIsExpanded={setIsExpanded}
+          isSettingsExpanded={isSettingsExpanded}
+          toggleSettings={toggleSettings}
+        />
+        <hr></hr>
+        <SidebarFooter
+          openModal={openModal}
+          watchlist={watchlist}
+          paramUUID={paramUUID}
+          setIsExpanded={setIsExpanded}
+        />
       </nav>
 
       <WatchlistModal
@@ -169,5 +88,188 @@ const Sidebar: React.FC = () => {
     </>
   );
 };
+
+const SidebarHeader: React.FC = () => (
+  <div className="p-3">
+    <Link
+      href="/"
+      className={`text-2xl font-bold gap-2 text-primary-600 flex items-center p-3`}
+    >
+      <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
+    </Link>
+  </div>
+);
+
+const SidebarMenu: React.FC<{
+  watchlist: any;
+  paramUUID: string;
+  setIsExpanded: (value: boolean) => void;
+  isSettingsExpanded: boolean;
+  toggleSettings: () => void;
+}> = ({
+  watchlist,
+  paramUUID,
+  setIsExpanded,
+  isSettingsExpanded,
+  toggleSettings,
+}) => (
+  <div className="p-3">
+    <ul>
+      <li className="mb-1">
+        <Link
+          href={`/app${
+            watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
+          }`}
+          onClick={() => setIsExpanded(false)}
+          className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+        >
+          <IoHomeOutline className={`text-2xl`} />
+          <span className="text-gray-700 transition-colors duration-200 text-lg">
+            Home
+          </span>
+        </Link>
+      </li>
+      {/* <li>
+        <Link
+          href="/app/company-profile"
+          onClick={() => setIsExpanded(false)}
+          className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+        >
+          <IoPersonOutline className={`text-2xl`} />
+          <span className="text-gray-700 transition-colors duration-200 text-lg">
+            Company Profile
+          </span>
+        </Link>
+      </li> */}
+      <li>
+        <button
+          onClick={toggleSettings}
+          className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200 w-full text-left`}
+        >
+          <IoSettingsOutline className={`text-2xl`} />
+          <span className="text-gray-700 transition-colors duration-200 text-lg">
+            Settings
+          </span>
+          {isSettingsExpanded ? (
+            <IoChevronDownOutline className={`text-xl ml-auto`} />
+          ) : (
+            <IoChevronForwardOutline className={`text-xl ml-auto`} />
+          )}
+        </button>
+        <div
+          className={`transition-max-height duration-300 ease-in-out overflow-hidden ${
+            isSettingsExpanded ? "max-h-96" : "max-h-0"
+          }`}
+        >
+          {isSettingsExpanded && (
+            <ul className="pl-8">
+              <li>
+                <Link
+                  href="/app/my-profile"
+                  onClick={() => setIsExpanded(false)}
+                  className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                >
+                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                    My Profile
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/app/company-profile"
+                  onClick={() => setIsExpanded(false)}
+                  className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                >
+                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                    Company Profile
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/app/billing"
+                  onClick={() => setIsExpanded(false)}
+                  className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                >
+                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                    Billing
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/app/plans"
+                  onClick={() => setIsExpanded(false)}
+                  className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                >
+                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                    Plans
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/app/usage"
+                  onClick={() => setIsExpanded(false)}
+                  className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                >
+                  <span className="text-gray-700 transition-colors duration-200 text-lg">
+                    Usage
+                  </span>
+                </Link>
+              </li>
+            </ul>
+          )}
+        </div>
+      </li>
+    </ul>
+  </div>
+);
+
+const SidebarFooter: React.FC<{
+  openModal: () => void;
+  watchlist: any;
+  paramUUID: string;
+  setIsExpanded: (value: boolean) => void;
+}> = ({ openModal, watchlist, paramUUID, setIsExpanded }) => (
+  <div className="p-3">
+    <div className={`flex items-center justify-between w-full gap-4`}>
+      <span className="text-gray-500 pl-4 transition-colors duration-200 text-base">
+        WATCHLISTS
+      </span>
+
+      <button
+        onClick={openModal}
+        className="p-3 rounded-full hover:bg-gray-100 transition-all duration-200"
+      >
+        <IoAddOutline className={`text-2xl`} />
+      </button>
+    </div>
+    <ul>
+      {watchlist &&
+        watchlist.map((item: any) => {
+          return (
+            <li key={item.uuid} className="mb-0.5">
+              <Link
+                href={`/app/watchlist/${item.uuid}`}
+                onClick={() => setIsExpanded(false)}
+                className={`flex items-center gap-4 py-3 px-4 rounded-lg transition-all duration-200 ${
+                  paramUUID === item.uuid
+                    ? "bg-primary-50"
+                    : "hover:bg-gray-100"
+                }`}
+              >
+                <IoMenu className={`text-2xl shrink-0`} />
+
+                <span className="text-gray-700 truncate transition-colors duration-200 text-lg">
+                  {item.name}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+    </ul>
+  </div>
+);
 
 export default Sidebar;
