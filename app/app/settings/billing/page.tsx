@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { useToastContext } from "@/contexts/toastContext";
 import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
+import { Router } from "next/router";
 
 interface PlanItemProps {
   children: React.ReactNode;
@@ -68,6 +69,7 @@ const Membership: React.FC = () => {
       created_at: string;
     }>
   >([]);
+  const [selectedTab, setSelectedTab] = useState<string>("features");
 
   useEffect(() => {
     const fetchCurrentPlan = async () => {
@@ -95,7 +97,7 @@ const Membership: React.FC = () => {
             return;
           }
 
-          setCurrentPlan(plan.name.toUpperCase());
+          setCurrentPlan(plan.name);
 
           const history = await Promise.all(
             userPlans.map(async (userPlan, index) => {
@@ -124,12 +126,7 @@ const Membership: React.FC = () => {
   }, [userInfo]);
 
   const planItems =
-    currentPlan === "STANDARD" ? standardPlanItems : freePlanItems;
-
-  const handleUpgradePlanClick = () => {
-    setIsButtonLoading(true);
-    router.push("/app/plans");
-  };
+    currentPlan === "standard" ? standardPlanItems : freePlanItems;
 
   if (isLoading) {
     return (
@@ -140,89 +137,115 @@ const Membership: React.FC = () => {
   }
 
   return (
-    <div className="m-auto px-4 py-8 pb-20">
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="w-full min-w-96">
-          <div className="bg-white border rounded-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4">
-              <h2 className="text-2xl font-bold text-white text-center">
-                Your Current Plan Features
-              </h2>
-            </div>
-            <div className="px-6 py-8">
-              <ul className="space-y-4">
-                {planItems.map((item, index) => (
-                  <MembershipItem key={index} isAvailable={item.isAvailable}>
-                    {item.text}
-                  </MembershipItem>
-                ))}
-              </ul>
-            </div>
-            <div className="bg-gray-50 px-6 py-4">
-              <p className="text-sm text-gray-600">
-                Current Plan:{" "}
-                <span className="font-semibold">{currentPlan || "Free"}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="w-full min-w-[30rem]">
-          <div className="bg-white border rounded-lg overflow-hidden">
-            <div className="bg-gray-200 px-6 py-4">
-              <h2 className="text-2xl text-gray-600 text-center">
-                Plan History
-              </h2>
-            </div>
-            <div className="px-6 py-8">
-              <table className="w-full text-center">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="pb-2 text-gray-600 font-semibold">NO</th>
-                    <th className="pb-2 text-gray-600 font-semibold">Plan</th>
-                    <th className="pb-2 text-gray-600 font-semibold">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orderHistory.map((order) => (
-                    <tr
-                      key={order.order_number}
-                      className="border-b border-gray-200 hover:bg-gray-100"
-                    >
-                      <td className="py-2 text-gray-700">
-                        {order.order_number}
-                      </td>
-                      <td className="py-2 text-gray-700">
-                        {order.plan_name.toUpperCase()}
-                      </td>
-                      <td className="py-2 text-gray-700">{order.created_at}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="mt-12 text-center">
-        {currentPlan === "STANDARD" ? (
-          <button
-            className="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded"
-            onClick={() => router.push("/subscription")}
-          >
-            Check Plan
-          </button>
-        ) : (
-          <button
-            className="bg-primary-500 hover:bg-primary-600 w-40 text-white font-bold py-2 px-4 rounded"
-            onClick={handleUpgradePlanClick}
-          >
-            {isButtonLoading ? (
-              <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white" />
-            ) : (
-              <span>Upgrade Plan</span>
+    <div className="w-full h-full flex justify-center">
+      <div className="px-4 max-w-2xl w-full py-8 pb-20">
+        <div className="text-3xl mb-10">Subscription Details</div>
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-gray-600">
+            {`You are on `}
+            <span className="px-2 py-1 rounded-md bg-primary-50 font-medium text-primary-600">
+              {currentPlan?.toUpperCase()}
+            </span>
+            {` plan for `}
+            <span className="text-black font-medium">$99 per month</span>
+          </p>
+
+          <div className="text-center">
+            {currentPlan !== "free" && (
+              <button
+                className="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded"
+                onClick={() => router.push("/subscription")}
+              >
+                Check Subscription
+              </button>
             )}
-          </button>
-        )}
+          </div>
+        </div>
+
+        <div className="border rounded-lg">
+          <div className="flex border-b justify-center space-x-4">
+            <button
+              className={`p-4 w-full ${
+                selectedTab === "features" ? "bg-gray-100" : ""
+              }`}
+              onClick={() => setSelectedTab("features")}
+            >
+              Features
+            </button>
+            <button
+              className={`p-4 w-full ${
+                selectedTab === "history" ? "bg-gray-100" : ""
+              }`}
+              onClick={() => setSelectedTab("history")}
+            >
+              History
+            </button>
+          </div>
+
+          <div className="h-[30rem] overflow-auto">
+            {selectedTab === "features" ? (
+              <div className="flex flex-col m-auto h-full w-fit md:flex-row gap-8">
+                <div className="w-full flex flex-col justify-around h-full items-center">
+                  <ul className="space-y-4">
+                    {planItems.map((item, index) => (
+                      <MembershipItem
+                        key={index}
+                        isAvailable={item.isAvailable}
+                      >
+                        {item.text}
+                      </MembershipItem>
+                    ))}
+                  </ul>
+
+                  <button
+                    onClick={() => {
+                      router.push("/app/settings/plans");
+                    }}
+                    className="rounded bg-primary-500 px-4 py-2 text-white"
+                  >
+                    Upgrade / Downgrade Plan
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="w-full min-w-[30rem]">
+                <div className="px-6 py-8">
+                  <table className="w-full text-center">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="pb-2 text-gray-600 font-semibold">NO</th>
+                        <th className="pb-2 text-gray-600 font-semibold">
+                          Plan
+                        </th>
+                        <th className="pb-2 text-gray-600 font-semibold">
+                          Date
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orderHistory.map((order) => (
+                        <tr
+                          key={order.order_number}
+                          className="border-b border-gray-200 hover:bg-gray-50"
+                        >
+                          <td className="py-2 text-gray-700">
+                            {order.order_number}
+                          </td>
+                          <td className="py-2 text-gray-700">
+                            {order.plan_name.toUpperCase()}
+                          </td>
+                          <td className="py-2 text-gray-700">
+                            {order.created_at}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -131,7 +131,7 @@ const SidebarMenu: React.FC<{
       </li>
       {/* <li>
         <Link
-          href="/app/company-profile"
+          href="/app/settings/company-profile"
           onClick={() => setIsExpanded(false)}
           className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
         >
@@ -165,7 +165,7 @@ const SidebarMenu: React.FC<{
             <ul className="pl-8">
               <li>
                 <Link
-                  href="/app/my-profile"
+                  href="/app/settings/my-profile"
                   onClick={() => setIsExpanded(false)}
                   className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                 >
@@ -176,7 +176,7 @@ const SidebarMenu: React.FC<{
               </li>
               <li>
                 <Link
-                  href="/app/company-profile"
+                  href="/app/settings/company-profile"
                   onClick={() => setIsExpanded(false)}
                   className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                 >
@@ -187,7 +187,7 @@ const SidebarMenu: React.FC<{
               </li>
               <li>
                 <Link
-                  href="/app/billing"
+                  href="/app/settings/billing"
                   onClick={() => setIsExpanded(false)}
                   className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                 >
@@ -198,7 +198,7 @@ const SidebarMenu: React.FC<{
               </li>
               <li>
                 <Link
-                  href="/app/plans"
+                  href="/app/settings/plans"
                   onClick={() => setIsExpanded(false)}
                   className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
                 >

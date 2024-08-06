@@ -72,7 +72,7 @@ const Plans = () => {
       router.replace(`/app/membership`);
     } else if (status === "cancel") {
       invokeToast("error", "Subscription cancelled.", "top");
-      router.replace("/app/plans");
+      router.replace("/app/settings/plans");
     }
   }, [searchParams, router, userInfo]);
 
