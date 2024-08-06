@@ -134,9 +134,9 @@ export default function CreateProfile() {
 
       setOrgInfo({
         id: orgData.id,
-        name: orgData.company_name,
+        name: orgData.name,
         website: orgData.website,
-        overview: orgData.company_overview,
+        overview: orgData.overview,
         products: orgData.products,
         creatorID: userData.id,
       });
