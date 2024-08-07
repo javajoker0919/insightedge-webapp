@@ -4,6 +4,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { userInfoAtom } from "@/utils/atoms";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
+import Loading from "@/app/components/Loading";
 
 interface CreditLog {
   created_at: string;
@@ -22,7 +23,8 @@ const mockCreditLogs: CreditLog[] = Array.from({ length: 20 }, (_, index) => ({
 }));
 
 const Usage = () => {
-  const [creditLogs, setCreditLogs] = useState<CreditLog[]>(mockCreditLogs);
+  const [creditLogs, setCreditLogs] = useState<CreditLog[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const userInfo = useAtomValue(userInfoAtom);
 
   useEffect(() => {
@@ -39,34 +41,43 @@ const Usage = () => {
       } else {
         setCreditLogs(data as CreditLog[]);
       }
+      setIsLoading(false);
     };
 
-    // fetchCreditLogs();
+    fetchCreditLogs();
   }, [userInfo]);
 
   return (
     <div className="container max-w-4xl mx-auto p-8">
       <h1 className="text-2xl font-bold mb-4">Usage</h1>
-      <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg text-center">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="py-2 px-4 border-b">Action</th>
-            <th className="py-2 px-4 border-b">Count</th>
-            <th className="py-2 px-4 border-b">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {creditLogs.map((log) => (
-            <tr key={log.created_at} className="hover:bg-gray-50">
-              <td className="py-2 px-4 border-b">{log.action}</td>
-              <td className="py-2 px-4 border-b">{log.count}</td>
-              <td className="py-2 px-4 border-b">
-                {format(new Date(log.created_at), "PPpp")}
-              </td>
+      {isLoading ? (
+        <div className="flex justify-center m-auto items-center">
+          <Loading />
+        </div>
+      ) : creditLogs.length > 0 ? (
+        <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg text-center">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="py-2 px-4 border-b">Action</th>
+              <th className="py-2 px-4 border-b">Count</th>
+              <th className="py-2 px-4 border-b">Date</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {creditLogs.map((log, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="py-2 px-4 border-b">{log.action}</td>
+                <td className="py-2 px-4 border-b">{log.count}</td>
+                <td className="py-2 px-4 border-b">
+                  {format(new Date(log.created_at), "PPpp")}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-center text-gray-500">There is no usage.</p>
+      )}
     </div>
   );
 };
