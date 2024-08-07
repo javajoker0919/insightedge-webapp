@@ -69,10 +69,17 @@ const customerPortal = async () => {
   return response.data;
 };
 
+const cancelSubscription = async () => {
+  const apiClient = await createApiClient();
+  const response = await apiClient.post("/api/v1/cancel-subscription");
+  return response.data;
+};
+
 export {
   generateTailoredOpportunitiesAPI,
   generateTailoredSummaryAPI,
   createCheckoutSession,
   createCustomer,
   customerPortal,
+  cancelSubscription,
 };

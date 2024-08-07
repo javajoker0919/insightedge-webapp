@@ -12,16 +12,6 @@ interface CreditLog {
   action: string;
 }
 
-const mockCreditLogs: CreditLog[] = Array.from({ length: 20 }, (_, index) => ({
-  created_at: new Date().toISOString(),
-  // count: Math.floor(Math.random() * 100),
-  count: 1,
-  action:
-    Math.floor(Math.random() * 100) % 2 === 0
-      ? "generate opportunities"
-      : "generate summary",
-}));
-
 const Usage = () => {
   const [creditLogs, setCreditLogs] = useState<CreditLog[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
