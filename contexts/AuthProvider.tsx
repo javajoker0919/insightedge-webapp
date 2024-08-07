@@ -19,9 +19,9 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/sign-up",
     "/auth/forgot-password",
     "/auth/verify-email",
-    "onboarding/user-info",
-    "onboarding/company-profile",
-    "onboarding/user-awareness"
+    "/onboarding/user-info",
+    "/onboarding/company-profile",
+    "/onboarding/user-awareness"
   ];
   const landingPath = "/";
 
