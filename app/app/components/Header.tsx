@@ -141,17 +141,12 @@ const Header: React.FC = () => {
         <div className="flex items-center space-x-4">
           <button
             onClick={() => {
-              router.push("/app/settings/billing");
+              router.push("/app/settings/usage");
             }}
             className="relative"
           >
-            <MdOutlineToken className="w-8 h-8" />
-            <span
-              onClick={() => {
-                router.push("/app/settings/billing");
-              }}
-              className="h-5 w-5 flex absolute top-0 right-0 items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-700 transition-colors duration-200 text-xs"
-            >
+            <img src="/token.png" className="w-9 h-9" />
+            <span className="h-5 w-5 flex absolute top-0 right-0 items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-700 transition-colors duration-200 text-xs">
               {userInfo?.creditCount}
             </span>
           </button>
