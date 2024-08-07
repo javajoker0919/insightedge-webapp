@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { IoCheckmarkCircleOutline, IoCloseOutline } from "react-icons/io5";
-import { createCheckoutSession, customerPortal } from "@/utils/apiClient";
+import { cancelSubscription, createCheckoutSession } from "@/utils/apiClient";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { toast } from "react-toastify";
 
 import { useToastContext } from "@/contexts/toastContext";
-import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
+import { userInfoAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 
 const Plans = () => {
@@ -15,9 +15,11 @@ const Plans = () => {
   const searchParams = useSearchParams();
   const { invokeToast } = useToastContext();
   const userInfo = useAtomValue(userInfoAtom);
-  const watchlist = useAtomValue(watchlistAtom);
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isFreePlanLoading, setIsFreePlanLoading] = useState<boolean>(false);
+  const [isStandardPlanLoading, setIsStandardPlanLoading] =
+    useState<boolean>(false);
 
   const features_1: string[] = [
     "General AI insights",
@@ -76,20 +78,30 @@ const Plans = () => {
     }
   }, [searchParams, router, userInfo]);
 
-  if (isLoading) {
-    return (
-      <div className="m-auto">
-        <span className="ml-2 inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary-500" />
-      </div>
-    );
-  }
-
   const handleChoosePlan = async (plan: string): Promise<void> => {
     if (!userInfo) return;
 
     if (plan === "free") {
+      setIsFreePlanLoading(true);
+      try {
+        const response = await cancelSubscription();
+        console.log(response);
+        if (response.cancelation_dates) {
+          response.cancelation_dates.forEach((date: number) => {
+            const formattedDate = new Date(date * 1000).toLocaleDateString();
+            toast.success(`Subscription set to cancel on ${formattedDate}.`);
+          });
+        } else {
+          toast.error("Failed to cancel subscriptions. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error cancelling subscription:", error);
+        toast.error("Failed to cancel subscription. Please try again.");
+      } finally {
+        setIsFreePlanLoading(false);
+      }
     } else {
-      setIsLoading(true);
+      setIsStandardPlanLoading(true);
       try {
         const response = await createCheckoutSession(plan);
         router.push(response.url);
@@ -97,7 +109,7 @@ const Plans = () => {
         console.error("Error creating checkout session:", error);
         toast.error("Failed to create checkout session. Please try again.");
       } finally {
-        setIsLoading(false);
+        setIsStandardPlanLoading(false);
       }
     }
   };
@@ -140,9 +152,11 @@ const Plans = () => {
             <button
               className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-opacity-65 rounded-md text-white disabled:cursor-not-allowed`}
               onClick={() => handleChoosePlan("free")}
-              disabled={isLoading || currentPlan === "free"}
+              disabled={
+                isLoading || isFreePlanLoading || currentPlan === "free"
+              }
             >
-              {isLoading ? (
+              {isLoading || isFreePlanLoading ? (
                 <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
               ) : currentPlan === "free" ? (
                 "Current Plan"
@@ -187,9 +201,11 @@ const Plans = () => {
             <button
               className={`w-full py-2 px-4 border border-gray-300 bg-primary-500 disabled:bg-opacity-65 rounded-md text-white disabled:cursor-not-allowed`}
               onClick={() => handleChoosePlan("standard")}
-              disabled={isLoading || currentPlan === "standard"}
+              disabled={
+                isLoading || isStandardPlanLoading || currentPlan === "standard"
+              }
             >
-              {isLoading ? (
+              {isLoading || isStandardPlanLoading ? (
                 <span className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
               ) : currentPlan == "standard" ? (
                 "Current Plan"

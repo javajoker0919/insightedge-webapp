@@ -7,9 +7,9 @@ const MyProfile = () => {
   const userInfo = useAtomValue(userInfoAtom);
 
   return (
-    <div className="m-auto p-10 max-w-lg bg-white">
+    <div className="m-auto p-10 w-[60rem] bg-white">
       <h1 className="text-2xl font-bold mb-10 text-center">My Profile</h1>
-      <div className="text-lg space-y-8 min-w-96">
+      <div className="text-lg space-y-8">
         <div>
           <strong>Email:</strong>
           <div className="p-2 border bg-gray-50 mt-1 rounded">
