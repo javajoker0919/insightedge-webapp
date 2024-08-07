@@ -70,7 +70,7 @@ const Sidebar = () => {
           <Link
             href="/app/settings/usage"
             className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
-              activeItem === "plans" ? "bg-primary-50 text-primary-500" : ""
+              activeItem === "usage" ? "bg-primary-50 text-primary-500" : ""
             }`}
           >
             <FaChartBar className="mr-2" />
