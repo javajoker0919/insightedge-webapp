@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { userInfoAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 import { FaArrowRight } from "react-icons/fa";
+import Loading from "@/app/components/Loading";
 
 const Membership: React.FC = () => {
   const router = useRouter();
@@ -94,7 +95,7 @@ const Membership: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center m-auto items-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-900"></div>
+        <Loading />
       </div>
     );
   }
