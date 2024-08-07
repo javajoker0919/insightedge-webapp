@@ -60,7 +60,7 @@ const OpportunitiesTable: React.FC<{
                   {opp.opportunityName}
                 </td>
                 <td className="px-4 py-3 border border-gray-300">
-                  {opp.companyName}
+                  {opp.opportunityName}
                 </td>
                 <td className="px-4 py-3 border border-gray-300">
                   <span
