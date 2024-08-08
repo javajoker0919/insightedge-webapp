@@ -55,7 +55,7 @@ const Sidebar = () => {
             Billing
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link
             href="/app/settings/plans"
             className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
@@ -65,7 +65,7 @@ const Sidebar = () => {
             <FaListAlt className="mr-2" />
             Plans
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link
             href="/app/settings/usage"

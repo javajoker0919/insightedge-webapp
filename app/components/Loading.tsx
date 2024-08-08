@@ -1,6 +1,20 @@
-const Loading = () => {
+const Loading = ({
+  size = 10,
+  color = "primary",
+}: {
+  size?: number;
+  color?: "white" | "primary" | "gray";
+}) => {
+  const colorClasses = {
+    white: "border-white",
+    primary: "border-primary-500",
+    gray: "border-gray-500",
+  };
+
   return (
-    <span className="ml-2 inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary-500" />
+    <span
+      className={`ml-2 inline-block animate-spin rounded-full h-${size} w-${size} border-t-2 border-b-2 ${colorClasses[color]}`}
+    />
   );
 };
 
