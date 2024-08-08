@@ -49,9 +49,9 @@ const generateTailoredSummaryAPI = (params: {
   quarter: number;
 }) => generateTailoredAPI("summary", params);
 
-const createCheckoutSession = async (plan: string) => {
+const updatePlan = async (plan: string) => {
   const apiClient = await createApiClient();
-  const response = await apiClient.post("/api/v1/create-checkout-session", {
+  const response = await apiClient.post("/api/v1/update-plan", {
     plan,
   });
   return response.data;
@@ -75,11 +75,18 @@ const cancelSubscription = async () => {
   return response.data;
 };
 
+const stopCancelSubscription = async () => {
+  const apiClient = await createApiClient();
+  const response = await apiClient.post("/api/v1/stop-cancel-subscription");
+  return response.data;
+};
+
 export {
   generateTailoredOpportunitiesAPI,
   generateTailoredSummaryAPI,
-  createCheckoutSession,
+  updatePlan,
   createCustomer,
   customerPortal,
   cancelSubscription,
+  stopCancelSubscription,
 };

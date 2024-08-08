@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { IoCheckmarkCircleOutline, IoCloseOutline } from "react-icons/io5";
-import { cancelSubscription, createCheckoutSession } from "@/utils/apiClient";
+import { cancelSubscription, updatePlan } from "@/utils/apiClient";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { toast } from "react-toastify";
@@ -103,7 +103,7 @@ const Plans = () => {
     } else {
       setIsStandardPlanLoading(true);
       try {
-        const response = await createCheckoutSession(plan);
+        const response = await updatePlan(plan);
         router.push(response.url);
       } catch (error) {
         console.error("Error creating checkout session:", error);

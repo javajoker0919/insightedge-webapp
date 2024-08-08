@@ -143,9 +143,9 @@ const Header: React.FC = () => {
             onClick={() => {
               router.push("/app/settings/usage");
             }}
-            className="relative"
+            className="relative rounded-full hover:bg-gray-200 bg-gray-100 p-1"
           >
-            <img src="/token.png" className="w-9 h-9" />
+            <img src="/token.png" className="w-8 h-8" />
             <span className="h-5 w-5 flex absolute top-0 right-0 items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-700 transition-colors duration-200 text-xs">
               {userInfo?.creditCount}
             </span>
