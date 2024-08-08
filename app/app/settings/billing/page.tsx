@@ -19,9 +19,14 @@ import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { useToastContext } from "@/contexts/toastContext";
 
 interface OrderHistory {
-  order_number: number;
-  plan_name: string;
   created_at: string;
+  plan_id: string;
+  description: string;
+}
+
+interface Plan {
+  id: string;
+  name: string;
 }
 
 const Membership: React.FC = () => {
@@ -32,7 +37,6 @@ const Membership: React.FC = () => {
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [orderHistory, setOrderHistory] = useState<OrderHistory[]>([]);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [isUpgradeLoading, setIsUpgradeLoading] = useState<boolean>(false);
   const [isCancelLoading, setIsCancelLoading] = useState<boolean>(false);
@@ -40,6 +44,8 @@ const Membership: React.FC = () => {
     useState<boolean>(false);
   const [isCheckLoading, setIsCheckLoading] = useState<boolean>(false);
   const { invokeToast } = useToastContext();
+  const [planTrackings, setPlanTrackings] = useState<OrderHistory[]>([]);
+  const [plans, setPlans] = useState<Plan[]>([]);
 
   const freePlanItems = [
     "General AI insights",
@@ -54,6 +60,10 @@ const Membership: React.FC = () => {
   ];
 
   useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  useEffect(() => {
     if (status === "success") {
       invokeToast("success", "Subscription has been successful", "top");
       router.push("/app/settings/billing");
@@ -66,6 +76,19 @@ const Membership: React.FC = () => {
   useEffect(() => {
     fetchCurrentPlan();
   }, [userInfo]);
+
+  const fetchPlans = async () => {
+    const { data: plans, error: plansError } = await supabase
+      .from("plans")
+      .select("id, name");
+
+    if (plansError) {
+      console.error("Error fetching plans:", plansError);
+      return;
+    }
+
+    setPlans(plans);
+  };
 
   const fetchCurrentPlan = async () => {
     if (userInfo) {
@@ -97,28 +120,28 @@ const Membership: React.FC = () => {
         setCurrentPlan(plan.name);
         setCurrentPrice(plan.price);
         setEndDate(userPlans[0].end_date);
-
-        const history = await Promise.all(
-          userPlans.map(async (userPlan, index) => {
-            const { data: planData } = await supabase
-              .from("plans")
-              .select("name")
-              .eq("id", userPlan.plan_id)
-              .single();
-
-            return {
-              order_number: userPlans.length - index,
-              plan_name: planData?.name || "Unknown",
-              created_at: format(new Date(userPlan.created_at), "yyyy-MM-dd"),
-            };
-          })
-        );
-
-        setOrderHistory(history);
       }
+
+      const { data: planTrackings, error: planTrackingsError } = await supabase
+        .from("user_plan_trackings")
+        .select("created_at, plan_id, description")
+        .eq("user_id", userInfo.id)
+        .order("created_at", { ascending: false });
+
+      if (planTrackingsError) {
+        console.error("Error fetching plan trackings:", planTrackingsError);
+        return;
+      }
+
+      setPlanTrackings(planTrackings);
 
       setIsLoading(false);
     }
+  };
+
+  const getPlanName = (planId: string) => {
+    const plan = plans.find((plan) => plan.id === planId);
+    return plan ? plan.name : "Unknown Plan";
   };
 
   const handleUpgradePlan = async () => {
@@ -191,8 +214,8 @@ const Membership: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-full flex justify-center">
-      <div className="px-4 max-w-2xl w-full py-8 pb-20">
+    <div className="w-full h-full flex justify-center overflow-auto">
+      <div className="px-4 max-w-2xl w-full py-8 h-fit">
         <div className="flex items-end justify-between mb-10">
           <div className="text-3xl">Subscription Details</div>
 
@@ -204,7 +227,7 @@ const Membership: React.FC = () => {
         </div>
 
         <div className="overflow-hidden rounded-lg mb-20">
-          <div className="flex flex-col bg-gray-500 border bg-opacity-10 w-full mb-12 justify-center rounded-lg">
+          <div className="flex flex-col bg-gray-500 border bg-opacity-10 w-full mb-6 justify-center rounded-lg">
             <p className="text-gray-700 text-xl text-center w-full p-6 bg-gray-300">
               {`You are on `}
               <span className="px-2 py-1 rounded-md font-medium text-primary-600">
@@ -272,7 +295,7 @@ const Membership: React.FC = () => {
             </div>
           )}
 
-          <div className="flex w-full justify-center gap-4 items-center mt-8">
+          <div className="flex w-full justify-center gap-4 items-center mt-4">
             {currentPlan === "free" ? (
               <button
                 onClick={handleUpgradePlan}
@@ -331,6 +354,42 @@ const Membership: React.FC = () => {
                     </div>
                   )}
                 </button>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-4">
+            <h2 className="text-2xl mb-4 text-gray-600">History</h2>
+            {planTrackings.length > 0 ? (
+              <div className="max-h-52 border overflow-y-auto">
+                <table className="min-w-full bg-white">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="py-2 px-4 border-b">Date</th>
+                      <th className="py-2 px-4 border-b">Plan Name</th>
+                      <th className="py-2 px-4 border-b">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {planTrackings.map((tracking, index) => (
+                      <tr key={index} className="text-center even:bg-gray-50">
+                        <td className="py-2 px-4 border-b">
+                          {format(new Date(tracking.created_at), "yyyy-MM-dd")}
+                        </td>
+                        <td className="py-2 px-4 border-b">
+                          {getPlanName(tracking.plan_id)}
+                        </td>
+                        <td className="py-2 px-4 border-b">
+                          {tracking.description}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="text-center text-gray-500">
+                No history data available
               </div>
             )}
           </div>
