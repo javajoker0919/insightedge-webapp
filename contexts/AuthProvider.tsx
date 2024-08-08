@@ -14,7 +14,15 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const userInfo = useAtomValue(userInfoAtom);
 
   // Define paths that don't require authentication
-  const authPaths = ["/auth/sign-in", "/auth/sign-up", "/auth/forgot-password"];
+  const authPaths = [
+    "/auth/sign-in",
+    "/auth/sign-up",
+    "/auth/forgot-password",
+    "/auth/verify-email",
+    "/onboarding/user-info",
+    "/onboarding/company-profile",
+    "/onboarding/user-awareness"
+  ];
   const landingPath = "/";
 
   useEffect(() => {
@@ -23,7 +31,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
       try {
         // Retrieve the current session from Supabase
         const {
-          data: { session },
+          data: { session }
         } = await supabase.auth.getSession();
 
         if (session?.user) {
@@ -31,15 +39,15 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
           setUserMetadata(session.user.user_metadata);
 
           // Check if onboardingStatus is true and redirect if necessary
-          if (userInfo) {
-            if (
-              !userInfo.onboardingStatus &&
-              !authPaths.includes(pathname) &&
-              pathname !== landingPath
-            ) {
-              router.push("/auth/create-profile");
-            }
-          }
+          // if (userInfo) {
+          //   if (
+          //     !userInfo.onboardingStatus &&
+          //     !authPaths.includes(pathname) &&
+          //     pathname !== landingPath
+          //   ) {
+          //     router.push("/auth/create-profile");
+          //   }
+          // }
         } else {
           // Clear user metadata if no valid session
           setUserMetadata(null);

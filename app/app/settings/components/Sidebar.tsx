@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaUser, FaBuilding, FaCreditCard, FaListAlt } from "react-icons/fa";
+import {
+  FaUser,
+  FaBuilding,
+  FaCreditCard,
+  FaListAlt,
+  FaChartBar,
+} from "react-icons/fa";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -49,7 +55,7 @@ const Sidebar = () => {
             Billing
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link
             href="/app/settings/plans"
             className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
@@ -58,6 +64,17 @@ const Sidebar = () => {
           >
             <FaListAlt className="mr-2" />
             Plans
+          </Link>
+        </li> */}
+        <li>
+          <Link
+            href="/app/settings/usage"
+            className={`text-lg text-gray-700 hover:bg-primary-50 flex items-center p-2 rounded-md bg-opacity-50 min-w-60 ${
+              activeItem === "usage" ? "bg-primary-50 text-primary-500" : ""
+            }`}
+          >
+            <FaChartBar className="mr-2" />
+            Usage
           </Link>
         </li>
       </ul>

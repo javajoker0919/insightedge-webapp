@@ -350,8 +350,9 @@ export default function WatchlistPage() {
                 {watchlistCompanies?.length > 0 && (
                   <>
                     <OpportunitiesSection
-                      companyID={30321} // watchlistCompanies[0].id}
-                      watchlistName={watchlistName}
+                      companyID={34855} // watchlistCompanies[0].id}
+                      // watchlistName={watchlistName}
+                      companyName="Amazon"
                       year={2024}
                       quarter={1}
                     />
