@@ -299,7 +299,7 @@ const Membership: React.FC = () => {
             {currentPlan === "free" ? (
               <button
                 onClick={handleUpgradePlan}
-                className="bg-primary-500 w-32 hover:bg-primary-600 text-white py-2 px-4 rounded"
+                className="bg-primary-500 w-36 hover:bg-primary-600 text-white py-2 px-4 rounded"
                 disabled={isUpgradeLoading}
               >
                 {isUpgradeLoading ? (
