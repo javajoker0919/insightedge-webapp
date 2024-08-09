@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { FaLightbulb } from "react-icons/fa";
 import { coloredChannelList, marketingStrategy } from "../Constants";
-import { MarketingProps } from "./MarketingSection";
+import { MarketingProps } from "./MarketingStrategySection";
 
 interface MSTableCompProps {
   companyName: string;

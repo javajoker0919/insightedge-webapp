@@ -28,7 +28,7 @@ export interface MarketingProps {
   alignmentWithCompanyGoals: string[];
 }
 
-const MarketingSection: React.FC<MarketingCompProps> = ({
+const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   companyID,
   companyName,
 }) => {
@@ -170,4 +170,4 @@ const LoadingSection: React.FC = () => {
   );
 };
 
-export default MarketingSection;
+export default MarketingStrategySection;
