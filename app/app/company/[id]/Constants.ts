@@ -358,137 +358,75 @@ export const tailoredOpportunities_v2 = [
 
 export const marketingStrategy = [
   {
-    marketingTactic: "Thought Leadership Webinars on Healthcare Innovation",
+    tactic: "Thought Leadership Webinars on Healthcare Innovation",
     tacticScore: 95,
-    tacticType: "Inbound",
-    relevantAudience:
+    targetPersonas:
       "Chief Innovation Officer, Vice President of Product Development, Director of Innovation Strategy, Senior Scientist, Chief Medical Officer, Executive Vice President of Innovative Medicine",
-    channels: ["Digital Webinars", "LinkedIn"],
-    tacticalDetails: {
-      description:
-        "Host webinars featuring industry experts discussing the future of healthcare innovation, aligning with J&J's focus on leading the next wave of healthcare innovation.",
-      keyMessages: [
-        "Cutting-edge advancements in medical technology and pharmaceuticals",
-        "Strategies for maintaining market leadership through innovation",
-      ],
-      callToAction:
-        "Register for our exclusive healthcare innovation webinar series",
-      expectedROI: "High engagement from J&J's R&D and innovation teams",
-      implementationTimeframe: "Quarterly webinars",
-      requiredResources: [
-        "Industry expert speakers",
-        "Webinar platform",
-        "Content marketing team",
-      ],
-      successMetrics: [
-        "Number of J&J attendees",
-        "Engagement rate",
-        "Follow-up meetings scheduled",
-      ],
-    },
-    alignmentWithCompanyGoals: [
+    channel: "Digital Webinars, LinkedIn",
+    valueProposition:
+      "Host webinars featuring industry experts discussing the future of healthcare innovation, aligning with J&J's focus on leading the next wave of healthcare innovation.",
+    keyPerformanceIndicators: [
+      "Number of J&J attendees",
+      "Engagement rate",
+      "Follow-up meetings scheduled",
+    ],
+    strategicAlignment:
       "Support J&J's position as a leader in healthcare innovation",
-      "Address J&J's focus on advancing their differentiated portfolio",
-    ],
+    callToAction:
+      "Register for our exclusive healthcare innovation webinar series",
   },
   {
-    marketingTactic: "Personalized Email Campaign on Cardiovascular Solutions",
+    tactic: "Personalized Email Campaign on Cardiovascular Solutions",
     tacticScore: 90,
-    tacticType: "Outbound",
-    relevantAudience:
+    targetPersonas:
       "Executive Vice President of MedTech, Director of Cardiovascular Products, Chief Technology Officer, Vice President of R&D, Product Manager of Electrophysiology",
-    channels: ["Email Marketing", "LinkedIn"],
-    tacticalDetails: {
-      description:
-        "Develop a highly personalized email campaign showcasing innovative cardiovascular solutions, targeting J&J's growing focus on this area.",
-      keyMessages: [
-        "Cutting-edge technologies in electrophysiology and heart recovery",
-        "Solutions to complement J&J's recent acquisitions like Shockwave",
-      ],
-      callToAction:
-        "Schedule a personalized demo of our cardiovascular solutions",
-      expectedROI: "High-value leads from J&J's cardiovascular division",
-      implementationTimeframe: "Monthly emails over 6 months",
-      requiredResources: [
-        "Email marketing platform",
-        "Content writers",
-        "Design team",
-      ],
-      successMetrics: ["Open rates", "Click-through rates", "Demo requests"],
-    },
-    alignmentWithCompanyGoals: [
+    channel: "Email Marketing, LinkedIn",
+    valueProposition:
+      "Develop a highly personalized email campaign showcasing innovative cardiovascular solutions, targeting J&J's growing focus on this area.",
+    keyPerformanceIndicators: [
+      "Open rates",
+      "Click-through rates",
+      "Demo requests",
+    ],
+    strategicAlignment:
       "Support J&J's expansion in high-growth cardiovascular markets",
-      "Complement J&J's recent acquisitions in the cardiovascular space",
-    ],
+    callToAction:
+      "Schedule a personalized demo of our cardiovascular solutions",
   },
   {
-    marketingTactic: "Targeted LinkedIn Advertising for Orthopedic Innovations",
+    tactic: "Targeted LinkedIn Advertising for Orthopedic Innovations",
     tacticScore: 85,
-    tacticType: "Inbound",
-    relevantAudience:
+    targetPersonas:
       "Vice President of Orthopedics, Orthopedic Product Manager, Director of R&D, Chief Medical Officer, Surgeon Relations Manager",
-    channels: ["LinkedIn"],
-    tacticalDetails: {
-      description:
-        "Create targeted LinkedIn ad campaigns showcasing orthopedic innovations, particularly in robotics and navigation systems.",
-      keyMessages: [
-        "Advanced robotic solutions for orthopedic procedures",
-        "Innovative navigation systems for improved surgical precision",
-      ],
-      callToAction:
-        "Download our white paper on the future of orthopedic robotics",
-      expectedROI:
-        "Increased awareness and leads from J&J's orthopedics division",
-      implementationTimeframe: "Ongoing campaign with monthly optimization",
-      requiredResources: [
-        "LinkedIn advertising budget",
-        "Ad creative team",
-        "White paper authors",
-      ],
-      successMetrics: [
-        "Ad impressions",
-        "Click-through rates",
-        "White paper downloads",
-      ],
-    },
-    alignmentWithCompanyGoals: [
-      "Support J&J's focus on innovation-driven growth in orthopedics",
-      "Complement J&J's expansion of VELYS robotic system",
+    channel: "LinkedIn",
+    valueProposition:
+      "Create targeted LinkedIn ad campaigns showcasing orthopedic innovations, particularly in robotics and navigation systems.",
+    keyPerformanceIndicators: [
+      "Ad impressions",
+      "Click-through rates",
+      "White paper downloads",
     ],
+    strategicAlignment:
+      "Support J&J's focus on innovation-driven growth in orthopedics",
+    callToAction:
+      "Download our white paper on the future of orthopedic robotics",
   },
   {
-    marketingTactic: "Sponsored Content in Pharma Industry Publications",
+    tactic: "Sponsored Content in Pharma Industry Publications",
     tacticScore: 80,
-    tacticType: "Inbound",
-    relevantAudience:
+    targetPersonas:
       "Chief Executive Officer, Executive Vice President of Innovative Medicine, Chief Scientific Officer, Vice President of Clinical Development, Director of Regulatory Affairs",
-    channels: ["Industry-specific publications", "Industry Publications"],
-    tacticalDetails: {
-      description:
-        "Develop sponsored content for leading pharmaceutical industry publications, focusing on innovative approaches to drug development and commercialization.",
-      keyMessages: [
-        "Cutting-edge technologies in drug discovery and development",
-        "Strategies for successful commercialization of innovative medicines",
-      ],
-      callToAction:
-        "Contact us to learn more about our pharma innovation solutions",
-      expectedROI: "Increased brand awareness among J&J's top executives",
-      implementationTimeframe: "Quarterly articles",
-      requiredResources: [
-        "Content writers",
-        "Industry publication partnerships",
-        "Subject matter experts",
-      ],
-      successMetrics: [
-        "Article views",
-        "Engagement rates",
-        "Inquiries from J&J executives",
-      ],
-    },
-    alignmentWithCompanyGoals: [
-      "Support J&J's focus on innovative medicine",
-      "Address J&J's goal of sustained growth through 2025 and beyond",
+    channel: "Industry-specific publications, Industry Publications",
+    valueProposition:
+      "Develop sponsored content for leading pharmaceutical industry publications, focusing on innovative approaches to drug development and commercialization.",
+    keyPerformanceIndicators: [
+      "Article views",
+      "Engagement rates",
+      "Inquiries from J&J executives",
     ],
+    strategicAlignment: "Support J&J's focus on innovative medicine",
+    callToAction:
+      "Contact us to learn more about our pharma innovation solutions",
   },
 ];
 

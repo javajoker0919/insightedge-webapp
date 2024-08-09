@@ -1,32 +1,34 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { FaLightbulb } from "react-icons/fa";
 import { coloredChannelList, marketingStrategy } from "../Constants";
 import { MarketingProps } from "./MarketingStrategySection";
 
 interface MSTableCompProps {
-  companyName: string;
   strategies: MarketingProps[];
   onQuickAction: (opp: MarketingProps) => void;
 }
 
 const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
-  companyName,
   strategies,
   onQuickAction,
 }) => {
+  useEffect(() => {
+    console.log(strategies);
+  }, [strategies]);
+
   const strats = strategies.length > 0 ? strategies : marketingStrategy;
 
   const TableHeadingRow = useCallback(
     () => (
       <tr className="bg-gray-200 text-black">
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-4/12">
-          Marketing Tactic
+          Tactic
         </th>
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-10">
-          Score
+          Tactic Score
         </th>
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 ">
-          Audience
+          Target Personas
         </th>
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-2/12">
           Channels
@@ -48,7 +50,6 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
           </thead>
           <tbody className="text-center relative">
             {strats.map((strgy, index) => {
-              const audience = strgy.relevantAudience.split(", ");
               return (
                 <tr
                   key={`market-strategy-${index}`}
@@ -57,14 +58,14 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                   }`}
                 >
                   <td className="px-4 py-3 border text-left border-gray-300">
-                    {strgy.marketingTactic}
+                    {strgy.tactic}
                   </td>
                   <td className="px-4 py-3 border border-gray-300">
                     <span
                       className={`inline-block px-2 py-1 rounded-full text-sm font-medium ${
-                        strgy.tacticScore >= 90
+                        Number(strgy.tacticScore) >= 90
                           ? "bg-green-100 text-green-800"
-                          : strgy.tacticScore >= 70
+                          : Number(strgy.tacticScore) >= 70
                           ? "bg-yellow-100 text-yellow-800"
                           : "bg-red-100 text-red-800"
                       }`}
@@ -73,17 +74,20 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                     </span>
                   </td>
                   <td className="px-4 py-3 border border-gray-300 text-left ">
-                    {audience.map((aud, indx) => (
+                    {strgy.targetPersonas.split(", ").map((aud, indx) => (
                       <span
                         key={`audience-${indx}-${aud}`}
                         className={`text-xs font-medium`}
                       >
-                        {aud + (audience?.length - 1 !== indx ? ", " : "")}
+                        {aud +
+                          (strgy.targetPersonas?.split(", ").length - 1 !== indx
+                            ? ", "
+                            : "")}
                       </span>
                     ))}
                   </td>
                   <td className="px-4 py-3 border border-gray-300">
-                    {strgy.channels.map((chnl, indx) => {
+                    {strgy.channel.split(", ").map((chnl, indx) => {
                       const coloredChnl = coloredChannelList.find((el) =>
                         el.content.includes(chnl)
                       );

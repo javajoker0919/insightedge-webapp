@@ -1,36 +1,30 @@
 import { useState, useEffect } from "react";
-import { marketingStrategy } from "../Constants";
+import { supabase } from "@/utils/supabaseClient";
 import MarketingStrategyTable from "./MarketingStrategyTable";
 import MarketingPlanModal from "./MarketingPlanModal";
+import Loading from "@/app/components/Loading";
 
 interface MarketingCompProps {
-  companyID: number;
   companyName: string;
-  year?: number | null;
-  quarter?: number | null;
+  etID: number | null;
+  isLoading: boolean;
 }
 
 export interface MarketingProps {
-  marketingTactic: string;
+  tactic: string;
   tacticScore: number;
-  tacticType: string;
-  relevantAudience: string;
-  channels: string[];
-  tacticalDetails: {
-    description: string;
-    keyMessages: string[];
-    callToAction: string;
-    expectedROI: string;
-    implementationTimeframe: string;
-    requiredResources: string[];
-    successMetrics: string[];
-  };
-  alignmentWithCompanyGoals: string[];
+  targetPersonas: string;
+  channel: string;
+  valueProposition: string;
+  keyPerformanceIndicators: string[];
+  strategicAlignment: string;
+  callToAction: string;
 }
 
 const MarketingStrategySection: React.FC<MarketingCompProps> = ({
-  companyID,
   companyName,
+  etID,
+  isLoading,
 }) => {
   const [activeTab, setActiveTab] = useState<"" | "general" | "tailored">("");
   const [selectedStrats, setSelectedStrats] = useState<MarketingProps | null>(
@@ -46,14 +40,46 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   const [isGeneralLoading, setIsGeneralLoading] = useState<boolean>(false);
   const [isTailoredLoading, setIsTailoredLoading] = useState<boolean>(false);
 
-  const generateTailoredStrategy = () => {
-    setGeneralStrats(marketingStrategy);
-    setTailoredStrats(marketingStrategy);
+  useEffect(() => {
+    if (etID) {
+      fetchMarketingStrategies(etID);
+    }
+  }, [etID]);
 
-    setActiveTab("tailored");
+  const fetchMarketingStrategies = async (etID: number) => {
+    setIsGeneralLoading(true);
+    setIsTailoredLoading(true);
 
-    setIsGeneralLoading(false);
-    setIsTailoredLoading(false);
+    try {
+      const { data, error } = await supabase
+        .from("marketing_tactic_info")
+        .select(
+          "tactic, tactic_score, target_personas, channel, value_proposition, key_performance_indicators, strategic_alignment, call_to_action"
+        )
+        .eq("earnings_transcript_id", etID);
+
+      if (error) throw error;
+
+      const strategies = data.map((item: any) => ({
+        tactic: item.tactic,
+        tacticScore: parseFloat(item.tactic_score),
+        targetPersonas: item.target_personas,
+        channel: item.channel,
+        valueProposition: item.value_proposition,
+        keyPerformanceIndicators: item.key_performance_indicators.split(","),
+        strategicAlignment: item.strategic_alignment,
+        callToAction: item.call_to_action,
+      }));
+
+      setGeneralStrats(strategies);
+      setTailoredStrats(strategies);
+      setActiveTab("general");
+    } catch (error) {
+      console.error("Error fetching marketing strategies:", error);
+    } finally {
+      setIsGeneralLoading(false);
+      setIsTailoredLoading(false);
+    }
   };
 
   const handleQuickAction = (strt: MarketingProps) => {
@@ -70,7 +96,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             </h3>
             {!Array.isArray(tailoredStrats) && (
               <button
-                onClick={generateTailoredStrategy}
+                onClick={() => setActiveTab("tailored")}
                 disabled={isTailoredLoading}
                 className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
@@ -108,52 +134,54 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
         )}
       </div>
 
-      <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
-        {activeTab === "general" &&
-          (isGeneralLoading ? (
-            <LoadingSection />
-          ) : (
-            <>
-              <div className="p-4 bg-gray-100 text-black">
-                {companyName}'s top Marketing Strategy.
-                {tailoredStrats?.length === 0 && (
-                  <span>
-                    To find the best ways to sell your solutions to{" "}
-                    {companyName}, click "Generate Tailored Marketing Strategy."
-                  </span>
+      {isLoading ? (
+        <LoadingSection />
+      ) : (
+        <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
+          {activeTab === "general" &&
+            (isGeneralLoading ? (
+              <LoadingSection />
+            ) : (
+              <>
+                <div className="p-4 bg-gray-100 text-black">
+                  {companyName}'s top Marketing Strategy.
+                  {tailoredStrats?.length === 0 && (
+                    <span>
+                      To find the best ways to sell your solutions to{" "}
+                      {companyName}, click "Generate Tailored Marketing
+                      Strategy."
+                    </span>
+                  )}
+                </div>
+                {generalStrats && (
+                  <MarketingStrategyTable
+                    strategies={generalStrats}
+                    onQuickAction={handleQuickAction}
+                  />
                 )}
-              </div>
-              {generalStrats && (
-                <MarketingStrategyTable
-                  companyName={companyName}
-                  strategies={generalStrats.sort(() => Math.random() - 0.5)}
-                  // SM_NOTE: remove this suffeling later
-                  onQuickAction={handleQuickAction}
-                />
-              )}
-            </>
-          ))}
-        {activeTab === "tailored" &&
-          (isTailoredLoading ? (
-            <LoadingSection />
-          ) : (
-            <>
-              <div className="p-4 bg-gray-100 text-black">
-                Below is your company specific marketing strategy. You can
-                explore the top marketing tactics for selling your solutions to{" "}
-                {companyName}
-              </div>
-              {tailoredStrats && (
-                <MarketingStrategyTable
-                  companyName={companyName}
-                  strategies={tailoredStrats.sort(() => Math.random() - 0.5)}
-                  // SM_NOTE: remove this suffeling later
-                  onQuickAction={handleQuickAction}
-                />
-              )}
-            </>
-          ))}
-      </div>
+              </>
+            ))}
+          {activeTab === "tailored" &&
+            (isTailoredLoading ? (
+              <LoadingSection />
+            ) : (
+              <>
+                <div className="p-4 bg-gray-100 text-black">
+                  Below is your company specific marketing strategy. You can
+                  explore the top marketing tactics for selling your solutions
+                  to {companyName}
+                </div>
+                {tailoredStrats && (
+                  <MarketingStrategyTable
+                    strategies={tailoredStrats}
+                    onQuickAction={handleQuickAction}
+                  />
+                )}
+              </>
+            ))}
+        </div>
+      )}
+
       <MarketingPlanModal
         open={!!selectedStrats}
         onClose={() => setSelectedStrats(null)}
@@ -165,7 +193,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 const LoadingSection: React.FC = () => {
   return (
     <div className="flex justify-center items-center h-44">
-      <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
+      <Loading />
     </div>
   );
 };

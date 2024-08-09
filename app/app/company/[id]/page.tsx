@@ -54,9 +54,11 @@ const CompanyDetailPage: React.FC = () => {
   const [yearQuarters, setYearQuarters] = useState<YearQuarter[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedQuarter, setSelectedQuarter] = useState<number | null>(null);
+  const [selectedETID, setSelectedETID] = useState<number | null>(null);
   const [isLoadingCompany, setIsLoadingCompany] = useState<boolean>(true);
   const [isLoadingYearQuarters, setIsLoadingYearQuarters] =
     useState<boolean>(true);
+  const [isFetchingETID, setIsFetchingETID] = useState<boolean>(true);
   const [isLoadingNews, setIsLoadingNews] = useState<boolean>(true);
   const watchlist = useAtomValue(watchlistAtom);
 
@@ -119,6 +121,36 @@ const CompanyDetailPage: React.FC = () => {
     fetchYearQuarters();
   }, [companyId]);
 
+  useEffect(() => {
+    if (!(!!companyId && !!selectedYear && !!selectedQuarter)) {
+      return;
+    }
+
+    const fetchETID = async () => {
+      setIsFetchingETID(true);
+
+      try {
+        const { data: yearQuarterData, error: yearQuarterError } =
+          await supabase
+            .from("earnings_transcripts")
+            .select("id")
+            .eq("company_id", companyId)
+            .eq("year", selectedYear)
+            .eq("quarter", selectedQuarter)
+            .single();
+
+        if (yearQuarterError) throw yearQuarterError;
+        setSelectedETID(yearQuarterData.id);
+      } catch (error) {
+        console.error("Error fetching earnings transcript ID:", error);
+      } finally {
+        setIsFetchingETID(false);
+      }
+    };
+
+    fetchETID();
+  }, [companyId, selectedYear, selectedQuarter]);
+
   if (isLoadingCompany) {
     return (
       <div className="flex w-full h-full items-center justify-center bg-gray-100">
@@ -167,8 +199,9 @@ const CompanyDetailPage: React.FC = () => {
             quarter={selectedQuarter}
           />
           <MarketingStrategySection
-            companyID={parseInt(companyId)}
             companyName={companyData.name}
+            etID={selectedETID}
+            isLoading={isFetchingETID}
           />
           <IncomeStatementSection />
           <RecentNewsSection newsItems={newsItems} isLoading={isLoadingNews} />
