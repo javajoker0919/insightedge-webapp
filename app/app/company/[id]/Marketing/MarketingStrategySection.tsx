@@ -67,7 +67,9 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
         targetPersonas: item.target_personas,
         channel: item.channel,
         valueProposition: item.value_proposition,
-        keyPerformanceIndicators: item.key_performance_indicators.split(","),
+        keyPerformanceIndicators: item.key_performance_indicators
+          .replace(/[\[\]"]/g, "")
+          .split(", "),
         strategicAlignment: item.strategic_alignment,
         callToAction: item.call_to_action,
       }));
@@ -195,6 +197,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       <MarketingPlanModal
         open={!!selectedStrats}
         onClose={() => setSelectedStrats(null)}
+        selectedStrats={selectedStrats}
       />
     </div>
   );
