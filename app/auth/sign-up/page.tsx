@@ -76,7 +76,7 @@ const SignUp = () => {
         email,
         password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/onboarding/user-info`
+          emailRedirectTo: `https://insightedge-webapp.vercel.app/onboarding/user-info`
         }
       });
 
