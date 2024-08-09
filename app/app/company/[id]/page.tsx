@@ -17,18 +17,14 @@ import {
 import { useAtomValue } from "jotai";
 
 import { watchlistAtom } from "@/utils/atoms";
-import OpportunitiesSection from "@/app/app/company/[id]/opportunities/OpportunitiesSection";
-import IncomeStatementSection from "@/app/app/company/[id]/IncomeStatementSection";
-import RecentNewsSection, {
-  NewsItem,
-} from "@/app/app/company/[id]/RecentNewsSection";
-import YearQuarterSelector, {
-  YearQuarter,
-} from "@/app/app/company/[id]/YearQuarterSelector";
-import SummarySection from "@/app/app/company/[id]/summary/SummarySection";
-import AboutSection from "@/app/app/company/[id]/AboutSection";
-import { FollowButton, ShareButton } from "@/app/app/company/[id]/components";
-import MarketingStrategySection from "@/app/app/company/[id]/marketing/MarketingStrategySection";
+import OpportunitiesSection from "../../../components/company/opportunities/OpportunitiesSection";
+import IncomeStatementSection from "./IncomeStatementSection";
+import RecentNewsSection, { NewsItem } from "./RecentNewsSection";
+import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
+import SummarySection from "../../../components/company/summary/SummarySection";
+import AboutSection from "./AboutSection";
+import { FollowButton, ShareButton } from "./components";
+import MarketingStrategySection from "../../../components/company/marketing/MarketingStrategySection";
 
 ChartJS.register(
   CategoryScale,

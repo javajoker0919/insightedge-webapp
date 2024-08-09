@@ -18,7 +18,7 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { PiUsersThree } from "react-icons/pi";
 
 import Modal from "@/app/components/Modal";
-import { Details } from "../components";
+import { Details } from "../../../app/company/[id]/components";
 import { IconType } from "react-icons/lib";
 
 type FormFieldProps = {

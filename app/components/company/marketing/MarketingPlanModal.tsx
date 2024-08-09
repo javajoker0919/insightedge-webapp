@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "@/app/components/Modal";
-import { Details } from "../components";
+import { Details } from "../../../app/company/[id]/components";
 
 interface MarketingPlanModalProps {
   open: boolean;

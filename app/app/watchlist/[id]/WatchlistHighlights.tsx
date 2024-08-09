@@ -10,8 +10,8 @@ import {
 } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 
-import RenderSummaryContent from "../../company/[id]/summary/RenderSummaryContent";
-import { SummaryProps } from "../../company/[id]/summary/SummarySection";
+import RenderSummaryContent from "../../../components/company/summary/RenderSummaryContent";
+import { SummaryProps } from "../../../components/company/summary/SummarySection";
 
 interface WatchlistHighlightsProps {
   watchlistName: string;
