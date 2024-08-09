@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import { marketingStrategy } from "@/app/app/company/[id]/Constants";
-import MarketingStrategyTable from "@/app/app/company/[id]/Marketing/MarketingStrategyTable";
-import MarketingPlanModal from "@/app/app/company/[id]/Marketing/MarketingPlanModal";
 
 interface MarketingCompProps {
   companyID: number;
