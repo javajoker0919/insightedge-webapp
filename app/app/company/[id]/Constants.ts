@@ -376,6 +376,23 @@ export const marketingStrategy = [
       "Register for our exclusive healthcare innovation webinar series",
   },
   {
+    tactic: "Sponsored Content in Pharma Industry Publications",
+    tacticScore: 80,
+    targetPersonas:
+      "Chief Executive Officer, Executive Vice President of Innovative Medicine, Chief Scientific Officer, Vice President of Clinical Development, Director of Regulatory Affairs",
+    channel: "Industry-specific publications, Industry Publications",
+    valueProposition:
+      "Develop sponsored content for leading pharmaceutical industry publications, focusing on innovative approaches to drug development and commercialization.",
+    keyPerformanceIndicators: [
+      "Article views",
+      "Engagement rates",
+      "Inquiries from J&J executives",
+    ],
+    strategicAlignment: "Support J&J's focus on innovative medicine",
+    callToAction:
+      "Contact us to learn more about our pharma innovation solutions",
+  },
+  {
     tactic: "Personalized Email Campaign on Cardiovascular Solutions",
     tacticScore: 90,
     targetPersonas:

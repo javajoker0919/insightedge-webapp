@@ -3,6 +3,7 @@ import { supabase } from "@/utils/supabaseClient";
 import MarketingStrategyTable from "./MarketingStrategyTable";
 import MarketingPlanModal from "./MarketingPlanModal";
 import Loading from "@/app/components/Loading";
+import { marketingStrategy } from "../Constants";
 
 interface MarketingCompProps {
   companyName: string;
@@ -26,7 +27,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   etID,
   isLoading,
 }) => {
-  const [activeTab, setActiveTab] = useState<"" | "general" | "tailored">("");
+  const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedStrats, setSelectedStrats] = useState<MarketingProps | null>(
     null
   );
@@ -72,7 +73,6 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       }));
 
       setGeneralStrats(strategies);
-      setTailoredStrats(strategies);
       setActiveTab("general");
     } catch (error) {
       console.error("Error fetching marketing strategies:", error);
@@ -82,6 +82,16 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
     }
   };
 
+  const handleGenerateTailoredStrategies = () => {
+    setIsTailoredLoading(true);
+
+    setTimeout(() => {
+      setTailoredStrats(marketingStrategy);
+      setActiveTab("tailored");
+      setIsTailoredLoading(false);
+    }, 2000);
+  };
+
   const handleQuickAction = (strt: MarketingProps) => {
     setSelectedStrats(strt);
   };
@@ -89,21 +99,21 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   return (
     <div className="bg-primary border border-gray-300 rounded-lg overflow-hidden">
       <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
-        {activeTab === "" ? (
+        {tailoredStrats === null ? (
           <div className="flex w-full justify-between items-center pr-4 py-1">
             <h3 className="px-4 py-3 font-medium text-gray-700">
               Marketing Strategy
             </h3>
             {!Array.isArray(tailoredStrats) && (
               <button
-                onClick={() => setActiveTab("tailored")}
+                onClick={handleGenerateTailoredStrategies}
                 disabled={isTailoredLoading}
                 className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
                 {isTailoredLoading ? (
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
                 ) : (
-                  "Generate Tailored Marketing Strategy"
+                  "Generate Tailored Marketing Strategies"
                 )}
               </button>
             )}
