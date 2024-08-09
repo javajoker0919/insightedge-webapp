@@ -8,8 +8,8 @@ import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTailoredOpportunitiesAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
-import { Details } from "../../../app/company/[id]/components";
-import { tailoredOpportunities_v2 } from "../../../app/company/[id]/Constants";
+import { Details } from "..";
+import { tailoredOpportunities_v2 } from "../../Constants";
 
 interface OpportunitiesProps {
   companyID: number;

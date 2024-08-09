@@ -1,4 +1,4 @@
-import { Details } from "../../../app/company/[id]/components";
+import { Details } from "..";
 import { SummaryProps } from "./SummarySection";
 
 const RenderSummaryContent = ({
