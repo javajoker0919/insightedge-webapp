@@ -19,7 +19,7 @@ import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
-import MarketingStrategySection from "../../company/[id]/Marketing/MarketingStrategySection";
+import MarketingStrategySection from "../../company/[id]/marketing/MarketingStrategySection";
 import EarningsCalendar from "./EarningsCalendar";
 import WLIncomeStatement from "./WLIncomeStatement";
 import WatchlistHighlights from "./WatchlistHighlights";
