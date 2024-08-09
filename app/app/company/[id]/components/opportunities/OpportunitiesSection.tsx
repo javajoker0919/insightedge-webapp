@@ -110,7 +110,9 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     try {
       const { data, error } = await supabase
         .from("general_opportunities")
-        .select("name, score, buyer_role, buyer_department")
+        .select(
+          "name, score, buyer_role, buyer_department, engagement_inbounds, engagement_outbounds, email_subject, email_body"
+        )
         .eq("earnings_transcript_id", etID);
 
       if (error) throw error;
@@ -123,6 +125,14 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           department: item.buyer_department,
         },
         tactics: item.tactics?.split("\n"),
+        engagementTips: {
+          inbound: item.engagement_inbounds?.split("\n") || [],
+          outbound: item.engagement_outbounds?.split("\n") || [],
+        },
+        outboundEmail: {
+          subject: item.email_subject,
+          body: item.email_body,
+        },
       }));
       setGeneralOpps(formattedData);
     } catch (error) {
@@ -148,7 +158,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         // added mock data : tailoredOpportunities_v2
         const formattedData: OpportunityProps[] = data.map(
           (item: any, indx: number) => ({
-            ...tailoredOpportunities_v2[indx % tailoredOpportunities_v2.length],
+            // ...tailoredOpportunities_v2[indx % tailoredOpportunities_v2.length],
             opportunityName: item.name,
             opportunityScore: item.score,
             keywords: item.keywords,
