@@ -47,10 +47,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   const [isTailoredLoading, setIsTailoredLoading] = useState<boolean>(false);
 
   const generateTailoredStrategy = () => {
-    setGeneralStrats(marketingStrategy);
-    setTailoredStrats(marketingStrategy);
+    // setGeneralStrats(marketingStrategy);
+    // setTailoredStrats(marketingStrategy);
 
-    setActiveTab("tailored");
+    // setActiveTab("tailored");
 
     setIsGeneralLoading(false);
     setIsTailoredLoading(false);
@@ -156,10 +156,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             </>
           ))}
       </div>
-      <MarketingPlanModal
+      {/* <MarketingPlanModal
         open={!!selectedStrats}
         onClose={() => setSelectedStrats(null)}
-      />
+      /> */}
     </div>
   );
 };
