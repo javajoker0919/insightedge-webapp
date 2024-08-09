@@ -6,7 +6,7 @@ import numeral from "numeral";
 import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 
-import { CompanyDataType } from "./page";
+import { CompanyDataType } from "../page";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import { useAtomValue } from "jotai";

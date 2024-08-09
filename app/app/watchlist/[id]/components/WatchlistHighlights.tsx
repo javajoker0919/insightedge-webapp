@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAtomValue } from "jotai";
 import { motion } from "framer-motion";
-import { CompanyDataType } from "./page";
+import { CompanyDataType } from "../page";
 import { generateTailoredSummaryAPI } from "@/utils/apiClient";
 import {
   ICompanyData,
@@ -10,8 +10,8 @@ import {
 } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 
-import RenderSummaryContent from "../../../components/company/summary/RenderSummaryContent";
-import { SummaryProps } from "../../../components/company/summary/SummarySection";
+import RenderSummaryContent from "../../../../components/company/summary/RenderSummaryContent";
+import { SummaryProps } from "../../../../components/company/summary/SummarySection";
 
 interface WatchlistHighlightsProps {
   watchlistName: string;
