@@ -12,10 +12,6 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
   strategies,
   onQuickAction,
 }) => {
-  useEffect(() => {
-    console.log(strategies);
-  }, [strategies]);
-
   const strats = strategies.length > 0 ? strategies : marketingStrategy;
 
   const TableHeadingRow = useCallback(
