@@ -1,11 +1,92 @@
 "use client";
 
+import { useState } from "react";
+import { orgInfoAtom, userInfoAtom, watchlistAtom } from "@/utils/atoms";
+import { supabase } from "@/utils/supabaseClient";
+import { useAtom, useSetAtom } from "jotai";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
 const CompanyProfile = () => {
   const router = useRouter();
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const setOrgInfo = useSetAtom(orgInfoAtom);
+  const setWatchList = useSetAtom(watchlistAtom);
+  const [website, setWebsite] = useState("");
+  const [companyOverview, setCompanyOverview] = useState("");
+  const [productsServices, setProductsServices] = useState("");
+
+  const handleCreateCompanyProfile = async () => {
+    try {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user found");
+
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (userError) throw userError;
+      if (!userData) throw new Error("User data not found");
+
+      const insertOrganizationData = {
+        name: userInfo?.companyName || "",
+        website,
+        overview: companyOverview,
+        products: productsServices,
+        creator_id: userData.id
+      };
+
+      const { data: orgData, error: orgError } = await supabase
+        .from("organizations")
+        .insert(insertOrganizationData)
+        .select()
+        .single();
+
+      if (orgError) throw orgError;
+
+      setOrgInfo({
+        id: orgData.id,
+        name: orgData.name,
+        website: orgData.website,
+        overview: orgData.overview,
+        products: orgData.products,
+        creatorID: userData.id
+      });
+
+      const insertWatchlistData = {
+        name: "Watchlist",
+        organization_id: orgData.id,
+        creator_id: userData.id
+      };
+
+      const { data: watchlistData, error: watchlistError } = await supabase
+        .from("watchlists")
+        .insert(insertWatchlistData)
+        .select()
+        .single();
+
+      if (watchlistError) throw watchlistError;
+
+      setWatchList([
+        {
+          id: watchlistData.id,
+          name: watchlistData.name,
+          organizationID: watchlistData.organization_id,
+          creatorID: watchlistData.creator_id,
+          uuid: watchlistData.uuid
+        }
+      ]);
+      router.replace("/onboarding/user-awareness");
+    } catch (error) {
+      console.error("Error creating company profile:", error);
+      // Handle error (e.g., show error message to user)
+    }
+  };
 
   return (
     <div className="flex flex-row w-full h-screen">
@@ -30,6 +111,8 @@ const CompanyProfile = () => {
                 type="url"
                 className="font-normal border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="https://www.example.com"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
               />
             </div>
             <button className="text-base font-medium leading-7 text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300 px-6 py-3 rounded-md shadow-sm w-fit mt-8">
@@ -61,7 +144,7 @@ const CompanyProfile = () => {
             </button>
             <button
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
-              onClick={() => router.push("/onboarding/user-awareness")}
+              onClick={handleCreateCompanyProfile}
             >
               Continue
               <GoArrowRight className="ml-2 h-5 w-5" />
@@ -78,6 +161,8 @@ const CompanyProfile = () => {
             <textarea
               className="text-sm leading-6 font-normal text-[#171A1FFF] w-full border border-[#BDC1CAFF] rounded-sm outline-none px-4 py-3"
               rows={8}
+              value={companyOverview}
+              onChange={(e) => setCompanyOverview(e.target.value)}
             ></textarea>
           </div>
           <div className="flex flex-col gap-8">
@@ -87,6 +172,8 @@ const CompanyProfile = () => {
             <textarea
               className="text-sm leading-6 font-normal text-[#171A1FFF] w-full border border-[#BDC1CAFF] rounded-sm outline-none px-4 py-3"
               rows={8}
+              value={productsServices}
+              onChange={(e) => setProductsServices(e.target.value)}
             ></textarea>
           </div>
         </div>

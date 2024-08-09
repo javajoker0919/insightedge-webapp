@@ -19,7 +19,7 @@ import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
-import MarketingSection from "../../company/[id]/Marketing/MarketingSection";
+import MarketingStrategySection from "./marketing/MarketingStrategySection";
 import EarningsCalendar from "./EarningsCalendar";
 import WLIncomeStatement from "./WLIncomeStatement";
 import WatchlistHighlights from "./WatchlistHighlights";
@@ -356,7 +356,7 @@ export default function WatchlistPage() {
                       year={2024}
                       quarter={1}
                     />
-                    <MarketingSection
+                    <MarketingStrategySection
                       companyID={30321} // watchlistCompanies[0].id}
                       companyName={watchlistName}
                     />

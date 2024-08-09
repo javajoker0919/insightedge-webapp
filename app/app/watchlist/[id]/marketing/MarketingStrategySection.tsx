@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { marketingStrategy } from "../Constants";
-import MarketingStrategyTable from "./MarketingStrategyTable";
-import MarketingPlanModal from "./MarketingPlanModal";
+import { marketingStrategy } from "@/app/app/company/[id]/Constants";
+import MarketingStrategyTable from "@/app/app/company/[id]/marketing/MarketingStrategyTable";
+import MarketingPlanModal from "@/app/app/company/[id]/marketing/MarketingPlanModal";
 
 interface MarketingCompProps {
   companyID: number;
@@ -28,7 +28,7 @@ export interface MarketingProps {
   alignmentWithCompanyGoals: string[];
 }
 
-const MarketingSection: React.FC<MarketingCompProps> = ({
+const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   companyID,
   companyName,
 }) => {
@@ -124,12 +124,13 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 )}
               </div>
               {generalStrats && (
-                <MarketingStrategyTable
-                  companyName={companyName}
-                  strategies={generalStrats.sort(() => Math.random() - 0.5)}
-                  // SM_NOTE: remove this suffeling later
-                  onQuickAction={handleQuickAction}
-                />
+                // <MarketingStrategyTable
+                //   companyName={companyName}
+                //   strategies={generalStrats.sort(() => Math.random() - 0.5)}
+                //   // SM_NOTE: remove this suffeling later
+                //   onQuickAction={handleQuickAction}
+                // />
+                <></>
               )}
             </>
           ))}
@@ -144,12 +145,13 @@ const MarketingSection: React.FC<MarketingCompProps> = ({
                 {companyName}
               </div>
               {tailoredStrats && (
-                <MarketingStrategyTable
-                  companyName={companyName}
-                  strategies={tailoredStrats.sort(() => Math.random() - 0.5)}
-                  // SM_NOTE: remove this suffeling later
-                  onQuickAction={handleQuickAction}
-                />
+                // <MarketingStrategyTable
+                //   companyName={companyName}
+                //   strategies={tailoredStrats.sort(() => Math.random() - 0.5)}
+                //   // SM_NOTE: remove this suffeling later
+                //   onQuickAction={handleQuickAction}
+                // />
+                <></>
               )}
             </>
           ))}
@@ -170,4 +172,4 @@ const LoadingSection: React.FC = () => {
   );
 };
 
-export default MarketingSection;
+export default MarketingStrategySection;

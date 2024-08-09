@@ -76,33 +76,43 @@ const SignUp = () => {
         email,
         password,
         options: {
-          emailRedirectTo: "http://localhost:3000/onboarding/user-info"
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/onboarding/user-info`
         }
       });
 
       if (authError) throw authError;
 
-      /// Insert user data into 'users' table
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .insert({ id: authData.user?.id, email: authData.user?.email })
-        .select()
-        .single();
+      if (authData.user) {
+        const { email, id } = authData.user;
+        if (email) localStorage.setItem("email", email);
+        if (id) localStorage.setItem("userId", id);
+      }
 
-      if (userError) throw userError;
+      /// Insert user data into 'users' table
+      // const { data: userData, error: userError } = await supabase
+      //   .from("users")
+      //   .insert({
+      //     id: authData.user?.id,
+      //     email: authData.user?.email
+      //   })
+      //   .select()
+      //   .single();
+
+      // if (userError) throw userError;
 
       setUserMetadata(authData.user?.user_metadata || null);
 
-      createCustomer();
+      // createCustomer();
 
       // Set user data using the userInfoAtom
-      setUserData({
-        id: userData.id,
-        email: userData.email,
-        firstName: userData.first_name || "",
-        lastName: userData.last_name || "",
-        onboardingStatus: false
-      });
+      // setUserData({
+      //   id: userData.id,
+      //   email: userData.email,
+      //   firstName: userData.first_name || "",
+      //   lastName: userData.last_name || "",
+      //   companyName: "",
+      //   onboardingStatus: false
+      // });
 
       // invokeToast("success", "Successfully signed up!", "top");
       router.replace("/auth/verify-email");
@@ -118,15 +128,17 @@ const SignUp = () => {
   return (
     <div className="flex flex-row w-full h-screen">
       <div className="flex flex-col w-1/2 h-full bg-white">
-        <div className="flex items-center  mt-6 ml-6">
-          <Image
-            src="/favicon.png"
-            alt="ProspectEdge Logo"
-            width={40}
-            height={40}
-          />
-          <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
-        </div>
+        <Link href="/">
+          <div className="flex items-center mt-4 ml-4">
+            <Image
+              src="/favicon.png"
+              alt="ProspectEdge Logo"
+              width={40}
+              height={40}
+            />
+            <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
+          </div>
+        </Link>
         <div className="flex flex-col mt-24 items-center w-full">
           <div className="flex flex-col w-[26rem] text-center">
             <h1 className="text-3xl font-bold text-gray-900 leading-[48px] mb-3">
@@ -135,11 +147,17 @@ const SignUp = () => {
             <div className="flex flex-col items-center justify-center max-w-[342px] w-full mx-auto text-center text-gray-600 mb-4 text-sm font-normal leading-[22px]">
               <p>By creating an account, you agree to this app's</p>
               <div className="flex flex-row gap-1 text-sm">
-                <Link href="/" className="text-primary-400 underline font-bold">
+                <Link
+                  href="/terms"
+                  className="text-primary-400 underline font-bold"
+                >
                   Terms
                 </Link>
                 <span>and</span>
-                <Link href="/" className="text-primary-400 underline font-bold">
+                <Link
+                  href="/privacy"
+                  className="text-primary-400 underline font-bold"
+                >
                   Privacy Policy
                 </Link>
               </div>
@@ -163,7 +181,7 @@ const SignUp = () => {
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
             <form
-              // onSubmit={handleFormSubmit}
+              onSubmit={handleFormSubmit}
               className="flex flex-col w-full mt-3"
             >
               <div className="flex flex-col w-full">
@@ -199,7 +217,7 @@ const SignUp = () => {
                 />
               </div>
               <button
-                // type="submit"
+                type="submit"
                 className="w-full bg-primary-600 text-white text-base font-semibold py-4 mt-4 rounded-md hover:bg-primary-700 active:bg-primary-800 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 disabled={!isValidate || isLoading}
               >
