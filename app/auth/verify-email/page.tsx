@@ -1,20 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MdMarkEmailRead } from "react-icons/md";
+import HeaderImage from "@/app/components/HeaderImage";
 
 const VerifyEmail = () => {
   return (
     <div className="flex flex-row w-full h-screen">
       <div className="flex flex-col items-center justify-center w-1/2 h-full bg-white z-10">
-        <div className="flex items-center absolute top-6 left-6">
-          <Image
-            src="/favicon.png"
-            alt="ProspectEdge Logo"
-            width={40}
-            height={40}
-          />
-          <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
-        </div>
+        <HeaderImage />
         <div className="flex flex-col items-center">
           <div className="max-w-md w-full px-4">
             <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">

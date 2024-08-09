@@ -111,6 +111,7 @@ export default function CreateProfile() {
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
+        companyName: "",
         onboardingStatus: userData.onboarding_status,
       });
 

@@ -1,11 +1,16 @@
 "use client";
 
+import { watchlistAtom } from "@/utils/atoms";
+import { supabase } from "@/utils/supabaseClient";
+import { useAtom, useSetAtom } from "jotai";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
 const UserAwareness = () => {
   const router = useRouter();
+  const [watchlist, setWatchList] = useAtom(watchlistAtom);
 
   return (
     <>
@@ -56,7 +61,17 @@ const UserAwareness = () => {
                 <GoArrowLeft className="mr-2 h-5 w-5" />
                 Back
               </button>
-              <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+              <button
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                onClick={() => {
+                  if (watchlist && watchlist.length > 0) {
+                    router.replace(`/app/watchlist/${watchlist[0].uuid}`);
+                  } else {
+                    // Handle the case where watchlist is empty or null
+                    router.replace('/app/dashboard'); // Redirect to a default page
+                  }
+                }}
+              >
                 Dashboard
                 <GoArrowRight className="ml-2 h-5 w-5" />
               </button>
