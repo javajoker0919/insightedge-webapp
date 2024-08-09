@@ -18,7 +18,7 @@ import { MdAddCircleOutline, MdContentPaste } from "react-icons/md";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
+import OpportunitiesSection from "./opportunities/OpportunitiesSection";
 import MarketingStrategySection from "./marketing/MarketingStrategySection";
 import EarningsCalendar from "./EarningsCalendar";
 import WLIncomeStatement from "./WLIncomeStatement";
