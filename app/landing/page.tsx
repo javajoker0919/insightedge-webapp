@@ -179,11 +179,17 @@ const SalesAndMarketingSection: React.FC = () => (
       into clear, actionable strategies for B2B sales and marketing teams
     </p>
     <div className="flex flex-col lg:flex-row items-center gap-20 min-w-[80rem]">
-      <img
-        src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2015&q=80"
-        alt="Business analytics dashboard"
-        className="w-full lg:w-[30rem] h-[20rem] object-cover rounded-lg shadow-lg mb-12 lg:mb-0"
-      />
+      <div className="flex flex-col justify-center gap-4">
+        <img
+          src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2015&q=80"
+          alt="Business analytics dashboard"
+          className="w-full lg:w-[30rem] h-[20rem] object-cover rounded-lg shadow-lg mb-12 lg:mb-0"
+        />
+        <button className="flex text-primary-600 items-center gap-2 text-sm sm:text-base">
+          <span>Try it yourself</span>
+          <FaArrowRight />
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         <Feature
           icon={<IoTelescope className="w-8 h-8 text-primary-500" />}
@@ -227,7 +233,10 @@ const Feature: React.FC<{
 );
 
 const SummarySection: React.FC = () => (
-  <section id="summary" className="py-12 sm:py-16 md:py-20 px-4 flex flex-col items-center">
+  <section
+    id="summary"
+    className="py-12 sm:py-16 md:py-20 px-4 flex flex-col items-center"
+  >
     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] mb-8 sm:mb-12 md:mb-16">
       We focus on the data summaries, so you can focus on customer relationships
     </h1>
@@ -256,13 +265,29 @@ const SummarySection: React.FC = () => (
 );
 
 const SummaryContent: React.FC = () => (
-  <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 md:p-10 md:pr-0 max-w-full md:max-w-[30rem]">
-    <p className="text-gray-600 text-sm sm:text-base">TAILORED ACCOUNT SPECIFIC STRATEGIES</p>
-    <p className="text-2xl sm:text-3xl md:text-4xl font-bold">Actionable Summaries</p>
+  <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 md:p-10 md:pr-0 max-w-full md:max-w-[35rem]">
     <p className="text-gray-600 text-sm sm:text-base">
-      AI generated summaries of market data and strategies to build your
-      marketing & sales engagement
+      TAILORED ACCOUNT SPECIFIC STRATEGIES
     </p>
+    <p className="text-xl font-medium">
+      Data driven executive summaries that empower leadership to make informed
+      strategic decisions to grow the business
+    </p>
+    <div className="flex flex-col gap-1 text-gray-600 text-sm">
+      <p>
+        C-suite executives need a bird's-eye view of performance and market
+        positioning. ProspectEdge platform can:
+      </p>
+      <p>
+        - Identify growth opportunities and potential risks based on revenue
+        trends and market sentiment{" "}
+      </p>
+      <p>
+        - Provide a holistic view of company performance and competitive
+        positioning
+      </p>
+      <p>- Develop tailored strategies backed by data-driven insights</p>
+    </div>
     <button className="flex text-primary-600 items-center gap-2 text-sm sm:text-base">
       <span>Learn more</span>
       <FaArrowRight />
@@ -271,14 +296,31 @@ const SummaryContent: React.FC = () => (
 );
 
 const DashboardContent: React.FC = () => (
-  <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 md:p-10 md:pr-0 max-w-full md:max-w-[30rem]">
+  <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 md:p-10 md:px-0 max-w-full md:max-w-[35rem]">
     <p className="text-gray-600 text-sm sm:text-base">
       REAL TIME DATA DRIVING CUSTOMER CONVERSATIONS
     </p>
-    <p className="text-2xl sm:text-3xl md:text-4xl font-bold">Personalized dashboard</p>
-    <p className="text-gray-600 text-sm sm:text-base">
-      Real time summaries and strategies in a single view, personalized for you
+    <p className="text-xl font-medium">
+      A comprehensive view that enables effective positioning & differentiation
+      in competitive situations
     </p>
+    <div className="flex flex-col gap-1 text-gray-600 text-sm">
+      <p>
+        Understanding your competitive landscape is crucial. AI-powered market
+        intelligence takes this to the next level:
+      </p>
+      <p>- Monitoring customer health metrics and financial performance </p>
+      <p>
+        {" "}
+        - Generating automated dashboards combining financial insights, market
+        data, and real-time trends{" "}
+      </p>
+      <p>
+        {" "}
+        - Tracking competitor financial performance and market positioning in
+        real-time - Analyzing news sentiment to gauge market perception
+      </p>
+    </div>
     <button className="flex text-primary-600 items-center gap-2 text-sm sm:text-base">
       <span>Learn more</span>
       <FaArrowRight />
@@ -287,9 +329,12 @@ const DashboardContent: React.FC = () => (
 );
 
 const BusinessSection: React.FC = () => (
-  <section id="business" className="py-12 sm:py-16 md:py-20 px-4 flex flex-col items-center">
+  <section
+    id="business"
+    className="py-12 sm:py-16 md:py-20 px-4 flex flex-col items-center"
+  >
     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] mb-16 sm:mb-24 md:mb-32">
-      What it means for your business
+      We focus on the data, so you can focus on your customers
     </h1>
 
     <div className="flex flex-col sm:flex-row w-full items-center sm:items-start justify-around max-w-[80rem] gap-12 sm:gap-6">
@@ -299,12 +344,16 @@ const BusinessSection: React.FC = () => (
         description="Get more revenue per sales person"
       />
       <BusinessFeature
-        icon={<FaRecycle className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />}
+        icon={
+          <FaRecycle className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />
+        }
         title="IMMEDIATE ROI"
         description="Start generating more value from your leads from day 1"
       />
       <BusinessFeature
-        icon={<MdOutlineToken className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />}
+        icon={
+          <MdOutlineToken className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />
+        }
         title="REDUCED CHURN"
         description="When you can identify risks and opportunities for customers and partners"
       />
@@ -370,8 +419,12 @@ const BlogCard: React.FC<{
     <div className="p-4">
       <p className="font-bold text-lg sm:text-xl line-clamp-2 mb-4">{title}</p>
       <span>
-        <p className="text-gray-600 text-sm sm:text-base line-clamp-3 mb-2">{description}</p>
-        <button className="text-primary-500 text-sm sm:text-base">Read more</button>
+        <p className="text-gray-600 text-sm sm:text-base line-clamp-3 mb-2">
+          {description}
+        </p>
+        <button className="text-primary-500 text-sm sm:text-base">
+          Read more
+        </button>
       </span>
     </div>
   </div>
@@ -413,17 +466,6 @@ const ScheduleDemo: React.FC = () => (
 
 const Footer: React.FC = () => (
   <footer id="cta" className="mt-20">
-    {/* <div className="flex w-full bg-[#004BADFF] h-16 mb-16">
-      <ul
-        typeof="square"
-        className="text-[#FFF] text-2xl font-normal leading-9 flex flex-row items-center gap-4"
-      >
-        <li>Subscribe</li>
-        <li>Join the community</li>
-        <li>Documentation</li>
-        <li>How it works</li>
-      </ul>
-    </div> */}
     <div className="flex flex-col px-4 sm:px-6 lg:px-20 lg:flex-row justify-between items-center w-full">
       <div className="flex flex-col items-center lg:items-start mb-8 lg:mb-0">
         <div className="flex items-center">

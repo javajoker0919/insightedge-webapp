@@ -3,7 +3,7 @@ import { supabase } from "@/utils/supabaseClient";
 import MarketingStrategyTable from "./MarketingStrategyTable";
 import MarketingPlanModal from "./MarketingPlanModal";
 import Loading from "@/app/components/Loading";
-import { marketingStrategy } from "../Constants";
+import { marketingStrategy } from "../../../app/company/[id]/Constants";
 
 interface MarketingCompProps {
   companyName: string;

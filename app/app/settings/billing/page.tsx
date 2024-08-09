@@ -160,7 +160,7 @@ const Membership: React.FC = () => {
     setIsCancelLoading(true);
     try {
       const response = await cancelSubscription();
-      console.log(response);
+
       if (response.status === "success") {
         invokeToast("success", response.message, "top");
         setTimeout(() => {
@@ -178,7 +178,7 @@ const Membership: React.FC = () => {
     setIsStopCancelLoading(true);
     try {
       const response = await stopCancelSubscription();
-      console.log(response);
+
       if (response.status === "success") {
         invokeToast("success", response.message, "top");
         setTimeout(() => {

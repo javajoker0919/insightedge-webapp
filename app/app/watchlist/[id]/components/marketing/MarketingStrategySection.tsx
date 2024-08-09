@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import { marketingStrategy } from "@/app/app/company/[id]/Constants";
-import MarketingStrategyTable from "@/app/app/company/[id]/marketing/MarketingStrategyTable";
-import MarketingPlanModal from "@/app/app/company/[id]/marketing/MarketingPlanModal";
 
 interface MarketingCompProps {
   companyID: number;
@@ -47,10 +44,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   const [isTailoredLoading, setIsTailoredLoading] = useState<boolean>(false);
 
   const generateTailoredStrategy = () => {
-    setGeneralStrats(marketingStrategy);
-    setTailoredStrats(marketingStrategy);
+    // setGeneralStrats(marketingStrategy);
+    // setTailoredStrats(marketingStrategy);
 
-    setActiveTab("tailored");
+    // setActiveTab("tailored");
 
     setIsGeneralLoading(false);
     setIsTailoredLoading(false);
@@ -156,10 +153,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             </>
           ))}
       </div>
-      <MarketingPlanModal
+      {/* <MarketingPlanModal
         open={!!selectedStrats}
         onClose={() => setSelectedStrats(null)}
-      />
+      /> */}
     </div>
   );
 };
