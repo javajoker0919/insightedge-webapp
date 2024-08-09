@@ -18,11 +18,11 @@ import { MdAddCircleOutline, MdContentPaste } from "react-icons/md";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-import OpportunitiesSection from "./Opportunities/OpportunitiesSection";
-import MarketingStrategySection from "./marketing/MarketingStrategySection";
-import EarningsCalendar from "./EarningsCalendar";
-import WLIncomeStatement from "./WLIncomeStatement";
-import WatchlistHighlights from "./WatchlistHighlights";
+import OpportunitiesSection from "./components/opportunities/OpportunitiesSection";
+import MarketingStrategySection from "./components/marketing/MarketingStrategySection";
+import EarningsCalendar from "./components/EarningsCalendar";
+import WLIncomeStatement from "./components/WLIncomeStatement";
+import WatchlistHighlights from "./components/WatchlistHighlights";
 import moment from "moment";
 
 export interface CompanyDataType {

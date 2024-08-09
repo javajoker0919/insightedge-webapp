@@ -17,14 +17,14 @@ import {
 import { useAtomValue } from "jotai";
 
 import { watchlistAtom } from "@/utils/atoms";
-import OpportunitiesSection from "./opportunities/OpportunitiesSection";
+import OpportunitiesSection from "../../../components/company/opportunities/OpportunitiesSection";
 import IncomeStatementSection from "./IncomeStatementSection";
 import RecentNewsSection, { NewsItem } from "./RecentNewsSection";
 import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
-import SummarySection from "./summary/SummarySection";
+import SummarySection from "../../../components/company/summary/SummarySection";
 import AboutSection from "./AboutSection";
 import { FollowButton, ShareButton } from "./components";
-import MarketingStrategySection from "./marketing/MarketingStrategySection";
+import MarketingStrategySection from "../../../components/company/marketing/MarketingStrategySection";
 
 ChartJS.register(
   CategoryScale,

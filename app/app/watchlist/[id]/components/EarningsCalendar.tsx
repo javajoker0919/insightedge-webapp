@@ -2,7 +2,7 @@ import { supabase } from "@/supabase";
 import { useEffect, useState } from "react";
 import { LuCalendarPlus } from "react-icons/lu";
 import moment from "moment";
-import { CompanyDataType } from "./page";
+import { CompanyDataType } from "../page";
 import { useSetAtom } from "jotai";
 import { earningsCalendarAtom } from "@/utils/atoms";
 

@@ -85,7 +85,7 @@ const Plans = () => {
       setIsFreePlanLoading(true);
       try {
         const response = await cancelSubscription();
-        console.log(response);
+
         if (response.cancelation_dates) {
           response.cancelation_dates.forEach((date: number) => {
             const formattedDate = new Date(date * 1000).toLocaleDateString();
