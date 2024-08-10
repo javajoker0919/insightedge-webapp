@@ -53,7 +53,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 
     try {
       const { data, error } = await supabase
-        .from("marketing_tactic_info")
+        .from("general_marketings")
         .select(
           "tactic, tactic_score, target_personas, channel, value_proposition, key_performance_indicators, strategic_alignment, call_to_action"
         )
