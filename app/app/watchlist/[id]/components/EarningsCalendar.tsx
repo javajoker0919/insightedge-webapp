@@ -83,11 +83,11 @@ const EarningsCalendar: React.FC<EarningsCalendarProps> = ({
             </p>
           </div>
         ) : earningCalendarList !== null ? (
-          earningCalendarList.map(({ date, name }) => {
+          earningCalendarList.map(({ date, name }, index) => {
             const [_mmm, _dd] = date.split(", ")[0].split(" ");
             return (
               <div
-                key={`event-${date}`}
+                key={`event-${date}-${index}`}
                 className="flex items-center p-2 justify-between border-t border-gray-300 pb-2 mb-2 last:mb-0 "
               >
                 <div className="flex items-center gap-3">

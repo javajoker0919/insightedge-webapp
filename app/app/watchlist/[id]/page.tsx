@@ -19,7 +19,7 @@ import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 import OpportunitiesSection from "./components/opportunities/OpportunitiesSection";
-import MarketingStrategySection from "./components/marketing/MarketingStrategySection";
+import { MarketingStrategiesSection } from "@/app/components";
 import EarningsCalendar from "./components/EarningsCalendar";
 import WLIncomeStatement from "./components/WLIncomeStatement";
 import WatchlistHighlights from "./components/WatchlistHighlights";
@@ -80,6 +80,7 @@ export default function WatchlistPage() {
   const [watchlistCompanies, setWatchlistCompanies] = useState<
     CompanyDataType[] | []
   >([]);
+  const [etIDs, setETIDs] = useState<number[] | null>(null);
 
   useEffect(() => {
     async function fetchWatchlistData() {
@@ -182,6 +183,45 @@ export default function WatchlistPage() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (watchlistCompanies.length === 0) return;
+
+    const fetchLatestEarningsTranscripts = async () => {
+      const companyIDs = watchlistCompanies.map((item) => item.id);
+      console.log("companyIDs: ", companyIDs);
+
+      const { data: earningsTranscriptsData, error: earningsTranscriptsError } =
+        await supabase
+          .from("earnings_transcripts")
+          .select("id, company_id, date")
+          .in("company_id", companyIDs)
+          .order("date", { ascending: false });
+
+      if (earningsTranscriptsError) {
+        console.error(
+          "Error fetching earnings transcripts:",
+          earningsTranscriptsError
+        );
+        return;
+      }
+
+      const latestETIDs = companyIDs
+        .map((companyID) => {
+          const transcripts = earningsTranscriptsData.filter(
+            (transcript) => transcript.company_id === companyID
+          );
+          return transcripts.length > 0 ? transcripts[0].id : null;
+        })
+        .filter((transcript) => transcript !== null);
+
+      if (latestETIDs.length > 0) {
+        setETIDs(latestETIDs);
+      }
+    };
+
+    fetchLatestEarningsTranscripts();
+  }, [watchlistCompanies]);
 
   const toggleOptionsModal = () => {
     setIsOptionsModalOpen(!isOptionsModalOpen);
@@ -356,10 +396,7 @@ export default function WatchlistPage() {
                       year={2024}
                       quarter={1}
                     />
-                    <MarketingStrategySection
-                      companyID={30321} // watchlistCompanies[0].id}
-                      companyName={watchlistName}
-                    />
+                    <MarketingStrategiesSection etIDs={etIDs} />
                   </>
                 )}
               </div>
