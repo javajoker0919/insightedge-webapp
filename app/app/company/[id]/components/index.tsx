@@ -4,7 +4,7 @@ import CheckSvg from "./CheckSvg";
 import QuarterlyChart from "./QuarterlyChart";
 import Dropdown from "./Dropdown";
 import ShareSvg from "./ShareSvg";
-import Details from "./Details";
+import Details from "../../../../components/Details";
 import FollowButton from "./FollowButton";
 import ShareButton from "./ShareButton";
 

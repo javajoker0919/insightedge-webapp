@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
-import MarketingStrategyTable from "./MarketingStrategyTable";
-import MarketingPlanModal from "./MarketingPlanModal";
+import MarketingStrategyTable from "./MarketingStrategiesTable";
+import MarketingPlanModal from "./MarketingStrategiesModal";
 import Loading from "@/app/components/Loading";
-import { marketingStrategy } from "../../Constants";
+import { marketingStrategy } from "@/app/app/company/[id]/Constants";
 
-interface MarketingCompProps {
-  companyName: string;
-  etID: number | null;
-  isLoading: boolean;
+interface MarketingStrategiesProps {
+  // companyName: string;
+  etIDs: number[] | null;
 }
 
-export interface MarketingProps {
+export interface MarketingStrategyProps {
   tactic: string;
   tacticScore: number;
   targetPersonas: string;
@@ -22,32 +21,30 @@ export interface MarketingProps {
   callToAction: string;
 }
 
-const MarketingStrategySection: React.FC<MarketingCompProps> = ({
-  companyName,
-  etID,
-  isLoading,
+const MarketingStrategiesSection: React.FC<MarketingStrategiesProps> = ({
+  // companyName,
+  etIDs,
 }) => {
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
-  const [selectedStrats, setSelectedStrats] = useState<MarketingProps | null>(
-    null
-  );
-  const [generalStrats, setGeneralStrats] = useState<MarketingProps[] | null>(
-    null
-  );
-  const [tailoredStrats, setTailoredStrats] = useState<MarketingProps[] | null>(
-    null
-  );
+  const [selectedStrats, setSelectedStrats] =
+    useState<MarketingStrategyProps | null>(null);
+  const [generalStrats, setGeneralStrats] = useState<
+    MarketingStrategyProps[] | null
+  >(null);
+  const [tailoredStrats, setTailoredStrats] = useState<
+    MarketingStrategyProps[] | null
+  >(null);
 
   const [isGeneralLoading, setIsGeneralLoading] = useState<boolean>(false);
   const [isTailoredLoading, setIsTailoredLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (etID) {
-      fetchMarketingStrategies(etID);
+    if (etIDs && etIDs.length > 0) {
+      fetchMarketingStrategies(etIDs);
     }
-  }, [etID]);
+  }, [etIDs]);
 
-  const fetchMarketingStrategies = async (etID: number) => {
+  const fetchMarketingStrategies = async (etIDs: number[]) => {
     setIsGeneralLoading(true);
     setIsTailoredLoading(true);
 
@@ -57,7 +54,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
         .select(
           "tactic, tactic_score, target_personas, channel, value_proposition, key_performance_indicators, strategic_alignment, call_to_action"
         )
-        .eq("earnings_transcript_id", etID);
+        .in("earnings_transcript_id", etIDs);
 
       if (error) throw error;
 
@@ -94,7 +91,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
     }, 2000);
   };
 
-  const handleQuickAction = (strt: MarketingProps) => {
+  const handleQuickAction = (strt: MarketingStrategyProps) => {
     setSelectedStrats(strt);
   };
 
@@ -104,7 +101,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
         {tailoredStrats === null ? (
           <div className="flex w-full justify-between items-center pr-4 py-1">
             <h3 className="px-4 py-3 font-medium text-gray-700">
-              Marketing Strategy
+              Marketing Strategies
             </h3>
             {!Array.isArray(tailoredStrats) && (
               <button
@@ -146,7 +143,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
         )}
       </div>
 
-      {isLoading ? (
+      {etIDs === null ? (
         <LoadingSection />
       ) : (
         <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
@@ -155,16 +152,18 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
               <LoadingSection />
             ) : (
               <>
-                <div className="p-4 bg-gray-100 text-black">
-                  {companyName}'s top Marketing Strategy.
-                  {tailoredStrats?.length === 0 && (
-                    <span>
-                      To find the best ways to sell your solutions to{" "}
-                      {companyName}, click "Generate Tailored Marketing
-                      Strategy."
-                    </span>
-                  )}
-                </div>
+                {/* {companyName && (
+                  <div className="p-4 bg-gray-100 text-black">
+                    {companyName}'s top Marketing Strategy.
+                    {tailoredStrats?.length === 0 && (
+                      <span>
+                        To find the best ways to sell your solutions to{" "}
+                        {companyName}, click "Generate Tailored Marketing
+                        Strategy."
+                      </span>
+                    )}
+                  </div>
+                )} */}
                 {generalStrats && (
                   <MarketingStrategyTable
                     strategies={generalStrats}
@@ -178,11 +177,13 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
               <LoadingSection />
             ) : (
               <>
-                <div className="p-4 bg-gray-100 text-black">
-                  Below is your company specific marketing strategy. You can
-                  explore the top marketing tactics for selling your solutions
-                  to {companyName}
-                </div>
+                {/* {companyName && (
+                  <div className="p-4 bg-gray-100 text-black">
+                    Below is your company specific marketing strategy. You can
+                    explore the top marketing tactics for selling your solutions
+                    to {companyName}
+                  </div>
+                )} */}
                 {tailoredStrats && (
                   <MarketingStrategyTable
                     strategies={tailoredStrats}
@@ -211,4 +212,4 @@ const LoadingSection: React.FC = () => {
   );
 };
 
-export default MarketingStrategySection;
+export default MarketingStrategiesSection;

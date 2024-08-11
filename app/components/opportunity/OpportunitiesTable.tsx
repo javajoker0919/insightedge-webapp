@@ -1,55 +1,44 @@
 import { IoBulb, IoPerson } from "react-icons/io5";
 import { OpportunityProps } from "./OpportunitiesSection";
-
-const colorClasses = [
-  "bg-blue-100 text-blue-800",
-  "bg-purple-100 text-purple-800",
-  "bg-orange-100 text-orange-800",
-  "bg-teal-100 text-teal-800",
-  "bg-pink-100 text-pink-800",
-  "bg-indigo-100 text-indigo-800",
-  "bg-yellow-100 text-yellow-800",
-  "bg-green-100 text-green-800",
-  "bg-red-100 text-red-800",
-];
+import { generalOpportunities } from "@/app/app/company/[id]/Constants";
+import { useEffect } from "react";
 
 const OpportunitiesTable: React.FC<{
   companyName: string;
   opportunities: OpportunityProps[];
   onQuickAction: (opp: OpportunityProps) => void;
 }> = ({ companyName, opportunities, onQuickAction }) => {
-  const TableHeadRow = () => (
-    <tr className="bg-gray-200 text-black">
-      <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
-        Opportunity
-      </th>
-      <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-24">
-        Company
-      </th>
-      <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-10">
-        Score
-      </th>
-      <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
-        Target Buyer Role
-      </th>
-      <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-36">
-        Target Buyer Department
-      </th>
-      <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-28">
-        Quick Actions
-      </th>
-    </tr>
-  );
+  useEffect(() => {
+    console.log(opportunities);
+  }, [opportunities]);
+
+  const opps = opportunities.length > 0 ? opportunities : generalOpportunities;
 
   return (
     <>
-      {opportunities?.length > 0 ? (
+      {opps.length > 0 ? (
         <table className="w-full relative border-collapse">
           <thead className="sticky z-10 top-0">
-            <TableHeadRow />
+            <tr className="bg-gray-200 text-black">
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+                Opportunity
+              </th>
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-10">
+                Score
+              </th>
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
+                Target Buyer Role
+              </th>
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-52">
+                Target Buyer Department
+              </th>
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
+                Quick Actions
+              </th>
+            </tr>
           </thead>
           <tbody className="text-center relative">
-            {opportunities.map((opp, index) => (
+            {opps.map((opp, index) => (
               <tr
                 key={index}
                 className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} ${
@@ -57,9 +46,6 @@ const OpportunitiesTable: React.FC<{
                 }`}
               >
                 <td className="px-4 py-3 border text-left border-gray-300">
-                  {opp.opportunityName}
-                </td>
-                <td className="px-4 py-3 border border-gray-300">
                   {opp.opportunityName}
                 </td>
                 <td className="px-4 py-3 border border-gray-300">
@@ -84,8 +70,15 @@ const OpportunitiesTable: React.FC<{
                       const sum = opp.targetBuyer.department
                         .split("")
                         .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-                      for (let i = 0; i <= 9; i++)
-                        if (sum % 9 === i) return colorClasses[i];
+                      if (sum % 9 === 0) return "bg-blue-100 text-blue-800";
+                      if (sum % 9 === 1) return "bg-purple-100 text-purple-800";
+                      if (sum % 9 === 2) return "bg-orange-100 text-orange-800";
+                      if (sum % 9 === 3) return "bg-teal-100 text-teal-800";
+                      if (sum % 9 === 4) return "bg-pink-100 text-pink-800";
+                      if (sum % 9 === 5) return "bg-indigo-100 text-indigo-800";
+                      if (sum % 9 === 6) return "bg-yellow-100 text-yellow-800";
+                      if (sum % 9 === 7) return "bg-green-100 text-green-800";
+                      if (sum % 9 === 8) return "bg-red-100 text-red-800";
                       return "bg-gray-100 text-gray-800";
                     })()}`}
                   >
@@ -93,7 +86,7 @@ const OpportunitiesTable: React.FC<{
                   </span>
                 </td>
                 <td className="px-4 py-3 border border-gray-300">
-                  <div className="flex flex-col justify-center gap-1">
+                  <div className="flex justify-center space-x-2">
                     <button
                       onClick={() => onQuickAction(opp)}
                       className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
@@ -111,7 +104,7 @@ const OpportunitiesTable: React.FC<{
                       )}+"LinkedIn"`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="whitespace-nowrap text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
+                      className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
                     >
                       Find Buyer
                       <IoPerson />
@@ -135,7 +128,23 @@ const OpportunitiesTable: React.FC<{
         <div className="w-full">
           <table className="w-full border-collapse">
             <thead>
-              <TableHeadRow />
+              <tr className="bg-gray-200 text-black">
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+                  Opportunity
+                </th>
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-10">
+                  Score
+                </th>
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
+                  Target Buyer Role
+                </th>
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-52">
+                  Target Buyer Department
+                </th>
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
+                  Quick Actions
+                </th>
+              </tr>
             </thead>
             <tbody>
               <tr>

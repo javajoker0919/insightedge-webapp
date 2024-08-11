@@ -8,14 +8,12 @@ import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTailoredOpportunitiesAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
-import { Details } from "@/app/app/company/[id]/components";
+import { Details } from "..";
 import { tailoredOpportunities_v2 } from "@/app/app/company/[id]/Constants";
 
 interface OpportunitiesProps {
-  companyID: number;
-  companyName: string;
-  year: number | null;
-  quarter: number | null;
+  companyName?: string;
+  etIDs: number[] | null;
 }
 
 export interface OpportunityProps {
@@ -38,19 +36,12 @@ export interface OpportunityProps {
 }
 
 const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
-  companyID,
   companyName,
-  year,
-  quarter,
+  etIDs,
 }) => {
-  if (!year || !quarter) {
-    return null;
-  }
-
   const { invokeToast } = useToastContext();
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
-  const [etID, setETID] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedOpp, setSelectedOpp] = useState<OpportunityProps | null>(null);
   const [generalOpps, setGeneralOpps] = useState<OpportunityProps[] | null>(
@@ -62,45 +53,29 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   const [openedSection, setOpenedSection] = useState<1 | 2 | 3>(1);
   const [isGeneralOppLoading, setIsGeneralOppLoading] =
     useState<boolean>(false);
+  const [isTailoredOppLoading, setIsTailoredOppLoading] =
+    useState<boolean>(false);
   const [isTailoredOppGenerating, setIsTailoredOppGenerating] =
     useState<boolean>(false);
 
   useEffect(() => {
-    setGeneralOpps(null);
-    setTailoredOpps(null);
-    fetchETID(companyID);
-  }, [year, quarter]);
+    console.log(generalOpps);
+  }, [generalOpps]);
 
   useEffect(() => {
-    if (etID) {
-      fetchGeneralOpportunities(etID);
+    if (etIDs && etIDs.length > 0) {
+      fetchGeneralOpportunities(etIDs);
     }
-  }, [etID]);
+  }, [etIDs]);
 
-  const fetchETID = async (companyID: number) => {
-    try {
-      const { data, error } = await supabase
-        .from("earnings_transcripts")
-        .select("id")
-        .eq("company_id", companyID)
-        .eq("year", year)
-        .eq("quarter", quarter)
-        .single();
-
-      if (error) throw error;
-
-      setETID(data.id);
-    } catch (error) {
-      console.error("Unexpected error in fetchETID:", error);
-    }
-  };
-
-  const fetchGeneralOpportunities = async (etID: number) => {
+  const fetchGeneralOpportunities = async (etIDs: number[]) => {
     try {
       const { data, error } = await supabase
         .from("general_opportunities")
-        .select("name, score, buyer_role, buyer_department")
-        .eq("earnings_transcript_id", etID);
+        .select(
+          "name, score, buyer_role, buyer_department, engagement_inbounds, engagement_outbounds, email_subject, email_body"
+        )
+        .in("earnings_transcript_id", etIDs);
 
       if (error) throw error;
 
@@ -112,7 +87,16 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           department: item.buyer_department,
         },
         tactics: item.tactics?.split("\n"),
+        engagementTips: {
+          inbound: item.engagement_inbounds?.split("\n") || [],
+          outbound: item.engagement_outbounds?.split("\n") || [],
+        },
+        outboundEmail: {
+          subject: item.email_subject,
+          body: item.email_body,
+        },
       }));
+      console.log(formattedData);
       setGeneralOpps(formattedData);
     } catch (error) {
       console.error("Unexpected error in fetchGeneralOpportunities:", error);
@@ -121,15 +105,113 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     }
   };
 
+  const fetchTailoredOpportunities = async (etID: number, orgID: number) => {
+    try {
+      const { data, error } = await supabase
+        .from("tailored_opportunities")
+        .select(
+          "name, score, keywords, buyer_role, buyer_department, tactics, engagement_inbounds, engagement_outbounds, email_subject, email_body"
+        )
+        .eq("earnings_transcript_id", etID)
+        .eq("organization_id", orgID);
+
+      if (error) throw error;
+
+      if (data) {
+        // added mock data : tailoredOpportunities_v2
+        const formattedData: OpportunityProps[] = data.map(
+          (item: any, indx: number) => ({
+            // ...tailoredOpportunities_v2[indx % tailoredOpportunities_v2.length],
+            opportunityName: item.name,
+            opportunityScore: item.score,
+            keywords: item.keywords,
+            targetBuyer: {
+              role: item.buyer_role,
+              department: item.buyer_department,
+            },
+            tactics: item.tactics?.split("\n") || [],
+            engagementTips: {
+              inbound: item.engagement_inbounds?.split("\n") || [],
+              outbound: item.engagement_outbounds?.split("\n") || [],
+            },
+            outboundEmail: {
+              subject: item.email_subject,
+              body: item.email_body,
+            },
+          })
+        );
+        setTailoredOpps(formattedData);
+      } else {
+        setTailoredOpps([]);
+      }
+    } catch (error) {
+      console.error("Unexpected error in fetchTailoredOpportunities:", error);
+    } finally {
+      setIsTailoredOppLoading(false);
+    }
+  };
+
   const generateTailoredOpportunities = async () => {
     setIsTailoredOppGenerating(true);
 
     try {
+      // const { data } = await generateTailoredOpportunitiesAPI({
+      //   companyID: companyID.toString(),
+      //   orgID: orgInfo?.id.toString() || "",
+      //   year,
+      //   quarter,
+      // });
+
+      // if (data.status === "success") {
+      //   const formattedData: OpportunityProps[] = data.opportunities.map(
+      //     (item: any) => ({
+      //       opportunityName: item.name,
+      //       opportunityScore: item.score,
+      //       keywords: item.keywords.split("\n"),
+      //       targetBuyer: {
+      //         role: item.buyer_role,
+      //         department: item.buyer_department,
+      //       },
+      //       tactics: item.tactics?.split("\n"),
+      //       engagementTips: {
+      //         inbound: item.engagement_inbounds.split("\n"),
+      //         outbound: item.engagement_outbounds.split("\n"),
+      //       },
+      //       outboundEmail: {
+      //         subject: item.email_subject,
+      //         body: item.email_body,
+      //       },
+      //     })
+      //   );
+      //   setTailoredOpps(formattedData);
+      //   setActiveTab("tailored");
+      //   setUserInfo((prev) => {
+      //     if (!prev) return prev;
+      //     return {
+      //       ...prev,
+      //       creditCount: prev.creditCount ? prev.creditCount - 1 : 0,
+      //     };
+      //   });
+      //   invokeToast("success", data.message, "top");
+      // } else {
+      //   invokeToast(
+      //     "error",
+      //     "An error occured while generating tailored opportunities",
+      //     "top"
+      //   );
+      // }
       setTailoredOpps(tailoredOpportunities_v2);
-      setActiveTab("tailored");
     } catch (error) {
       invokeToast("error", "Failred to generate tailored opportunities", "top");
-
+      if (axios.isAxiosError(error)) {
+        if (error.code === "ECONNABORTED") {
+          console.error(
+            "Request timed out. The backend operation might take longer than expected."
+          );
+        } else if (error.response?.status !== 200) {
+          console.error(`HTTP error! status: ${error.response?.status}`);
+        }
+      }
       console.error("Error fetching protected data:", error);
     } finally {
       setIsTailoredOppGenerating(false);
@@ -171,9 +253,9 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <h3 className="px-4 py-3 font-medium text-gray-700">
               Opportunities
             </h3>
-            {!isGeneralOppLoading && (
+            {!isGeneralOppLoading && !isTailoredOppLoading && (
               <button
-                title={`Discover the top opportunities for selling your solutions to ${companyName}`}
+                // title={`Discover the top opportunities for selling your solutions to ${companyName}`}
                 onClick={generateTailoredOpportunities}
                 disabled={isTailoredOppGenerating}
                 className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
@@ -195,40 +277,45 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-gray-100 text-black">
-                {companyName}'s top opportunities.
-                {tailoredOpps?.length === 0 && (
-                  <span>
-                    To find the best ways to sell your solutions to{" "}
-                    {companyName}, click "Generate Tailored Opportunities."
-                  </span>
-                )}
-              </div>
+              {companyName && (
+                <div className="p-4 bg-gray-100 text-black">
+                  {companyName}'s top opportunities.
+                  {tailoredOpps?.length === 0 && (
+                    <span>
+                      To find the best ways to sell your solutions to{" "}
+                      {companyName}, click "Generate Tailored Opportunities."
+                    </span>
+                  )}
+                </div>
+              )}
               {generalOpps && (
                 <OpportunitiesTable
-                  companyName={companyName}
+                  companyName={companyName ?? "companyName"}
                   opportunities={generalOpps}
                   onQuickAction={handleQuickAction}
                 />
               )}
             </>
           ))}
-        {activeTab === "tailored" && (
-          <>
-            <div className="p-4 bg-gray-100 text-black">
-              Below is your company specific opportunity table. You can explore
-              the top sales opportunities for selling your solutions to{" "}
-              {companyName}
-            </div>
-            {tailoredOpps && (
-              <OpportunitiesTable
-                companyName={companyName}
-                opportunities={tailoredOpps}
-                onQuickAction={handleQuickAction}
-              />
-            )}
-          </>
-        )}
+        {activeTab === "tailored" &&
+          (isTailoredOppLoading ? (
+            <LoadingSection />
+          ) : (
+            <>
+              <div className="p-4 bg-gray-100 text-black">
+                Below is your company specific opportunity table. You can
+                explore the top sales opportunities for selling your solutions
+                to {companyName}
+              </div>
+              {tailoredOpps && (
+                <OpportunitiesTable
+                  companyName={companyName ?? "companyName"}
+                  opportunities={tailoredOpps}
+                  onQuickAction={handleQuickAction}
+                />
+              )}
+            </>
+          ))}
       </div>
 
       <Modal
