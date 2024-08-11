@@ -9,6 +9,7 @@ import PrelineScript from "./PrelineScript";
 import AuthInput from "./SignInput";
 import WatchlistModal from "./WatchlistModal";
 import MarketingStrategiesSection from "./marketing/MarketingStrategiesSection";
+import OpportunitiesSection from "./opportunity/OpportunitiesSection";
 
 export {
   CompanySearchbar,
@@ -22,4 +23,5 @@ export {
   AuthInput,
   WatchlistModal,
   MarketingStrategiesSection,
+  OpportunitiesSection,
 };

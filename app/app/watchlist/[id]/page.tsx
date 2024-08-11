@@ -18,8 +18,10 @@ import { MdAddCircleOutline, MdContentPaste } from "react-icons/md";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-import OpportunitiesSection from "./components/opportunities/OpportunitiesSection";
-import { MarketingStrategiesSection } from "@/app/components";
+import {
+  OpportunitiesSection,
+  MarketingStrategiesSection,
+} from "@/app/components";
 import EarningsCalendar from "./components/EarningsCalendar";
 import WLIncomeStatement from "./components/WLIncomeStatement";
 import WatchlistHighlights from "./components/WatchlistHighlights";
@@ -389,13 +391,7 @@ export default function WatchlistPage() {
 
                 {watchlistCompanies?.length > 0 && (
                   <>
-                    <OpportunitiesSection
-                      companyID={34855} // watchlistCompanies[0].id}
-                      // watchlistName={watchlistName}
-                      companyName="Amazon"
-                      year={2024}
-                      quarter={1}
-                    />
+                    <OpportunitiesSection etIDs={etIDs} />
                     <MarketingStrategiesSection etIDs={etIDs} />
                   </>
                 )}
