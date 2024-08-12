@@ -18,9 +18,6 @@ const OpportunitiesTable: React.FC<{
               <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
                 Opportunity
               </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-10">
-                Score
-              </th>
               <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
                 Target Buyer Role
               </th>
@@ -42,19 +39,6 @@ const OpportunitiesTable: React.FC<{
               >
                 <td className="px-4 py-3 border text-left border-gray-300">
                   {opp.opportunityName}
-                </td>
-                <td className="px-4 py-3 border border-gray-300">
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-sm font-medium ${
-                      opp.opportunityScore >= 90
-                        ? "bg-green-100 text-green-800"
-                        : opp.opportunityScore >= 70
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {opp.opportunityScore}
-                  </span>
                 </td>
                 <td className="px-4 py-3 border border-gray-300">
                   {opp.targetBuyer.role}
@@ -110,7 +94,7 @@ const OpportunitiesTable: React.FC<{
             ))}
             {opportunities.length === 0 && (
               <tr>
-                <td colSpan={5}>
+                <td colSpan={4}>
                   <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
                     <span className="text-4xl text-gray-600">No data</span>
                   </div>
@@ -127,9 +111,6 @@ const OpportunitiesTable: React.FC<{
                 <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
                   Opportunity
                 </th>
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-10">
-                  Score
-                </th>
                 <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
                   Target Buyer Role
                 </th>
@@ -143,7 +124,7 @@ const OpportunitiesTable: React.FC<{
             </thead>
             <tbody>
               <tr>
-                <td colSpan={5}>
+                <td colSpan={4}>
                   <div className="w-full p-10 text-gray-500 text-xl flex items-center justify-center">
                     No data
                   </div>

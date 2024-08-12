@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAtomValue, useSetAtom } from "jotai";
+import { supabase } from "@/utils/supabaseClient";
 
 import Modal from "@/app/components/Modal";
-import { supabase } from "@/utils/supabaseClient";
 import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTailoredOpportunitiesAPI } from "@/utils/apiClient";

@@ -3,30 +3,27 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useAtomValue, useSetAtom } from "jotai";
-import { IoAddOutline, IoPencil, IoTrash, IoClose } from "react-icons/io5";
-
+import { IoAddOutline, IoPencil, IoTrash } from "react-icons/io5";
 import { supabase } from "@/utils/supabaseClient";
 import {
   latestCompanyEarningsData,
   userInfoAtom,
   watchlistAtom,
 } from "@/utils/atoms";
-import WatchlistModal from "@/app/components/WatchlistModal";
-import CompanySearchbar from "@/app/components/CompanySearchbar";
-
-import { MdAddCircleOutline, MdContentPaste } from "react-icons/md";
+import { MdAddCircleOutline } from "react-icons/md";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import moment from "moment";
 
+import WatchlistModal from "@/app/components/WatchlistModal";
+import CompanySearchbar from "@/app/components/CompanySearchbar";
 import {
   OpportunitiesSection,
   MarketingStrategiesSection,
   EarningsCalendarSection,
   WLIncomeStatementSection,
 } from "@/app/components";
-
 import WatchlistHighlights from "./components/WatchlistHighlights";
-import moment from "moment";
 
 export interface CompanyDataType {
   id: number;
@@ -34,33 +31,6 @@ export interface CompanyDataType {
   symbol: string;
   watchlist_company_id: number;
 }
-
-const sortAlphabetically = (arr: CompanyDataType[]) =>
-  [...arr].sort((elA, elB) => {
-    const nameA = elA.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-    const nameB = elB.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-
-    const numberPattern = /^\d+/;
-    const numA = nameA.match(numberPattern);
-    const numB = nameB.match(numberPattern);
-
-    if (numA && numB) {
-      const numComparison = parseInt(numA[0], 10) - parseInt(numB[0], 10);
-      if (numComparison !== 0) return numComparison;
-    }
-
-    return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
-  });
-
-const randomColor = [
-  "bg-fuchsia-800",
-  "bg-teal-800",
-  "bg-gray-800",
-  "bg-red-800",
-  "bg-blue-800",
-  "bg-green-800",
-  "bg-purple-800",
-];
 
 export default function WatchlistPage() {
   const params = useParams();
@@ -304,7 +274,7 @@ export default function WatchlistPage() {
   return (
     <div className="flex justify-center p-4 h-full overflow-auto">
       {isLoading ? (
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center m-auto gap-4">
           <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
           <h1>Loading</h1>
         </div>

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { supabase } from "@/utils/supabaseClient";
 
 import Modal from "@/app/components/Modal";
-import { supabase } from "@/utils/supabaseClient";
 import OpportunitiesTable from "./OpportunitiesTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { Details } from "..";
