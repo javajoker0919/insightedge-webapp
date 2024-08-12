@@ -1,6 +1,5 @@
 "use client";
 
-/// Import necessary dependencies and components
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -10,12 +9,8 @@ import { useSetAtom } from "jotai";
 import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 import useValidation from "@/hooks/useValidation";
-import AuthInput from "@/app/components/SignInput";
-import { createCustomer } from "@/utils/apiClient";
 
-/// SignUp component for user registration
 const SignUp = () => {
-  /// Custom hooks for validation and context
   const { validateEmail, validatePassword } = useValidation();
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setUserData = useSetAtom(userInfoAtom);
@@ -23,33 +18,27 @@ const SignUp = () => {
   const { invokeToast } = useToastContext();
   const router = useRouter();
 
-  /// State for form data and errors
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
-    confirmPass: ""
+    password: ""
   });
 
   const [errors, setErrors] = useState({
     email: "",
-    password: "",
-    confirmPass: ""
+    password: ""
   });
 
-  /// State to track form validation, checkbox, and loading
   const [isValidate, setIsValidate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  /// Effect to check form validity
   useEffect(() => {
-    const { email, password, confirmPass } = formData;
+    const { email, password } = formData;
     const hasErrors = Object.values(errors).some((error) => error !== "");
     const allFieldsFilled = Boolean(email && password);
 
     setIsValidate(allFieldsFilled && !hasErrors);
   }, [formData, errors]);
 
-  /// Handle input changes and validate fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -57,26 +46,41 @@ const SignUp = () => {
     if (name === "email") {
       const { validate, error } = validateEmail(value);
       setErrors((prev) => ({ ...prev, email: validate ? "" : error }));
-    } else if (name === "password" || name === "confirmPass") {
+    } else if (name === "password") {
       const { validate, error } = validatePassword(value);
-      setErrors((prev) => ({ ...prev, [name]: validate ? "" : error }));
+      setErrors((prev) => ({ ...prev, password: validate ? "" : error }));
     }
   };
 
-  /// Handle form submission for user registration
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { email, password } = formData;
 
+    if (!isValidate) {
+      invokeToast("error", "Please fill in all fields correctly", "top");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      /// Sign up user with Supabase
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("email", email)
+        .single();
+
+      if (userData) {
+        invokeToast("error", "User already exists", "top");
+        setIsLoading(false);
+        return;
+      }
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `https://insightedge-webapp.vercel.app/onboarding/user-info`
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding/user-info`
         }
       });
 
@@ -88,21 +92,7 @@ const SignUp = () => {
         if (id) localStorage.setItem("userId", id);
       }
 
-      /// Insert user data into 'users' table
-      // const { data: userData, error: userError } = await supabase
-      //   .from("users")
-      //   .insert({
-      //     id: authData.user?.id,
-      //     email: authData.user?.email
-      //   })
-      //   .select()
-      //   .single();
-
-      // if (userError) throw userError;
-
       setUserMetadata(authData.user?.user_metadata || null);
-
-      // createCustomer();
 
       // Set user data using the userInfoAtom
       // setUserData({
@@ -124,7 +114,27 @@ const SignUp = () => {
     }
   };
 
-  /// Render the sign-up form
+  const handleGoogleSignIn = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `http://localhost:3000/onboarding/user-info`
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+      // Handle successful sign-in
+      console.log("Google sign-in successful:", data);
+      // You might want to redirect the user or update the UI here
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+      // Handle error (e.g., show an error message to the user)
+    }
+  };
+
   return (
     <div className="flex flex-row w-full h-screen">
       <div className="flex flex-col w-1/2 h-full bg-white">
@@ -162,7 +172,10 @@ const SignUp = () => {
                 </Link>
               </div>
             </div>
-            <button className="w-full flex justify-center items-center gap-2 cursor-pointer text-base py-4 font-normal leading-6 rounded-full text-black border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+            <button
+              onClick={handleGoogleSignIn}
+              className="w-full flex justify-center items-center gap-2 cursor-pointer text-base py-4 font-normal leading-6 rounded-full text-black border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
+            >
               <Image
                 src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
                 alt="Google logo"
@@ -199,6 +212,9 @@ const SignUp = () => {
                   placeholder="example.email@gmail.com"
                   onChange={handleInputChange}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
               <div className="flex flex-col w-ufll mt-2">
                 <label
@@ -215,16 +231,19 @@ const SignUp = () => {
                   placeholder="••••••••"
                   onChange={handleInputChange}
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
               </div>
               <button
                 type="submit"
                 className="w-full bg-primary-600 text-white text-base font-semibold py-4 mt-4 rounded-md hover:bg-primary-700 active:bg-primary-800 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
-                disabled={!isValidate || isLoading}
+                disabled={isLoading}
               >
                 {isLoading ? (
-                  <span className="inline-flex items-center">
+                  <span className="flex justify-center">
                     <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      className="animate-spin -ml-1 mr-3 h-6 w-6 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -243,7 +262,6 @@ const SignUp = () => {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Signing Up...
                   </span>
                 ) : (
                   "Sign Up"

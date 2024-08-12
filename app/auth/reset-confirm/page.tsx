@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import HeaderImage from "@/app/components/HeaderImage";
 import { supabase } from "@/utils/supabaseClient";
@@ -7,13 +8,15 @@ import { useToastContext } from "@/contexts/toastContext";
 
 const ResetConfirm = () => {
   const { invokeToast } = useToastContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleResendEmail = async () => {
     const email = localStorage.getItem("email");
     if (!email) return;
+    setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `https://insightedge-webapp.vercel.app/auth/reset-password`,
+        redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/reset-password`
       });
       if (error) throw error;
       localStorage.removeItem("email");
@@ -24,7 +27,9 @@ const ResetConfirm = () => {
         `Error: ${error.message || "An error occurred during password reset"}`,
         "top"
       );
-      console.error(error);
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -63,6 +68,7 @@ const ResetConfirm = () => {
             type="button"
             className="w-full bg-white hover:bg-gray-100 active:bg-gray-200 text-primary-600 text-lg font-medium py-3 rounded-full border border-primary-600"
             onClick={handleResendEmail}
+            disabled={isLoading}
           >
             Resend email
           </button>

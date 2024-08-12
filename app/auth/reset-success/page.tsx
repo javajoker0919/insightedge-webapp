@@ -27,7 +27,7 @@ const ResetSuccess = () => {
           <button
             type="button"
             className="w-full bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white text-lg font-medium py-4 rounded-full transition duration-300 ease-in-out shadow-md"
-            onClick={() => router.push("/auth/sign-in")}
+            onClick={() => router.replace("/auth/sign-in")}
           >
             Login
           </button>
