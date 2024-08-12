@@ -1,10 +1,44 @@
 "use client";
-import { useAtomValue } from "jotai";
+import { useState } from "react";
+import { useAtom } from "jotai";
+
+import { supabase } from "@/utils/supabaseClient";
 import { userInfoAtom } from "@/utils/atoms";
-import SettingsSidebar from "../components/Sidebar";
+import { Loading } from "@/app/components";
+import { useToastContext } from "@/contexts/toastContext";
 
 const MyProfile = () => {
-  const userInfo = useAtomValue(userInfoAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [firstName, setFirstName] = useState(userInfo?.firstName || "");
+  const [lastName, setLastName] = useState(userInfo?.lastName || "");
+  const [isUpdating, setIsUpdating] = useState(false);
+  const { invokeToast } = useToastContext();
+
+  const handleUpdateProfile = async () => {
+    setIsUpdating(true);
+    const { error } = await supabase
+      .from("users")
+      .update({ first_name: firstName, last_name: lastName })
+      .eq("id", userInfo?.id);
+
+    if (error) {
+      console.error("Error updating profile:", error);
+    } else {
+      console.log("Profile updated successfully");
+      invokeToast("success", "Profile updated successfully", "top");
+      setUserInfo((prev) => ({
+        ...prev,
+        firstName,
+        lastName,
+        id: prev?.id || "", // Ensure id is always a string
+        email: prev?.email || "", // Ensure email is always a string
+        companyName: prev?.companyName || "", // Ensure companyName is always a string
+        onboardingStatus: prev?.onboardingStatus ?? null, // Ensure onboardingStatus is always boolean or null
+        creditCount: prev?.creditCount ?? null, // Ensure creditCount is always number or null
+      }));
+    }
+    setIsUpdating(false);
+  };
 
   return (
     <div className="m-auto p-10 w-[60rem] bg-white">
@@ -18,15 +52,32 @@ const MyProfile = () => {
         </div>
         <div>
           <strong>First Name:</strong>
-          <div className="p-2 border bg-gray-50 mt-1 rounded">
-            {userInfo?.firstName}
-          </div>
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="p-2 border bg-gray-50 mt-1 rounded w-full"
+          />
         </div>
         <div>
           <strong>Last Name:</strong>
-          <div className="p-2 border bg-gray-50 mt-1 rounded">
-            {userInfo?.lastName}
-          </div>
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="p-2 border bg-gray-50 mt-1 rounded w-full"
+          />
+        </div>
+        <div className="flex justify-center">
+          <button
+            onClick={handleUpdateProfile}
+            className={`w-40 py-2 flex items-center justify-center h-12 bg-blue-500 text-white rounded ${
+              isUpdating ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isUpdating}
+          >
+            {isUpdating ? <Loading size={5} color="white" /> : "Update Profile"}
+          </button>
         </div>
       </div>
     </div>
