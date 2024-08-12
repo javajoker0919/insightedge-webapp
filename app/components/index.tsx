@@ -11,6 +11,7 @@ import WatchlistModal from "./WatchlistModal";
 import MarketingStrategiesSection from "./marketing/MarketingStrategiesSection";
 import OpportunitiesSection from "./opportunity/OpportunitiesSection";
 import EarningsCalendarSection from "./watchlist/EarningsCalendar";
+import WLIncomeStatementSection from "./watchlist/WLIncomeStatement";
 
 export {
   CompanySearchbar,
@@ -26,4 +27,5 @@ export {
   MarketingStrategiesSection,
   OpportunitiesSection,
   EarningsCalendarSection,
+  WLIncomeStatementSection,
 };

@@ -22,9 +22,9 @@ import {
   OpportunitiesSection,
   MarketingStrategiesSection,
   EarningsCalendarSection,
+  WLIncomeStatementSection,
 } from "@/app/components";
 
-import WLIncomeStatement from "./components/WLIncomeStatement";
 import WatchlistHighlights from "./components/WatchlistHighlights";
 import moment from "moment";
 
@@ -383,7 +383,7 @@ export default function WatchlistPage() {
           ) : (
             <div className="grid grid-cols-3 gap-4 my-2">
               <div className="col-span-2 flex flex-col gap-4 pb-5">
-                <WLIncomeStatement
+                <WLIncomeStatementSection
                   watchlistCompanies={watchlistCompanies}
                   isSorted={isSorted}
                   onRemoveCompany={(wl_compId: number) =>
