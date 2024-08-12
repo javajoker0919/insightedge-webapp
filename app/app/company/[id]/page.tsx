@@ -104,7 +104,7 @@ const CompanyDetailPage: React.FC = () => {
             .from("earnings_transcripts")
             .select("year, quarter, date")
             .eq("company_id", companyId)
-            .order("date", { ascending: true });
+            .order("date", { ascending: false });
 
         if (yearQuarterError) throw yearQuarterError;
         setYearQuarters(yearQuarterData as YearQuarter[]);
