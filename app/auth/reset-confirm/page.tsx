@@ -13,7 +13,7 @@ const ResetConfirm = () => {
     if (!email) return;
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `https://insightedge-webapp.vercel.app/auth/reset-password`
+        redirectTo: `https://insightedge-webapp.vercel.app/auth/reset-password`,
       });
       if (error) throw error;
       localStorage.removeItem("email");
@@ -24,7 +24,7 @@ const ResetConfirm = () => {
         `Error: ${error.message || "An error occurred during password reset"}`,
         "top"
       );
-      console.log(error);
+      console.error(error);
     }
   };
   return (

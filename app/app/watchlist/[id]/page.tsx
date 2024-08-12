@@ -192,7 +192,6 @@ export default function WatchlistPage() {
 
     const fetchLatestEarningsTranscripts = async () => {
       const companyIDs = watchlistCompanies.map((item) => item.id);
-      console.log("companyIDs: ", companyIDs);
 
       const { data: earningsTranscriptsData, error: earningsTranscriptsError } =
         await supabase

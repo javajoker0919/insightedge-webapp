@@ -59,10 +59,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     useState<boolean>(false);
 
   useEffect(() => {
-    console.log(generalOpps);
-  }, [generalOpps]);
-
-  useEffect(() => {
     if (etIDs && etIDs.length > 0) {
       fetchGeneralOpportunities(etIDs);
     }
@@ -96,7 +92,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           body: item.email_body,
         },
       }));
-      console.log(formattedData);
+
       setGeneralOpps(formattedData);
     } catch (error) {
       console.error("Unexpected error in fetchGeneralOpportunities:", error);

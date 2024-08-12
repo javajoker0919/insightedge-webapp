@@ -32,7 +32,7 @@ const ForgotPassword = () => {
   const handleForgotPassword = async () => {
     if (!isValidForm) {
       setError({ email: validateEmail(email).error });
-      console.log(error);
+      console.error(error);
       return;
     }
 
@@ -40,7 +40,7 @@ const ForgotPassword = () => {
 
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `https://insightedge-webapp.vercel.app/auth/reset-password`
+        redirectTo: `https://insightedge-webapp.vercel.app/auth/reset-password`,
       });
       if (error) throw error;
 

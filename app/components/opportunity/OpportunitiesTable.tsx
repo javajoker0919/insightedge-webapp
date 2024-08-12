@@ -8,10 +8,6 @@ const OpportunitiesTable: React.FC<{
   opportunities: OpportunityProps[];
   onQuickAction: (opp: OpportunityProps) => void;
 }> = ({ companyName, opportunities, onQuickAction }) => {
-  useEffect(() => {
-    console.log(opportunities);
-  }, [opportunities]);
-
   const opps = opportunities.length > 0 ? opportunities : generalOpportunities;
 
   return (
