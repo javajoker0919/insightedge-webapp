@@ -21,8 +21,9 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import {
   OpportunitiesSection,
   MarketingStrategiesSection,
+  EarningsCalendarSection,
 } from "@/app/components";
-import EarningsCalendar from "./components/EarningsCalendar";
+
 import WLIncomeStatement from "./components/WLIncomeStatement";
 import WatchlistHighlights from "./components/WatchlistHighlights";
 import moment from "moment";
@@ -402,10 +403,8 @@ export default function WatchlistPage() {
                   companyList={watchlistCompanies}
                 />
 
-                <EarningsCalendar
-                  key={watchlistName}
-                  companiesList={watchlistCompanies}
-                />
+                <EarningsCalendarSection companies={watchlistCompanies} />
+
                 <div className="border border-gray-300 rounded-lg p-3">
                   <h2 className="text-base font-semibold border-b border-gray-300 pb-2 mb-2 text-gray-800">
                     Similar Company To Follow

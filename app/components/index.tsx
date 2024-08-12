@@ -10,6 +10,7 @@ import AuthInput from "./SignInput";
 import WatchlistModal from "./WatchlistModal";
 import MarketingStrategiesSection from "./marketing/MarketingStrategiesSection";
 import OpportunitiesSection from "./opportunity/OpportunitiesSection";
+import EarningsCalendarSection from "./watchlist/EarningsCalendar";
 
 export {
   CompanySearchbar,
@@ -24,4 +25,5 @@ export {
   WatchlistModal,
   MarketingStrategiesSection,
   OpportunitiesSection,
+  EarningsCalendarSection,
 };
