@@ -102,10 +102,9 @@ const CompanyDetailPage: React.FC = () => {
         const { data: yearQuarterData, error: yearQuarterError } =
           await supabase
             .from("earnings_transcripts")
-            .select("year, quarter")
+            .select("year, quarter, date")
             .eq("company_id", companyId)
-            .order("year", { ascending: true })
-            .order("quarter", { ascending: true });
+            .order("date", { ascending: true });
 
         if (yearQuarterError) throw yearQuarterError;
         setYearQuarters(yearQuarterData as YearQuarter[]);
