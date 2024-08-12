@@ -79,7 +79,7 @@ export default function WatchlistPage() {
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState<boolean>(false);
   const optionsModalRef = useRef<HTMLDivElement>(null);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState<boolean>(false);
-  const [isCompSortAlpha, setIsComptortAlpha] = useState<boolean>(false);
+  const [isSorted, setIsSorted] = useState<boolean>(false);
   const [watchlistCompanies, setWatchlistCompanies] = useState<
     CompanyDataType[] | []
   >([]);
@@ -245,8 +245,8 @@ export default function WatchlistPage() {
     setIsSearchBarOpen(true);
   };
 
-  const handleSortCompaniesAlpha = () => {
-    setIsComptortAlpha((prev) => !prev);
+  const handleSortCompanies = () => {
+    setIsSorted((prev) => !prev);
   };
 
   const handleRemoveCompanyFromWatchlist = async (
@@ -313,20 +313,21 @@ export default function WatchlistPage() {
         <div className="container mx-auto relative">
           <div className="flex items-center justify-between relative pl-4 py-2 w-8/12">
             <h1 className="font-bold text-lg">{watchlistName}</h1>
-            <div className="flex">
+            <div className="flex items-center gap-2">
               <button
+                onClick={handleSortCompanies}
                 className={
-                  "rounded-full p-2 flex items-center gap-2 hover:text-primary-700 " +
-                  (isCompSortAlpha ? "text-primary-500" : "text-gray-500")
+                  "rounded-full p-2 flex items-center gap-2 hover:text-primary-700" +
+                  (isSorted ? "text-primary-500" : "text-gray-500")
                 }
-                onClick={handleSortCompaniesAlpha}
               >
                 <FaSortAlphaDown />
-                <p>Sort by Name</p>
+                <span>Sort by Name</span>
               </button>
+
               {watchlistCompanies.length > 0 && (
                 <button
-                  className="rounded-full py-2 px-4 bg-primary-500 text-gray-100 flex items-center"
+                  className="rounded-full py-2 px-4 bg-primary-500 hover:bg-primary-600 text-gray-100 flex items-center"
                   onClick={handleAddInvestments}
                 >
                   <IoAddOutline className="text-xl" />
@@ -384,7 +385,7 @@ export default function WatchlistPage() {
               <div className="col-span-2 flex flex-col gap-4 pb-5">
                 <WLIncomeStatement
                   watchlistCompanies={watchlistCompanies}
-                  isCompSortAlpha={isCompSortAlpha}
+                  isSorted={isSorted}
                   onRemoveCompany={(wl_compId: number) =>
                     handleRemoveCompanyFromWatchlist(wl_compId)
                   }

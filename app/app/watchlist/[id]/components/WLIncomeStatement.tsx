@@ -12,7 +12,7 @@ import moment from "moment";
 
 interface WLIncomeStatementProps {
   watchlistCompanies: CompanyDataType[];
-  isCompSortAlpha: boolean;
+  isSorted: boolean;
   onRemoveCompany: (id: number) => void;
 }
 
@@ -57,7 +57,7 @@ const randomColor = [
 
 const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
   watchlistCompanies,
-  isCompSortAlpha,
+  isSorted,
   onRemoveCompany,
 }) => {
   const router = useRouter();
@@ -163,7 +163,7 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
             </tr>
           )}
           {compIncStatement !== null &&
-            (isCompSortAlpha
+            (isSorted
               ? sortAlphabetically(compIncStatement)
               : compIncStatement
             )?.map((company: IncomeStatementType, indx: number) => {
