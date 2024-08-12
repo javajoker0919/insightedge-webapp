@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useRef, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import { useParams, useRouter } from "next/navigation";
@@ -82,6 +83,8 @@ const WatchlistModal = ({
             },
           ];
         });
+
+        router.push(`/app/watchlist/${data.uuid}`);
       } else if (type === "rename") {
         const { data, error } = await supabase
           .from("watchlists")

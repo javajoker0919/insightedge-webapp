@@ -5,7 +5,6 @@ import { useAtom, useAtomValue } from "jotai";
 import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 
-// AuthProvider component manages user authentication state and handles routing based on auth status
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -13,7 +12,6 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom);
   const userInfo = useAtomValue(userInfoAtom);
 
-  // Define paths that don't require authentication
   const authPaths = [
     "/auth/sign-in",
     "/auth/sign-up",
@@ -21,21 +19,20 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/verify-email",
     "/auth/reset-password",
     "/auth/reset-confirm",
-    "/auth/reset-success"
+    "/auth/reset-success",
+    "/terms",
+    "/privacy"
   ];
   const landingPath = "/";
 
   useEffect(() => {
-    // Asynchronous function to verify user authentication status
     const checkUser = async () => {
       try {
-        // Retrieve the current session from Supabase
         const {
           data: { session }
         } = await supabase.auth.getSession();
 
         if (session?.user) {
-          // If a valid session exists, update the user metadata
           setUserMetadata(session.user.user_metadata);
 
           // Check if onboardingStatus is true and redirect if necessary
@@ -49,10 +46,8 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
           //   }
           // }
         } else {
-          // Clear user metadata if no valid session
           setUserMetadata(null);
           if (
-            // Redirect to sign-in if user is not authenticated and not on exempt pages
             !userMetadata &&
             !authPaths.includes(pathname) &&
             pathname !== landingPath

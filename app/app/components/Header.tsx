@@ -117,7 +117,7 @@ const Header: React.FC = () => {
             <IoMenu className="text-2xl" />
           </button>
           <Link
-            href="/"
+            href={`/app/watchlist/${watchlist?.[0]?.uuid}`}
             className={`text-2xl font-bold gap-2 text-primary-600 flex items-center`}
           >
             <Image

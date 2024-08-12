@@ -150,7 +150,7 @@ const Membership: React.FC = () => {
       const response = await updatePlan("standard");
       router.push(response.url);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setIsUpgradeLoading(false);
     }

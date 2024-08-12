@@ -14,19 +14,19 @@ const VerifyEmail = () => {
               Verify your email
             </h1>
             <div className="flex items-center justify-center mb-8">
-              <MdMarkEmailRead className="text-6xl text-blue-600" />
+              <MdMarkEmailRead className="text-6xl text-primary-600" />
             </div>
             <p className="text-gray-600 text-sm font-normal leading-6 mb-8 text-center w-full">
               An email has been sent to <span className="font-semibold">example.email@gmail.com</span> with a link to
               verify your account. If you don't see the email, please check
               your spam folder before clicking "Resend".
             </p>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold w-full py-4 rounded transition duration-300 ease-in-out">
+            <button className="bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold w-full py-4 rounded transition duration-300 ease-in-out">
               Resend email
             </button>
             <div className="flex justify-center mt-6 text-sm gap-1 font-bold">
               <span className="text-gray-600">Need some help?</span>
-              <Link href="/support" className="text-blue-600 hover:text-blue-800 ml-1 font-semibold">
+              <Link href="/support" className="text-primary-600 hover:text-primary-800 ml-1 font-semibold">
                 Contact support
               </Link>
             </div>

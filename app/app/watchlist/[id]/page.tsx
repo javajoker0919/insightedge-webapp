@@ -3,29 +3,27 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useAtomValue, useSetAtom } from "jotai";
-import { IoAddOutline, IoPencil, IoTrash, IoClose } from "react-icons/io5";
-
+import { IoAddOutline, IoPencil, IoTrash } from "react-icons/io5";
 import { supabase } from "@/utils/supabaseClient";
 import {
   latestCompanyEarningsData,
   userInfoAtom,
   watchlistAtom,
 } from "@/utils/atoms";
-import WatchlistModal from "@/app/components/WatchlistModal";
-import CompanySearchbar from "@/app/components/CompanySearchbar";
-
-import { MdAddCircleOutline, MdContentPaste } from "react-icons/md";
+import { MdAddCircleOutline } from "react-icons/md";
 import { FaSortAlphaDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import moment from "moment";
 
+import WatchlistModal from "@/app/components/WatchlistModal";
+import CompanySearchbar from "@/app/components/CompanySearchbar";
 import {
   OpportunitiesSection,
   MarketingStrategiesSection,
+  EarningsCalendarSection,
+  WLIncomeStatementSection,
 } from "@/app/components";
-import EarningsCalendar from "./components/EarningsCalendar";
-import WLIncomeStatement from "./components/WLIncomeStatement";
 import WatchlistHighlights from "./components/WatchlistHighlights";
-import moment from "moment";
 
 export interface CompanyDataType {
   id: number;
@@ -33,33 +31,6 @@ export interface CompanyDataType {
   symbol: string;
   watchlist_company_id: number;
 }
-
-const sortAlphabetically = (arr: CompanyDataType[]) =>
-  [...arr].sort((elA, elB) => {
-    const nameA = elA.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-    const nameB = elB.name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-
-    const numberPattern = /^\d+/;
-    const numA = nameA.match(numberPattern);
-    const numB = nameB.match(numberPattern);
-
-    if (numA && numB) {
-      const numComparison = parseInt(numA[0], 10) - parseInt(numB[0], 10);
-      if (numComparison !== 0) return numComparison;
-    }
-
-    return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
-  });
-
-const randomColor = [
-  "bg-fuchsia-800",
-  "bg-teal-800",
-  "bg-gray-800",
-  "bg-red-800",
-  "bg-blue-800",
-  "bg-green-800",
-  "bg-purple-800",
-];
 
 export default function WatchlistPage() {
   const params = useParams();
@@ -78,7 +49,7 @@ export default function WatchlistPage() {
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState<boolean>(false);
   const optionsModalRef = useRef<HTMLDivElement>(null);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState<boolean>(false);
-  const [isCompSortAlpha, setIsComptortAlpha] = useState<boolean>(false);
+  const [isSorted, setIsSorted] = useState<boolean>(true);
   const [watchlistCompanies, setWatchlistCompanies] = useState<
     CompanyDataType[] | []
   >([]);
@@ -191,7 +162,6 @@ export default function WatchlistPage() {
 
     const fetchLatestEarningsTranscripts = async () => {
       const companyIDs = watchlistCompanies.map((item) => item.id);
-      console.log("companyIDs: ", companyIDs);
 
       const { data: earningsTranscriptsData, error: earningsTranscriptsError } =
         await supabase
@@ -244,8 +214,8 @@ export default function WatchlistPage() {
     setIsSearchBarOpen(true);
   };
 
-  const handleSortCompaniesAlpha = () => {
-    setIsComptortAlpha((prev) => !prev);
+  const handleSortCompanies = () => {
+    setIsSorted((prev) => !prev);
   };
 
   const handleRemoveCompanyFromWatchlist = async (
@@ -304,7 +274,7 @@ export default function WatchlistPage() {
   return (
     <div className="flex justify-center p-4 h-full overflow-auto">
       {isLoading ? (
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center m-auto gap-4">
           <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
           <h1>Loading</h1>
         </div>
@@ -312,24 +282,25 @@ export default function WatchlistPage() {
         <div className="container mx-auto relative">
           <div className="flex items-center justify-between relative pl-4 py-2 w-8/12">
             <h1 className="font-bold text-lg">{watchlistName}</h1>
-            <div className="flex">
+            <div className="flex items-center gap-2">
               <button
+                onClick={handleSortCompanies}
                 className={
-                  "rounded-full p-2 flex items-center gap-2 hover:text-primary-700 " +
-                  (isCompSortAlpha ? "text-primary-500" : "text-gray-500")
+                  "rounded-full p-2 flex items-center gap-2 hover:text-primary-700" +
+                  (isSorted ? "text-primary-500" : "text-gray-500")
                 }
-                onClick={handleSortCompaniesAlpha}
               >
                 <FaSortAlphaDown />
-                <p>Sort by Name</p>
+                <span>Sort by Name</span>
               </button>
+
               {watchlistCompanies.length > 0 && (
                 <button
-                  className="rounded-full py-2 px-4 bg-primary-500 text-gray-100 flex items-center"
+                  className="rounded-full py-2 px-4 bg-primary-500 hover:bg-primary-600 text-gray-100 flex items-center"
                   onClick={handleAddInvestments}
                 >
                   <IoAddOutline className="text-xl" />
-                  <p>Company</p>
+                  <span>Company</span>
                 </button>
               )}
               {watchlist && watchlist[0] && paramID !== watchlist[0].uuid && (
@@ -381,9 +352,9 @@ export default function WatchlistPage() {
           ) : (
             <div className="grid grid-cols-3 gap-4 my-2">
               <div className="col-span-2 flex flex-col gap-4 pb-5">
-                <WLIncomeStatement
+                <WLIncomeStatementSection
                   watchlistCompanies={watchlistCompanies}
-                  isCompSortAlpha={isCompSortAlpha}
+                  isSorted={isSorted}
                   onRemoveCompany={(wl_compId: number) =>
                     handleRemoveCompanyFromWatchlist(wl_compId)
                   }
@@ -402,17 +373,18 @@ export default function WatchlistPage() {
                   companyList={watchlistCompanies}
                 />
 
-                <EarningsCalendar
-                  key={watchlistName}
-                  companiesList={watchlistCompanies}
-                />
+                <EarningsCalendarSection companies={watchlistCompanies} />
+
                 <div className="border border-gray-300 rounded-lg p-3">
                   <h2 className="text-base font-semibold border-b border-gray-300 pb-2 mb-2 text-gray-800">
                     Similar Company To Follow
                   </h2>
                   <div className="flex flex-col">
-                    {[0, 1, 2].map(() => (
-                      <div className="flex items-center justify-between p-2 border-b border-gray-300 last:border-b-0 text-gray-700">
+                    {[0, 1, 2].map((item, index) => (
+                      <div
+                        key={`similar-company-${index}`}
+                        className="flex items-center justify-between p-2 border-b border-gray-300 last:border-b-0 text-gray-700"
+                      >
                         <span>Content</span>
                         <div className="flex items-center gap-2">
                           <span className="flex items-center justify-center py-1 px-3 rounded bg-primary-50 text-primary-500">

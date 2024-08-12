@@ -6,7 +6,6 @@ import { useAtom, useAtomValue } from "jotai";
 
 import {
   IoHomeOutline,
-  IoPersonOutline,
   IoAddOutline,
   IoMenu,
   IoSettingsOutline,
@@ -63,7 +62,7 @@ const Sidebar: React.FC = () => {
           isExpanded ? "left-0" : "-left-64"
         } transition-all overflow-y-auto overflow-x-hidden duration-300 border-r border-gray-200 shadow-md flex flex-col`}
       >
-        <SidebarHeader />
+        <SidebarHeader watchlist={watchlist} />
         <SidebarMenu
           watchlist={watchlist}
           paramUUID={paramUUID}
@@ -89,16 +88,18 @@ const Sidebar: React.FC = () => {
   );
 };
 
-const SidebarHeader: React.FC = () => (
-  <div className="p-3">
-    <Link
-      href="/"
-      className={`text-2xl font-bold gap-2 text-primary-600 flex items-center p-3`}
-    >
-      <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
-    </Link>
-  </div>
-);
+const SidebarHeader: React.FC<{ watchlist: any }> = ({ watchlist }) => {
+  return (
+    <div className="p-3">
+      <Link
+        href={`/app/watchlist/${watchlist?.[0]?.uuid}`}
+        className={`text-2xl font-bold gap-2 text-primary-600 flex items-center p-3`}
+      >
+        <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
+      </Link>
+    </div>
+  );
+};
 
 const SidebarMenu: React.FC<{
   watchlist: any;

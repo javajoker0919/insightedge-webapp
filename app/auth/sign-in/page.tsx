@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import AuthInput from "@/app/components/SignInput";
 import { MdOutlineEmail, MdOutlineLock } from "react-icons/md";
 import { ImEye, ImEyeBlocked } from "react-icons/im";
 import useValidation from "@/hooks/useValidation";
@@ -28,21 +27,18 @@ const SignIn = () => {
 
   const { validateEmail, validatePassword } = useValidation();
 
-  /// State for user credentials, form errors, and form validation
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [isValidForm, setIsValidForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  /// Effect to check form validity whenever credentials or errors change
   useEffect(() => {
     const { email, password } = credentials;
     const hasErrors = Object.values(errors).some((error) => error !== "");
     setIsValidForm(!!email && !!password && !hasErrors);
   }, [credentials, errors]);
 
-  /// Handle input changes and validate fields
   const handleInputChange = (field: "email" | "password", value: string) => {
     setCredentials((prev) => ({ ...prev, [field]: value }));
     const { validate, error } =
@@ -50,23 +46,21 @@ const SignIn = () => {
     setErrors((prev) => ({ ...prev, [field]: validate ? "" : error }));
   };
 
-  /// Handle sign-in process
   const handleSignInClick = async () => {
     const { email, password } = credentials;
 
-    /// Validate form before submission
     if (!isValidForm) {
       setErrors({
         email: validateEmail(email).error,
         password: validatePassword(password).error
       });
+      invokeToast("error", "Please fill in all fields correctly", "top");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      /// Attempt to sign in with Supabase and fetch user data
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -83,7 +77,6 @@ const SignIn = () => {
 
       if (userDataError) throw userDataError;
 
-      /// Set user data using the userInfoAtom
       setUserInfo({
         id: userData.id,
         email: userData.email,
@@ -157,46 +150,31 @@ const SignIn = () => {
       router.replace(`/app/watchlist/${watchlistData[0].uuid}`);
     } catch (error: any) {
       console.error("Sign-in error:", error);
-      /// Display error toast with appropriate message
       if (error.message === "Invalid login credentials") {
         invokeToast("error", "Please confirm your email and password", "top");
       }
-
-      // invokeToast(
-      //   "error",
-      //   error.message === "Invalid login credentials"
-      //     ? "Please confirm your email and password"
-      //     : "An error occurred during sign-in",
-      //   "top"
-      // );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const handleGoogleSignIn = async () => {
-  //   try {
-  //     const { data, error } = await supabase.auth.signInWithOAuth({
-  //       provider: "google",
-  //       options: {
-  //         redirectTo: `http://localhost:3000/app/watchlist/`
-  //       }
-  //     });
+  const handleGoogleSignIn = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/app/watchlist/`
+        }
+      });
 
-  //     if (error) {
-  //       throw error;
-  //     }
-
-
-
-  //     // Handle successful sign-in
-  //     console.log("Google sign-in successful:", data);
-  //     // You might want to redirect the user or update the UI here
-  //   } catch (error) {
-  //     console.error("Error during Google sign-in:", error);
-  //     // Handle error (e.g., show an error message to the user)
-  //   }
-  // };
+      if (error) {
+        throw error;
+      }
+      console.log("Google sign-in successful:", data);
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+    }
+  };
 
   return (
     <div className="flex flex-row w-full h-screen">
@@ -219,7 +197,7 @@ const SignIn = () => {
             </h1>
             <button
               className="w-full flex justify-center items-center gap-2 cursor-pointer text-base py-4 font-normal leading-6 rounded-full text-black border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
-              // onClick={handleGoogleSignIn}
+              onClick={handleGoogleSignIn}
             >
               <Image
                 src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
@@ -254,9 +232,8 @@ const SignIn = () => {
                     type="email"
                     value={credentials.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    placeholder="example@gmail.com"
+                    placeholder="example.email@gmail.com"
                     className="outline-none w-full bg-transparent"
-                    required
                   />
                 </div>
                 {errors.email && (
@@ -282,7 +259,6 @@ const SignIn = () => {
                     }
                     className="outline-none bg-transparent w-full"
                     placeholder="••••••••"
-                    required
                   />
                   <button
                     type="button"
@@ -309,12 +285,12 @@ const SignIn = () => {
               <button
                 onClick={handleSignInClick}
                 className="w-full bg-primary-600 text-white text-base font-semibold py-4 mt-4 rounded-md hover:bg-primary-700 active:bg-primary-800 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
-                disabled={!isValidForm || isLoading}
+                disabled={isLoading}
               >
                 {isLoading ? (
-                  <span className="inline-flex items-center">
+                  <span className="flex justify-center">
                     <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      className="animate-spin -ml-1 mr-3 h-6 w-6 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -333,7 +309,6 @@ const SignIn = () => {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Signing In...
                   </span>
                 ) : (
                   "Sign In"

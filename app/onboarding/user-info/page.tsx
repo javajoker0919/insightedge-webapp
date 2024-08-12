@@ -28,6 +28,7 @@ const UserInfo = () => {
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const setUserInfo = useSetAtom(userInfoAtom);
 
   useEffect(() => {
@@ -47,6 +48,7 @@ const UserInfo = () => {
   };
 
   const handleCreateUserInfo = async () => {
+    
     if (!isFormValid) {
       setErrors({
         firstName:
@@ -59,18 +61,15 @@ const UserInfo = () => {
       });
       return;
     }
+
+    setIsLoading(true);
+
     try {
       const {
         data: { user }
       } = await supabase.auth.getUser();
 
       if (!user) throw new Error("No user found");
-
-      // const updateUserData = {
-      //   first_name: formData.firstName,
-      //   last_name: formData.lastName,
-      //   onboarding_status: true
-      // };
 
       const { data: userData, error: userError } = await supabase
         .from("users")
@@ -88,17 +87,6 @@ const UserInfo = () => {
 
       createCustomer();
 
-      // const { data: userData, error: userError } = await supabase
-      //   .from("users")
-      //   .update(updateUserData)
-      //   .eq("id", user.id)
-      //   .select()
-      //   .single();
-
-      if (userError) throw userError;
-
-      // Update userData after successful Supabase update
-
       setUserInfo({
         id: userData.id,
         email: userData.email,
@@ -111,6 +99,8 @@ const UserInfo = () => {
       router.replace(`/onboarding/company-profile`);
     } catch (error) {
       console.error("Error creating profile:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -139,7 +129,6 @@ const UserInfo = () => {
                   onChange={(e: any) =>
                     handleInputChange("firstName", e.target.value)
                   }
-                  required
                 />
               </div>
               <div className="flex flex-col">
@@ -157,7 +146,6 @@ const UserInfo = () => {
                   onChange={(e: any) =>
                     handleInputChange("lastName", e.target.value)
                   }
-                  required
                 />
               </div>
               <div className="flex flex-col">
@@ -175,7 +163,6 @@ const UserInfo = () => {
                   onChange={(e: any) =>
                     handleInputChange("companyName", e.target.value)
                   }
-                  required
                 />
               </div>
               <div className="flex flex-col">
@@ -193,7 +180,6 @@ const UserInfo = () => {
                   onChange={(e: any) =>
                     handleInputChange("industry", e.target.value)
                   }
-                  required
                 />
               </div>
             </form>
@@ -208,7 +194,7 @@ const UserInfo = () => {
               <button
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
                 onClick={handleCreateUserInfo}
-                disabled={!isFormValid}
+                disabled={!isFormValid || isLoading}
               >
                 Continue
                 <GoArrowRight className="ml-2 h-5 w-5" />

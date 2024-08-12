@@ -84,7 +84,6 @@ const CompanyProfile = () => {
       router.replace("/onboarding/user-awareness");
     } catch (error) {
       console.error("Error creating company profile:", error);
-      // Handle error (e.g., show error message to user)
     }
   };
 
