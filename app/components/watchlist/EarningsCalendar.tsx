@@ -1,5 +1,6 @@
-import { supabase } from "@/supabase";
+"use client";
 import { useEffect, useState } from "react";
+import { supabase } from "@/supabase";
 import { LuCalendarPlus } from "react-icons/lu";
 import moment from "moment";
 import { CompanyDataType } from "../../app/watchlist/[id]/page";

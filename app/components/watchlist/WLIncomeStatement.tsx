@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabaseClient";
 import numeral from "numeral";
