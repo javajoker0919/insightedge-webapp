@@ -40,6 +40,8 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 
   const [isGeneralLoading, setIsGeneralLoading] = useState<boolean>(false);
   const [isTailoredLoading, setIsTailoredLoading] = useState<boolean>(false);
+  const [isTailoredGenerating, setIsTailoredGenerating] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (etID) {
@@ -85,12 +87,12 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   };
 
   const handleGenerateTailoredStrategies = () => {
-    setIsTailoredLoading(true);
+    setIsTailoredGenerating(true);
 
     setTimeout(() => {
       setTailoredStrats(marketingStrategy);
       setActiveTab("tailored");
-      setIsTailoredLoading(false);
+      setIsTailoredGenerating(false);
     }, 2000);
   };
 
@@ -99,20 +101,20 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   };
 
   return (
-    <div className="bg-primary border border-gray-300 rounded-lg overflow-hidden">
+    <div className="bg-primary border border-gray-300 rounded-lg bg-white overflow-hidden">
       <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
         {tailoredStrats === null ? (
           <div className="flex w-full justify-between items-center pr-4 py-1">
             <h3 className="px-4 py-3 font-medium text-gray-700">
               Marketing Strategy
             </h3>
-            {!Array.isArray(tailoredStrats) && (
+            {tailoredStrats === null && !isTailoredLoading && (
               <button
                 onClick={handleGenerateTailoredStrategies}
-                disabled={isTailoredLoading}
+                disabled={isTailoredGenerating}
                 className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
-                {isTailoredLoading ? (
+                {isTailoredGenerating ? (
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
                 ) : (
                   "Generate Tailored Marketing Strategies"

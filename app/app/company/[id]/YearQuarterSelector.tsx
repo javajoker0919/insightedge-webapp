@@ -132,7 +132,9 @@ const Dropdown: React.FC<DropdownProps> = ({ options, value, onChange }) => {
           {options.map(({ value, label }) => (
             <div
               key={value}
-              className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+              className={`px-4 py-2 text-gray-700 hover:bg-gray-200 cursor-pointer ${
+                value === selectedOption?.value ? "bg-gray-100" : ""
+              }`}
               onClick={() => handleSelect(value)}
             >
               {label}
