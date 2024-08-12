@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useAtomValue, useSetAtom } from "jotai";
 
 import Modal from "@/app/components/Modal";
 import { supabase } from "@/utils/supabaseClient";
-import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
-import { generateTailoredOpportunitiesAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
 import { Details } from "..";
 import { tailoredOpportunities_v2 } from "@/app/app/company/[id]/Constants";
@@ -40,8 +37,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   etIDs,
 }) => {
   const { invokeToast } = useToastContext();
-  const orgInfo = useAtomValue(orgInfoAtom);
-  const setUserInfo = useSetAtom(userInfoAtom);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedOpp, setSelectedOpp] = useState<OpportunityProps | null>(null);
   const [generalOpps, setGeneralOpps] = useState<OpportunityProps[] | null>(
@@ -51,12 +46,9 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     null
   );
   const [openedSection, setOpenedSection] = useState<1 | 2 | 3>(1);
-  const [isGeneralOppLoading, setIsGeneralOppLoading] =
-    useState<boolean>(false);
-  const [isTailoredOppLoading, setIsTailoredOppLoading] =
-    useState<boolean>(false);
-  const [isTailoredOppGenerating, setIsTailoredOppGenerating] =
-    useState<boolean>(false);
+  const [isGOLoading, setIsGOLoading] = useState<boolean>(true);
+  const [isTOLoading, setIsTOLoading] = useState<boolean>(false);
+  const [isTOGenerating, setIsTOGenerating] = useState<boolean>(false);
 
   useEffect(() => {
     if (etIDs && etIDs.length > 0) {
@@ -66,6 +58,8 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
   const fetchGeneralOpportunities = async (etIDs: number[]) => {
     try {
+      setIsGOLoading(true);
+
       const { data, error } = await supabase
         .from("general_opportunities")
         .select(
@@ -97,12 +91,14 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     } catch (error) {
       console.error("Unexpected error in fetchGeneralOpportunities:", error);
     } finally {
-      setIsGeneralOppLoading(false);
+      setIsGOLoading(false);
     }
   };
 
   const fetchTailoredOpportunities = async (etID: number, orgID: number) => {
     try {
+      setIsTOLoading(true);
+
       const { data, error } = await supabase
         .from("tailored_opportunities")
         .select(
@@ -143,12 +139,12 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     } catch (error) {
       console.error("Unexpected error in fetchTailoredOpportunities:", error);
     } finally {
-      setIsTailoredOppLoading(false);
+      setIsTOLoading(false);
     }
   };
 
   const generateTailoredOpportunities = async () => {
-    setIsTailoredOppGenerating(true);
+    setIsTOGenerating(true);
 
     try {
       // const { data } = await generateTailoredOpportunitiesAPI({
@@ -196,7 +192,9 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       //     "top"
       //   );
       // }
-      setTailoredOpps(tailoredOpportunities_v2);
+      setTimeout(() => {
+        setTailoredOpps(tailoredOpportunities_v2);
+      }, 2500);
     } catch (error) {
       invokeToast("error", "Failred to generate tailored opportunities", "top");
       if (axios.isAxiosError(error)) {
@@ -210,7 +208,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       }
       console.error("Error fetching protected data:", error);
     } finally {
-      setIsTailoredOppGenerating(false);
+      setIsTOGenerating(false);
     }
   };
 
@@ -221,7 +219,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
       <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
-        {tailoredOpps && tailoredOpps.length > 0 && !isTailoredOppGenerating ? (
+        {tailoredOpps && tailoredOpps.length > 0 && !isTOGenerating ? (
           <div className="flex">
             <button
               onClick={() => setActiveTab("general")}
@@ -249,14 +247,14 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <h3 className="px-4 py-3 font-medium text-gray-700">
               Opportunities
             </h3>
-            {!isGeneralOppLoading && !isTailoredOppLoading && (
+            {!isGOLoading && !isTOLoading && (
               <button
                 // title={`Discover the top opportunities for selling your solutions to ${companyName}`}
                 onClick={generateTailoredOpportunities}
-                disabled={isTailoredOppGenerating}
+                disabled={isTOGenerating}
                 className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
-                {isTailoredOppGenerating ? (
+                {isTOGenerating ? (
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
                 ) : (
                   "Generate Tailored Opportunities"
@@ -269,7 +267,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
       <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
         {activeTab === "general" &&
-          (isGeneralOppLoading ? (
+          (isGOLoading ? (
             <LoadingSection />
           ) : (
             <>
@@ -294,7 +292,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             </>
           ))}
         {activeTab === "tailored" &&
-          (isTailoredOppLoading ? (
+          (isTOLoading ? (
             <LoadingSection />
           ) : (
             <>

@@ -51,6 +51,7 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
   useEffect(() => {
     const fetchLatestWatchlistsData = async (companyIds: string[]) => {
       setIsLoading(true);
+
       const { data: incomeStatementData, error: incomeStatementError } =
         await supabase
           .from("income_statements")

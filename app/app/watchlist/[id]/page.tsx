@@ -79,7 +79,7 @@ export default function WatchlistPage() {
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState<boolean>(false);
   const optionsModalRef = useRef<HTMLDivElement>(null);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState<boolean>(false);
-  const [isSorted, setIsSorted] = useState<boolean>(false);
+  const [isSorted, setIsSorted] = useState<boolean>(true);
   const [watchlistCompanies, setWatchlistCompanies] = useState<
     CompanyDataType[] | []
   >([]);
@@ -330,7 +330,7 @@ export default function WatchlistPage() {
                   onClick={handleAddInvestments}
                 >
                   <IoAddOutline className="text-xl" />
-                  <p>Company</p>
+                  <span>Company</span>
                 </button>
               )}
               {watchlist && watchlist[0] && paramID !== watchlist[0].uuid && (
@@ -410,8 +410,11 @@ export default function WatchlistPage() {
                     Similar Company To Follow
                   </h2>
                   <div className="flex flex-col">
-                    {[0, 1, 2].map(() => (
-                      <div className="flex items-center justify-between p-2 border-b border-gray-300 last:border-b-0 text-gray-700">
+                    {[0, 1, 2].map((item, index) => (
+                      <div
+                        key={`similar-company-${index}`}
+                        className="flex items-center justify-between p-2 border-b border-gray-300 last:border-b-0 text-gray-700"
+                      >
                         <span>Content</span>
                         <div className="flex items-center gap-2">
                           <span className="flex items-center justify-center py-1 px-3 rounded bg-primary-50 text-primary-500">
