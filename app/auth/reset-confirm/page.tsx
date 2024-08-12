@@ -16,7 +16,7 @@ const ResetConfirm = () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/reset-password`
+        redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/reset-password`,
       });
       if (error) throw error;
       localStorage.removeItem("email");
@@ -27,7 +27,7 @@ const ResetConfirm = () => {
         `Error: ${error.message || "An error occurred during password reset"}`,
         "top"
       );
-      console.log(error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

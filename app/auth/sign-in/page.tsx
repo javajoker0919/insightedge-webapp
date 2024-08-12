@@ -14,7 +14,7 @@ import {
   userMetadataAtom,
   userInfoAtom,
   orgInfoAtom,
-  watchlistAtom
+  watchlistAtom,
 } from "@/utils/atoms";
 
 const SignIn = () => {
@@ -52,7 +52,7 @@ const SignIn = () => {
     if (!isValidForm) {
       setErrors({
         email: validateEmail(email).error,
-        password: validatePassword(password).error
+        password: validatePassword(password).error,
       });
       invokeToast("error", "Please fill in all fields correctly", "top");
       return;
@@ -63,7 +63,7 @@ const SignIn = () => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
       if (error) throw error;
 
@@ -83,7 +83,7 @@ const SignIn = () => {
         firstName: userData.first_name,
         lastName: userData.last_name,
         companyName: "",
-        onboardingStatus: userData.onboarding_status
+        onboardingStatus: userData.onboarding_status,
       });
 
       invokeToast("success", "You have successfully logged in!", "top");
@@ -115,7 +115,7 @@ const SignIn = () => {
         website: orgData.website,
         overview: orgData.overview,
         products: orgData.products,
-        creatorID: orgData.creator_id
+        creatorID: orgData.creator_id,
       });
 
       const { data: watchlistData, error: watchlistError } = await supabase
@@ -142,7 +142,7 @@ const SignIn = () => {
             organizationID: item.organization_id,
             creatorID: item.creator_id,
             uuid: item.uuid,
-            company_count: item.watchlist_companies?.length
+            company_count: item.watchlist_companies?.length,
           };
         })
       );
@@ -163,14 +163,14 @@ const SignIn = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/app/watchlist/`
-        }
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/app/watchlist/`,
+        },
       });
 
       if (error) {
         throw error;
       }
-      console.log("Google sign-in successful:", data);
+      // console.log("Google sign-in successful:", data);
     } catch (error) {
       console.error("Error during Google sign-in:", error);
     }
