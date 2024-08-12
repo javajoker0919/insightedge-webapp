@@ -24,7 +24,6 @@ const MyProfile = () => {
     if (error) {
       console.error("Error updating profile:", error);
     } else {
-      console.log("Profile updated successfully");
       invokeToast("success", "Profile updated successfully", "top");
       setUserInfo((prev) => ({
         ...prev,

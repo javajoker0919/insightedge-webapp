@@ -20,12 +20,12 @@ const SignUp = () => {
 
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [errors, setErrors] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [isValidate, setIsValidate] = useState(false);
@@ -80,8 +80,8 @@ const SignUp = () => {
         email,
         password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding/user-info`
-        }
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding/user-info`,
+        },
       });
 
       if (authError) throw authError;
@@ -119,15 +119,15 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `http://localhost:3000/onboarding/user-info`
-        }
+          redirectTo: `http://localhost:3000/onboarding/user-info`,
+        },
       });
 
       if (error) {
         throw error;
       }
       // Handle successful sign-in
-      console.log("Google sign-in successful:", data);
+      // console.log("Google sign-in successful:", data);
       // You might want to redirect the user or update the UI here
     } catch (error) {
       console.error("Error during Google sign-in:", error);
