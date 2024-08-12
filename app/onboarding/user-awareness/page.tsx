@@ -1,11 +1,10 @@
 "use client";
 
-import { watchlistAtom } from "@/utils/atoms";
-import { supabase } from "@/utils/supabaseClient";
-import { useAtom, useSetAtom } from "jotai";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { watchlistAtom } from "@/utils/atoms";
+import { useAtom } from "jotai";
+import Image from "next/image";
+import HeaderImage from "@/app/components/HeaderImage";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
 const UserAwareness = () => {
@@ -16,15 +15,7 @@ const UserAwareness = () => {
     <>
       <div className="flex flex-row w-full h-screen">
         <div className="flex flex-col items-center justify-center w-1/2 h-full">
-          <div className="flex items-center absolute top-6 left-6">
-            <Image
-              src="/favicon.png"
-              alt="ProspectEdge Logo"
-              width={40}
-              height={40}
-            />
-            <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
-          </div>
+          <HeaderImage />
           <div className="flex flex-col w-full px-16">
             <h1 className="text-3xl font-bold leading-tight text-gray-900 mb-8">
               How did you hear about ProspectEdge?
@@ -67,8 +58,7 @@ const UserAwareness = () => {
                   if (watchlist && watchlist.length > 0) {
                     router.replace(`/app/watchlist/${watchlist[0].uuid}`);
                   } else {
-                    // Handle the case where watchlist is empty or null
-                    router.replace('/app/dashboard'); // Redirect to a default page
+                    router.replace("/app");
                   }
                 }}
               >

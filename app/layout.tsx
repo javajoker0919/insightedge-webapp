@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import ClientLayout from "./ClientLayout";
-import PrelineScript from "./components/PrelineScript";
+import PrelineScript from "./app/components/PrelineScript";
 
 export const metadata: Metadata = {
   title: "ProspectEdge: AI-Powered Sales Insights for B2B Teams",
