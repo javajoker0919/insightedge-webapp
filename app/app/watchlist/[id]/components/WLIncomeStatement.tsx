@@ -9,8 +9,6 @@ import { IoClose } from "react-icons/io5";
 import { CompanyDataType } from "../page";
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { useAtomValue } from "jotai";
-import { earningsCalendarAtom } from "@/utils/atoms";
 
 interface WLIncomeStatementProps {
   watchlistCompanies: CompanyDataType[];
@@ -63,7 +61,6 @@ const WLIncomeStatement: React.FC<WLIncomeStatementProps> = ({
   onRemoveCompany,
 }) => {
   const router = useRouter();
-  const earningsCalendarData = useAtomValue(earningsCalendarAtom);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [compIncStatement, setCompIncStatement] = useState<
     IncomeStatementType[] | null

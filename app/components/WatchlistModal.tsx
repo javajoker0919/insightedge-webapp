@@ -82,6 +82,8 @@ const WatchlistModal = ({
             },
           ];
         });
+
+        router.push(`/app/watchlist/${data.uuid}`);
       } else if (type === "rename") {
         const { data, error } = await supabase
           .from("watchlists")

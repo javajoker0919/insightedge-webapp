@@ -2,7 +2,6 @@
 import { atom } from "jotai";
 import { UserMetadata } from "@supabase/supabase-js";
 import { atomWithStorage } from "jotai/utils";
-import { EarningsCalendarData } from "@/app/app/watchlist/[id]/components/EarningsCalendar";
 
 interface User {
   id: string;
@@ -47,7 +46,6 @@ export const watchlistAtom = atomWithStorage<Watchlist[] | null>(
   null
 );
 export const isSidebarExpandedAtom = atom<boolean>(false);
-export const earningsCalendarAtom = atom<EarningsCalendarData[] | null>();
 
 export interface ICompanyData {
   year: number;

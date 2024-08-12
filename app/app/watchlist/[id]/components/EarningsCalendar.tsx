@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { LuCalendarPlus } from "react-icons/lu";
 import moment from "moment";
 import { CompanyDataType } from "../page";
-import { useSetAtom } from "jotai";
-import { earningsCalendarAtom } from "@/utils/atoms";
 
 interface EarningsCalendar {
   id?: string;
@@ -23,7 +21,6 @@ export interface EarningsCalendarData extends EarningsCalendar {
 const EarningsCalendar: React.FC<EarningsCalendarProps> = ({
   companiesList,
 }) => {
-  const setEarningCalendarData = useSetAtom(earningsCalendarAtom);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [earningCalendarList, setEarningCalendarList] = useState<
     EarningsCalendarData[] | null
@@ -49,21 +46,22 @@ const EarningsCalendar: React.FC<EarningsCalendarProps> = ({
       if (earningCalendarError) {
         console.error("Error fetching watchlist:", earningCalendarError);
       } else if (earningCalendarData) {
-        const finalList = earningCalendarData.map((el) => ({
-          name: companiesList.find((e) => e.symbol === el.symbol)?.name,
-          ...el,
-          date: moment(el.date).format("MMM DD, YYYY"),
-        }));
+        const finalList = earningCalendarData
+          .filter((el) => moment(el.date).isSameOrAfter(moment(), "day"))
+          .map((el) => ({
+            name: companiesList.find((e) => e.symbol === el.symbol)?.name,
+            ...el,
+            date: moment(el.date).format("MMM DD, YYYY"),
+          }));
         if (finalList.length) {
           setEarningCalendarList(finalList);
-          setEarningCalendarData(finalList);
         }
       }
       setIsLoading(false);
     }
 
     if (companiesList?.length > 0) fetchEarningCalendarData();
-  }, []);
+  }, [companiesList]);
   return (
     <div className="border border-gray-300 rounded-lg p-3">
       <div className="mb-2">
