@@ -22,8 +22,8 @@ import {
   WLMarketingSection,
   WLCalendarSection,
   WLIncomeStatementSection,
+  WLHighlightSection,
 } from "@/app/components";
-import WatchlistHighlights from "../../../components/watchlist/WLHighlightSection";
 
 export interface CompanyDataType {
   id: number;
@@ -368,11 +368,7 @@ export default function WatchlistPage() {
                 )}
               </div>
               <div className="flex flex-col gap-4">
-                <WatchlistHighlights
-                  watchlistName={watchlistName}
-                  companyList={watchlistCompanies}
-                />
-
+                <WLHighlightSection companyList={watchlistCompanies} />
                 <WLCalendarSection companies={watchlistCompanies} />
 
                 <div className="border border-gray-300 rounded-lg p-3">
