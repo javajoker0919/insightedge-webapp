@@ -12,6 +12,8 @@ import { FaPuzzlePiece } from "react-icons/fa6";
 import { LuBrainCircuit } from "react-icons/lu";
 import { MdOutlineToken } from "react-icons/md";
 import { IoTelescope } from "react-icons/io5";
+import { Check } from "../components";
+import { Close } from "../components";
 
 interface HeaderProps {
   isHeaderVisible: boolean;
@@ -73,24 +75,6 @@ const Header: React.FC<HeaderProps> = ({
         />
         <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
       </div>
-      {/* <div className="sm:hidden">
-        <button onClick={toggleMenu} className="text-primary-600">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16m-7 6h7"
-            />
-          </svg>
-        </button>
-      </div> */}
       <NavMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
     </div>
   </header>
@@ -139,6 +123,7 @@ const MainContent: React.FC = () => (
     <SalesAndMarketingSection />
     <SummarySection />
     <BusinessSection />
+    <CreditSection />
     <NewSection />
     <ScheduleDemo />
     <Footer />
@@ -341,7 +326,7 @@ const BusinessSection: React.FC = () => (
       <BusinessFeature
         icon={<FaClock className="text-primary-500 w-8 h-8 sm:w-10 sm:h-10" />}
         title="INCREASED PRODUCTIVITY"
-        description="Get more revenue per sales person"
+        description="Get more revenue per sales person"   
       />
       <BusinessFeature
         icon={
@@ -371,6 +356,206 @@ const BusinessFeature: React.FC<{
     <p className="text-gray-600 text-base sm:text-lg text-center">{title}</p>
     <p className="text-center text-sm sm:text-base">{description}</p>
   </div>
+);
+
+const CreditSection: React.FC = () => (
+  <section id="credit" className="py-20 px-4 flex flex-col items-center gap-10">
+    <div className="text-[40px] leading-[56px] font-bold text-center max-w-[60rem]">
+      <span className="text-primary-500">Compare our plans</span> and find yours
+      <p className="text-base text-neutral-500 font-normal leading-[26px] mt-3">
+        Start for free or choose among our paid plans for more power
+      </p>
+    </div>
+    <section className="text-gray-700 flex flex-col items-center w-full max-w-[84rem]">
+      <div className="container px-5 flex flex-wrap">
+        <div className="lg:w-1/4 mt-48 hidden lg:block">
+          <div className="mt-px overflow-hidden text-neutral-900">
+            <div className="h-12 px-4 flex flex-col justify-start font-bold">
+              <p className="text-2xl">Key Features*</p>
+              <p className="text-xs">(limited to plan entitlement)</p>
+            </div>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              AI-powered insights
+            </p>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              Personalized recommendations
+            </p>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              Advanced analytics
+            </p>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              Sales opportunity forecasting
+            </p>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              Automated email campaigns
+            </p>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              Custom target lists
+            </p>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              Company database access
+            </p>
+            <div className="h-12 px-4 flex flex-col justify-start font-bold">
+              <p className="text-2xl">Services</p>
+            </div>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              Dedicated support
+            </p>
+            <div className="h-12 px-4 flex flex-col justify-start font-bold">
+              <p className="text-2xl">Usage</p>
+            </div>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              Monthly API calls
+            </p>
+            <p className="h-12 text-center px-4 flex items-center justify-start">
+              Additional API calls
+            </p>
+          </div>
+        </div>
+        <div className="lg:w-3/4 w-full grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="lg:mt-px w-full mb-10 lg:mb-0 border-2 border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="px-4 py-6 text-center h-48 flex flex-col items-center justify-center bg-gray-50">
+              <h3 className="tracking-widest text-primary-500 font-semibold">STARTER</h3>
+              <h2 className="text-5xl text-gray-900 font-bold leading-none mb-4 mt-2">
+                Free
+              </h2>
+              <button className="w-full px-4 py-2 text-base font-medium text-white bg-primary-500 rounded-md shadow-sm hover:bg-primary-600 transition duration-300">
+                Get Started
+              </button>
+            </div>
+            <div className="border-t border-gray-200"></div>
+            <div className="h-12"></div>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="bg-gray-100 h-12 text-gray-600 px-6 text-center leading-relaxed flex items-center justify-center">
+              <Close />
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              <Close />
+            </p>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              <Close />
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              1
+            </p>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              100
+            </p>
+            <div className="h-12"></div>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              Email
+            </p>
+            <div className="h-12"></div>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              1,000
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              $0.01 per call
+            </p>
+          </div>
+          <div className="lg:-mt-px w-full mb-10 lg:mb-0 border-2 rounded-lg border-primary-500 relative shadow-md hover:shadow-lg transition-shadow duration-300">
+            <span className="bg-primary-500 text-white px-3 py-1 tracking-widest text-xs absolute right-0 top-0 rounded-bl">
+              POPULAR
+            </span>
+            <div className="px-2 text-center h-48 flex flex-col items-center justify-center bg-primary-50">
+              <h3 className="tracking-widest text-primary-600 font-semibold">PROFESSIONAL</h3>
+              <h2 className="text-5xl text-gray-900 font-bold flex items-center justify-center leading-none mb-4 mt-2">
+                $49
+                <span className="text-gray-600 text-base ml-1">/mo</span>
+              </h2>
+              <button className="w-full px-4 py-2 text-base font-medium text-white bg-primary-500 rounded-md shadow-sm hover:bg-primary-600 transition duration-300">
+                Subscribe Now
+              </button>
+            </div>
+            <div className="border-t border-primary-200"></div>
+            <div className="h-12"></div>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="h-12 bg-gray-100 text-gray-600 text-center leading-relaxed flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              <Close />
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              Up to 10
+            </p>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              1,000
+            </p>
+            <div className="h-12"></div>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              Priority
+            </p>
+            <div className="h-12"></div>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              10,000
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              $0.005 per call
+            </p>
+          </div>
+          <div className="w-full lg:mt-px border-2 border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="px-2 text-center h-48 flex flex-col items-center justify-center bg-gray-50">
+              <h3 className="tracking-widest text-primary-500 font-semibold">ENTERPRISE</h3>
+              <h2 className="text-5xl text-gray-900 font-bold flex items-center justify-center leading-none mb-4 mt-2">
+                Custom
+              </h2>
+              <button className="w-full px-4 py-2 text-base font-medium text-white bg-primary-500 rounded-md shadow-sm hover:bg-primary-600 transition duration-300">
+                Contact Sales
+              </button>
+            </div>
+            <div className="border-t border-gray-200"></div>
+            <div className="h-12"></div>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="h-12 bg-gray-100 text-gray-600 text-center leading-relaxed flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              <Check />
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              Unlimited
+            </p>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              Unlimited
+            </p>
+            <div className="h-12"></div>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              24/7 Dedicated
+            </p>
+            <div className="h-12"></div>
+            <p className="bg-gray-100 text-gray-600 text-center h-12 flex items-center justify-center">
+              Unlimited
+            </p>
+            <p className="text-gray-600 text-center h-12 flex items-center justify-center">
+              Custom pricing
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
 );
 
 const NewSection: React.FC = () => (

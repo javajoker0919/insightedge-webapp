@@ -12,6 +12,9 @@ import WLOpportunitySection from "./watchlist/opportunity/WLOpportunitySection";
 import WLCalendarSection from "./watchlist/WLCalendarSection";
 import WLIncomeStatementSection from "./watchlist/WLIncomeStatementSection";
 import PrelineScript from "./PrelineScript";
+import Check from "./CheckIcon";
+import Close from "./CloseIcon";
+
 import WLHighlightSection from "./watchlist/WLHighlightSection";
 export {
   CompanySearchbar,
@@ -29,4 +32,6 @@ export {
   WLIncomeStatementSection,
   WLHighlightSection,
   PrelineScript,
+  Check,
+  Close
 };
