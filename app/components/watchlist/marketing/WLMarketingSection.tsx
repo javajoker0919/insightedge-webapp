@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
-import MarketingStrategyTable from "./MarketingStrategiesTable";
-import MarketingPlanModal from "./MarketingStrategiesModal";
+import MarketingStrategyTable from "./WLMarketignTable";
+import MarketingPlanModal from "./WLMarketingModal";
 import Loading from "@/app/components/Loading";
 import { marketingStrategy } from "@/app/app/company/[id]/Constants";
 
@@ -22,7 +22,7 @@ export interface MarketingStrategyProps {
   callToAction: string;
 }
 
-const MarketingStrategiesSection: React.FC<MarketingStrategiesProps> = ({
+const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
   // companyName,
   etIDs,
 }) => {
@@ -213,4 +213,4 @@ const LoadingSection: React.FC = () => {
   );
 };
 
-export default MarketingStrategiesSection;
+export default WLMarketingSection;

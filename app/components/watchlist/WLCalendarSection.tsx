@@ -20,7 +20,7 @@ export interface EarningsCalendarData extends EarningsCalendar {
   date: string;
 }
 
-const EarningsCalendarSection: React.FC<EarningsCalendarProps> = ({
+const WLCalendarSection: React.FC<EarningsCalendarProps> = ({
   companies,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -95,7 +95,7 @@ const EarningsCalendarSection: React.FC<EarningsCalendarProps> = ({
   );
 };
 
-export default EarningsCalendarSection;
+export default WLCalendarSection;
 
 const LoadingEvents: React.FC = () => {
   return (

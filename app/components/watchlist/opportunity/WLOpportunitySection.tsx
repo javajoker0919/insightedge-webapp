@@ -4,9 +4,9 @@ import axios from "axios";
 import { supabase } from "@/utils/supabaseClient";
 
 import Modal from "@/app/components/Modal";
-import OpportunitiesTable from "./OpportunitiesTable";
+import OpportunitiesTable from "./WLOpportunityTable";
 import { useToastContext } from "@/contexts/toastContext";
-import { Details } from "..";
+import { Details } from "../..";
 import { tailoredOpportunities_v2 } from "@/app/app/company/[id]/Constants";
 
 interface OpportunitiesProps {
@@ -33,7 +33,7 @@ export interface OpportunityProps {
   };
 }
 
-const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
+const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   companyName,
   etIDs,
 }) => {
@@ -388,4 +388,4 @@ const LoadingSection: React.FC = () => {
   );
 };
 
-export default OpportunitiesSection;
+export default WLOpportunitySection;

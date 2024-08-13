@@ -18,12 +18,12 @@ import moment from "moment";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
 import {
-  OpportunitiesSection,
-  MarketingStrategiesSection,
-  EarningsCalendarSection,
+  WLOpportunitySection,
+  WLMarketingSection,
+  WLCalendarSection,
   WLIncomeStatementSection,
 } from "@/app/components";
-import WatchlistHighlights from "./components/WatchlistHighlights";
+import WatchlistHighlights from "../../../components/watchlist/WLHighlightSection";
 
 export interface CompanyDataType {
   id: number;
@@ -362,8 +362,8 @@ export default function WatchlistPage() {
 
                 {watchlistCompanies?.length > 0 && (
                   <>
-                    <OpportunitiesSection etIDs={etIDs} />
-                    <MarketingStrategiesSection etIDs={etIDs} />
+                    <WLOpportunitySection etIDs={etIDs} />
+                    <WLMarketingSection etIDs={etIDs} />
                   </>
                 )}
               </div>
@@ -373,7 +373,7 @@ export default function WatchlistPage() {
                   companyList={watchlistCompanies}
                 />
 
-                <EarningsCalendarSection companies={watchlistCompanies} />
+                <WLCalendarSection companies={watchlistCompanies} />
 
                 <div className="border border-gray-300 rounded-lg p-3">
                   <h2 className="text-base font-semibold border-b border-gray-300 pb-2 mb-2 text-gray-800">
