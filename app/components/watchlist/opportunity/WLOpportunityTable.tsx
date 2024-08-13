@@ -1,5 +1,5 @@
 import { IoBulb, IoPerson } from "react-icons/io5";
-import { OpportunityProps } from "./OpportunitiesSection";
+import { OpportunityProps } from "./WLOpportunitySection";
 import { generalOpportunities } from "@/app/app/company/[id]/Constants";
 
 const OpportunitiesTable: React.FC<{

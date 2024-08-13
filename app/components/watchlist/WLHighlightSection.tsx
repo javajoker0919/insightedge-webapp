@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAtomValue } from "jotai";
 import { motion } from "framer-motion";
-import { CompanyDataType } from "../page";
+import { CompanyDataType } from "../../app/watchlist/[id]/page";
 import { generateTailoredSummaryAPI } from "@/utils/apiClient";
 import {
   ICompanyData,
@@ -10,14 +10,14 @@ import {
 } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 
-import RenderSummaryContent from "../../../company/[id]/components/summary/RenderSummaryContent";
-import { SummaryProps } from "../../../company/[id]/components/summary/SummarySection";
+import RenderSummaryContent from "../../app/company/[id]/components/summary/RenderSummaryContent";
+import { SummaryProps } from "../../app/company/[id]/components/summary/SummarySection";
 
 interface WatchlistHighlightsProps {
   watchlistName: string;
   companyList: CompanyDataType[];
 }
-const WatchlistHighlights: React.FC<WatchlistHighlightsProps> = ({
+const WLHighlightSection: React.FC<WatchlistHighlightsProps> = ({
   watchlistName,
   companyList,
 }) => {
@@ -153,4 +153,4 @@ const WatchlistHighlights: React.FC<WatchlistHighlightsProps> = ({
   );
 };
 
-export default WatchlistHighlights;
+export default WLHighlightSection;

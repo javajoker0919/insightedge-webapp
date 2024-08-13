@@ -7,12 +7,12 @@ import Modal from "./Modal";
 import Navbar from "./Navbar";
 import AuthInput from "./SignInput";
 import WatchlistModal from "./WatchlistModal";
-import MarketingStrategiesSection from "./marketing/MarketingStrategiesSection";
-import OpportunitiesSection from "./opportunity/OpportunitiesSection";
-import EarningsCalendarSection from "./watchlist/EarningsCalendar";
-import WLIncomeStatementSection from "./watchlist/WLIncomeStatement";
+import WLMarketingSection from "./watchlist/marketing/WLMarketingSection";
+import WLOpportunitySection from "./watchlist/opportunity/WLOpportunitySection";
+import WLCalendarSection from "./watchlist/WLCalendarSection";
+import WLIncomeStatementSection from "./watchlist/WLIncomeStatementSection";
 import PrelineScript from "./PrelineScript";
-
+import WLHighlightSection from "./watchlist/WLHighlightSection";
 export {
   CompanySearchbar,
   Details,
@@ -23,9 +23,10 @@ export {
   Navbar,
   AuthInput,
   WatchlistModal,
-  MarketingStrategiesSection,
-  OpportunitiesSection,
-  EarningsCalendarSection,
+  WLMarketingSection,
+  WLOpportunitySection,
+  WLCalendarSection,
   WLIncomeStatementSection,
+  WLHighlightSection,
   PrelineScript,
 };

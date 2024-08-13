@@ -4,7 +4,7 @@ import {
   coloredChannelList,
   marketingStrategy,
 } from "@/app/app/company/[id]/Constants";
-import { MarketingStrategyProps } from "./MarketingStrategiesSection";
+import { MarketingStrategyProps } from "./WLMarketingSection";
 
 interface MSTableCompProps {
   strategies: MarketingStrategyProps[];
