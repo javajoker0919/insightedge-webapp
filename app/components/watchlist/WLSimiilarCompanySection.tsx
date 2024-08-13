@@ -22,6 +22,16 @@ const WLSimilarCompanySection: React.FC<WatchlistSimilarCompaniesProps> = ({
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const randomColor = [
+    "bg-fuchsia-800",
+    "bg-teal-800",
+    "bg-gray-800",
+    "bg-red-800",
+    "bg-blue-800",
+    "bg-green-800",
+    "bg-purple-800",
+  ];
+
   useEffect(() => {
     const fetchSimilarCompanies = async () => {
       try {
@@ -97,15 +107,26 @@ const WLSimilarCompanySection: React.FC<WatchlistSimilarCompaniesProps> = ({
               <li key={company.id}>
                 <a
                   href={`/app/company/${company.id}`}
-                  className="block hover:bg-gray-50 px-3 py-2"
+                  className="block hover:bg-gray-50 px-3 py-2 space-y-1"
                 >
                   <h4 className="font-semibold text-gray-700">
                     {company.name}
                   </h4>
 
-                  <p className="text-sm text-gray-600">
-                    {company.symbol} - {company.industry}
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <p
+                      className={`text-sm text-white py-0.5 px-1 ${
+                        randomColor[
+                          Math.floor(Math.random() * randomColor.length)
+                        ]
+                      }`}
+                    >
+                      {company.symbol}
+                    </p>
+                    <p className="text-gray-600 border rounded-full border-yellow-200 bg-yellow-50 text-sm py-0.5 px-2">
+                      {company.industry}
+                    </p>
+                  </div>
                 </a>
               </li>
             ))}
