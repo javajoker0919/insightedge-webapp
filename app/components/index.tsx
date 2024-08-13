@@ -7,11 +7,15 @@ import Modal from "./Modal";
 import Navbar from "./Navbar";
 import AuthInput from "./SignInput";
 import WatchlistModal from "./WatchlistModal";
-import MarketingStrategiesSection from "./marketing/MarketingStrategiesSection";
-import OpportunitiesSection from "./opportunity/OpportunitiesSection";
-import EarningsCalendarSection from "./watchlist/EarningsCalendar";
-import WLIncomeStatementSection from "./watchlist/WLIncomeStatement";
+import WLMarketingSection from "./watchlist/marketing/WLMarketingSection";
+import WLOpportunitySection from "./watchlist/opportunity/WLOpportunitySection";
+import WLCalendarSection from "./watchlist/WLCalendarSection";
+import WLIncomeStatementSection from "./watchlist/WLIncomeStatementSection";
 import PrelineScript from "./PrelineScript";
+import Check from "./CheckIcon";
+import Close from "./CloseIcon";
+import WLHighlightSection from "./watchlist/WLHighlightSection";
+import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
 
 export {
   CompanySearchbar,
@@ -23,9 +27,13 @@ export {
   Navbar,
   AuthInput,
   WatchlistModal,
-  MarketingStrategiesSection,
-  OpportunitiesSection,
-  EarningsCalendarSection,
+  WLMarketingSection,
+  WLOpportunitySection,
+  WLCalendarSection,
   WLIncomeStatementSection,
+  WLHighlightSection,
+  WLSimilarCompanySection,
   PrelineScript,
+  Check,
+  Close,
 };

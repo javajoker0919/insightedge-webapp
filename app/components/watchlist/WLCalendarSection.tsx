@@ -20,9 +20,7 @@ export interface EarningsCalendarData extends EarningsCalendar {
   date: string;
 }
 
-const EarningsCalendarSection: React.FC<EarningsCalendarProps> = ({
-  companies,
-}) => {
+const WLCalendarSection: React.FC<EarningsCalendarProps> = ({ companies }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [ecList, setECList] = useState<EarningsCalendarData[] | null>(null);
 
@@ -95,7 +93,7 @@ const EarningsCalendarSection: React.FC<EarningsCalendarProps> = ({
   );
 };
 
-export default EarningsCalendarSection;
+export default WLCalendarSection;
 
 const LoadingEvents: React.FC = () => {
   return (
@@ -132,10 +130,10 @@ const EventList: React.FC<EventListProps> = ({ ecList }) => {
                 <span className="text-sm text-gray-500 capitalize">{date}</span>
               </div>
             </div>
-            <LuCalendarPlus
+            {/* <LuCalendarPlus
               size={25}
               className="cursor-pointer text-gray-500 hover:text-primary-500 transition-all duration-300"
-            />
+            /> */}
           </div>
         );
       })}

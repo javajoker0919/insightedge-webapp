@@ -9,6 +9,7 @@ import { IoClose } from "react-icons/io5";
 import { CompanyDataType } from "../../app/watchlist/[id]/page";
 import { useEffect, useState } from "react";
 import moment from "moment";
+import Loading from "../Loading";
 
 interface WLIncomeStatementProps {
   watchlistCompanies: CompanyDataType[];
@@ -123,7 +124,12 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-center items-center bg-yellow-50 rounded p-2 border border-yellow-200">
+        <p className="text-gray-700 font-medium">
+          This is the latest quarterly earnings
+        </p>
+      </div>
       <table>
         <thead>
           <tr>
@@ -145,7 +151,7 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
           {isLoading && (
             <tr key="loading" className="text-center">
               <td colSpan={5} className="py-4 text-sm">
-                Loading...
+                <Loading />
               </td>
             </tr>
           )}

@@ -27,6 +27,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   etID,
   isLoading,
 }) => {
+  if (etID === null) {
+    return null;
+  }
+
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedStrats, setSelectedStrats] = useState<MarketingProps | null>(
     null

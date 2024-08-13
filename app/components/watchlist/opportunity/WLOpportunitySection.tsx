@@ -4,9 +4,9 @@ import axios from "axios";
 import { supabase } from "@/utils/supabaseClient";
 
 import Modal from "@/app/components/Modal";
-import OpportunitiesTable from "./OpportunitiesTable";
+import OpportunitiesTable from "./WLOpportunityTable";
 import { useToastContext } from "@/contexts/toastContext";
-import { Details } from "..";
+import { Details } from "../..";
 import { tailoredOpportunities_v2 } from "@/app/app/company/[id]/Constants";
 
 interface OpportunitiesProps {
@@ -17,6 +17,7 @@ interface OpportunitiesProps {
 export interface OpportunityProps {
   opportunityName: string;
   opportunityScore: number;
+  companyName: string;
   keywords?: string[];
   targetBuyer: {
     role: string;
@@ -33,7 +34,7 @@ export interface OpportunityProps {
   };
 }
 
-const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
+const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   companyName,
   etIDs,
 }) => {
@@ -64,15 +65,43 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       const { data, error } = await supabase
         .from("general_opportunities")
         .select(
-          "name, score, buyer_role, buyer_department, engagement_inbounds, engagement_outbounds, email_subject, email_body"
+          `
+          name, 
+          score, 
+          buyer_role, 
+          buyer_department, 
+          engagement_inbounds, 
+          engagement_outbounds, 
+          email_subject, 
+          email_body,
+          earnings_transcripts (
+            company_id
+          )
+          `
         )
         .in("earnings_transcript_id", etIDs);
 
       if (error) throw error;
 
+      const companyIds = data.map(
+        (item: any) => item.earnings_transcripts.company_id
+      );
+      const { data: companiesData, error: companiesError } = await supabase
+        .from("companies")
+        .select("id, name")
+        .in("id", companyIds);
+
+      if (companiesError) throw companiesError;
+
+      const companyMap = companiesData.reduce((acc: any, company: any) => {
+        acc[company.id] = company.name;
+        return acc;
+      }, {});
+
       const formattedData: OpportunityProps[] = data.map((item: any) => ({
         opportunityName: item.name,
         opportunityScore: item.score,
+        companyName: companyMap[item.earnings_transcripts.company_id],
         targetBuyer: {
           role: item.buyer_role,
           department: item.buyer_department,
@@ -103,20 +132,48 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       const { data, error } = await supabase
         .from("tailored_opportunities")
         .select(
-          "name, score, keywords, buyer_role, buyer_department, tactics, engagement_inbounds, engagement_outbounds, email_subject, email_body"
+          `
+          name, 
+          score, 
+          keywords, 
+          buyer_role, 
+          buyer_department, 
+          tactics, 
+          engagement_inbounds, 
+          engagement_outbounds, 
+          email_subject, 
+          email_body,
+          earnings_transcripts (
+            company_id
+          )
+          `
         )
         .eq("earnings_transcript_id", etID)
         .eq("organization_id", orgID);
 
       if (error) throw error;
 
+      const companyIds = data.map(
+        (item: any) => item.earnings_transcripts.company_id
+      );
+      const { data: companiesData, error: companiesError } = await supabase
+        .from("companies")
+        .select("id, name")
+        .in("id", companyIds);
+
+      if (companiesError) throw companiesError;
+
+      const companyMap = companiesData.reduce((acc: any, company: any) => {
+        acc[company.id] = company.name;
+        return acc;
+      }, {});
+
       if (data) {
-        // added mock data : tailoredOpportunities_v2
         const formattedData: OpportunityProps[] = data.map(
           (item: any, indx: number) => ({
-            // ...tailoredOpportunities_v2[indx % tailoredOpportunities_v2.length],
             opportunityName: item.name,
             opportunityScore: item.score,
+            companyName: companyMap[item.earnings_transcripts.company_id],
             keywords: item.keywords,
             targetBuyer: {
               role: item.buyer_role,
@@ -148,56 +205,11 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     setIsTOGenerating(true);
 
     try {
-      // const { data } = await generateTailoredOpportunitiesAPI({
-      //   companyID: companyID.toString(),
-      //   orgID: orgInfo?.id.toString() || "",
-      //   year,
-      //   quarter,
-      // });
-
-      // if (data.status === "success") {
-      //   const formattedData: OpportunityProps[] = data.opportunities.map(
-      //     (item: any) => ({
-      //       opportunityName: item.name,
-      //       opportunityScore: item.score,
-      //       keywords: item.keywords.split("\n"),
-      //       targetBuyer: {
-      //         role: item.buyer_role,
-      //         department: item.buyer_department,
-      //       },
-      //       tactics: item.tactics?.split("\n"),
-      //       engagementTips: {
-      //         inbound: item.engagement_inbounds.split("\n"),
-      //         outbound: item.engagement_outbounds.split("\n"),
-      //       },
-      //       outboundEmail: {
-      //         subject: item.email_subject,
-      //         body: item.email_body,
-      //       },
-      //     })
-      //   );
-      //   setTailoredOpps(formattedData);
-      //   setActiveTab("tailored");
-      //   setUserInfo((prev) => {
-      //     if (!prev) return prev;
-      //     return {
-      //       ...prev,
-      //       creditCount: prev.creditCount ? prev.creditCount - 1 : 0,
-      //     };
-      //   });
-      //   invokeToast("success", data.message, "top");
-      // } else {
-      //   invokeToast(
-      //     "error",
-      //     "An error occured while generating tailored opportunities",
-      //     "top"
-      //   );
-      // }
       setTimeout(() => {
         setTailoredOpps(tailoredOpportunities_v2);
       }, 2500);
     } catch (error) {
-      invokeToast("error", "Failred to generate tailored opportunities", "top");
+      invokeToast("error", "Failed to generate tailored opportunities", "top");
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNABORTED") {
           console.error(
@@ -250,7 +262,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             </h3>
             {!isGOLoading && !isTOLoading && (
               <button
-                // title={`Discover the top opportunities for selling your solutions to ${companyName}`}
                 onClick={generateTailoredOpportunities}
                 disabled={isTOGenerating}
                 className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
@@ -388,4 +399,4 @@ const LoadingSection: React.FC = () => {
   );
 };
 
-export default OpportunitiesSection;
+export default WLOpportunitySection;

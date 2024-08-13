@@ -58,7 +58,7 @@ const CompanyDetailPage: React.FC = () => {
   const [isLoadingCompany, setIsLoadingCompany] = useState<boolean>(true);
   const [isLoadingYearQuarters, setIsLoadingYearQuarters] =
     useState<boolean>(true);
-  const [isFetchingETID, setIsFetchingETID] = useState<boolean>(true);
+  const [isFetchingETID, setIsFetchingETID] = useState<boolean>(false);
   const [isLoadingNews, setIsLoadingNews] = useState<boolean>(true);
   const watchlist = useAtomValue(watchlistAtom);
 

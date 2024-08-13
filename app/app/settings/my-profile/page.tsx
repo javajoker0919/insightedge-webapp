@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAtom } from "jotai";
 
 import { supabase } from "@/utils/supabaseClient";
@@ -9,10 +9,17 @@ import { useToastContext } from "@/contexts/toastContext";
 
 const MyProfile = () => {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-  const [firstName, setFirstName] = useState(userInfo?.firstName || "");
-  const [lastName, setLastName] = useState(userInfo?.lastName || "");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const { invokeToast } = useToastContext();
+
+  useEffect(() => {
+    if (userInfo) {
+      setFirstName(userInfo.firstName || "");
+      setLastName(userInfo.lastName || "");
+    }
+  }, [userInfo]);
 
   const handleUpdateProfile = async () => {
     setIsUpdating(true);
@@ -38,6 +45,14 @@ const MyProfile = () => {
     }
     setIsUpdating(false);
   };
+
+  if (!userInfo) {
+    return (
+      <div className="m-auto p-10 w-[60rem] bg-white flex justify-center items-center">
+        <Loading size={10} color="primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="m-auto p-10 w-[60rem] bg-white">
