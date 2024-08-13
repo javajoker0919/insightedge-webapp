@@ -23,6 +23,7 @@ import {
   WLCalendarSection,
   WLIncomeStatementSection,
   WLHighlightSection,
+  WLSimilarCompanySection,
 } from "@/app/components";
 
 export interface CompanyDataType {
@@ -370,8 +371,9 @@ export default function WatchlistPage() {
               <div className="flex flex-col gap-4">
                 <WLHighlightSection companyList={watchlistCompanies} />
                 <WLCalendarSection companies={watchlistCompanies} />
+                <WLSimilarCompanySection companies={watchlistCompanies} />
 
-                <div className="border border-gray-300 rounded-lg p-3">
+                {/* <div className="border border-gray-300 rounded-lg p-3">
                   <h2 className="text-base font-semibold border-b border-gray-300 pb-2 mb-2 text-gray-800">
                     Similar Company To Follow
                   </h2>
@@ -394,7 +396,7 @@ export default function WatchlistPage() {
                       </div>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           )}

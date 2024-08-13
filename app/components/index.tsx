@@ -14,8 +14,9 @@ import WLIncomeStatementSection from "./watchlist/WLIncomeStatementSection";
 import PrelineScript from "./PrelineScript";
 import Check from "./CheckIcon";
 import Close from "./CloseIcon";
-
 import WLHighlightSection from "./watchlist/WLHighlightSection";
+import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
+
 export {
   CompanySearchbar,
   Details,
@@ -31,7 +32,8 @@ export {
   WLCalendarSection,
   WLIncomeStatementSection,
   WLHighlightSection,
+  WLSimilarCompanySection,
   PrelineScript,
   Check,
-  Close
+  Close,
 };
