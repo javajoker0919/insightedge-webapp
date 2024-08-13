@@ -7,13 +7,13 @@ import Loading from "@/app/components/Loading";
 import { marketingStrategy } from "@/app/app/company/[id]/Constants";
 
 interface MarketingStrategiesProps {
-  // companyName: string;
   etIDs: number[] | null;
 }
 
 export interface MarketingStrategyProps {
   tactic: string;
   tacticScore: number;
+  companyName: string;
   targetPersonas: string;
   channel: string;
   valueProposition: string;
@@ -22,10 +22,7 @@ export interface MarketingStrategyProps {
   callToAction: string;
 }
 
-const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
-  // companyName,
-  etIDs,
-}) => {
+const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedStrats, setSelectedStrats] =
     useState<MarketingStrategyProps | null>(null);
@@ -53,15 +50,43 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
       const { data, error } = await supabase
         .from("general_marketings")
         .select(
-          "tactic, tactic_score, target_personas, channel, value_proposition, key_performance_indicators, strategic_alignment, call_to_action"
+          `
+          tactic, 
+          tactic_score, 
+          target_personas, 
+          channel, 
+          value_proposition, 
+          key_performance_indicators, 
+          strategic_alignment, 
+          call_to_action, 
+          earnings_transcripts (
+            company_id
+          )
+          `
         )
         .in("earnings_transcript_id", etIDs);
 
       if (error) throw error;
 
+      const companyIds = data.map(
+        (item: any) => item.earnings_transcripts.company_id
+      );
+      const { data: companiesData, error: companiesError } = await supabase
+        .from("companies")
+        .select("id, name")
+        .in("id", companyIds);
+
+      if (companiesError) throw companiesError;
+
+      const companyMap = companiesData.reduce((acc: any, company: any) => {
+        acc[company.id] = company.name;
+        return acc;
+      }, {});
+
       const strategies = data.map((item: any) => ({
         tactic: item.tactic,
         tacticScore: parseFloat(item.tactic_score),
+        companyName: companyMap[item.earnings_transcripts.company_id],
         targetPersonas: item.target_personas,
         channel: item.channel,
         valueProposition: item.value_proposition,
@@ -153,18 +178,6 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
               <LoadingSection />
             ) : (
               <>
-                {/* {companyName && (
-                  <div className="p-4 bg-gray-100 text-black">
-                    {companyName}'s top Marketing Strategy.
-                    {tailoredStrats?.length === 0 && (
-                      <span>
-                        To find the best ways to sell your solutions to{" "}
-                        {companyName}, click "Generate Tailored Marketing
-                        Strategy."
-                      </span>
-                    )}
-                  </div>
-                )} */}
                 {generalStrats && (
                   <MarketingStrategyTable
                     strategies={generalStrats}
@@ -178,13 +191,6 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
               <LoadingSection />
             ) : (
               <>
-                {/* {companyName && (
-                  <div className="p-4 bg-gray-100 text-black">
-                    Below is your company specific marketing strategy. You can
-                    explore the top marketing tactics for selling your solutions
-                    to {companyName}
-                  </div>
-                )} */}
                 {tailoredStrats && (
                   <MarketingStrategyTable
                     strategies={tailoredStrats}

@@ -358,6 +358,7 @@ export const tailoredOpportunities_v2 = [
 
 export const marketingStrategy = [
   {
+    companyName: "Amazon",
     tactic: "Thought Leadership Webinars on Healthcare Innovation",
     tacticScore: 95,
     targetPersonas:
@@ -376,6 +377,7 @@ export const marketingStrategy = [
       "Register for our exclusive healthcare innovation webinar series",
   },
   {
+    companyName: "Amazon",
     tactic: "Sponsored Content in Pharma Industry Publications",
     tacticScore: 80,
     targetPersonas:
@@ -393,6 +395,7 @@ export const marketingStrategy = [
       "Contact us to learn more about our pharma innovation solutions",
   },
   {
+    companyName: "Amazon",
     tactic: "Personalized Email Campaign on Cardiovascular Solutions",
     tacticScore: 90,
     targetPersonas:
@@ -411,6 +414,7 @@ export const marketingStrategy = [
       "Schedule a personalized demo of our cardiovascular solutions",
   },
   {
+    companyName: "Amazon",
     tactic: "Targeted LinkedIn Advertising for Orthopedic Innovations",
     tacticScore: 85,
     targetPersonas:
@@ -429,6 +433,7 @@ export const marketingStrategy = [
       "Download our white paper on the future of orthopedic robotics",
   },
   {
+    companyName: "Amazon",
     tactic: "Sponsored Content in Pharma Industry Publications",
     tacticScore: 80,
     targetPersonas:

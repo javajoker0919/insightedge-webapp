@@ -1,4 +1,5 @@
-import { useCallback, useEffect } from "react";
+"use client";
+import { useCallback } from "react";
 import { FaLightbulb } from "react-icons/fa";
 import {
   coloredChannelList,
@@ -20,7 +21,10 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
   const TableHeadingRow = useCallback(
     () => (
       <tr className="bg-gray-200 text-black">
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-4/12">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-2/12">
+          Company Name
+        </th>
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-3/12">
           Tactic
         </th>
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 ">
@@ -53,10 +57,13 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                     strategies.length > 0 ? "" : "blur"
                   }`}
                 >
-                  <td className="px-4 py-3 border text-left border-gray-300">
+                  <td className="px-4 py-3 border border-gray-300">
+                    {strgy.companyName}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
                     {strgy.tactic}
                   </td>
-                  <td className="px-4 py-3 border border-gray-300 text-left ">
+                  <td className="px-4 py-3 border border-gray-300">
                     {strgy.targetPersonas.split(", ").map((aud, indx) => (
                       <span
                         key={`audience-${indx}-${aud}`}
@@ -107,7 +114,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
             })}
             {strategies.length === 0 && (
               <tr>
-                <td colSpan={4}>
+                <td colSpan={5}>
                   <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
                     <span className="text-4xl text-gray-600">No data</span>
                   </div>
@@ -124,7 +131,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
             </thead>
             <tbody>
               <tr>
-                <td colSpan={4}>
+                <td colSpan={5}>
                   <div className="w-full p-10 text-gray-500 text-xl flex items-center justify-center">
                     No data
                   </div>
