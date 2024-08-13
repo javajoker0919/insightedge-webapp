@@ -360,43 +360,13 @@ export default function WatchlistPage() {
                     handleRemoveCompanyFromWatchlist(wl_compId)
                   }
                 />
-
-                {watchlistCompanies?.length > 0 && (
-                  <>
-                    <WLOpportunitySection etIDs={etIDs} />
-                    <WLMarketingSection etIDs={etIDs} />
-                  </>
-                )}
+                <WLOpportunitySection etIDs={etIDs} />
+                <WLMarketingSection etIDs={etIDs} />
               </div>
               <div className="flex flex-col gap-4">
                 <WLHighlightSection companyList={watchlistCompanies} />
                 <WLCalendarSection companies={watchlistCompanies} />
                 <WLSimilarCompanySection companies={watchlistCompanies} />
-
-                {/* <div className="border border-gray-300 rounded-lg p-3">
-                  <h2 className="text-base font-semibold border-b border-gray-300 pb-2 mb-2 text-gray-800">
-                    Similar Company To Follow
-                  </h2>
-                  <div className="flex flex-col">
-                    {[0, 1, 2].map((item, index) => (
-                      <div
-                        key={`similar-company-${index}`}
-                        className="flex items-center justify-between p-2 border-b border-gray-300 last:border-b-0 text-gray-700"
-                      >
-                        <span>Content</span>
-                        <div className="flex items-center gap-2">
-                          <span className="flex items-center justify-center py-1 px-3 rounded bg-primary-50 text-primary-500">
-                            0.00%
-                          </span>
-                          <MdAddCircleOutline
-                            size={22}
-                            className="cursor-pointer text-gray-400 hover:text-gray-600"
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div> */}
               </div>
             </div>
           )}
