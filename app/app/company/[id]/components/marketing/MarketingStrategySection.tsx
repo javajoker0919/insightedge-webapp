@@ -165,9 +165,9 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
                   {companyName}'s top Marketing Strategy.
                   {tailoredStrats?.length === 0 && (
                     <span>
-                      To find the best ways to sell your solutions to{" "}
-                      {companyName}, click "Generate Tailored Marketing
-                      Strategy."
+                      {`To find the best ways to sell your solutions to 
+                      ${companyName}, click "Generate Tailored Marketing
+                      Strategy."`}
                     </span>
                   )}
                 </div>
