@@ -296,7 +296,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
               )}
               {generalOpps && (
                 <OpportunitiesTable
-                  companyName={companyName ?? "companyName"}
                   opportunities={generalOpps}
                   onQuickAction={handleQuickAction}
                 />
@@ -315,7 +314,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
               </div>
               {tailoredOpps && (
                 <OpportunitiesTable
-                  companyName={companyName ?? "companyName"}
                   opportunities={tailoredOpps}
                   onQuickAction={handleQuickAction}
                 />

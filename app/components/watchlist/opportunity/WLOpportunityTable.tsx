@@ -2,10 +2,9 @@ import { IoBulb, IoPerson } from "react-icons/io5";
 import { OpportunityProps } from "./WLOpportunitySection";
 
 const OpportunitiesTable: React.FC<{
-  companyName: string;
   opportunities: OpportunityProps[];
   onQuickAction: (opp: OpportunityProps) => void;
-}> = ({ companyName, opportunities, onQuickAction }) => {
+}> = ({ opportunities, onQuickAction }) => {
   const opps = opportunities;
 
   const getDepartmentClass = (department: string) => {
@@ -89,7 +88,7 @@ const OpportunitiesTable: React.FC<{
 
                     <a
                       href={`https://www.google.com/search?q=${encodeURIComponent(
-                        companyName
+                        opp.companyName
                       )}+${encodeURIComponent(
                         opp.targetBuyer.role
                       )}+${encodeURIComponent(
