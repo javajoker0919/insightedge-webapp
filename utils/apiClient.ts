@@ -81,6 +81,17 @@ const stopCancelSubscription = async () => {
   return response.data;
 };
 
+const generateTOAPI = async (etIDs: number[]) => {
+  const earnings_transcript_ids = { earnings_transcript_ids: etIDs };
+  const apiClient = await createApiClient();
+  const response = await apiClient.post(
+    "/api/v1/multi-opportunities",
+    earnings_transcript_ids
+  );
+
+  return response;
+};
+
 export {
   generateTailoredOpportunitiesAPI,
   generateTailoredSummaryAPI,
@@ -89,4 +100,5 @@ export {
   customerPortal,
   cancelSubscription,
   stopCancelSubscription,
+  generateTOAPI,
 };

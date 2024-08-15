@@ -51,7 +51,7 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
   >(null);
 
   useEffect(() => {
-    const fetchLatestWatchlistsData = async (companyIds: string[]) => {
+    const fetchLatestWatchlistsData = async (companySymbols: string[]) => {
       setIsLoading(true);
 
       const { data: incomeStatementData, error: incomeStatementError } =
@@ -71,7 +71,7 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
             op_expense_yoy_growth
           `
           )
-          .in("symbol", companyIds)
+          .in("symbol", companySymbols)
           .neq("period", "FY")
           .order("date", { ascending: false });
 
