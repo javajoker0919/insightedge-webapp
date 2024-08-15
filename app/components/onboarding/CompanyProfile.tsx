@@ -1,104 +1,54 @@
 "use client";
 
 import { useState } from "react";
-import { orgInfoAtom, userInfoAtom, watchlistAtom } from "@/utils/atoms";
-import { supabase } from "@/utils/supabaseClient";
-import { useAtom, useSetAtom } from "jotai";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
+import { getScrapeData } from "@/utils/apiClient";
 
-const CompanyProfile = () => {
-  const router = useRouter();
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-  const setOrgInfo = useSetAtom(orgInfoAtom);
-  const setWatchList = useSetAtom(watchlistAtom);
-  const [website, setWebsite] = useState("");
-  const [companyOverview, setCompanyOverview] = useState("");
-  const [productsServices, setProductsServices] = useState("");
+const CompanyProfile = ({
+  formData,
+  website,
+  companyOverview,
+  productsServices,
+  setOnboardingStep,
+  setWebsite,
+  setCompanyOverview,
+  setProductsServices
+}: {
+  setOnboardingStep: any;
+  formData: any;
+  website: any;
+  companyOverview: any;
+  productsServices: any;
+  setWebsite: any;
+  setCompanyOverview: any;
+  setProductsServices: any;
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreateCompanyProfile = async () => {
+  const scrapeData = async () => {
     try {
-      const {
-        data: { user }
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("No user found");
+      setIsLoading(true);
 
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (userError) throw userError;
-      if (!userData) throw new Error("User data not found");
-
-      const insertOrganizationData = {
-        name: userInfo?.companyName || "",
-        website,
-        overview: companyOverview,
-        products: productsServices,
-        creator_id: userData.id
+      const reqData = {
+        company_url: website,
+        company_name: formData.companyName
       };
 
-      const { data: orgData, error: orgError } = await supabase
-        .from("organizations")
-        .insert(insertOrganizationData)
-        .select()
-        .single();
+      const data = await getScrapeData(reqData);
 
-      if (orgError) throw orgError;
-
-      setOrgInfo({
-        id: orgData.id,
-        name: orgData.name,
-        website: orgData.website,
-        overview: orgData.overview,
-        products: orgData.products,
-        creatorID: userData.id
-      });
-
-      const insertWatchlistData = {
-        name: "Watchlist",
-        organization_id: orgData.id,
-        creator_id: userData.id
-      };
-
-      const { data: watchlistData, error: watchlistError } = await supabase
-        .from("watchlists")
-        .insert(insertWatchlistData)
-        .select()
-        .single();
-
-      if (watchlistError) throw watchlistError;
-
-      setWatchList([
-        {
-          id: watchlistData.id,
-          name: watchlistData.name,
-          organizationID: watchlistData.organization_id,
-          creatorID: watchlistData.creator_id,
-          uuid: watchlistData.uuid
-        }
-      ]);
-      router.replace("/onboarding/user-awareness");
+      setCompanyOverview(data.data.overview);
+      setProductsServices(data.data.products);
     } catch (error) {
-      console.error("Error creating company profile:", error);
+      console.error("Error scraping company data:", error);
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="flex flex-row w-full h-screen">
       <div className="flex flex-col items-center justify-center w-1/2 h-full">
-        <div className="flex items-center absolute top-6 left-6">
-          <Image
-            src="/favicon.png"
-            alt="ProspectEdge Logo"
-            width={40}
-            height={40}
-          />
-          <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
-        </div>
         <div className="flex flex-col justify-center items-center w-full">
           <div className="flex flex-col items-center max-w-[500px] w-full">
             <div className="flex flex-col justify-center text-lg leading-7 w-full mb-6">
@@ -114,8 +64,37 @@ const CompanyProfile = () => {
                 onChange={(e) => setWebsite(e.target.value)}
               />
             </div>
-            <button className="text-base font-medium leading-7 text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300 px-6 py-3 rounded-md shadow-sm w-fit mt-8">
-              Summarize Company Using AI
+            <button
+              className="text-base font-medium leading-7 text-white bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md shadow-sm w-full mt-8 disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled={isLoading}
+              onClick={scrapeData}
+            >
+              {isLoading ? (
+                <span className="flex justify-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-6 w-6 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </span>
+              ) : (
+                "Summarize Company Using AI"
+              )}
             </button>
             <p className="text-sm font-normal leading-5 text-gray-500 mt-2">
               (Recommended)
@@ -136,14 +115,14 @@ const CompanyProfile = () => {
           <div className="flex justify-between mt-10 w-full px-32">
             <button
               className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
-              onClick={() => router.push("/onboarding/user-info")}
+              onClick={() => setOnboardingStep(0)}
             >
               <GoArrowLeft className="mr-2 h-5 w-5" />
               Back
             </button>
             <button
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
-              onClick={handleCreateCompanyProfile}
+              onClick={() => setOnboardingStep(2)}
             >
               Continue
               <GoArrowRight className="ml-2 h-5 w-5" />

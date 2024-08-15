@@ -16,6 +16,9 @@ import Check from "./CheckIcon";
 import Close from "./CloseIcon";
 import WLHighlightSection from "./watchlist/WLHighlightSection";
 import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
+import UserInfo from "./onboarding/UserInfo";
+import CompanyProfile from "./onboarding/CompanyProfile";
+import UserAwareness from "./onboarding/UserAwareness";
 
 export {
   CompanySearchbar,
@@ -36,4 +39,7 @@ export {
   PrelineScript,
   Check,
   Close,
+  UserInfo,
+  CompanyProfile,
+  UserAwareness
 };

@@ -144,9 +144,12 @@ const HeroSection: React.FC = () => (
       points and optimize your sales and marketing approach
     </p>
     <div className="flex flex-col items-center gap-6">
-      <button className="px-10 py-3 text-2xl font-normal rounded-full border bg-primary-500 border-primary-500 text-white">
+      <a
+        href="/auth/sign-up"
+        className="px-10 py-3 text-2xl font-normal rounded-full border bg-primary-500 border-primary-500 text-white"
+      >
         Try for free
-      </button>
+      </a>
       <p className="text-base leading-6 font-normal text-[#9B9C9DFF]">
         Signup For Free. No card required.
       </p>
@@ -180,12 +183,12 @@ const SalesAndMarketingSection: React.FC = () => (
         <Feature
           icon={<FaPuzzlePiece className="w-12 h-12 text-primary-500" />}
           title="Account Based Marketing"
-          description="Cenerate targeted marketing tactics for each account aligned to your offerings and customer needs."
+          description="Generate targeted marketing tactics for each account aligned to your offerings and customer needs."
         />
         <Feature
           icon={<FaBookReader className="w-12 h-12 text-primary-500" />}
           title="Actionable Insights"
-          description="Discover key initivates, prioities, challenges & pain points."
+          description="Discover key initiatives, priorities, challenges & pain points."
         />
         <Feature
           icon={<LuBrainCircuit className="w-12 h-12 text-primary-500" />}
