@@ -71,13 +71,13 @@ const WLHighlightSection: React.FC<WatchlistHighlightsProps> = ({
         <p className="text-sm text-gray-400">Based on your watchlist</p>
       </div>
 
-      <div className="p-2 max-h-96 overflow-y-auto">
+      <div className="max-h-96 overflow-y-auto">
         {isLoading ? (
           <div className="flex justify-center h-20 items-center">
             <Loading />
           </div>
-        ) : (
-          <ul className="list-disc pl-5">
+        ) : Object.entries(keyHighlights).length > 0 ? (
+          <ul className="list-disc pl-5 p-2">
             {Object.entries(keyHighlights).map(([companyName, highlight]) => (
               <li key={companyName} className="mb-4">
                 <h4 className="font-semibold text-gray-700">{companyName}</h4>
@@ -85,6 +85,10 @@ const WLHighlightSection: React.FC<WatchlistHighlightsProps> = ({
               </li>
             ))}
           </ul>
+        ) : (
+          <div className="flex justify-center items-center h-20">
+            <span className="text-sm text-gray-700">No Highlights</span>
+          </div>
         )}
       </div>
     </div>
