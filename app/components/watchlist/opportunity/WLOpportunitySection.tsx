@@ -7,7 +7,9 @@ import Modal from "@/app/components/Modal";
 import OpportunitiesTable from "./WLOpportunityTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { Details } from "../..";
-import { tailoredOpportunities_v2 } from "@/app/app/company/[id]/Constants";
+import { generateTOAPI } from "@/utils/apiClient";
+import { userInfoAtom } from "@/utils/atoms";
+import { useSetAtom } from "jotai";
 
 interface OpportunitiesProps {
   companyName?: string;
@@ -51,6 +53,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   const [isGOLoading, setIsGOLoading] = useState<boolean>(true);
   const [isTOLoading, setIsTOLoading] = useState<boolean>(false);
   const [isTOGenerating, setIsTOGenerating] = useState<boolean>(false);
+  const setUserInfo = useSetAtom(userInfoAtom);
 
   useEffect(() => {
     if (etIDs && etIDs.length > 0) {
@@ -202,12 +205,55 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   };
 
   const generateTailoredOpportunities = async () => {
+    if (!etIDs || etIDs.length === 0) {
+      invokeToast("error", "No earnings transcripts selected", "top");
+      return;
+    }
+
     setIsTOGenerating(true);
 
     try {
-      setTimeout(() => {
-        setTailoredOpps(tailoredOpportunities_v2);
-      }, 2500);
+      const { data } = await generateTOAPI(etIDs);
+
+      if (data.status === "success") {
+        const formattedData: OpportunityProps[] = data.opportunities.map(
+          (item: any) => ({
+            opportunityName: item.name,
+            opportunityScore: item.score,
+            companyName: item.company_name,
+            keywords: item.keywords?.split(",") || [],
+            targetBuyer: {
+              role: item.buyer_role,
+              department: item.buyer_department,
+            },
+            engagementTips: {
+              inbound: item.engagement_inbounds?.split("\n") || [],
+              outbound: item.engagement_outbounds?.split("\n") || [],
+            },
+            outboundEmail: {
+              subject: item.email_subject,
+              body: item.email_body,
+            },
+          })
+        );
+
+        setTailoredOpps(formattedData);
+        setActiveTab("tailored");
+        setUserInfo((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            creditCount: prev.creditCount ? prev.creditCount - data.credits : 0,
+          };
+        });
+        invokeToast("success", data.message, "top");
+      } else {
+        invokeToast(
+          "error",
+          "An error occured while generating tailored opportunities",
+          "top"
+        );
+      }
     } catch (error) {
       invokeToast("error", "Failed to generate tailored opportunities", "top");
       if (axios.isAxiosError(error)) {
@@ -296,7 +342,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
               )}
               {generalOpps && (
                 <OpportunitiesTable
-                  companyName={companyName ?? "companyName"}
                   opportunities={generalOpps}
                   onQuickAction={handleQuickAction}
                 />
@@ -315,7 +360,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
               </div>
               {tailoredOpps && (
                 <OpportunitiesTable
-                  companyName={companyName ?? "companyName"}
                   opportunities={tailoredOpps}
                   onQuickAction={handleQuickAction}
                 />

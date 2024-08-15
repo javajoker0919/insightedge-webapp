@@ -9,7 +9,6 @@ import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTailoredOpportunitiesAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
 import { Details } from "..";
-import { tailoredOpportunities_v2 } from "../../Constants";
 import { Loading } from "@/app/components";
 
 interface OpportunitiesProps {
