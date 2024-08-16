@@ -89,7 +89,7 @@ const SignIn = () => {
       invokeToast("success", "You have successfully logged in!", "top");
 
       if (!userData.onboarding_status) {
-        router.replace("/onboarding/user-info");
+        router.replace("/onboarding");
       }
 
       const { data: orgData, error: orgError } = await supabase
@@ -163,7 +163,7 @@ const SignIn = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/app/watchlist/`,
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
         },
       });
 
