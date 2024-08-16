@@ -18,7 +18,8 @@ const refreshToken = async () => {
 };
 
 // Refresh token every 30 minutes
-setInterval(refreshToken, 30 * 60 * 1000);
+// setInterval(refreshToken, 30 * 60 * 1000);
+// setInterval(refreshToken, 60 * 1000);
 
 // supabase.auth.onAuthStateChange(async (event, session) => {
 //   console.log("event: ", event);

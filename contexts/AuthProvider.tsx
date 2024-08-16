@@ -21,7 +21,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/reset-confirm",
     "/auth/reset-success",
     "/terms",
-    "/privacy"
+    "/privacy",
   ];
   const landingPath = "/";
 
@@ -29,7 +29,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     const checkUser = async () => {
       try {
         const {
-          data: { session }
+          data: { session },
         } = await supabase.auth.getSession();
 
         if (session?.user) {
@@ -64,6 +64,9 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     };
 
     checkUser();
+    const intervalId = setInterval(checkUser, 60000); // Check every 60 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, [pathname, userInfo]); // Effect depends on pathname changes
 
   // Display loading indicator while authentication status is being checked
