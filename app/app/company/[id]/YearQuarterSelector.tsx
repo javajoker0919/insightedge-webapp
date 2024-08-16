@@ -66,7 +66,8 @@ const YearQuarterSelector: React.FC<YearQuarterSelectorProps> = ({
   };
 
   return (
-    <div className="flex space-x-4">
+    <div className="flex space-x-4 items-center">
+      <p className="shrink-0 pl-2 text-gray-600">As of earning date</p>
       <Dropdown
         value={selectedDate}
         options={yearQuarters.map((yq) => ({

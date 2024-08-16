@@ -164,7 +164,7 @@ const CompanyDetailPage: React.FC = () => {
   if (!companyData) return <div>Company not found</div>;
 
   return (
-    <div className="w-full p-4 h-full overflow-y-auto bg-primary-50 bg-opacity-50 flex flex-col gap-4">
+    <div className="w-full p-4 h-full overflow-y-auto bg-white bg-opacity-50 flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
           <div className="flex text-sm items-center gap-2 text-gray-400">
