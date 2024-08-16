@@ -4,13 +4,16 @@ import { supabase } from "@/utils/supabaseClient";
 import MarketingStrategyTable from "./WLMarketignTable";
 import MarketingPlanModal from "./WLMarketingModal";
 import Loading from "@/app/components/Loading";
-import { marketingStrategy } from "@/app/app/company/[id]/Constants";
+import { generateTMAPI } from "@/utils/apiClient";
+import { useToastContext } from "@/contexts/toastContext";
+import { userInfoAtom } from "@/utils/atoms";
+import { useSetAtom } from "jotai";
 
 interface MarketingStrategiesProps {
   etIDs: number[] | null;
 }
 
-export interface MarketingStrategyProps {
+export interface MarketingProps {
   tactic: string;
   tacticScore: number;
   companyName: string;
@@ -22,29 +25,45 @@ export interface MarketingStrategyProps {
   callToAction: string;
 }
 
-const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
-  const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
-  const [selectedStrats, setSelectedStrats] =
-    useState<MarketingStrategyProps | null>(null);
-  const [generalStrats, setGeneralStrats] = useState<
-    MarketingStrategyProps[] | null
-  >(null);
-  const [tailoredStrats, setTailoredStrats] = useState<
-    MarketingStrategyProps[] | null
-  >(null);
+interface genTMResType {
+  call_to_action: string;
+  channel: string;
+  company_name: string;
+  earnings_transcript_id: number;
+  key_performance_indicators: string;
+  strategic_alignment: string;
+  tactic: string;
+  tactic_score: string;
+  target_personas: string;
+  value_proposition: string;
+}
 
-  const [isGeneralLoading, setIsGeneralLoading] = useState<boolean>(false);
-  const [isTailoredLoading, setIsTailoredLoading] = useState<boolean>(false);
+const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
+  const { invokeToast } = useToastContext();
+  const setUserInfo = useSetAtom(userInfoAtom);
+
+  const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
+  const [selectedStrats, setSelectedStrats] = useState<MarketingProps | null>(
+    null
+  );
+  const [generalStrats, setGeneralStrats] = useState<MarketingProps[] | null>(
+    null
+  );
+  const [tailoredMarketings, setTMs] = useState<MarketingProps[] | null>(null);
+
+  const [isFetchingGM, setIsFetchingGM] = useState<boolean>(false);
+  const [isFetchingTM, setIsFetchingTM] = useState<boolean>(false);
+  const [isGeneratingTM, setIsGeneratingTM] = useState<boolean>(false);
 
   useEffect(() => {
     if (etIDs && etIDs.length > 0) {
       fetchMarketingStrategies(etIDs);
+      fetchTMs(etIDs);
     }
   }, [etIDs]);
 
   const fetchMarketingStrategies = async (etIDs: number[]) => {
-    setIsGeneralLoading(true);
-    setIsTailoredLoading(true);
+    setIsFetchingGM(true);
 
     try {
       const { data, error } = await supabase
@@ -102,40 +121,97 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
     } catch (error) {
       console.error("Error fetching marketing strategies:", error);
     } finally {
-      setIsGeneralLoading(false);
-      setIsTailoredLoading(false);
+      setIsFetchingGM(false);
     }
   };
 
-  const handleGenerateTailoredStrategies = () => {
-    setIsTailoredLoading(true);
+  const fetchTMs = async (etIDs: number[]) => {
+    setIsFetchingTM(true);
 
-    setTimeout(() => {
-      setTailoredStrats(marketingStrategy);
-      setActiveTab("tailored");
-      setIsTailoredLoading(false);
-    }, 2000);
+    try {
+    } catch (error) {
+      // invokeToast("error", "Failed to generate tailored opportunities", "top");
+      // if (axios.isAxiosError(error)) {
+      //   if (error.code === "ECONNABORTED") {
+      //     console.error(
+      //       "Request timed out. The backend operation might take longer than expected."
+      //     );
+      //   } else if (error.response?.status !== 200) {
+      //     console.error(`HTTP error! status: ${error.response?.status}`);
+      //   }
+      // }
+      console.error("Error fetching tailored marketings:", error);
+    } finally {
+      setIsFetchingTM(false);
+    }
   };
 
-  const handleQuickAction = (strt: MarketingStrategyProps) => {
+  const handleGenerateTMs = async () => {
+    if (!etIDs) {
+      return;
+    }
+
+    setIsGeneratingTM(true);
+
+    try {
+      const { data } = await generateTMAPI(etIDs);
+
+      console.log("tailored marketings: ", data);
+
+      const formattedData: MarketingProps[] = data.marketings.map(
+        (item: genTMResType) => ({
+          tactic: item.tactic,
+          tacticScore: parseFloat(item.tactic_score),
+          companyName: item.company_name,
+          targetPersonas: item.target_personas,
+          channel: item.channel,
+          valueProposition: item.value_proposition,
+          keyPerformanceIndicators: item.key_performance_indicators
+            .replace(/[\[\]"]/g, "")
+            .split(", "),
+          strategicAlignment: item.strategic_alignment,
+          callToAction: item.call_to_action,
+        })
+      );
+
+      setTMs(formattedData);
+      setActiveTab("tailored");
+      setUserInfo((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          creditCount: prev.creditCount
+            ? prev.creditCount - data.used_credits
+            : 0,
+        };
+      });
+      invokeToast("success", data.message, "top");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsGeneratingTM(false);
+    }
+  };
+
+  const handleQuickAction = (strt: MarketingProps) => {
     setSelectedStrats(strt);
   };
 
   return (
     <div className="bg-primary border border-gray-300 rounded-lg overflow-hidden">
       <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
-        {tailoredStrats === null ? (
+        {tailoredMarketings === null ? (
           <div className="flex w-full justify-between items-center pr-4 py-1">
             <h3 className="px-4 py-3 font-medium text-gray-700">
               Marketing Strategies
             </h3>
-            {!Array.isArray(tailoredStrats) && (
+            {!isFetchingTM && (
               <button
-                onClick={handleGenerateTailoredStrategies}
-                disabled={isTailoredLoading}
+                onClick={handleGenerateTMs}
+                disabled={isGeneratingTM}
                 className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
-                {isTailoredLoading ? (
+                {isGeneratingTM ? (
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
                 ) : (
                   "Generate Tailored Marketing Strategies"
@@ -174,7 +250,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
       ) : (
         <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
           {activeTab === "general" &&
-            (isGeneralLoading ? (
+            (isFetchingGM ? (
               <LoadingSection />
             ) : (
               <>
@@ -187,13 +263,13 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
               </>
             ))}
           {activeTab === "tailored" &&
-            (isTailoredLoading ? (
+            (isGeneratingTM ? (
               <LoadingSection />
             ) : (
               <>
-                {tailoredStrats && (
+                {tailoredMarketings && (
                   <MarketingStrategyTable
-                    strategies={tailoredStrats}
+                    strategies={tailoredMarketings}
                     onQuickAction={handleQuickAction}
                   />
                 )}

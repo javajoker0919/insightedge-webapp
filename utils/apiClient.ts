@@ -85,7 +85,18 @@ const generateTOAPI = async (etIDs: number[]) => {
   const earnings_transcript_ids = { earnings_transcript_ids: etIDs };
   const apiClient = await createApiClient();
   const response = await apiClient.post(
-    "/api/v1/multi-opportunities",
+    "/api/v1/generate/opportunities",
+    earnings_transcript_ids
+  );
+
+  return response;
+};
+
+const generateTMAPI = async (etIDs: number[]) => {
+  const earnings_transcript_ids = { earnings_transcript_ids: etIDs };
+  const apiClient = await createApiClient();
+  const response = await apiClient.post(
+    "/api/v1/generate/marketings",
     earnings_transcript_ids
   );
 
@@ -115,5 +126,6 @@ export {
   cancelSubscription,
   stopCancelSubscription,
   generateTOAPI,
+  generateTMAPI,
   getScrapeData
 };
