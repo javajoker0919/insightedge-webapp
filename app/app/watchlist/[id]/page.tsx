@@ -24,6 +24,7 @@ import {
   WLIncomeStatementSection,
   WLHighlightSection,
   WLSimilarCompanySection,
+  Loading,
 } from "@/app/components";
 
 export interface CompanyDataType {
@@ -276,11 +277,11 @@ export default function WatchlistPage() {
     <div className="flex justify-center p-4 h-full overflow-auto">
       {isLoading ? (
         <div className="flex flex-col items-center m-auto gap-4">
-          <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
+          <Loading color="primary" />
           <h1>Loading</h1>
         </div>
       ) : (
-        <div className="container mx-auto relative">
+        <div className="relative w-full">
           <div className="flex items-center justify-between relative pl-4 py-2 w-8/12">
             <h1 className="font-bold text-lg">{watchlistName}</h1>
             <div className="flex items-center gap-2">
@@ -351,8 +352,8 @@ export default function WatchlistPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-4 my-2">
-              <div className="col-span-2 flex flex-col gap-4 pb-5">
+            <div className="flex items-start w-full gap-4 my-2">
+              <div className="flex flex-grow flex-col gap-4 pb-5">
                 <WLIncomeStatementSection
                   watchlistCompanies={watchlistCompanies}
                   isSorted={isSorted}
@@ -363,7 +364,7 @@ export default function WatchlistPage() {
                 <WLOpportunitySection etIDs={etIDs} />
                 <WLMarketingSection etIDs={etIDs} />
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="xl:w-[30rem] w-96 h-full space-y-4 shrink-0">
                 <WLHighlightSection companyList={watchlistCompanies} />
                 <WLCalendarSection companies={watchlistCompanies} />
                 <WLSimilarCompanySection companies={watchlistCompanies} />

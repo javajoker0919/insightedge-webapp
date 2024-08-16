@@ -77,7 +77,7 @@ const WLHighlightSection: React.FC<WatchlistHighlightsProps> = ({
             <Loading />
           </div>
         ) : Object.entries(keyHighlights).length > 0 ? (
-          <ul className="list-disc pl-5 p-2">
+          <ul className="list-disc p-2 pl-8">
             {Object.entries(keyHighlights).map(([companyName, highlight]) => (
               <li key={companyName} className="mb-4">
                 <h4 className="font-semibold text-gray-700">{companyName}</h4>
