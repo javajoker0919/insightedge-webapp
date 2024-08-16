@@ -5,11 +5,11 @@ import {
   coloredChannelList,
   marketingStrategy,
 } from "@/app/app/company/[id]/Constants";
-import { MarketingStrategyProps } from "./WLMarketingSection";
+import { MarketingProps } from "./WLMarketingSection";
 
 interface MSTableCompProps {
-  strategies: MarketingStrategyProps[];
-  onQuickAction: (opp: MarketingStrategyProps) => void;
+  strategies: MarketingProps[];
+  onQuickAction: (opp: MarketingProps) => void;
 }
 
 const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
