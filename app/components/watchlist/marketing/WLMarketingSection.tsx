@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
-import MarketingStrategyTable from "./WLMarketignTable";
+import MarketingStrategyTable from "./WLMarketingTable";
 import MarketingPlanModal from "./WLMarketingModal";
 import Loading from "@/app/components/Loading";
 import { generateTMAPI } from "@/utils/apiClient";
