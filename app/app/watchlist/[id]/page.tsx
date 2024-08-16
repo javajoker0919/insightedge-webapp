@@ -10,8 +10,7 @@ import {
   userInfoAtom,
   watchlistAtom,
 } from "@/utils/atoms";
-import { MdAddCircleOutline } from "react-icons/md";
-import { FaSortAlphaDown } from "react-icons/fa";
+import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import moment from "moment";
 
@@ -292,7 +291,7 @@ export default function WatchlistPage() {
                   (isSorted ? "text-primary-500" : "text-gray-500")
                 }
               >
-                <FaSortAlphaDown />
+                {isSorted ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
                 <span>Sort by Name</span>
               </button>
 

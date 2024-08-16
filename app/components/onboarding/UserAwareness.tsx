@@ -61,7 +61,7 @@ const UserAwareness = ({
         firstName: userData.first_name,
         lastName: userData.last_name,
         companyName: formData.companyName,
-        onboardingStatus: false
+        onboardingStatus: true
       });
 
       const insertOrganizationData = {
@@ -115,8 +115,6 @@ const UserAwareness = ({
       router.replace(`/app/watchlist/${watchlistData.uuid}`);
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
