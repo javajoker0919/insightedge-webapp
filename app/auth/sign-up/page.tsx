@@ -20,12 +20,12 @@ const SignUp = () => {
 
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
+    password: ""
   });
 
   const [errors, setErrors] = useState({
     email: "",
-    password: "",
+    password: ""
   });
 
   const [isValidate, setIsValidate] = useState(false);
@@ -64,47 +64,28 @@ const SignUp = () => {
     setIsLoading(true);
 
     try {
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("email", email)
-        .single();
-
-      if (userData) {
-        invokeToast("error", "User already exists", "top");
-        setIsLoading(false);
-        return;
-      }
-
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding/user-info`,
-        },
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`
+        }
       });
 
       if (authError) throw authError;
 
-      if (authData.user) {
-        const { email, id } = authData.user;
-        if (email) localStorage.setItem("email", email);
-        if (id) localStorage.setItem("userId", id);
-      }
-
       setUserMetadata(authData.user?.user_metadata || null);
 
       // Set user data using the userInfoAtom
-      // setUserData({
-      //   id: userData.id,
-      //   email: userData.email,
-      //   firstName: userData.first_name || "",
-      //   lastName: userData.last_name || "",
-      //   companyName: "",
-      //   onboardingStatus: false
-      // });
+      setUserData({
+        id: authData.user?.id || "",
+        email: authData.user?.email || "",
+        firstName: "",
+        lastName: "",
+        companyName: "",
+        onboardingStatus: false
+      });
 
-      // invokeToast("success", "Successfully signed up!", "top");
       router.replace("/auth/verify-email");
     } catch (error: any) {
       console.error("Sign-up error:", error);
@@ -119,19 +100,17 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `http://localhost:3000/onboarding/user-info`,
-        },
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding/user-info`
+        }
       });
 
       if (error) {
         throw error;
       }
-      // Handle successful sign-in
-      // console.log("Google sign-in successful:", data);
+      console.log("Google sign-in successful:", data);
       // You might want to redirect the user or update the UI here
     } catch (error) {
       console.error("Error during Google sign-in:", error);
-      // Handle error (e.g., show an error message to the user)
     }
   };
 

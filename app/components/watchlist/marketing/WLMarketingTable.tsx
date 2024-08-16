@@ -1,39 +1,53 @@
 "use client";
 import { useCallback } from "react";
 import { FaLightbulb } from "react-icons/fa";
-import {
-  coloredChannelList,
-  marketingStrategy,
-} from "@/app/app/company/[id]/Constants";
-import { MarketingStrategyProps } from "./WLMarketingSection";
+import { marketingStrategy } from "@/app/app/company/[id]/Constants";
+import { MarketingProps } from "./WLMarketingSection";
 
 interface MSTableCompProps {
-  strategies: MarketingStrategyProps[];
-  onQuickAction: (opp: MarketingStrategyProps) => void;
+  strategies: MarketingProps[];
+  onQuickAction: (opp: MarketingProps) => void;
 }
+
+const getTextClass = (text: string) => {
+  const sum = text.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const classes = [
+    "bg-blue-100 text-blue-800",
+    "bg-purple-100 text-purple-800",
+    "bg-orange-100 text-orange-800",
+    "bg-teal-100 text-teal-800",
+    "bg-pink-100 text-pink-800",
+    "bg-indigo-100 text-indigo-800",
+    "bg-yellow-100 text-yellow-800",
+    "bg-green-100 text-green-800",
+    "bg-red-100 text-red-800",
+    "bg-gray-100 text-gray-800",
+  ];
+  return classes[sum % classes.length];
+};
 
 const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
   strategies,
   onQuickAction,
 }) => {
-  const strats = strategies.length > 0 ? strategies : marketingStrategy;
+  const marketings = strategies.length > 0 ? strategies : marketingStrategy;
 
   const TableHeadingRow = useCallback(
     () => (
       <tr className="bg-gray-200 text-black">
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-2/12">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
           Company Name
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-3/12">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
           Tactic
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 ">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-96">
           Target Personas
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-2/12">
-          Channels
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
+          Channel
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 ">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
           Quick Actions
         </th>
       </tr>
@@ -43,13 +57,13 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
 
   return (
     <>
-      {strats.length > 0 ? (
+      {marketings.length > 0 ? (
         <table className="w-full relative border-collapse">
           <thead className="sticky z-10 top-0">
             <TableHeadingRow />
           </thead>
           <tbody className="text-center relative">
-            {strats.map((strgy, index) => {
+            {marketings.map((marketing, index) => {
               return (
                 <tr
                   key={`market-strategy-${index}`}
@@ -58,51 +72,27 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                   }`}
                 >
                   <td className="px-4 py-3 border border-gray-300">
-                    {strgy.companyName}
+                    {marketing.companyName}
                   </td>
                   <td className="px-4 py-3 border border-gray-300">
-                    {strgy.tactic}
+                    {marketing.tactic}
+                  </td>
+                  <td className="px-4 py-3 border justify-items-center gap-2 border-gray-300">
+                    {marketing.targetPersonas.split("\n").join(", ")}
                   </td>
                   <td className="px-4 py-3 border border-gray-300">
-                    {strgy.targetPersonas.split(", ").map((aud, indx) => (
-                      <span
-                        key={`audience-${indx}-${aud}`}
-                        className={`text-xs font-medium`}
-                      >
-                        {aud +
-                          (strgy.targetPersonas?.split(", ").length - 1 !== indx
-                            ? ", "
-                            : "")}
-                      </span>
-                    ))}
-                  </td>
-                  <td className="px-4 py-3 border border-gray-300">
-                    {strgy.channel.split(", ").map((chnl, indx) => {
-                      const coloredChnl = coloredChannelList.find((el) =>
-                        el.content.includes(chnl)
-                      );
-                      const foundColor =
-                        coloredChnl?.color?.toLowerCase() || `#004AAD`;
-
-                      return (
-                        <span
-                          key={`channel-${indx}-${chnl}`}
-                          style={{
-                            backgroundColor: `${foundColor}4d`,
-                          }}
-                          className={
-                            "inline-block min-w-7 px-2 py-1 m-[2px] rounded-full text-xs font-medium"
-                          }
-                        >
-                          {chnl}
-                        </span>
-                      );
-                    })}
+                    <span
+                      className={`inline-block min-w-7 px-2 py-1 m-[2px] rounded-2xl border text-sm font-medium ${getTextClass(
+                        marketing.channel
+                      )}`}
+                    >
+                      {marketing.channel}
+                    </span>
                   </td>
                   <td className="px-4 py-3 border border-gray-300">
                     <div className="flex justify-center space-x-2">
                       <button
-                        onClick={() => onQuickAction(strgy)}
+                        onClick={() => onQuickAction(marketing)}
                         className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
                       >
                         Details <FaLightbulb />

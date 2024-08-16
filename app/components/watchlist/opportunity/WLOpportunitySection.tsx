@@ -6,7 +6,7 @@ import { supabase } from "@/utils/supabaseClient";
 import Modal from "@/app/components/Modal";
 import OpportunitiesTable from "./WLOpportunityTable";
 import { useToastContext } from "@/contexts/toastContext";
-import { Details } from "../..";
+import { Details, Loading } from "../..";
 import { generateTOAPI } from "@/utils/apiClient";
 import { userInfoAtom } from "@/utils/atoms";
 import { useSetAtom } from "jotai";
@@ -215,45 +215,37 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
     try {
       const { data } = await generateTOAPI(etIDs);
 
-      if (data.status === "success") {
-        const formattedData: OpportunityProps[] = data.opportunities.map(
-          (item: any) => ({
-            opportunityName: item.name,
-            opportunityScore: item.score,
-            companyName: item.company_name,
-            keywords: item.keywords?.split(",") || [],
-            targetBuyer: {
-              role: item.buyer_role,
-              department: item.buyer_department,
-            },
-            engagementTips: {
-              inbound: item.engagement_inbounds?.split("\n") || [],
-              outbound: item.engagement_outbounds?.split("\n") || [],
-            },
-            outboundEmail: {
-              subject: item.email_subject,
-              body: item.email_body,
-            },
-          })
-        );
+      const formattedData: OpportunityProps[] = data.opportunities.map(
+        (item: any) => ({
+          opportunityName: item.name,
+          opportunityScore: item.score,
+          companyName: item.company_name,
+          keywords: item.keywords?.split(",") || [],
+          targetBuyer: {
+            role: item.buyer_role,
+            department: item.buyer_department,
+          },
+          engagementTips: {
+            inbound: item.engagement_inbounds?.split("\n") || [],
+            outbound: item.engagement_outbounds?.split("\n") || [],
+          },
+          outboundEmail: {
+            subject: item.email_subject,
+            body: item.email_body,
+          },
+        })
+      );
 
-        setTailoredOpps(formattedData);
-        setActiveTab("tailored");
-        setUserInfo((prev) => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            creditCount: prev.creditCount ? prev.creditCount - data.credits : 0,
-          };
-        });
-        invokeToast("success", data.message, "top");
-      } else {
-        invokeToast(
-          "error",
-          "An error occured while generating tailored opportunities",
-          "top"
-        );
-      }
+      setTailoredOpps(formattedData);
+      setActiveTab("tailored");
+      setUserInfo((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          creditCount: prev.creditCount ? prev.creditCount - data.credits : 0,
+        };
+      });
+      invokeToast("success", data.message, "top");
     } catch (error) {
       invokeToast("error", "Failed to generate tailored opportunities", "top");
       if (axios.isAxiosError(error)) {
@@ -313,7 +305,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
                 className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
                 {isTOGenerating ? (
-                  <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
+                  <Loading size={5} color="white" />
                 ) : (
                   "Generate Tailored Opportunities"
                 )}

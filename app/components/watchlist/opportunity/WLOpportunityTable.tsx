@@ -32,19 +32,21 @@ const OpportunitiesTable: React.FC<{
         <table className="w-full relative border-collapse">
           <thead className="sticky z-10 top-0">
             <tr className="bg-gray-200 text-black">
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-2/12">
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
                 Company Name
               </th>
               <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
                 Opportunity
               </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-12">
+                Score
+              </th>
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
                 Target Buyer Role
               </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-52">
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
                 Target Buyer Department
               </th>
-
               <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
                 Quick Actions
               </th>
@@ -65,18 +67,20 @@ const OpportunitiesTable: React.FC<{
                   {opp.opportunityName}
                 </td>
                 <td className="px-4 py-3 border border-gray-300">
+                  {opp.opportunityScore}
+                </td>
+                <td className="px-4 py-3 border border-gray-300">
                   {opp.targetBuyer.role}
                 </td>
                 <td className="px-4 py-3 border border-gray-300">
                   <span
-                    className={`inline-block px-2 py-1 rounded-full text-sm font-medium ${getDepartmentClass(
+                    className={`inline-block px-2 py-1 rounded-2xl border text-sm font-medium ${getDepartmentClass(
                       opp.targetBuyer.department
                     )}`}
                   >
                     {opp.targetBuyer.department}
                   </span>
                 </td>
-
                 <td className="px-4 py-3 border border-gray-300">
                   <div className="flex justify-center space-x-2">
                     <button
@@ -107,7 +111,7 @@ const OpportunitiesTable: React.FC<{
             ))}
             {opportunities.length === 0 && (
               <tr>
-                <td colSpan={5}>
+                <td colSpan={6}>
                   <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
                     <span className="text-4xl text-gray-600">No data</span>
                   </div>
@@ -123,6 +127,9 @@ const OpportunitiesTable: React.FC<{
               <tr className="bg-gray-200 text-black">
                 <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
                   Opportunity
+                </th>
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
+                  Score
                 </th>
                 <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
                   Target Buyer Role
@@ -140,7 +147,7 @@ const OpportunitiesTable: React.FC<{
             </thead>
             <tbody>
               <tr>
-                <td colSpan={5}>
+                <td colSpan={6}>
                   <div className="w-full p-10 text-gray-500 text-xl flex items-center justify-center">
                     No data
                   </div>

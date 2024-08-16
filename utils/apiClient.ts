@@ -4,7 +4,7 @@ import { supabase } from "./supabaseClient";
 const getAuthToken = async () => {
   const {
     data: { session },
-    error,
+    error
   } = await supabase.auth.getSession();
   if (error || !session) throw new Error("No user logged in");
   return session.provider_token || session.access_token;
@@ -14,7 +14,7 @@ const createApiClient = async () => {
   const token = await getAuthToken();
   return axios.create({
     baseURL: process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:8000",
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` }
   });
 };
 
@@ -31,7 +31,7 @@ const generateTailoredAPI = async (
   const apiClient = await createApiClient();
   const url = `/api/v1/${endpoint}/${companyID}`;
   return apiClient.get(url, {
-    params: { org_id: orgID, ...queryParams },
+    params: { org_id: orgID, ...queryParams }
   });
 };
 
@@ -52,7 +52,7 @@ const generateTailoredSummaryAPI = (params: {
 const updatePlan = async (plan: string) => {
   const apiClient = await createApiClient();
   const response = await apiClient.post("/api/v1/update-plan", {
-    plan,
+    plan
   });
   return response.data;
 };
@@ -85,11 +85,36 @@ const generateTOAPI = async (etIDs: number[]) => {
   const earnings_transcript_ids = { earnings_transcript_ids: etIDs };
   const apiClient = await createApiClient();
   const response = await apiClient.post(
-    "/api/v1/multi-opportunities",
+    "/api/v1/generate/opportunities",
     earnings_transcript_ids
   );
 
   return response;
+};
+
+const generateTMAPI = async (etIDs: number[]) => {
+  const earnings_transcript_ids = { earnings_transcript_ids: etIDs };
+  const apiClient = await createApiClient();
+  const response = await apiClient.post(
+    "/api/v1/generate/marketings",
+    earnings_transcript_ids
+  );
+
+  return response;
+};
+
+const getScrapeData = async (data: {
+  company_name: string;
+  company_url: string;
+}) => {
+  const apiClient = await createApiClient();
+  const response = await apiClient.get("/api/v1/signup_onboarding", {
+    params: {
+      company_name: data.company_name,
+      company_url: data.company_url
+    }
+  });
+  return response.data;
 };
 
 export {
@@ -101,4 +126,6 @@ export {
   cancelSubscription,
   stopCancelSubscription,
   generateTOAPI,
+  generateTMAPI,
+  getScrapeData
 };

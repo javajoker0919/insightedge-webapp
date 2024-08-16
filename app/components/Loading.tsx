@@ -13,7 +13,7 @@ const Loading = ({
 
   return (
     <span
-      className={`ml-2 inline-block animate-spin rounded-full h-${size} w-${size} border-t-2 border-b-2 ${colorClasses[color]}`}
+      className={`inline-block animate-spin rounded-full h-${size} w-${size} border-t-2 border-b-2 ${colorClasses[color]}`}
     />
   );
 };
