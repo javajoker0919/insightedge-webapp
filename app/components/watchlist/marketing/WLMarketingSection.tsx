@@ -188,6 +188,11 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
       invokeToast("success", data.message, "top");
     } catch (error) {
       console.error(error);
+      invokeToast(
+        "error",
+        "Failed to generate tailored marketing strategies",
+        "top"
+      );
     } finally {
       setIsGeneratingTM(false);
     }

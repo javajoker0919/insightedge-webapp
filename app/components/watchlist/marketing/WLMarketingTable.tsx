@@ -41,7 +41,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
           Tactic
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-96">
           Target Personas
         </th>
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
@@ -79,16 +79,6 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                   </td>
                   <td className="px-4 py-3 border justify-items-center gap-2 border-gray-300">
                     {marketing.targetPersonas.split("\n").join(", ")}
-                    {/* {marketing.targetPersonas
-                      .split("\n")
-                      .map((aud: string, indx) => (
-                        <span
-                          key={`audience-${indx}-${aud}`}
-                          className={`text-xs rounded-xl px-2 py-1 font-medium`}
-                        >
-                          {aud}
-                        </span>
-                      ))} */}
                   </td>
                   <td className="px-4 py-3 border border-gray-300">
                     <span

@@ -367,7 +367,10 @@ export default function WatchlistPage() {
               <div className="xl:w-[30rem] w-96 h-full space-y-4 shrink-0">
                 <WLHighlightSection companyList={watchlistCompanies} />
                 <WLCalendarSection companies={watchlistCompanies} />
-                <WLSimilarCompanySection companies={watchlistCompanies} />
+                <WLSimilarCompanySection
+                  companies={watchlistCompanies}
+                  setWatchlistCompanies={setWatchlistCompanies}
+                />
               </div>
             </div>
           )}
