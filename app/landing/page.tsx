@@ -1,19 +1,11 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
-import {
-  FaArrowRight,
-  FaClock,
-  FaRecycle,
-  FaUser,
-  FaBookReader
-} from "react-icons/fa";
+import { FaClock, FaRecycle, FaBookReader } from "react-icons/fa";
 import { FaPuzzlePiece } from "react-icons/fa6";
 import { LuBrainCircuit } from "react-icons/lu";
 import { MdOutlineToken } from "react-icons/md";
 import { IoTelescope } from "react-icons/io5";
-import { Check } from "../components";
-import { Close } from "../components";
 
 interface HeaderProps {
   isHeaderVisible: boolean;
@@ -65,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({
       isHeaderVisible ? "translate-y-0" : "-translate-y-full"
     }`}
   >
-    <div className="flex justify-between items-center px-4">
+    <div className="flex flex-wrap justify-between items-center px-4">
       <div className="flex items-center">
         <Image
           src={"/favicon.png"}
@@ -75,8 +67,37 @@ const Header: React.FC<HeaderProps> = ({
         />
         <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
       </div>
-      <NavMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      <div className="md:hidden">
+        <button
+          onClick={toggleMenu}
+          className="text-gray-500 hover:text-gray-600 focus:outline-none focus:text-gray-600"
+          aria-label="Toggle menu"
+        >
+          <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
+            {isMenuOpen ? (
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M18.278 16.864a1 1 0 0 1-1.414 1.414l-4.829-4.828-4.828 4.828a1 1 0 0 1-1.414-1.414l4.828-4.829-4.828-4.828a1 1 0 0 1 1.414-1.414l4.829 4.828 4.828-4.828a1 1 0 1 1 1.414 1.414l-4.828 4.829 4.828 4.828z"
+              />
+            ) : (
+              <path
+                fillRule="evenodd"
+                d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"
+              />
+            )}
+          </svg>
+        </button>
+      </div>
+      <div className="hidden md:block flex-grow">
+        <NavMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      </div>
     </div>
+    {isMenuOpen && (
+      <div className="md:hidden w-full">
+        <NavMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      </div>
+    )}
   </header>
 );
 
@@ -84,37 +105,44 @@ const NavMenu: React.FC<{ isMenuOpen: boolean; toggleMenu: () => void }> = ({
   isMenuOpen,
   toggleMenu
 }) => (
-  <div
-    className={`sm:flex ${
-      isMenuOpen ? "block" : "hidden"
-    } flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-12 absolute sm:relative top-full left-0 right-0 bg-white sm:bg-transparent p-4 sm:p-0`}
+  <nav
+    className={`flex flex-col md:flex-row md:justify-end items-center space-y-4 md:space-y-0 md:space-x-8 bg-white md:bg-transparent p-4 md:p-0`}
   >
-    <div className="flex items-center gap-10">
-      <a href="#" className="">
+    <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+      <a
+        href="#"
+        className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
+      >
         Docs
       </a>
-      <a href="#" className="">
+      <a
+        href="#"
+        className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
+      >
         Pricing
       </a>
-      <a href="#" className="">
+      <a
+        href="#"
+        className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
+      >
         Guides
       </a>
     </div>
-    <div className="flex items-center gap-6">
+    <div className="flex flex-col md:flex-row items-center gap-4 md:gap-4">
       <a
         href="/auth/sign-in"
-        className="w-25 hover:text-primary-600 transition-colors border px-4 py-2 rounded-full flex items-center justify-center"
+        className="w-full md:w-auto px-4 md:py-2 text-center md:hover:text-primary-600 transition-colors md:border rounded-full flex items-center justify-center"
       >
         Log In
       </a>
       <a
         href="/auth/sign-up"
-        className="w-25 bg-primary-600 text-white px-4 py-2 rounded-full hover:bg-primary-700 transition-colors flex items-center justify-center"
+        className="w-full md:w-auto px-4 md:py-2 text-center md:bg-primary-600 text-black md:text-white rounded-full md:hover:bg-primary-700 transition-colors flex items-center justify-center"
       >
         Sign Up
       </a>
     </div>
-  </div>
+  </nav>
 );
 
 const MainContent: React.FC = () => (
@@ -133,24 +161,24 @@ const MainContent: React.FC = () => (
 const HeroSection: React.FC = () => (
   <section
     id="hero"
-    className="pt-40 pb-16 px-4 gap-10 flex flex-col items-center"
+    className="pt-20 sm:pt-32 md:pt-40 pb-12 sm:pb-16 px-4 gap-6 sm:gap-8 md:gap-10 flex flex-col items-center"
   >
-    <h1 className="text-[40px] leading-[56px] font-bold text-center text-neutral-900 max-w-[994px] px-5">
+    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] leading-tight sm:leading-snug md:leading-[1.4] font-bold text-center text-neutral-900 max-w-[994px] px-2 sm:px-5">
       Transform news and earnings transcripts to Sales & Marketing opportunities
       <span className="text-primary-500"> tailored to your offerings</span>
     </h1>
-    <p className="text-2xl text-center font-normal leading-9 max-w-3xl mx-auto text-neutral-500">
+    <p className="text-lg sm:text-xl md:text-2xl text-center font-normal leading-relaxed sm:leading-loose md:leading-9 max-w-3xl mx-auto text-neutral-500 px-2 sm:px-4">
       Discover your key account's mission critical projects, challenges & pain
       points and optimize your sales and marketing approach
     </p>
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center gap-4 sm:gap-6 mt-4 sm:mt-6">
       <a
         href="/auth/sign-up"
-        className="px-10 py-3 text-2xl font-normal rounded-full border bg-primary-500 border-primary-500 text-white"
+        className="px-6 sm:px-8 md:px-10 py-2 sm:py-3 text-lg sm:text-xl md:text-2xl font-normal rounded-full border bg-primary-500 border-primary-500 text-white hover:bg-primary-600 transition-colors duration-300"
       >
         Try for free
       </a>
-      <p className="text-base leading-6 font-normal text-[#9B9C9DFF]">
+      <p className="text-sm sm:text-base leading-5 sm:leading-6 font-normal text-[#9B9C9DFF]">
         Signup For Free. No card required.
       </p>
     </div>
@@ -162,36 +190,44 @@ const SalesAndMarketingSection: React.FC = () => (
     id="salesandmarketing"
     className="py-16 px-4 flex flex-col items-center"
   >
-    <h1 className="text-[40px] leading-[56px] font-bold text-center max-w-[994px] px-10 flex flex-col">
+    <h1 className="text-3xl md:text-[40px] leading-tight md:leading-[56px] font-bold text-center max-w-[994px] px-4 md:px-10 flex flex-col">
       Avoid wasted sales & marketing efforts.
       <span className="text-primary-500">
         Focus your time on what matters most for your key accounts.
       </span>
     </h1>
-    <p className="text-2xl leading-9 font-normal text-neutral-600 text-center max-w-3xl mx-auto mt-3 mb-16">
+    <p className="text-lg md:text-2xl leading-normal md:leading-9 font-normal text-neutral-600 text-center max-w-3xl mx-auto mt-3 mb-8 md:mb-16">
       Align your Sales and Marketing approach to meet your clients needs and
       focus areas.
     </p>
-    <div className="flex flex-col items-center justify-center gap-20 w-[90rem]">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+    <div className="flex flex-col items-center justify-center gap-10 md:gap-20 w-full max-w-[90rem]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Feature
-          icon={<IoTelescope className="w-12 h-12 text-primary-500" />}
+          icon={
+            <IoTelescope className="w-8 h-8 md:w-12 md:h-12 text-primary-500" />
+          }
           title="Targeted Sales Opportunities"
           description="Identify top sales opportunities 
           tailored to your offerings & identify buyers."
         />
         <Feature
-          icon={<FaPuzzlePiece className="w-12 h-12 text-primary-500" />}
+          icon={
+            <FaPuzzlePiece className="w-8 h-8 md:w-12 md:h-12 text-primary-500" />
+          }
           title="Account Based Marketing"
           description="Generate targeted marketing tactics for each account aligned to your offerings and customer needs."
         />
         <Feature
-          icon={<FaBookReader className="w-12 h-12 text-primary-500" />}
+          icon={
+            <FaBookReader className="w-8 h-8 md:w-12 md:h-12 text-primary-500" />
+          }
           title="Actionable Insights"
           description="Discover key initiatives, priorities, challenges & pain points."
         />
         <Feature
-          icon={<LuBrainCircuit className="w-12 h-12 text-primary-500" />}
+          icon={
+            <LuBrainCircuit className="w-8 h-8 md:w-12 md:h-12 text-primary-500" />
+          }
           title="Prioritize Accounts"
           description="Identity and prioritize high-potential accounts based on financial outlook and earnings summary"
         />
@@ -205,32 +241,36 @@ const Feature: React.FC<{
   title: string;
   description: string;
 }> = ({ icon, title, description }) => (
-  <div className="flex items-center justify-center gap-4">
-    <div className="rounded-full flex items-center justify-center w-[102px] h-[102px] bg-primary-50 flex-shrink-0">
+  <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4">
+    <div className="rounded-full flex items-center justify-center w-20 h-20 md:w-[102px] md:h-[102px] bg-primary-50 flex-shrink-0">
       {icon}
     </div>
     <div className="flex flex-col gap-1 max-w-[23rem]">
-      <p className="text-primary-500 text-2xl leading-8 font-bold">{title}</p>
-      <p className="text-gray-400 text-xl">{description}</p>
+      <p className="text-primary-500 text-xl md:text-2xl leading-8 font-bold">
+        {title}
+      </p>
+      <p className="text-gray-400 text-base md:text-xl">{description}</p>
     </div>
   </div>
 );
 
 const SummarySection: React.FC = () => (
-  <section id="summary" className="py-16 px-4 flex flex-col items-center">
-    <h1 className="text-[42px] leading-[60px] font-bold text-center max-w-[60rem] mb-5">
+  <section
+    id="summary"
+    className="py-8 md:py-16 px-4 flex flex-col items-center"
+  >
+    <h1 className="text-3xl md:text-[42px] leading-tight md:leading-[60px] font-bold text-center max-w-[60rem] mb-3 md:mb-5">
       Tailored insights and opportunities{" "}
       <span className="text-primary-500">delivered to your inbox</span>
     </h1>
-    <p className=" text-[18px] leading-7 font-normal text-neutral-600 max-w-[70rem] text-center mb-5">
-      {" "}
+    <p className="text-base md:text-[18px] leading-normal md:leading-7 font-normal text-neutral-600 max-w-[70rem] text-center mb-8 md:mb-5">
       Tailor your outreach using insights from executive statements in earnings
       calls and press releases for our key accounts. Understand customer
       priorities, challenges & painpoints.
     </p>
 
-    <div className="flex flex-row items-center gap-6 mb-5">
-      <div className="w-1/2 h-[22rem] relative">
+    <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-6 mb-8 md:mb-5">
+      <div className="w-full lg:w-1/2 h-[18rem] md:h-[22rem] relative">
         <video className="h-full w-full object-cover rounded-lg" controls>
           <source
             src="https://docs.material-tailwind.com/demo.mp4"
@@ -240,8 +280,8 @@ const SummarySection: React.FC = () => (
       </div>
       <SummaryContent />
     </div>
-    <div className="flex flex-row-reverse items-center gap-8">
-      <div className="w-1/2 h-[22rem] relative">
+    <div className="flex flex-col lg:flex-row-reverse items-center gap-8">
+      <div className="w-full lg:w-1/2 h-[18rem] md:h-[22rem] relative">
         <video className="h-full w-full object-cover rounded-lg" controls>
           <source
             src="https://docs.material-tailwind.com/demo.mp4"
@@ -249,22 +289,21 @@ const SummarySection: React.FC = () => (
           />
         </video>
       </div>
-
       <DashboardContent />
     </div>
   </section>
 );
 
 const SummaryContent: React.FC = () => (
-  <div className="flex flex-col gap-6 p-6 pr-0 max-w-[35rem]">
-    <p className="text-gray-600 text-sm sm:text-base">
+  <div className="flex flex-col gap-4 md:gap-6 p-4 md:p-6 md:pr-0 max-w-full lg:max-w-[35rem]">
+    <p className="text-gray-600 text-xs md:text-sm">
       TAILORED ACCOUNT SPECIFIC STRATEGIES
     </p>
-    <p className="text-4xl font-bold text-primary-500 leading-[56px]">
+    <p className="text-2xl md:text-4xl font-bold text-primary-500 leading-tight md:leading-[56px]">
       Targeted Sales & Marketing
     </p>
     <div className="flex flex-col gap-1 text-gray-600 text-sm">
-      <ul className="list-disc text-xl font-normal leading-8 ml-10">
+      <ul className="list-disc text-base md:text-xl font-normal leading-relaxed md:leading-8 ml-5 md:ml-10">
         <li>
           Generate growth opportunities based on customer priorities and market
           trends
@@ -276,7 +315,7 @@ const SummaryContent: React.FC = () => (
         </li>
         <li>
           Gain an edge by addressing specific customer needs, optimizing
-          engagement through customer-focused messaging{" "}
+          engagement through customer-focused messaging
         </li>
       </ul>
     </div>
@@ -284,15 +323,15 @@ const SummaryContent: React.FC = () => (
 );
 
 const DashboardContent: React.FC = () => (
-  <div className="flex flex-col gap-6 p-6 pl-0 max-w-[35rem]">
-    <p className="text-neutral-600 text-base">
+  <div className="flex flex-col gap-4 md:gap-6 p-4 md:p-6 md:pl-0 max-w-full lg:max-w-[35rem]">
+    <p className="text-neutral-600 text-xs md:text-base">
       DATA DRIVEN CUSTOMER ENGAGEMENT
     </p>
-    <p className="text-4xl font-bold text-primary-500 leading-[56px]">
+    <p className="text-2xl md:text-4xl font-bold text-primary-500 leading-tight md:leading-[56px]">
       Actionable Insights
     </p>
     <div className="flex flex-col gap-1 text-gray-600 text-sm">
-      <ul className="list-disc text-xl font-normal leading-8 ml-10">
+      <ul className="list-disc text-base md:text-xl font-normal leading-relaxed md:leading-8 ml-5 md:ml-10">
         <li>
           Identify key business priorities and mission-critical projects driving
           customer decisions. Understand their core focus areas to tailor your
@@ -318,19 +357,25 @@ const BusinessSection: React.FC = () => (
       What it means for <span className="text-primary-500">your business</span>
     </h1>
 
-    <div className="grid grid-cols-3 w-full items-start justify-center max-w-[80rem] gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-3 w-full items-start justify-center max-w-[80rem] gap-6">
       <BusinessFeature
-        icon={<FaClock className="text-primary-500 w-20 h-20" />}
+        icon={
+          <FaClock className="text-primary-500 w-16 h-16 sm:w-20 sm:h-20" />
+        }
         title="TARGETED APPROACH"
         description="Align your sales and marketing approach to customers' most critical needs and projects."
       />
       <BusinessFeature
-        icon={<FaRecycle className="text-primary-500 w-20 h-20" />}
+        icon={
+          <FaRecycle className="text-primary-500 w-16 h-16 sm:w-20 sm:h-20" />
+        }
         title="IMPROVE WIN RATES"
-        description="Boost your conversion rate by  aligning to customers' focus areas"
+        description="Boost your conversion rate by aligning to customers' focus areas"
       />
       <BusinessFeature
-        icon={<MdOutlineToken className="text-primary-500 w-20 h-20" />}
+        icon={
+          <MdOutlineToken className="text-primary-500 w-16 h-16 sm:w-20 sm:h-20" />
+        }
         title="BETTER PIPELINE QUALITY"
         description="Enhance pipeline quality through data-driven insights into customers' top priorities"
       />
@@ -343,12 +388,12 @@ const BusinessFeature: React.FC<{
   title: string;
   description: string;
 }> = ({ icon, title, description }) => (
-  <div className="flex flex-col items-center gap-6 max-w-[25rem] w-full">
+  <div className="flex flex-col items-center justify-center gap-4 sm:gap-6 max-w-[25rem] w-full px-4 sm:px-0">
     {icon}
-    <p className="text-primary-500 text-2xl font-bold leading-9 text-center">
+    <p className="text-primary-500 text-xl sm:text-2xl font-bold leading-8 sm:leading-9 text-center">
       {title}
     </p>
-    <p className="text-center text-xl leading-8 font-medium text-neutral-900 w-[20rem]">
+    <p className="text-center text-lg sm:text-xl leading-7 sm:leading-8 font-medium text-neutral-900 w-full sm:w-[15rem]">
       {description}
     </p>
   </div>
@@ -781,8 +826,8 @@ const BlogCard: React.FC<{
 );
 
 const ScheduleDemo: React.FC = () => (
-  <div className="flex flex-row w-full justify-center items-center gap-20 py-16 px-4 lg:px-0">
-    <div className="w-full lg:w-[577px] h-[300px] lg:h-[512px] bg-primary-100 rounded-lg">
+  <div className="flex flex-col xl:flex-row w-full justify-center items-center gap-8 lg:gap-20 py-16 px-4 xl:px-0">
+    <div className="w-full xl:w-[577px] h-[300px] lg:h-[512px] bg-primary-100 rounded-lg">
       <img
         src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
         alt="Business team collaborating"
@@ -790,7 +835,7 @@ const ScheduleDemo: React.FC = () => (
       />
     </div>
     <div className="flex flex-col w-full lg:max-w-[600px]">
-      <h2 className="text-4xl lg:text-6xl font-bold leading-tight lg:leading-[64px] text-[#171A1FFF] mb-6 lg:mb-8">
+      <h2 className="text-3xl lg:text-6xl font-bold leading-tight lg:leading-[64px] text-[#171A1FFF] mb-6 lg:mb-8 text-center lg:text-left">
         Generate your opportunities
       </h2>
       <div className="flex flex-col w-full gap-4 lg:gap-6">
@@ -848,7 +893,7 @@ const Footer: React.FC = () => (
           ))}
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 lg:gap-20 lg:mr-20">
+      <div className="grid grid-cols-3 sm:flex sm:flex-row gap-8 sm:gap-12 lg:gap-20 lg:mr-20">
         {[
           { title: "Product", items: ["Features", "Pricing"] },
           { title: "Resources", items: ["Blog", "User guides", "Webinars"] },
@@ -866,7 +911,7 @@ const Footer: React.FC = () => (
         ))}
       </div>
     </div>
-    <div className="flex flex-col mx-[200px] lg:flex-row justify-between items-center lg:mt-20 py-8 border-t border-[#F3F4F6FF]">
+    <div className="flex flex-col items-center lg:flex-row lg:justify-between px-4 sm:px-6 lg:px-20 mt-12 lg:mt-20 py-8 border-t border-[#F3F4F6FF]">
       <div className="flex flex-col gap-1 text-center lg:text-left mb-4 lg:mb-0">
         <p className="font-semibold text-base leading-[26px] text-[#171A1FFF]">
           Ultimated with love
