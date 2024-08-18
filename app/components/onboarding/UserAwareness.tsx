@@ -60,12 +60,11 @@ const UserAwareness = ({
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: formData.companyName,
-        onboardingStatus: true
+        companyName: formData.companyName
       });
 
       const insertOrganizationData = {
-        name: userInfo?.companyName || "",
+        name: formData.companyName || "",
         website: website,
         overview: companyOverview,
         products: productsServices,

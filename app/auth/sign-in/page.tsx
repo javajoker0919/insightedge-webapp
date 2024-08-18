@@ -14,7 +14,7 @@ import {
   userMetadataAtom,
   userInfoAtom,
   orgInfoAtom,
-  watchlistAtom,
+  watchlistAtom
 } from "@/utils/atoms";
 
 const SignIn = () => {
@@ -52,7 +52,7 @@ const SignIn = () => {
     if (!isValidForm) {
       setErrors({
         email: validateEmail(email).error,
-        password: validatePassword(password).error,
+        password: validatePassword(password).error
       });
       invokeToast("error", "Please fill in all fields correctly", "top");
       return;
@@ -63,7 +63,7 @@ const SignIn = () => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password,
+        password
       });
       if (error) throw error;
 
@@ -72,25 +72,27 @@ const SignIn = () => {
       const { data: userData, error: userDataError } = await supabase
         .from("users")
         .select("*")
-        .eq("id", data.user.id)
-        .single();
+        .eq("id", data.user?.id)
+        .maybeSingle();
+
+      console.log(userData);
 
       if (userDataError) throw userDataError;
+
+      if (!userData) {
+        router.replace("/onboarding");
+        return;
+      }
 
       setUserInfo({
         id: userData.id,
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: "",
-        onboardingStatus: userData.onboarding_status,
+        companyName: ""
       });
 
       invokeToast("success", "You have successfully logged in!", "top");
-
-      if (!userData.onboarding_status) {
-        router.replace("/onboarding");
-      }
 
       const { data: orgData, error: orgError } = await supabase
         .from("organizations")
@@ -115,7 +117,7 @@ const SignIn = () => {
         website: orgData.website,
         overview: orgData.overview,
         products: orgData.products,
-        creatorID: orgData.creator_id,
+        creatorID: orgData.creator_id
       });
 
       const { data: watchlistData, error: watchlistError } = await supabase
@@ -142,7 +144,7 @@ const SignIn = () => {
             organizationID: item.organization_id,
             creatorID: item.creator_id,
             uuid: item.uuid,
-            company_count: item.watchlist_companies?.length,
+            company_count: item.watchlist_companies?.length
           };
         })
       );
@@ -163,8 +165,8 @@ const SignIn = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
-        },
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`
+        }
       });
 
       if (error) {
