@@ -83,7 +83,6 @@ const SignUp = () => {
         firstName: "",
         lastName: "",
         companyName: "",
-        onboardingStatus: false
       });
 
       router.replace("/auth/verify-email");

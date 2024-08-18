@@ -31,8 +31,6 @@ const Callback = () => {
 
         if (userError) throw userError;
 
-        console.log(user?.email);
-
         const { data: authData, error: authError } = await supabase
           .from("users")
           .select("*")
@@ -54,11 +52,10 @@ const Callback = () => {
             firstName: "",
             lastName: "",
             companyName: "",
-            onboardingStatus: false
           });
 
           if (sessionData?.session?.access_token) {
-            window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding?access_token=${sessionData?.session?.access_token}&expires_at=${sessionData.session.expires_at}&expires_in=${sessionData.session.expires_in}&provider_token=${sessionData.session.provider_token}&refresh_token=${sessionData.session.refresh_token}&token_type=${sessionData.session.token_type}`;
+            window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding#access_token=${sessionData?.session?.access_token}&expires_at=${sessionData.session.expires_at}&expires_in=${sessionData.session.expires_in}&provider_token=${sessionData.session.provider_token}&refresh_token=${sessionData.session.refresh_token}&token_type=${sessionData.session.token_type}`;
           } else {
             console.error("No access token found in session");
           }
@@ -69,12 +66,7 @@ const Callback = () => {
             firstName: authData.first_name,
             lastName: authData.last_name,
             companyName: "",
-            onboardingStatus: authData.onboarding_status
           });
-
-          if (!authData.onboarding_status) {
-            router.replace("/onboarding");
-          }
 
           const { data: orgData, error: orgError } = await supabase
             .from("organizations")

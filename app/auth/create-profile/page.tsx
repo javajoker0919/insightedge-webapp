@@ -112,7 +112,6 @@ export default function CreateProfile() {
         firstName: userData.first_name,
         lastName: userData.last_name,
         companyName: "",
-        onboardingStatus: userData.onboarding_status,
       });
 
       const insertOrganizationData = {

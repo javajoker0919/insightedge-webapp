@@ -7,7 +7,8 @@ const getAuthToken = async () => {
     error
   } = await supabase.auth.getSession();
   if (error || !session) throw new Error("No user logged in");
-  return session.provider_token || session.access_token;
+  // return session.provider_token || session.access_token;
+  return session?.access_token;
 };
 
 const createApiClient = async () => {

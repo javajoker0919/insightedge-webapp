@@ -8,7 +8,7 @@ import {
   userInfoAtom,
   orgInfoAtom,
   watchlistAtom,
-  isSidebarExpandedAtom,
+  isSidebarExpandedAtom
 } from "@/utils/atoms";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,7 +19,7 @@ import {
   IoNotifications,
   IoNotificationsCircleOutline,
   IoNotificationsOff,
-  IoNotificationsOutline,
+  IoNotificationsOutline
 } from "react-icons/io5";
 import { ImNotification } from "react-icons/im";
 import { MdOutlineToken, MdToken } from "react-icons/md";
@@ -85,7 +85,7 @@ const Header: React.FC = () => {
             .select("value")
             .eq("user_id", userInfo.id)
             .eq("package_id", 1)
-            .single();
+            .maybeSingle();
           if (error) {
             throw error;
           }
@@ -94,7 +94,7 @@ const Header: React.FC = () => {
             if (!prev) return prev;
             return {
               ...prev,
-              creditCount: parseInt(data.value),
+              creditCount: parseInt(data?.value)
             };
           });
         }
@@ -104,7 +104,7 @@ const Header: React.FC = () => {
     };
 
     fetchCreditCount();
-  }, [userInfo?.email]);
+  }, [userInfo?.id]);
 
   return (
     <header className="py-3 bg-white z-20 shadow-md sticky top-0">
