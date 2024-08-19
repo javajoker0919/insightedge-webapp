@@ -46,7 +46,7 @@ const IncomeStatementSection: React.FC<IncomeStatementSectionProps> = ({
 
         setCurrency(current.reported_currency);
         setDate(current.date);
-        setChange("Y/Y CHANGE");
+        setChange("QoQ change");
 
         const formatLargeValue = (value: number) =>
           value >= 1e9

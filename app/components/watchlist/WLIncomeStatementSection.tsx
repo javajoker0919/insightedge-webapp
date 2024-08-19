@@ -136,13 +136,13 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
             <th className="text-left w-[300px]"></th>
             <th className="text-sm">As Of</th>
             <th className="text-left text-sm">
-              Revenue <span className="text-xs">(YoY Change)</span>
+              Revenue <span className="text-xs">(QoQ Change)</span>
             </th>
             <th className="text-left text-sm">
-              Profit <span className="text-xs">(YoY Change)</span>
+              Profit <span className="text-xs">(QoQ Change)</span>
             </th>
             <th className="text-left text-sm">
-              Expense <span className="text-xs">(YoY Change)</span>
+              Expense <span className="text-xs">(QoQ Change)</span>
             </th>
             <th className="text-left"></th>
           </tr>
