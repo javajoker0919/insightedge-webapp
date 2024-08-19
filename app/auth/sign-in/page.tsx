@@ -14,7 +14,7 @@ import {
   userMetadataAtom,
   userInfoAtom,
   orgInfoAtom,
-  watchlistAtom
+  watchlistAtom,
 } from "@/utils/atoms";
 
 const SignIn = () => {
@@ -52,7 +52,7 @@ const SignIn = () => {
     if (!isValidForm) {
       setErrors({
         email: validateEmail(email).error,
-        password: validatePassword(password).error
+        password: validatePassword(password).error,
       });
       invokeToast("error", "Please fill in all fields correctly", "top");
       return;
@@ -63,7 +63,7 @@ const SignIn = () => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
       if (error) throw error;
 
@@ -74,8 +74,6 @@ const SignIn = () => {
         .select("*")
         .eq("id", data.user?.id)
         .maybeSingle();
-
-      console.log(userData);
 
       if (userDataError) throw userDataError;
 
@@ -89,7 +87,7 @@ const SignIn = () => {
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: ""
+        companyName: "",
       });
 
       invokeToast("success", "You have successfully logged in!", "top");
@@ -117,7 +115,7 @@ const SignIn = () => {
         website: orgData.website,
         overview: orgData.overview,
         products: orgData.products,
-        creatorID: orgData.creator_id
+        creatorID: orgData.creator_id,
       });
 
       const { data: watchlistData, error: watchlistError } = await supabase
@@ -144,7 +142,7 @@ const SignIn = () => {
             organizationID: item.organization_id,
             creatorID: item.creator_id,
             uuid: item.uuid,
-            company_count: item.watchlist_companies?.length
+            company_count: item.watchlist_companies?.length,
           };
         })
       );
@@ -165,14 +163,13 @@ const SignIn = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`
-        }
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
+        },
       });
 
       if (error) {
         throw error;
       }
-      // console.log("Google sign-in successful:", data);
     } catch (error) {
       console.error("Error during Google sign-in:", error);
     }
@@ -181,7 +178,7 @@ const SignIn = () => {
   return (
     <div className="flex flex-row w-full h-screen">
       <div className="flex flex-col w-1/2 h-full bg-white">
-        <Link href="/">
+        <Link href="/app">
           <div className="flex items-center mt-4 ml-4">
             <Image
               src="/favicon.png"

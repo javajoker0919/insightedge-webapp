@@ -20,6 +20,8 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/reset-password",
     "/auth/reset-confirm",
     "/auth/reset-success",
+    "/landing",
+    "/landing/app",
     "/terms",
     "/privacy"
   ];

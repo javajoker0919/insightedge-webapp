@@ -17,9 +17,11 @@ import {
 import { useAtomValue } from "jotai";
 
 import { watchlistAtom } from "@/utils/atoms";
-import OpportunitiesSection from "./components/opportunities/OpportunitiesSection";
-import IncomeStatementSection from "./IncomeStatementSection";
-import RecentNewsSection, { NewsItem } from "./RecentNewsSection";
+import OpportunitiesSection from "../../../components/company/opportunity/OpportunitiesSection";
+import IncomeStatementSection from "../../../components/company/income-statement/IncomeStatementSection";
+import RecentNewsSection, {
+  NewsItem,
+} from "../../../components/company/RecentNewsSection";
 import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
 import SummarySection from "./components/summary/SummarySection";
 import AboutSection from "./AboutSection";
@@ -48,9 +50,8 @@ export interface CompanyData {
 }
 
 const CompanyDetailPage: React.FC = () => {
-  const { id: companyId } = useParams<{ id: string }>();
+  const { id: companyID } = useParams<{ id: string }>();
   const [companyData, setCompanyData] = useState<CompanyData | null>(null);
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [yearQuarters, setYearQuarters] = useState<YearQuarter[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedQuarter, setSelectedQuarter] = useState<number | null>(null);
@@ -59,7 +60,6 @@ const CompanyDetailPage: React.FC = () => {
   const [isLoadingYearQuarters, setIsLoadingYearQuarters] =
     useState<boolean>(true);
   const [isFetchingETID, setIsFetchingETID] = useState<boolean>(false);
-  const [isLoadingNews, setIsLoadingNews] = useState<boolean>(true);
   const watchlist = useAtomValue(watchlistAtom);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const CompanyDetailPage: React.FC = () => {
         const { data, error } = await supabase
           .from("companies")
           .select("*")
-          .eq("id", companyId)
+          .eq("id", companyID)
           .single();
 
         if (error) throw error;
@@ -80,30 +80,13 @@ const CompanyDetailPage: React.FC = () => {
       }
     };
 
-    const fetchNewsItems = async () => {
-      try {
-        const { data: newsData, error: newsError } = await supabase
-          .from("stock_news_sentiments")
-          .select("published_date, title, image, url")
-          .eq("company_id", companyId)
-          .order("published_date", { ascending: false });
-
-        if (newsError) throw newsError;
-        setNewsItems(newsData as NewsItem[]);
-      } catch (error) {
-        console.error("Error fetching news items:", error);
-      } finally {
-        setIsLoadingNews(false);
-      }
-    };
-
     const fetchYearQuarters = async () => {
       try {
         const { data: yearQuarterData, error: yearQuarterError } =
           await supabase
             .from("earnings_transcripts")
             .select("year, quarter, date")
-            .eq("company_id", companyId)
+            .eq("company_id", companyID)
             .order("date", { ascending: false });
 
         if (yearQuarterError) throw yearQuarterError;
@@ -116,12 +99,11 @@ const CompanyDetailPage: React.FC = () => {
     };
 
     fetchCompanyData();
-    fetchNewsItems();
     fetchYearQuarters();
-  }, [companyId]);
+  }, [companyID]);
 
   useEffect(() => {
-    if (!(!!companyId && !!selectedYear && !!selectedQuarter)) {
+    if (!(!!companyID && !!selectedYear && !!selectedQuarter)) {
       return;
     }
 
@@ -133,7 +115,7 @@ const CompanyDetailPage: React.FC = () => {
           await supabase
             .from("earnings_transcripts")
             .select("id")
-            .eq("company_id", companyId)
+            .eq("company_id", companyID)
             .eq("year", selectedYear)
             .eq("quarter", selectedQuarter)
             .single();
@@ -148,7 +130,7 @@ const CompanyDetailPage: React.FC = () => {
     };
 
     fetchETID();
-  }, [companyId, selectedYear, selectedQuarter]);
+  }, [companyID, selectedYear, selectedQuarter]);
 
   if (isLoadingCompany) {
     return (
@@ -192,7 +174,7 @@ const CompanyDetailPage: React.FC = () => {
       <div className="flex gap-4 w-full">
         <div className="h-full w-full space-y-4 overflow-hidden">
           <OpportunitiesSection
-            companyID={parseInt(companyId)}
+            companyID={parseInt(companyID)}
             companyName={companyData.name}
             year={selectedYear}
             quarter={selectedQuarter}
@@ -202,8 +184,8 @@ const CompanyDetailPage: React.FC = () => {
             etID={selectedETID}
             isLoading={isFetchingETID}
           />
-          <IncomeStatementSection />
-          <RecentNewsSection newsItems={newsItems} isLoading={isLoadingNews} />
+          <IncomeStatementSection companyID={parseInt(companyID)} />
+          <RecentNewsSection companyID={parseInt(companyID)} />
         </div>
 
         <div className="xl:w-[30rem] w-96 h-full space-y-4 shrink-0">

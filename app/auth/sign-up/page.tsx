@@ -20,12 +20,12 @@ const SignUp = () => {
 
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [errors, setErrors] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [isValidate, setIsValidate] = useState(false);
@@ -68,8 +68,8 @@ const SignUp = () => {
         email,
         password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`
-        }
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`,
+        },
       });
 
       if (authError) throw authError;
@@ -82,7 +82,7 @@ const SignUp = () => {
         email: authData.user?.email || "",
         firstName: "",
         lastName: "",
-        companyName: "",
+        companyName: ""
       });
 
       router.replace("/auth/verify-email");
@@ -99,13 +99,13 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`
-        }
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
+        },
       });
       if (error) {
         throw error;
       }
-      console.log("Google sign-in successful:", data);
+
       // You might want to redirect the user or update the UI here
     } catch (error) {
       console.error("Error during Google sign-in:", error);
@@ -115,7 +115,7 @@ const SignUp = () => {
   return (
     <div className="flex flex-row w-full h-screen">
       <div className="flex flex-col w-1/2 h-full bg-white">
-        <Link href="/">
+        <Link href="/app">
           <div className="flex items-center mt-4 ml-4">
             <Image
               src="/favicon.png"

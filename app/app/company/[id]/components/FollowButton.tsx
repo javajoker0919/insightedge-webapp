@@ -36,7 +36,7 @@ const FollowButton: React.FC = () => {
 
   useEffect(() => {
     fetchWatchlists();
-  }, []);
+  }, [companyID, watchlist]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -46,6 +46,10 @@ const FollowButton: React.FC = () => {
   }, [handleClickOutside]);
 
   const fetchWatchlists = useCallback(async () => {
+    if (!(!!companyID && !!watchlist)) {
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from("watchlist_companies")
@@ -54,13 +58,17 @@ const FollowButton: React.FC = () => {
 
       if (error) throw error;
 
-      setCheckedWatchlists(
-        new Set(data?.map((item) => item.watchlist_id) || [])
+      const watchlistIDList = watchlist.map((item) => item.id);
+      const dataIDlist = data.map((item) => item.watchlist_id);
+      const filteredDataIDList = dataIDlist.filter((id) =>
+        watchlistIDList.includes(id)
       );
+
+      setCheckedWatchlists(new Set(filteredDataIDList));
     } catch (error) {
       console.error("Error fetching watchlists:", error);
     }
-  }, [companyID]);
+  }, [companyID, watchlist]);
 
   const handleFollowClick = useCallback(async () => {
     if (checkedWatchlists === null) {
@@ -113,15 +121,15 @@ const FollowButton: React.FC = () => {
         onClick={handleFollowClick}
       >
         {checkedWatchlists !== null && checkedWatchlists.size > 0 ? (
-          <>
+          <div className="items-center flex justify-center gap-1">
             <CheckSvg />
             Following
-          </>
+          </div>
         ) : (
-          <>
+          <div className="items-center flex justify-center gap-1">
             <PlusSvg />
             Follow
-          </>
+          </div>
         )}
       </button>
       {isWatchlistDropdownOpen && (

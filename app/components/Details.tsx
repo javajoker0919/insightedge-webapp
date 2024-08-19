@@ -54,13 +54,13 @@ const Details = ({
   return (
     <div
       className={
-        "mb-2 bg-gray-50 overflow-hidden rounded border border-gray-200 " +
+        "mb-2 overflow-hidden rounded border bg-white border-gray-200 " +
         wrapperClass
       }
     >
       <div
         className={
-          "px-3 py-2 cursor-pointer text-base font-medium text-gray-600 hover:bg-gray-100 flex items-center " +
+          "px-3 py-2 cursor-pointer text-base font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 flex items-center " +
           headClass
         }
         onClick={toggleOpen}

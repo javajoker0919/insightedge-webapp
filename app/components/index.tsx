@@ -19,6 +19,7 @@ import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
 import UserInfo from "./onboarding/UserInfo";
 import CompanyProfile from "./onboarding/CompanyProfile";
 import UserAwareness from "./onboarding/UserAwareness";
+import NoDataSection from "./NoDataSection";
 
 export {
   CompanySearchbar,
@@ -41,5 +42,6 @@ export {
   Close,
   UserInfo,
   CompanyProfile,
-  UserAwareness
+  UserAwareness,
+  NoDataSection,
 };

@@ -1,7 +1,11 @@
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+
+import { supabase } from "@/utils/supabaseClient";
+import { Details, Loading } from "..";
 
 export interface NewsItem {
   published_date: string;
@@ -11,14 +15,40 @@ export interface NewsItem {
 }
 
 interface RecentNewsSectionProps {
-  newsItems: NewsItem[];
-  isLoading: boolean;
+  companyID: number;
 }
 
-const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({
-  newsItems,
-  isLoading,
-}) => {
+const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({ companyID }) => {
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    fetchNewsItems(companyID);
+  }, [companyID]);
+
+  const fetchNewsItems = async (companyID: number) => {
+    if (!companyID) return;
+
+    setIsLoading(true);
+
+    try {
+      const { data: newsData, error: newsError } = await supabase
+        .from("stock_news_sentiments")
+        .select("published_date, title, image, url")
+        .eq("company_id", companyID)
+        .order("published_date", { ascending: false })
+        .limit(10);
+
+      if (newsError) throw newsError;
+
+      setNewsItems(newsData as NewsItem[]);
+    } catch (error) {
+      console.error("Error fetching news items:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getTimeAgo = (date: string) => {
     const now = new Date();
     const publishedDate = new Date(date);
@@ -44,13 +74,14 @@ const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({
   };
 
   return (
-    <div className="bg-white space-y-2 border border-gray-300 rounded-lg overflow-hidden">
-      <h3 className="px-4 py-3 font-medium text-gray-700 bg-gray-50">
-        Recent News
-      </h3>
+    <Details title={"Recent News"}>
       {isLoading ? (
-        <div className="flex flex-col items-center gap-4 p-4">
-          <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
+        <div className="flex justify-center items-center h-40 p-4">
+          <Loading />
+        </div>
+      ) : newsItems.length === 0 ? (
+        <div className="flex p-4 h-40 items-center justify-center">
+          <span className="text-gray-600">There is no recent news</span>
         </div>
       ) : (
         <Swiper
@@ -108,7 +139,7 @@ const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({
           ))}
         </Swiper>
       )}
-    </div>
+    </Details>
   );
 };
 

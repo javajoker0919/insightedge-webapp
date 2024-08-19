@@ -1,10 +1,20 @@
 "use client";
 
 import { useAtom } from "jotai";
-import { userMetadataAtom } from "@/utils/atoms";
+import { userMetadataAtom, watchlistAtom } from "@/utils/atoms";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const [userMetadata] = useAtom(userMetadataAtom);
+  const [watchlist] = useAtom(watchlistAtom);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (watchlist && watchlist.length > 0) {
+      router.push(`/app/watchlist/${watchlist[0].uuid}`);
+    }
+  }, [watchlist]);
 
   return (
     <div className="text-black mx-auto flex flex-col items-center justify-center">

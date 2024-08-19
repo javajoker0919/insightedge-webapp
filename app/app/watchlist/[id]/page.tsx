@@ -276,7 +276,7 @@ export default function WatchlistPage() {
     <div className="flex justify-center p-4 h-full overflow-auto">
       {isLoading ? (
         <div className="flex flex-col items-center m-auto gap-4">
-          <Loading color="primary" />
+          <Loading />
           <h1>Loading</h1>
         </div>
       ) : (
