@@ -1,11 +1,47 @@
+import { useState } from "react";
 import { IoBulb, IoPerson } from "react-icons/io5";
+import { FaSort } from "react-icons/fa";
+
 import { OpportunityProps } from "./WLOpportunitySection";
 
 const OpportunitiesTable: React.FC<{
   opportunities: OpportunityProps[];
   onQuickAction: (opp: OpportunityProps) => void;
 }> = ({ opportunities, onQuickAction }) => {
-  const opps = opportunities;
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: string;
+  } | null>(null);
+
+  const sortedOpportunities = [...opportunities].sort((a, b) => {
+    if (sortConfig !== null) {
+      if (
+        (a[sortConfig.key as keyof OpportunityProps] ?? "") <
+        (b[sortConfig.key as keyof OpportunityProps] ?? "")
+      ) {
+        return sortConfig.direction === "ascending" ? -1 : 1;
+      }
+      if (
+        (a[sortConfig.key as keyof OpportunityProps] ?? "") >
+        (b[sortConfig.key as keyof OpportunityProps] ?? "")
+      ) {
+        return sortConfig.direction === "ascending" ? 1 : -1;
+      }
+    }
+    return 0;
+  });
+
+  const requestSort = (key: string) => {
+    let direction = "ascending";
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === "ascending"
+    ) {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
 
   const getDepartmentClass = (department: string) => {
     const sum = department
@@ -28,18 +64,30 @@ const OpportunitiesTable: React.FC<{
 
   return (
     <>
-      {opps.length > 0 ? (
+      {sortedOpportunities.length > 0 ? (
         <table className="w-full relative border-collapse">
           <thead className="sticky z-10 top-0">
             <tr className="bg-gray-200 text-black">
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
-                Company Name
+              <th
+                className="px-4 py-3 text-center font-medium w-32"
+                onClick={() => requestSort("companyName")}
+              >
+                <div className="justify-center gap-1 flex items-center cursor-pointer">
+                  <span>Company</span>
+                  <FaSort />
+                </div>
               </th>
               <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
                 Opportunity
               </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-12">
-                Score
+              <th
+                className="px-4 py-3 text-center font-medium w-24"
+                onClick={() => requestSort("opportunityScore")}
+              >
+                <div className="justify-center gap-1 flex items-center cursor-pointer">
+                  <span>Score</span>
+                  <FaSort />
+                </div>
               </th>
               <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
                 Target Buyer Role
@@ -53,7 +101,7 @@ const OpportunitiesTable: React.FC<{
             </tr>
           </thead>
           <tbody className="text-center relative">
-            {opps.map((opp, index) => (
+            {sortedOpportunities.map((opp, index) => (
               <tr
                 key={index}
                 className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} ${
