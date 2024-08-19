@@ -879,9 +879,6 @@ const Footer: React.FC = () => (
         </div>
         <div className="flex flex-row gap-4 mt-6 lg:mt-8 lg:ml-[100px]">
           {[
-            { alt: "tiktok", src: "/icons/phosphor-tiktok-logo.svg" },
-            { alt: "facebook", src: "/icons/phosphor-facebook-logo.svg" },
-            { alt: "youtube", src: "/icons/phosphor-youtube-logo.svg" },
             { alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" }
           ].map((icon, index) => (
             <div
