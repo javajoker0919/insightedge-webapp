@@ -42,7 +42,7 @@ const FinancialTable: React.FC<FinancialTableProps> = ({
           <tr className="bg-gray-200">
             <th className="text-left p-2">({currency})</th>
             <th className="text-right p-2">{date}</th>
-            <th className="text-right p-2">Y/Y CHANGE</th>
+            <th className="text-right p-2">{change}</th>
           </tr>
         </thead>
         <tbody className="divide-y">

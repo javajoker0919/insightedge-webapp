@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { Details } from "../..";
 import FinancialTable, { FinancialData } from "./FinancialTable";
 import QuarterlyChart from "./QuarterlyChart";
@@ -27,7 +28,20 @@ const IncomeStatementSection: React.FC<IncomeStatementSectionProps> = ({
       const { data, error } = await supabase
         .from("income_statements")
         .select(
-          "reported_currency, date, revenue, operating_income, net_income, eps, gross_profit"
+          `
+            reported_currency, 
+            date, 
+            revenue, 
+            revenue_yoy_growth, 
+            operating_income, 
+            operating_income_ratio, 
+            net_income, 
+            net_income_yoy_growth, 
+            eps, 
+            eps_diluted,
+            gross_profit,
+            gross_profit_ratio
+          `
         )
         .eq("company_id", companyID)
         .order("date", { ascending: false })
