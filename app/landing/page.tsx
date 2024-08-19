@@ -113,19 +113,19 @@ const NavMenu: React.FC<{ isMenuOpen: boolean; toggleMenu: () => void }> = ({
         href="#"
         className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
       >
-        Docs
+        Benefits
+      </a>
+      <a
+        href="#"
+        className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
+      >
+        Features
       </a>
       <a
         href="#"
         className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
       >
         Pricing
-      </a>
-      <a
-        href="#"
-        className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
-      >
-        Guides
       </a>
     </div>
     <div className="flex flex-col md:flex-row items-center gap-4 md:gap-4">
