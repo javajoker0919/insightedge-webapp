@@ -139,7 +139,7 @@ const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <button
+          {/* <button
             onClick={() => {
               router.push("/app/settings/usage");
             }}
@@ -149,7 +149,22 @@ const Header: React.FC = () => {
             <span className="h-5 w-5 flex absolute top-0 right-0 items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-700 transition-colors duration-200 text-xs">
               {userInfo?.creditCount}
             </span>
-          </button>
+          </button> */}
+
+          <div
+            className="flex items-center bg-gray-100 rounded-full px-3 py-2 hover:cursor-pointer hover:bg-gray-200 active:bg-gray-300 transition-colors duration-200"
+            onClick={() => {
+              router.push("/app/settings/usage");
+            }}
+          >
+            <img src="/token.png" alt="Credit token" className="w-5 h-5 mr-2" />
+            <span className="text-sm font-medium text-gray-700">
+              Remaining Credits:{" "}
+              <span className="text-primary-600">
+                {userInfo?.creditCount || 0}
+              </span>
+            </span>
+          </div>
 
           <div className="relative min-h-10 min-w-10" ref={dropdownRef}>
             <Image
