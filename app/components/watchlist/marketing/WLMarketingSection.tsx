@@ -156,8 +156,6 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
     try {
       const { data } = await generateTMAPI(etIDs);
 
-      console.log("tailored marketings: ", data);
-
       const formattedData: MarketingProps[] = data.marketings.map(
         (item: genTMResType) => ({
           tactic: item.tactic,

@@ -22,8 +22,8 @@ const VerifyEmail = () => {
         type: "signup",
         email: userinfo?.email ?? "",
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`
-        }
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`,
+        },
       });
       if (error) throw error;
       invokeToast("success", "Resend request sent to your email!", "top");
@@ -38,8 +38,6 @@ const VerifyEmail = () => {
       setIsLoading(false);
     }
   };
-
-  console.log(userinfo?.email);
 
   return (
     <div className="flex flex-row w-full h-screen">

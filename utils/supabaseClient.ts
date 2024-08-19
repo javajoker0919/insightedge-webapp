@@ -22,7 +22,6 @@ const refreshToken = async () => {
 // setInterval(refreshToken, 60 * 1000);
 
 // supabase.auth.onAuthStateChange(async (event, session) => {
-//   console.log("event: ", event);
 
 //   if (event === "TOKEN_REFRESHED" || event === "SIGNED_IN") {
 //     const { data: { session: refreshedSession } } = await supabase.auth.getSession();

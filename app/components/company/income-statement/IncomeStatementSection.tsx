@@ -26,7 +26,9 @@ const IncomeStatementSection: React.FC<IncomeStatementSectionProps> = ({
     try {
       const { data, error } = await supabase
         .from("income_statements")
-        .select("*")
+        .select(
+          "reported_currency, date, revenue, operating_income, net_income, eps, gross_profit"
+        )
         .eq("company_id", companyID)
         .order("date", { ascending: false })
         .limit(2);
@@ -38,8 +40,6 @@ const IncomeStatementSection: React.FC<IncomeStatementSectionProps> = ({
         );
         throw error;
       }
-
-      console.log(data);
 
       if (data.length === 2) {
         const [current, previous] = data;
