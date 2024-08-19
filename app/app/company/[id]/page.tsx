@@ -18,7 +18,7 @@ import { useAtomValue } from "jotai";
 
 import { watchlistAtom } from "@/utils/atoms";
 import OpportunitiesSection from "./components/opportunities/OpportunitiesSection";
-import IncomeStatementSection from "./IncomeStatementSection";
+import IncomeStatementSection from "../../../components/company/income-statement/IncomeStatementSection";
 import RecentNewsSection, { NewsItem } from "./RecentNewsSection";
 import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
 import SummarySection from "./components/summary/SummarySection";
@@ -202,7 +202,7 @@ const CompanyDetailPage: React.FC = () => {
             etID={selectedETID}
             isLoading={isFetchingETID}
           />
-          <IncomeStatementSection />
+          <IncomeStatementSection companyID={parseInt(companyId)} />
           <RecentNewsSection newsItems={newsItems} isLoading={isLoadingNews} />
         </div>
 
