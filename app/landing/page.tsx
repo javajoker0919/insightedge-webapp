@@ -896,8 +896,8 @@ const Footer: React.FC = () => (
       <div className="grid grid-cols-3 sm:flex sm:flex-row gap-8 sm:gap-12 lg:gap-20 lg:mr-20">
         {[
           { title: "Product", items: ["Features", "Pricing"] },
-          { title: "Resources", items: ["Blog", "User guides", "Webinars"] },
-          { title: "Company", items: ["About", "Join us"] }
+          { title: "Resources", items: ["Blog", "User guides"] },
+          { title: "Legal", items: ["Privacy", "Terms"] }
         ].map((section, index) => (
           <div
             key={index}
@@ -913,12 +913,7 @@ const Footer: React.FC = () => (
     </div>
     <div className="flex flex-col items-center lg:flex-row lg:justify-between px-4 sm:px-6 lg:px-20 mt-12 lg:mt-20 py-8 border-t border-[#F3F4F6FF]">
       <div className="flex flex-col gap-1 text-center lg:text-left mb-4 lg:mb-0">
-        <p className="font-semibold text-base leading-[26px] text-[#171A1FFF]">
-          Ultimated with love
-        </p>
-        <p className="text-xs leading-5 font-normal text-[#6F7787FF]">
-          Quis labore ut labore proident in ea est aliqua
-        </p>
+
       </div>
       <div className="flex">
         <p className="text-xs font-normal text-[#6F7787FF] leading-5">
