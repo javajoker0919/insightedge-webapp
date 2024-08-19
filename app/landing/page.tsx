@@ -164,7 +164,7 @@ const HeroSection: React.FC = () => (
     className="pt-20 sm:pt-32 md:pt-40 pb-12 sm:pb-16 px-4 gap-6 sm:gap-8 md:gap-10 flex flex-col items-center"
   >
     <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] leading-tight sm:leading-snug md:leading-[1.4] font-bold text-center text-neutral-900 max-w-[994px] px-2 sm:px-5">
-      Transform news and earnings transcripts to Sales & Marketing opportunities
+      Transform earnings transcripts and press releases to Sales & Marketing opportunities
       <span className="text-primary-500"> tailored to your offerings</span>
     </h1>
     <p className="text-lg sm:text-xl md:text-2xl text-center font-normal leading-relaxed sm:leading-loose md:leading-9 max-w-3xl mx-auto text-neutral-500 px-2 sm:px-4">
