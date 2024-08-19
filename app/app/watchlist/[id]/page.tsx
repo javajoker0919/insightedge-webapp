@@ -281,59 +281,71 @@ export default function WatchlistPage() {
         </div>
       ) : (
         <div className="relative w-full">
-          <div className="flex items-center justify-between relative pl-4 py-2 w-8/12">
-            <h1 className="font-bold text-lg">{watchlistName}</h1>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleSortCompanies}
-                className={
-                  "rounded-full p-2 flex items-center gap-2 hover:text-primary-700" +
-                  (isSorted ? "text-primary-500" : "text-gray-500")
-                }
-              >
-                {isSorted ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
-                <span>Sort by Name</span>
-              </button>
+          <div className="flex w-full items-center gap-4">
+            <div className="flex items-center justify-between flex-grow relative pl-4 py-2">
+              <h1 className="font-bold text-lg">{watchlistName}</h1>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleSortCompanies}
+                  className={
+                    "rounded-full p-2 flex items-center gap-2 hover:text-primary-700" +
+                    (isSorted ? "text-primary-500" : "text-gray-500")
+                  }
+                >
+                  {isSorted ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
+                  <span>Sort by Name</span>
+                </button>
 
-              {watchlistCompanies.length > 0 && (
-                <button
-                  className="rounded-full py-2 px-4 bg-primary-500 hover:bg-primary-600 text-gray-100 flex items-center"
-                  onClick={handleAddInvestments}
+                {watchlistCompanies.length > 0 && (
+                  <button
+                    className="rounded-full py-2 px-4 bg-primary-500 hover:bg-primary-600 text-gray-100 flex items-center"
+                    onClick={handleAddInvestments}
+                  >
+                    <IoAddOutline className="text-xl" />
+                    <span>Company</span>
+                  </button>
+                )}
+                {watchlist && watchlist[0] && paramID !== watchlist[0].uuid && (
+                  <button
+                    onClick={toggleOptionsModal}
+                    className="hover:bg-gray-100 rounded-full w-12 h-12 items-center justify-center gap-0.5 bg-white flex flex-col"
+                  >
+                    <BsThreeDotsVertical />
+                  </button>
+                )}
+              </div>
+              {isOptionsModalOpen && (
+                <div
+                  ref={optionsModalRef}
+                  className="absolute w-52 py-1 border border-gray-100 right-4 top-14 bg-white shadow-md rounded-md overflow-hidden"
                 >
-                  <IoAddOutline className="text-xl" />
-                  <span>Company</span>
-                </button>
+                  <button
+                    onClick={handleRenameWatchlist}
+                    className="flex items-center gap-3 px-4 py-2 w-full hover:bg-gray-100"
+                  >
+                    <IoPencil className="text-gray-600 text-xl" />
+                    <span>Rename</span>
+                  </button>
+                  <button
+                    onClick={handleDeleteWatchlist}
+                    className="flex items-center gap-3 px-4 py-2 w-full hover:bg-gray-100 text-red-500"
+                  >
+                    <IoTrash className="text-red-500 text-xl" />
+                    <span>Delete</span>
+                  </button>
+                </div>
               )}
-              {watchlist && watchlist[0] && paramID !== watchlist[0].uuid && (
-                <button
-                  onClick={toggleOptionsModal}
-                  className="hover:bg-gray-100 rounded-full w-12 h-12 items-center justify-center gap-0.5 bg-white flex flex-col"
-                >
-                  <BsThreeDotsVertical />
-                </button>
+              {isSearchBarOpen && (
+                <CompanySearchbar
+                  type={"watchlist"}
+                  isSearchBarOpen={isSearchBarOpen}
+                  setIsSearchBarOpen={setIsSearchBarOpen}
+                  setWatchlistCompanies={setWatchlistCompanies}
+                />
               )}
             </div>
-            {isOptionsModalOpen && (
-              <div
-                ref={optionsModalRef}
-                className="absolute w-52 py-1 border border-gray-100 right-4 top-14 bg-white shadow-md rounded-md overflow-hidden"
-              >
-                <button
-                  onClick={handleRenameWatchlist}
-                  className="flex items-center gap-3 px-4 py-2 w-full hover:bg-gray-100"
-                >
-                  <IoPencil className="text-gray-600 text-xl" />
-                  <span>Rename</span>
-                </button>
-                <button
-                  onClick={handleDeleteWatchlist}
-                  className="flex items-center gap-3 px-4 py-2 w-full hover:bg-gray-100 text-red-500"
-                >
-                  <IoTrash className="text-red-500 text-xl" />
-                  <span>Delete</span>
-                </button>
-              </div>
-            )}
+
+            <div className="w-96 xl:w-[30rem]"></div>
           </div>
 
           {watchlistCompanies.length === 0 ? (
@@ -373,14 +385,7 @@ export default function WatchlistPage() {
               </div>
             </div>
           )}
-          {isSearchBarOpen && (
-            <CompanySearchbar
-              type={"watchlist"}
-              isSearchBarOpen={isSearchBarOpen}
-              setIsSearchBarOpen={setIsSearchBarOpen}
-              setWatchlistCompanies={setWatchlistCompanies}
-            />
-          )}
+
           <WatchlistModal
             type={modalType}
             isModalOpen={isModalOpen}
