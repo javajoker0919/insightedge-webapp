@@ -90,7 +90,7 @@ const CompanyProfile = () => {
             rows={3}
             value={overview}
             onChange={(e) => setOverview(e.target.value)}
-            className="p-2 border bg-gray-50 mt-1 rounded w-full"
+            className="p-2 border bg-gray-50 mt-1 h-60 rounded w-full"
           />
         </div>
         <div>
@@ -98,7 +98,7 @@ const CompanyProfile = () => {
           <textarea
             value={products}
             onChange={(e) => setProducts(e.target.value)}
-            className="p-2 border bg-gray-50 mt-1 h-40 rounded w-full"
+            className="p-2 border bg-gray-50 mt-1 h-60 rounded w-full"
           />
         </div>
         <div className="flex justify-center">

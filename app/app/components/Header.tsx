@@ -8,21 +8,12 @@ import {
   userInfoAtom,
   orgInfoAtom,
   watchlistAtom,
-  isSidebarExpandedAtom
+  isSidebarExpandedAtom,
 } from "@/utils/atoms";
 import Image from "next/image";
 import Link from "next/link";
 import CompanySearchbar from "@/app/components/CompanySearchbar";
-import {
-  IoAlert,
-  IoMenu,
-  IoNotifications,
-  IoNotificationsCircleOutline,
-  IoNotificationsOff,
-  IoNotificationsOutline
-} from "react-icons/io5";
-import { ImNotification } from "react-icons/im";
-import { MdOutlineToken, MdToken } from "react-icons/md";
+import { IoMenu } from "react-icons/io5";
 
 const Header: React.FC = () => {
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
@@ -77,34 +68,34 @@ const Header: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchCreditCount = async () => {
-      try {
-        if (userInfo) {
-          const { data, error } = await supabase
-            .from("user_packages")
-            .select("value")
-            .eq("user_id", userInfo.id)
-            .eq("package_id", 1)
-            .maybeSingle();
-          if (error) {
-            throw error;
-          }
-
-          setUserInfo((prev) => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              creditCount: parseInt(data?.value)
-            };
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching credit count:", error);
-      }
-    };
-
     fetchCreditCount();
   }, [userInfo?.id]);
+
+  const fetchCreditCount = async () => {
+    try {
+      if (userInfo) {
+        const { data, error } = await supabase
+          .from("user_packages")
+          .select("value")
+          .eq("user_id", userInfo.id)
+          .eq("package_id", 1)
+          .maybeSingle();
+        if (error) {
+          throw error;
+        }
+
+        setUserInfo((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            creditCount: parseInt(data?.value),
+          };
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching credit count:", error);
+    }
+  };
 
   return (
     <header className="py-3 bg-white z-20 shadow-md sticky top-0">
