@@ -63,7 +63,7 @@ const CompanyProfile = () => {
   }
 
   return (
-    <div className="m-auto p-10 w-[60rem] bg-white">
+    <div className="m-auto p-10 w-[70rem] bg-white">
       <h1 className="text-2xl font-bold mb-10 text-center">Company Profile</h1>
       <div className="text-lg space-y-8">
         <div>
@@ -87,6 +87,7 @@ const CompanyProfile = () => {
         <div>
           <strong>Overview:</strong>
           <textarea
+            rows={3}
             value={overview}
             onChange={(e) => setOverview(e.target.value)}
             className="p-2 border bg-gray-50 mt-1 rounded w-full"

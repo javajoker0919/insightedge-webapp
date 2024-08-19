@@ -58,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({
     }`}
   >
     <div className="flex flex-wrap justify-between items-center px-4">
-      <div className="flex items-center">
+      <a className="flex items-center cursor-pointer" href="/app">
         <Image
           src={"/favicon.png"}
           alt={"ProspectEdge"}
@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({
           height={40}
         />
         <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
-      </div>
+      </a>
       <div className="md:hidden">
         <button
           onClick={toggleMenu}

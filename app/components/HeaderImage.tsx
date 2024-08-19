@@ -4,7 +4,7 @@ import Link from "next/link";
 const HeaderImage = () => {
   return (
     <>
-      <Link href="/">
+      <Link href="/app">
         <div className="flex items-center absolute top-4 left-4">
           <Image
             src="/favicon.png"

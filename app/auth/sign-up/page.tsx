@@ -82,7 +82,7 @@ const SignUp = () => {
         email: authData.user?.email || "",
         firstName: "",
         lastName: "",
-        companyName: "",
+        companyName: ""
       });
 
       router.replace("/auth/verify-email");
@@ -115,7 +115,7 @@ const SignUp = () => {
   return (
     <div className="flex flex-row w-full h-screen">
       <div className="flex flex-col w-1/2 h-full bg-white">
-        <Link href="/">
+        <Link href="/app">
           <div className="flex items-center mt-4 ml-4">
             <Image
               src="/favicon.png"
