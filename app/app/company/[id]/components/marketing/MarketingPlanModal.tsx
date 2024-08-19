@@ -22,11 +22,10 @@ const MarketingPlanModal: React.FC<MarketingPlanModalProps> = ({
   onClose,
   selectedStrats,
 }) => {
-  const [openedSection, setOpenedSection] = useState<1 | 2 | 3>(1);
   return (
     <Modal
       wrapperClass="backdrop-blur-[2px]"
-      modalClass="min-w-[555px] max-w-full"
+      modalClass="min-w-[80rem] max-w-full"
       isOpen={open}
       onClose={onClose}
     >
@@ -38,9 +37,7 @@ const MarketingPlanModal: React.FC<MarketingPlanModalProps> = ({
       {selectedStrats && (
         <>
           <Details
-            key={"campaign-details-" + (openedSection === 1 ? "open" : "close")}
-            open={openedSection === 1}
-            onToggle={(open) => open && setOpenedSection(1)}
+            key={"campaign-details"}
             title="Campaign Details"
             wrapperClass="border-primary-600 bg-[#f5f5ff]"
             headClass="hover:bg-[#f5f5ff] text-gray-800"
@@ -56,9 +53,7 @@ const MarketingPlanModal: React.FC<MarketingPlanModalProps> = ({
             </ul>
           </Details>
           <Details
-            key={"strategy-" + (openedSection === 2 ? "open" : "close")}
-            open={openedSection === 2}
-            onToggle={(open) => open && setOpenedSection(2)}
+            key={"strategy"}
             title="Strategy"
             wrapperClass="border-primary-600 bg-[#f5f5ff]"
             headClass="hover:bg-[#f5f5ff] text-gray-800"
@@ -74,11 +69,7 @@ const MarketingPlanModal: React.FC<MarketingPlanModalProps> = ({
             </ul>
           </Details>
           <Details
-            key={
-              "success-measurement-" + (openedSection === 3 ? "open" : "close")
-            }
-            open={openedSection === 3}
-            onToggle={(open) => open && setOpenedSection(3)}
+            key={"success-measurement"}
             title="Success Measurement"
             wrapperClass="border-primary-600 bg-[#f5f5ff]"
             headClass="hover:bg-[#f5f5ff] text-gray-800"

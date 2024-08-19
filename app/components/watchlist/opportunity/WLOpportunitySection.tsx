@@ -362,7 +362,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
 
       <Modal
         wrapperClass="backdrop-blur-[2px]"
-        modalClass="min-w-[555px] max-w-full"
+        modalClass="min-w-[80rem] max-w-full"
         isOpen={!!selectedOpp}
         onClose={() => setSelectedOpp(null)}
       >
@@ -373,8 +373,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
         </div>
         <Details
           key={"stratagy-1-" + (openedSection === 1 ? "open" : "close")}
-          open={openedSection === 1}
-          onToggle={(open) => open && setOpenedSection(1)}
           title="Inbound Strategies"
           wrapperClass="border-primary-600 bg-[#f5f5ff]"
           headClass="hover:bg-[#f5f5ff] text-gray-800"
@@ -391,8 +389,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
         </Details>
         <Details
           key={"stratagy-2-" + (openedSection === 2 ? "open" : "close")}
-          open={openedSection === 2}
-          onToggle={(open) => open && setOpenedSection(2)}
           title="Outbound Strategies"
           wrapperClass="border-primary-600 bg-[#f5f5ff]"
           headClass="hover:bg-[#f5f5ff] text-gray-800"
@@ -409,8 +405,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
         </Details>
         <Details
           key={"stratagy-3-" + (openedSection === 3 ? "open" : "close")}
-          open={openedSection === 3}
-          onToggle={(open) => open && setOpenedSection(3)}
           title="Outbound Email"
           wrapperClass="border-primary-600 bg-[#f5f5ff]"
           headClass="hover:bg-[#f5f5ff] text-gray-800"

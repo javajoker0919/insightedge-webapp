@@ -17,7 +17,7 @@ import {
 import { useAtomValue } from "jotai";
 
 import { watchlistAtom } from "@/utils/atoms";
-import OpportunitiesSection from "./components/opportunities/OpportunitiesSection";
+import OpportunitiesSection from "../../../components/company/opportunity/OpportunitiesSection";
 import IncomeStatementSection from "../../../components/company/income-statement/IncomeStatementSection";
 import RecentNewsSection, {
   NewsItem,
