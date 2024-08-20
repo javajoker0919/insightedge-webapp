@@ -151,6 +151,7 @@ const Membership: React.FC = () => {
       router.push(response.url);
     } catch (error) {
       console.error(error);
+      invokeToast("error", `Failed to upgrade plan: ${error}`, "top");
     } finally {
       setIsUpgradeLoading(false);
     }
@@ -187,6 +188,7 @@ const Membership: React.FC = () => {
       }
     } catch (error) {
       console.error(error);
+      invokeToast("error", `Failed to renew plan: ${error}`, "top");
     } finally {
       setIsStopCancelLoading(false);
     }
