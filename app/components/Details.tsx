@@ -1,6 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
 interface DetailsProps {
   title: string;
@@ -25,22 +24,7 @@ const Details = ({
   wrapperClass,
   iconClass,
 }: DetailsProps) => {
-  const [isOpen, setIsOpen] = useState(true);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [contentHeight, setContentHeight] = useState<"auto" | number>("auto");
-
-  useEffect(() => {
-    const updateHeight = () => {
-      if (contentRef.current) {
-        setContentHeight(contentRef.current.scrollHeight);
-      }
-    };
-
-    updateHeight();
-    window.addEventListener("resize", updateHeight);
-
-    return () => window.removeEventListener("resize", updateHeight);
-  }, [children]);
+  const [isOpen, setIsOpen] = useState(open);
 
   useEffect(() => {
     setIsOpen(open);
@@ -48,44 +32,36 @@ const Details = ({
 
   const toggleOpen = () => {
     setIsOpen(!isOpen);
-    if (typeof onToggle === "function") onToggle(!isOpen);
   };
 
   return (
-    <div
-      className={
-        "mb-2 overflow-hidden rounded border bg-white border-gray-200 " +
-        wrapperClass
-      }
+    <details
+      open={open}
+      className={"mb-2 overflow-hidden rounded border bg-white border-gray-200 " + wrapperClass}
+      onToggle={toggleOpen}
     >
-      <div
-        className={
-          "px-3 py-2 cursor-pointer text-base font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 flex items-center " +
-          headClass
-        }
-        onClick={toggleOpen}
+      <summary
+        className={"px-3 py-2 cursor-pointer text-base font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 flex items-center " + headClass}
       >
         {type === "main" ? (
-          <motion.svg
-            animate={{ rotate: isOpen ? 0 : -90 }}
-            transition={{ duration: 0.1 }}
+          <svg
             className={"mr-2 text-gray-500 w-4 h-4 " + iconClass}
             viewBox="0 0 20 20"
             fill="currentColor"
+            style={{ transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)", transition: "transform 0.1s" }}
           >
             <path
               fillRule="evenodd"
               d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
               clipRule="evenodd"
             />
-          </motion.svg>
+          </svg>
         ) : (
-          <motion.svg
-            animate={{ rotate: isOpen ? 0 : -90 }}
-            transition={{ duration: 0.1 }}
+          <svg
             className={"mr-2 text-gray-500 w-4 h-4 " + iconClass}
             viewBox="0 0 20 20"
             fill="currentColor"
+            style={{ transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)", transition: "transform 0.1s" }}
           >
             {isOpen ? (
               <path
@@ -100,27 +76,14 @@ const Details = ({
                 clipRule="evenodd"
               />
             )}
-          </motion.svg>
+          </svg>
         )}
         {title}
+      </summary>
+      <div className={innerClass || ""}>
+        {children}
       </div>
-
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: contentHeight }}
-            exit={{ height: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            style={{ overflow: "hidden" }}
-          >
-            <div className={innerClass || ""} ref={contentRef}>
-              {children}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    </details>
   );
 };
 
