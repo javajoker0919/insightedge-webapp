@@ -49,6 +49,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   const [isTSLoading, setIsTSLoading] = useState(false);
   const [isTSGenerating, setIsTSGenerating] = useState(false);
   const [showFullSummary, setShowFullSummary] = useState(true);
+  const [showAllKeywords, setShowAllKeywords] = useState<boolean>(false);
 
   useEffect(() => {
     setActiveTab("general");
@@ -206,6 +207,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             <div className="p-2 flex flex-wrap overflow-y-auto max-h-80 gap-2">
               {generalSummary.keywords
                 .sort((a, b) => b.weight - a.weight)
+                .slice(0, showAllKeywords ? generalSummary.keywords.length : 5)
                 .map((keywordObj, index) => (
                   <span
                     key={index}
@@ -217,6 +219,14 @@ const SummarySection: React.FC<SummarySectionProps> = ({
                     <span className={`px-2 py-0.5`}>{keywordObj.weight}</span>
                   </span>
                 ))}
+              {!showAllKeywords && generalSummary.keywords.length > 5 && (
+                <button
+                  onClick={() => setShowAllKeywords(!showAllKeywords)}
+                  className="p-1 hover:underline text-primary-600 hover:text-primary-800"
+                >
+                  {"Show More..."}
+                </button>
+              )}
             </div>
           </Details>
         )
