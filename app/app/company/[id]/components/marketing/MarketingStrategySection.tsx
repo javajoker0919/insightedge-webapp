@@ -131,7 +131,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       setTMs(formattedData);
       setActiveTab("tailored");
       setUserInfo((prev) => {
-        if (!prev) return prev;
+        if (!prev || !prev.creditCount) return prev;
         return {
           ...prev,
           creditCount: prev.creditCount

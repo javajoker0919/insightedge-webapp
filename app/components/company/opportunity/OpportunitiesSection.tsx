@@ -219,7 +219,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         setTailoredOpps(formattedData);
         setActiveTab("tailored");
         setUserInfo((prev) => {
-          if (!prev) return prev;
+          if (!prev || !prev.creditCount) return prev;
           return {
             ...prev,
             creditCount: prev.creditCount ? prev.creditCount - 1 : 0,

@@ -235,7 +235,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
       setTailoredOpps(formattedData);
       setActiveTab("tailored");
       setUserInfo((prev) => {
-        if (!prev) return prev;
+        if (!prev || !prev.creditCount) return prev;
         return {
           ...prev,
           creditCount: prev.creditCount ? prev.creditCount - data.credits : 0,
