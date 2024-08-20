@@ -7,7 +7,7 @@ import { generateTailoredSummaryAPI } from "@/utils/apiClient";
 import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import RenderSummaryContent from "./RenderSummaryContent";
 import { useToastContext } from "@/contexts/toastContext";
-import { Details } from "../..";
+import { Details, Loading } from "../..";
 
 interface SummarySectionProps {
   year: number | null;
@@ -194,24 +194,32 @@ const SummarySection: React.FC<SummarySectionProps> = ({
 
   return (
     <div>
-      {generalSummary && generalSummary.keywords.length > 0 && (
-        <Details title="Keywords">
-          <div className="p-2 flex flex-wrap overflow-y-auto max-h-80 gap-2">
-            {generalSummary.keywords
-              .sort((a, b) => b.weight - a.weight)
-              .map((keywordObj, index) => (
-                <span
-                  key={index}
-                  className={`flex items-center divide-x rounded divide-gray-300 border bg-gray-100 overflow-hidden border-gray-300 text-gray-600 ${
-                    index < 5 ? "bg-yellow-200 text-yellow-800" : ""
-                  }`}
-                >
-                  <span className={`px-2 py-0.5`}>{keywordObj.keyword}</span>
-                  <span className={`px-2 py-0.5`}>{keywordObj.weight}</span>
-                </span>
-              ))}
-          </div>
-        </Details>
+      {(activeTab === "general" && isGSLoading) ||
+      (activeTab === "tailored" && isTSLoading) ? (
+        <div className="flex justify-center items-center h-40">
+          <Loading />
+        </div>
+      ) : (
+        generalSummary &&
+        generalSummary.keywords.length > 0 && (
+          <Details title="Keywords">
+            <div className="p-2 flex flex-wrap overflow-y-auto max-h-80 gap-2">
+              {generalSummary.keywords
+                .sort((a, b) => b.weight - a.weight)
+                .map((keywordObj, index) => (
+                  <span
+                    key={index}
+                    className={`flex items-center divide-x rounded divide-gray-300 border bg-gray-100 overflow-hidden border-gray-300 text-gray-600 ${
+                      index < 5 ? "bg-yellow-200 text-yellow-800" : ""
+                    }`}
+                  >
+                    <span className={`px-2 py-0.5`}>{keywordObj.keyword}</span>
+                    <span className={`px-2 py-0.5`}>{keywordObj.weight}</span>
+                  </span>
+                ))}
+            </div>
+          </Details>
+        )
       )}
 
       <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
@@ -267,7 +275,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           {(activeTab === "general" && isGSLoading) ||
           (activeTab === "tailored" && isTSLoading) ? (
             <div className="flex justify-center items-center h-40">
-              <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
+              <Loading />
             </div>
           ) : activeTab === "general" ? (
             <RenderSummaryContent
