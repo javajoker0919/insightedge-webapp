@@ -264,9 +264,9 @@ const SummarySection: React.FC = () => (
       <span className="text-primary-500">delivered to your inbox</span>
     </h1>
     <p className="text-base md:text-[18px] leading-normal md:leading-7 font-normal text-neutral-600 max-w-[70rem] text-center mb-8 md:mb-5">
-      Tailor your outreach using insights from executive statements in earnings
-      calls and press releases for our key accounts. Understand customer
-      priorities, challenges & painpoints.
+      Customize your outreach using insights from executive statements in earnings
+      calls and press releases for your key accounts. Understand customer
+      priorities, key initiatives, challenges & painpoints.
     </p>
 
     <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-6 mb-8 md:mb-5">
