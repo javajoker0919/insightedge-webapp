@@ -238,7 +238,9 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
         if (!prev || !prev.creditCount) return prev;
         return {
           ...prev,
-          creditCount: prev.creditCount ? prev.creditCount - data.credits : 0,
+          creditCount: prev.creditCount
+            ? prev.creditCount - data.used_credits
+            : 0,
         };
       });
       invokeToast("success", data.message, "top");
