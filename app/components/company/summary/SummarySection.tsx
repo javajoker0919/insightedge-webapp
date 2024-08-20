@@ -7,10 +7,12 @@ import { generateTailoredSummaryAPI } from "@/utils/apiClient";
 import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import RenderSummaryContent from "./RenderSummaryContent";
 import { useToastContext } from "@/contexts/toastContext";
+import { Details } from "../..";
 
 interface SummarySectionProps {
   year: number | null;
   quarter: number | null;
+  etID: number | null;
 }
 
 export interface SummaryProps {
@@ -19,9 +21,14 @@ export interface SummaryProps {
   pain_points: string[];
   opportunities: string[];
   priorities: string[];
+  keywords: { keyword: string; weight: number }[];
 }
 
-const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
+const SummarySection: React.FC<SummarySectionProps> = ({
+  year,
+  quarter,
+  etID,
+}) => {
   if (!year || !quarter) {
     return null;
   }
@@ -55,7 +62,9 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
     try {
       const { data, error } = await supabase
         .from("earnings_transcripts")
-        .select("summary, challenges, pain_points, opportunities, priorities")
+        .select(
+          "summary, challenges, pain_points, opportunities, priorities, keywords"
+        )
         .eq("company_id", companyId)
         .eq("year", year)
         .eq("quarter", quarter)
@@ -72,6 +81,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
             ? data.opportunities.split("\n")
             : [],
           priorities: data.priorities ? data.priorities.split("\n") : [],
+          keywords: data.keywords ? JSON.parse(data.keywords) : [],
         };
 
         setGeneralSummary(processedData);
@@ -120,6 +130,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
           pain_points: tsData[0].pain_points.split("\n"),
           opportunities: tsData[0].opportunities.split("\n"),
           priorities: tsData[0].priorities.split("\n"),
+          keywords: [], // Assuming tailored summaries do not have keywords
         };
 
         setTailoredSummary(processedData);
@@ -156,6 +167,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
           pain_points: data.summary.pain_points.split("\n"),
           opportunities: data.summary.opportunities.split("\n"),
           priorities: data.summary.priorities.split("\n"),
+          keywords: [], // Assuming generated tailored summaries do not have keywords
         };
 
         setTailoredSummary(processedData);
@@ -181,74 +193,89 @@ const SummarySection: React.FC<SummarySectionProps> = ({ year, quarter }) => {
   };
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-      <summary
-        className={`bg-gray-100 font-medium text-gray-700 flex items-center justify-between ${
-          tailoredSummary ? "" : "p-2"
-        }`}
-      >
-        {tailoredSummary ? (
-          <div className="flex">
-            <button
-              className={`px-4 py-4 border-b-2 ${
-                activeTab === "general"
-                  ? "border-primary-600 text-primary-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
-              onClick={() => setActiveTab("general")}
-            >
-              General Summary
-            </button>
-            <button
-              className={`px-4 py-4 border-b-2 ${
-                activeTab === "tailored"
-                  ? "border-primary-600 text-primary-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
-              onClick={() => setActiveTab("tailored")}
-            >
-              Tailored Summary
-            </button>
+    <div>
+      {generalSummary && generalSummary.keywords.length > 0 && (
+        <Details title="Keywords">
+          <div className="p-2 flex flex-wrap overflow-y-auto max-h-80 gap-2">
+            {generalSummary.keywords.map((keywordObj, index) => (
+              <span className="flex items-center divide-x rounded divide-gray-300 border bg-gray-100 overflow-hidden border-gray-300 text-gray-600">
+                <span className={`px-2 py-0.5`}>{keywordObj.keyword}</span>
+                <span className={`px-2 py-0.5`}>{keywordObj.weight}</span>
+              </span>
+            ))}
           </div>
-        ) : (
-          <div className="flex items-center justify-between w-full">
-            <p className="text-gray-700 p-2">Summary</p>
-            {orgInfo && !isTSLoading && (
+        </Details>
+      )}
+
+      <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
+        <summary
+          className={`bg-gray-100 font-medium text-gray-700 flex items-center justify-between ${
+            tailoredSummary ? "" : "p-2"
+          }`}
+        >
+          {tailoredSummary ? (
+            <div className="flex">
               <button
-                title="Get custom earnings report summaries tailored to your business needs"
-                disabled={isTSGenerating}
-                onClick={generateTailoredSummary}
-                className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-primary-600 text-white rounded-md text-sm"
+                className={`px-4 py-4 border-b-2 ${
+                  activeTab === "general"
+                    ? "border-primary-600 text-primary-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+                onClick={() => setActiveTab("general")}
               >
-                {isTSGenerating ? (
-                  <span className="ml-2 inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
-                ) : (
-                  <span>Generate Tailored Summary</span>
-                )}
+                General Summary
               </button>
-            )}
-          </div>
-        )}
-      </summary>
-      <div className="px-3 py-1">
-        {(activeTab === "general" && isGSLoading) ||
-        (activeTab === "tailored" && isTSLoading) ? (
-          <div className="flex justify-center items-center h-40">
-            <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
-          </div>
-        ) : activeTab === "general" ? (
-          <RenderSummaryContent
-            data={generalSummary}
-            showFullSummary={showFullSummary}
-            setShowFullSummary={setShowFullSummary}
-          />
-        ) : activeTab === "tailored" ? (
-          <RenderSummaryContent
-            data={tailoredSummary}
-            showFullSummary={showFullSummary}
-            setShowFullSummary={setShowFullSummary}
-          />
-        ) : null}
+              <button
+                className={`px-4 py-4 border-b-2 ${
+                  activeTab === "tailored"
+                    ? "border-primary-600 text-primary-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+                onClick={() => setActiveTab("tailored")}
+              >
+                Tailored Summary
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between w-full">
+              <p className="text-gray-700 p-2">Summary</p>
+              {orgInfo && !isTSLoading && (
+                <button
+                  title="Get custom earnings report summaries tailored to your business needs"
+                  disabled={isTSGenerating}
+                  onClick={generateTailoredSummary}
+                  className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-primary-600 text-white rounded-md text-sm"
+                >
+                  {isTSGenerating ? (
+                    <span className="ml-2 inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
+                  ) : (
+                    <span>Generate Tailored Summary</span>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
+        </summary>
+        <div className="px-3 py-1">
+          {(activeTab === "general" && isGSLoading) ||
+          (activeTab === "tailored" && isTSLoading) ? (
+            <div className="flex justify-center items-center h-40">
+              <span className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500" />
+            </div>
+          ) : activeTab === "general" ? (
+            <RenderSummaryContent
+              data={generalSummary}
+              showFullSummary={showFullSummary}
+              setShowFullSummary={setShowFullSummary}
+            />
+          ) : activeTab === "tailored" ? (
+            <RenderSummaryContent
+              data={tailoredSummary}
+              showFullSummary={showFullSummary}
+              setShowFullSummary={setShowFullSummary}
+            />
+          ) : null}
+        </div>
       </div>
     </div>
   );
