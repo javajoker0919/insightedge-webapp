@@ -26,7 +26,6 @@ export interface OpportunityProps {
     role: string;
     department: string;
   };
-  tactics?: string[];
   engagementTips?: {
     inbound: string[];
     outbound: string[];
@@ -124,7 +123,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           role: item.buyer_role,
           department: item.buyer_department,
         },
-        tactics: item.tactics?.split("\n"),
         engagementTips: {
           inbound: item.engagement_inbounds?.split("\n") || [],
           outbound: item.engagement_outbounds?.split("\n") || [],
@@ -147,7 +145,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       const { data, error } = await supabase
         .from("tailored_opportunities")
         .select(
-          "name, score, keywords, buyer_role, buyer_department, tactics, engagement_inbounds, engagement_outbounds, email_subject, email_body"
+          "name, score, keywords, buyer_role, buyer_department, engagement_inbounds, engagement_outbounds, email_subject, email_body"
         )
         .eq("earnings_transcript_id", etID)
         .eq("organization_id", orgID);
@@ -166,7 +164,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
               role: item.buyer_role,
               department: item.buyer_department,
             },
-            tactics: item.tactics?.split("\n") || [],
             engagementTips: {
               inbound: item.engagement_inbounds?.split("\n") || [],
               outbound: item.engagement_outbounds?.split("\n") || [],
@@ -209,7 +206,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
               role: item.buyer_role,
               department: item.buyer_department,
             },
-            tactics: item.tactics?.split("\n"),
             engagementTips: {
               inbound: item.engagement_inbounds.split("\n"),
               outbound: item.engagement_outbounds.split("\n"),
@@ -223,7 +219,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         setTailoredOpps(formattedData);
         setActiveTab("tailored");
         setUserInfo((prev) => {
-          if (!prev) return prev;
+          if (!prev || !prev.creditCount) return prev;
           return {
             ...prev,
             creditCount: prev.creditCount ? prev.creditCount - 1 : 0,

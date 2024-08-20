@@ -21,7 +21,7 @@ const FinancialTable: React.FC<FinancialTableProps> = ({
 }) => {
   if (!data) {
     return (
-      <div className="w-full p-4 h-20 flex justify-center items-center">
+      <div className="w-full p-4 h-40 flex justify-center items-center">
         <Loading />
       </div>
     );

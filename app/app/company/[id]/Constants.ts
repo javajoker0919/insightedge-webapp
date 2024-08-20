@@ -7,10 +7,6 @@ export const generalOpportunities = [
       role: "Head of Real-World Evidence",
       department: "R&D",
     },
-    tactics: [
-      "Create a personalized video showcasing Genesis Research's expertise in CNS RWE studies",
-      "Reach out with a tailored proposal highlighting the benefits of partnering with Genesis Research",
-    ],
   },
   {
     opportunityName:
@@ -20,10 +16,6 @@ export const generalOpportunities = [
       role: "Global HEOR Director",
       department: "Market Access",
     },
-    tactics: [
-      "Develop an interactive tool demonstrating the potential HEOR impact of olanzapine LAI",
-      "Schedule a targeted presentation to showcase Genesis Research's HEOR capabilities",
-    ],
   },
   {
     opportunityName:
@@ -33,10 +25,6 @@ export const generalOpportunities = [
       role: "Head of Global Pricing",
       department: "Commercial",
     },
-    tactics: [
-      "Create a personalized payer research proposal based on Teva's specific needs",
-      "Initiate contact with a compelling case study demonstrating Genesis Research's payer research expertise",
-    ],
   },
   {
     opportunityName:
@@ -46,10 +34,6 @@ export const generalOpportunities = [
       role: "Head of Immunology R&D",
       department: "R&D",
     },
-    tactics: [
-      "Host a webinar on innovative evidence generation strategies for rare diseases",
-      "Reach out with a customized integrated evidence plan outline for Teva's Anti-IL15 program",
-    ],
   },
   {
     opportunityName:
@@ -59,10 +43,6 @@ export const generalOpportunities = [
       role: "Medical Director, Immunology",
       department: "Medical Affairs",
     },
-    tactics: [
-      "Provide a sample AI-powered literature review on IL-15 in autoimmune diseases",
-      "Proactively share a targeted proposal for conducting a comprehensive literature review on IL-15",
-    ],
   },
   /*
   {
@@ -72,11 +52,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "Head of Global Biosimilars",
       department: "Commercial",
-    },
-    tactics: [
-      "Develop a biosimilar HTA toolkit tailored to Teva's portfolio and target markets",
-      "Initiate contact with a strategic HTA landscaping plan customized for Teva's biosimilar portfolio",
-    ],
+    }
   },
   {
     opportunityName:
@@ -85,11 +61,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "Director of Biosimilar Market Access",
       department: "Market Access",
-    },
-    tactics: [
-      "Create a personalized biosimilar payer engagement plan based on Teva's unique needs",
-      "Reach out with a compelling case study showcasing Genesis Research's biosimilar market access expertise",
-    ],
+    }
   },
   {
     opportunityName:
@@ -98,11 +70,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "Head of Migraine Franchise",
       department: "R&D",
-    },
-    tactics: [
-      "Develop a custom RWE study protocol showcasing innovative designs for AJOVY",
-      "Proactively share a targeted proposal for designing differentiated RWE studies for AJOVY",
-    ],
+    }
   },
   {
     opportunityName:
@@ -111,11 +79,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "Director of Respiratory Marketing",
       department: "Commercial",
-    },
-    tactics: [
-      "Provide a complimentary market access landscape report for TEV-248's target markets",
-      "Schedule a targeted presentation to showcase Genesis Research's asthma market access expertise",
-    ],
+    }
   },
   {
     opportunityName:
@@ -124,11 +88,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "VP of CNS HEOR",
       department: "Market Access",
-    },
-    tactics: [
-      "Create a personalized CNS HEOR strategy roadmap based on Teva's pipeline",
-      "Reach out with a customized proposal for developing a comprehensive HEOR strategy for Teva's CNS assets",
-    ],
+    }
   },
   {
     opportunityName:
@@ -137,11 +97,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "Head of Biosimilar Medical Affairs",
       department: "Medical Affairs",
-    },
-    tactics: [
-      "Develop a custom integrated evidence plan template tailored to biosimilar Stelara",
-      "Proactively share a targeted proposal for building a robust evidence plan for biosimilar Stelara",
-    ],
+    }
   },
   {
     opportunityName:
@@ -150,11 +106,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "AUSTEDO Brand Lead",
       department: "Commercial",
-    },
-    tactics: [
-      "Create a personalized payer advisory board agenda focusing on AUSTEDO's unique value proposition",
-      "Initiate contact with a compelling case study demonstrating the impact of payer advisory boards",
-    ],
+    }
   },
   {
     opportunityName:
@@ -163,11 +115,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "Medical Director, Gastroenterology",
       department: "Medical Affairs",
-    },
-    tactics: [
-      "Provide a sample AI-powered literature review on TL1A in inflammatory bowel disease",
-      "Reach out with a customized proposal for conducting a comprehensive literature review on TL1A",
-    ],
+    }
   },
   {
     opportunityName:
@@ -176,11 +124,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "Head of Global Value & Access",
       department: "Market Access",
-    },
-    tactics: [
-      "Create a custom global value dossier template tailored to Teva's pipeline assets",
-      "Schedule a targeted presentation to showcase Genesis Research's value dossier development expertise",
-    ],
+    }
   },
   {
     opportunityName:
@@ -189,11 +133,7 @@ export const generalOpportunities = [
     targetBuyer: {
       role: "Head of Global Generic R&D",
       department: "R&D",
-    },
-    tactics: [
-      "Develop a personalized integrated evidence roadmap for Teva's generic portfolio",
-      "Proactively share a targeted proposal for creating a comprehensive evidence roadmap for Teva's generics",
-    ],
+    }
   },
   */
 ];

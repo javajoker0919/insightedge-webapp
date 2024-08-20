@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+
 import { supabase } from "@/utils/supabaseClient";
 import MarketingStrategyTable from "./MarketingStrategyTable";
 import MarketingPlanModal from "./MarketingPlanModal";
 import Loading from "@/app/components/Loading";
-import { marketingStrategy } from "../../Constants";
+import { generateTMAPI } from "@/utils/apiClient";
+import { userInfoAtom } from "@/utils/atoms";
+import { useSetAtom } from "jotai";
+import { useToastContext } from "@/contexts/toastContext";
 
 interface MarketingCompProps {
   companyName: string;
@@ -22,6 +26,19 @@ export interface MarketingProps {
   callToAction: string;
 }
 
+interface genTMResType {
+  call_to_action: string;
+  channel: string;
+  company_name: string;
+  earnings_transcript_id: number;
+  key_performance_indicators: string;
+  strategic_alignment: string;
+  tactic: string;
+  tactic_score: string;
+  target_personas: string;
+  value_proposition: string;
+}
+
 const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   companyName,
   etID,
@@ -31,25 +48,20 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
     return null;
   }
 
+  const { invokeToast } = useToastContext();
+  const setUserInfo = useSetAtom(userInfoAtom);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
-  const [selectedStrats, setSelectedStrats] = useState<MarketingProps | null>(
-    null
-  );
-  const [generalStrats, setGeneralStrats] = useState<MarketingProps[] | null>(
-    null
-  );
-  const [tailoredStrats, setTailoredStrats] = useState<MarketingProps[] | null>(
-    null
-  );
-
+  const [selectedStrats, setSelectedMS] = useState<MarketingProps | null>(null);
+  const [generalStrats, setGMs] = useState<MarketingProps[] | null>(null);
+  const [tailoredMarketings, setTMs] = useState<MarketingProps[] | null>(null);
   const [isGeneralLoading, setIsGeneralLoading] = useState<boolean>(false);
   const [isTailoredLoading, setIsTailoredLoading] = useState<boolean>(false);
-  const [isTailoredGenerating, setIsTailoredGenerating] =
-    useState<boolean>(false);
+  const [isGeneratingTM, setIsGeneratingTM] = useState<boolean>(false);
 
   useEffect(() => {
     if (etID) {
       fetchMarketingStrategies(etID);
+      setTMs(null);
     }
   }, [etID]);
 
@@ -80,7 +92,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
         callToAction: item.call_to_action,
       }));
 
-      setGeneralStrats(strategies);
+      setGMs(strategies);
       setActiveTab("general");
     } catch (error) {
       console.error("Error fetching marketing strategies:", error);
@@ -90,35 +102,75 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
     }
   };
 
-  const handleGenerateTailoredStrategies = () => {
-    setIsTailoredGenerating(true);
+  const handleGenerateTMs = async () => {
+    if (!etID) {
+      return;
+    }
 
-    setTimeout(() => {
-      setTailoredStrats(marketingStrategy);
+    setIsGeneratingTM(true);
+
+    try {
+      const { data } = await generateTMAPI([etID]);
+
+      const formattedData: MarketingProps[] = data.marketings.map(
+        (item: genTMResType) => ({
+          tactic: item.tactic,
+          tacticScore: parseFloat(item.tactic_score),
+          companyName: item.company_name,
+          targetPersonas: item.target_personas,
+          channel: item.channel,
+          valueProposition: item.value_proposition,
+          keyPerformanceIndicators: item.key_performance_indicators
+            .replace(/[\[\]"]/g, "")
+            .split(", "),
+          strategicAlignment: item.strategic_alignment,
+          callToAction: item.call_to_action,
+        })
+      );
+
+      setTMs(formattedData);
       setActiveTab("tailored");
-      setIsTailoredGenerating(false);
-    }, 2000);
+      setUserInfo((prev) => {
+        if (!prev || !prev.creditCount) return prev;
+        return {
+          ...prev,
+          creditCount: prev.creditCount
+            ? prev.creditCount - data.used_credits
+            : 0,
+        };
+      });
+      invokeToast("success", data.message, "top");
+    } catch (error) {
+      console.error(error);
+      invokeToast(
+        "error",
+        "Failed to generate tailored marketing strategies",
+        "top"
+      );
+    } finally {
+      setIsGeneratingTM(false);
+    }
   };
 
   const handleQuickAction = (strt: MarketingProps) => {
-    setSelectedStrats(strt);
+    setSelectedMS(strt);
   };
 
   return (
     <div className="bg-primary border border-gray-300 rounded-lg bg-white overflow-hidden">
       <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
-        {tailoredStrats === null ? (
+        {tailoredMarketings === null ? (
           <div className="flex w-full justify-between items-center pr-4 py-1">
             <h3 className="px-4 py-3 font-medium text-gray-700">
               Marketing Strategy
             </h3>
-            {tailoredStrats === null && !isTailoredLoading && (
+            {tailoredMarketings === null && !isTailoredLoading && (
               <button
-                onClick={handleGenerateTailoredStrategies}
-                disabled={isTailoredGenerating}
+                onClick={handleGenerateTMs}
+                disabled={isGeneratingTM}
                 className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
-                {isTailoredGenerating ? (
+                {isGeneratingTM ? (
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
                 ) : (
                   "Generate Tailored Marketing Strategies"
@@ -163,7 +215,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
               <>
                 <div className="p-4 bg-gray-100 text-black">
                   {companyName}'s top Marketing Strategy.
-                  {tailoredStrats?.length === 0 && (
+                  {tailoredMarketings?.length === 0 && (
                     <span>
                       {`To find the best ways to sell your solutions to 
                       ${companyName}, click "Generate Tailored Marketing
@@ -189,9 +241,9 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
                   explore the top marketing tactics for selling your solutions
                   to {companyName}
                 </div>
-                {tailoredStrats && (
+                {tailoredMarketings && (
                   <MarketingStrategyTable
-                    strategies={tailoredStrats}
+                    strategies={tailoredMarketings}
                     onQuickAction={handleQuickAction}
                   />
                 )}
@@ -202,7 +254,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 
       <MarketingPlanModal
         open={!!selectedStrats}
-        onClose={() => setSelectedStrats(null)}
+        onClose={() => setSelectedMS(null)}
         selectedStrats={selectedStrats}
       />
     </div>
