@@ -33,6 +33,7 @@ export interface OpportunityProps {
     subject: string;
     body: string;
   };
+  reasoning: string;
 }
 
 const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
@@ -78,7 +79,8 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           email_body,
           earnings_transcripts (
             company_id
-          )
+          ),
+          reasoning
           `
         )
         .in("earnings_transcript_id", etIDs);
@@ -116,6 +118,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           subject: item.email_subject,
           body: item.email_body,
         },
+        reasoning: item.reasoning,
       }));
 
       setGeneralOpps(formattedData);
@@ -143,6 +146,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           engagement_outbounds, 
           email_subject, 
           email_body,
+          reasoning,
           earnings_transcripts (
             company_id
           )
@@ -187,6 +191,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
               subject: item.email_subject,
               body: item.email_body,
             },
+            reasoning: item.reasoning,
           })
         );
         setTailoredOpps(formattedData);
@@ -229,6 +234,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
             subject: item.email_subject,
             body: item.email_body,
           },
+          reasoning: item.reasoning,
         })
       );
 
@@ -364,56 +370,68 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
         isOpen={!!selectedOpp}
         onClose={() => setSelectedOpp(null)}
       >
-        <div className="flex items-center justify-between mb-4">
-          <h4 className="text-xl font-bold text-primary-600">
-            Prospecting Tactics
-          </h4>
-        </div>
-        <Details
-          key={"stratagy-1-" + (openedSection === 1 ? "open" : "close")}
-          title="Inbound Strategies"
-          wrapperClass="border-primary-600 bg-[#f5f5ff]"
-          headClass="hover:bg-[#f5f5ff] text-gray-800"
-        >
-          <ul className="list-disc pl-8 mb-4 text-gray-600">
-            {selectedOpp?.engagementTips?.inbound.map(
-              (tip: string, index: number) => (
-                <li key={"engagementTips_inbound_" + index} className="mb-2">
-                  {tip}
-                </li>
-              )
-            )}
-          </ul>
-        </Details>
-        <Details
-          key={"stratagy-2-" + (openedSection === 2 ? "open" : "close")}
-          title="Outbound Strategies"
-          wrapperClass="border-primary-600 bg-[#f5f5ff]"
-          headClass="hover:bg-[#f5f5ff] text-gray-800"
-        >
-          <ul className="list-disc pl-8 mb-4 text-gray-600">
-            {selectedOpp?.engagementTips?.outbound.map(
-              (tip: string, index: number) => (
-                <li key={"engagementTips_outbound_" + index} className="mb-2">
-                  {tip}
-                </li>
-              )
-            )}
-          </ul>
-        </Details>
-        <Details
-          key={"stratagy-3-" + (openedSection === 3 ? "open" : "close")}
-          title="Outbound Email"
-          wrapperClass="border-primary-600 bg-[#f5f5ff]"
-          headClass="hover:bg-[#f5f5ff] text-gray-800"
-        >
-          <div className="px-3 pb-3 pt-2">
-            <h4 className="text-lg font-semibold text-gray-600 mb-3">
-              {selectedOpp?.outboundEmail?.subject}
-            </h4>
-            <p className="text-gray-600">{selectedOpp?.outboundEmail?.body}</p>
+        <div className="p-3">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-primary-600">
+              Prospecting Tactics
+            </h2>
           </div>
-        </Details>
+
+          <div className="space-y-6">
+            <section>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                Inbound Strategies
+              </h3>
+              <ul className="list-disc pl-8 space-y-3">
+                {selectedOpp?.engagementTips?.inbound.map(
+                  (tip: string, index: number) => (
+                    <li key={`engagementTips_inbound_${index}`}>
+                      <p className="text-gray-700">{tip}</p>
+                    </li>
+                  )
+                )}
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                Outbound Strategies
+              </h3>
+              <ul className="list-disc pl-8 space-y-3">
+                {selectedOpp?.engagementTips?.outbound.map(
+                  (tip: string, index: number) => (
+                    <li key={`engagementTips_outbound_${index}`}>
+                      <p className="text-gray-700">{tip}</p>
+                    </li>
+                  )
+                )}
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                Outbound Email
+              </h3>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="text-lg font-medium text-gray-800 mb-2">
+                  {selectedOpp?.outboundEmail?.subject}
+                </h4>
+                <p className="text-gray-700 whitespace-pre-line">
+                  {selectedOpp?.outboundEmail?.body}
+                </p>
+              </div>
+            </section>
+
+            <section>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                Reasoning
+              </h3>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-gray-700">{selectedOpp?.reasoning}</p>
+              </div>
+            </section>
+          </div>
+        </div>
       </Modal>
     </div>
   );

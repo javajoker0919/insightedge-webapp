@@ -1,22 +1,28 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { FaClock, FaRecycle, FaBookReader } from "react-icons/fa";
 import { FaPuzzlePiece } from "react-icons/fa6";
 import { LuBrainCircuit } from "react-icons/lu";
 import { MdOutlineToken } from "react-icons/md";
 import { IoTelescope } from "react-icons/io5";
+import React from "react";
 
 interface HeaderProps {
   isHeaderVisible: boolean;
   isMenuOpen: boolean;
   toggleMenu: () => void;
+  scrollToSection: (sectionId: string) => void;
 }
 
 const LandingPage: React.FC = () => {
   const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
+  const salesAndMarketingSectionRef = useRef<HTMLElement>(null);
+  const featureSectionRef = useRef<HTMLElement>(null);
+  const pricingSectionRef = useRef<HTMLElement>(null);
 
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
@@ -35,14 +41,26 @@ const LandingPage: React.FC = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="w-full text-black bg-gradient-to-b">
       <Header
         isHeaderVisible={isHeaderVisible}
         isMenuOpen={isMenuOpen}
         toggleMenu={toggleMenu}
+        scrollToSection={scrollToSection}
       />
-      <MainContent />
+      <MainContent
+        salesAndMarketingSectionRef={salesAndMarketingSectionRef}
+        featureSectionRef={featureSectionRef}
+        pricingSectionRef={pricingSectionRef}
+      />
     </div>
   );
 };
@@ -50,7 +68,8 @@ const LandingPage: React.FC = () => {
 const Header: React.FC<HeaderProps> = ({
   isHeaderVisible,
   isMenuOpen,
-  toggleMenu
+  toggleMenu,
+  scrollToSection,
 }) => (
   <header
     className={`py-4 fixed top-0 left-0 right-0 bg-white z-10 shadow-md transition-transform duration-300 ${
@@ -90,39 +109,60 @@ const Header: React.FC<HeaderProps> = ({
         </button>
       </div>
       <div className="hidden md:block flex-grow">
-        <NavMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+        <NavMenu
+          isMenuOpen={isMenuOpen}
+          toggleMenu={toggleMenu}
+          scrollToSection={scrollToSection}
+        />
       </div>
     </div>
     {isMenuOpen && (
       <div className="md:hidden w-full">
-        <NavMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+        <NavMenu
+          isMenuOpen={isMenuOpen}
+          toggleMenu={toggleMenu}
+          scrollToSection={scrollToSection}
+        />
       </div>
     )}
   </header>
 );
 
-const NavMenu: React.FC<{ isMenuOpen: boolean; toggleMenu: () => void }> = ({
-  isMenuOpen,
-  toggleMenu
-}) => (
+const NavMenu: React.FC<{
+  isMenuOpen: boolean;
+  toggleMenu: () => void;
+  scrollToSection: (sectionId: string) => void;
+}> = ({ isMenuOpen, toggleMenu, scrollToSection }) => (
   <nav
     className={`flex flex-col md:flex-row md:justify-end items-center space-y-4 md:space-y-0 md:space-x-8 bg-white md:bg-transparent p-4 md:p-0`}
   >
     <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
       <a
         href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToSection("salesandmarketing");
+        }}
         className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
       >
         Benefits
       </a>
       <a
         href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToSection("summary");
+        }}
         className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
       >
         Features
       </a>
       <a
         href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToSection("pricing");
+        }}
         className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
       >
         Pricing
@@ -145,13 +185,21 @@ const NavMenu: React.FC<{ isMenuOpen: boolean; toggleMenu: () => void }> = ({
   </nav>
 );
 
-const MainContent: React.FC = () => (
+const MainContent: React.FC<{
+  salesAndMarketingSectionRef: React.RefObject<HTMLElement>;
+  featureSectionRef: React.RefObject<HTMLElement>;
+  pricingSectionRef: React.RefObject<HTMLElement>;
+}> = ({
+  salesAndMarketingSectionRef,
+  featureSectionRef,
+  pricingSectionRef,
+}) => (
   <main className="mt-16 sm:mt-16">
     <HeroSection />
-    <SalesAndMarketingSection />
-    <SummarySection />
+    <SalesAndMarketingSection ref={salesAndMarketingSectionRef} />
+    <SummarySection ref={featureSectionRef} />
     <BusinessSection />
-    <CreditSection />
+    <CreditSection ref={pricingSectionRef} />
     <NewSection />
     <ScheduleDemo />
     <Footer />
@@ -164,7 +212,8 @@ const HeroSection: React.FC = () => (
     className="pt-20 sm:pt-32 md:pt-40 pb-12 sm:pb-16 px-4 gap-6 sm:gap-8 md:gap-10 flex flex-col items-center"
   >
     <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] leading-tight sm:leading-snug md:leading-[1.4] font-bold text-center text-neutral-900 max-w-[994px] px-2 sm:px-5">
-      Transform earnings transcripts and press releases to Sales & Marketing opportunities
+      Transform earnings transcripts and press releases to Sales & Marketing
+      opportunities
       <span className="text-primary-500"> tailored to your offerings</span>
     </h1>
     <p className="text-lg sm:text-xl md:text-2xl text-center font-normal leading-relaxed sm:leading-loose md:leading-9 max-w-3xl mx-auto text-neutral-500 px-2 sm:px-4">
@@ -185,9 +234,10 @@ const HeroSection: React.FC = () => (
   </section>
 );
 
-const SalesAndMarketingSection: React.FC = () => (
+const SalesAndMarketingSection = React.forwardRef<HTMLElement>((props, ref) => (
   <section
     id="salesandmarketing"
+    ref={ref}
     className="py-16 px-4 flex flex-col items-center"
   >
     <h1 className="text-3xl md:text-[40px] leading-tight md:leading-[56px] font-bold text-center max-w-[994px] px-4 md:px-10 flex flex-col">
@@ -234,7 +284,7 @@ const SalesAndMarketingSection: React.FC = () => (
       </div>
     </div>
   </section>
-);
+));
 
 const Feature: React.FC<{
   icon: React.ReactNode;
@@ -254,9 +304,10 @@ const Feature: React.FC<{
   </div>
 );
 
-const SummarySection: React.FC = () => (
+const SummarySection = React.forwardRef<HTMLElement>((props, ref) => (
   <section
     id="summary"
+    ref={ref}
     className="py-8 md:py-16 px-4 flex flex-col items-center"
   >
     <h1 className="text-3xl md:text-[42px] leading-tight md:leading-[60px] font-bold text-center max-w-[60rem] mb-3 md:mb-5">
@@ -264,9 +315,9 @@ const SummarySection: React.FC = () => (
       <span className="text-primary-500">delivered to your inbox</span>
     </h1>
     <p className="text-base md:text-[18px] leading-normal md:leading-7 font-normal text-neutral-600 max-w-[70rem] text-center mb-8 md:mb-5">
-      Customize your outreach using insights from executive statements in earnings
-      calls and press releases for your key accounts. Understand customer
-      priorities, key initiatives, challenges & painpoints.
+      Customize your outreach using insights from executive statements in
+      earnings calls and press releases for your key accounts. Understand
+      customer priorities, key initiatives, challenges & painpoints.
     </p>
 
     <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-6 mb-8 md:mb-5">
@@ -292,7 +343,7 @@ const SummarySection: React.FC = () => (
       <DashboardContent />
     </div>
   </section>
-);
+));
 
 const SummaryContent: React.FC = () => (
   <div className="flex flex-col gap-4 md:gap-6 p-4 md:p-6 md:pr-0 max-w-full lg:max-w-[35rem]">
@@ -399,8 +450,11 @@ const BusinessFeature: React.FC<{
   </div>
 );
 
-const CreditSection: React.FC = () => (
-  <section id="credit" className="py-16 px-4 flex flex-col items-center gap-10">
+const CreditSection = React.forwardRef<HTMLElement>((props, ref) => (
+  <section
+    id="pricing"
+    className="py-16 px-4 flex flex-col items-center gap-10"
+  >
     <div className="text-[40px] leading-[56px] font-bold text-center max-w-[60rem]">
       <span className="text-primary-500">Compare our plans</span> and find yours
       <p className="text-base text-neutral-500 font-normal leading-[26px] mt-3">
@@ -766,7 +820,7 @@ const CreditSection: React.FC = () => (
       </div>
     </div>
   </section>
-);
+));
 
 const NewSection: React.FC = () => (
   <section id="new" className="py-16 px-4 flex flex-col items-center gap-10">
@@ -878,23 +932,23 @@ const Footer: React.FC = () => (
           />
         </div>
         <div className="flex flex-row gap-4 mt-6 lg:mt-8 lg:ml-[100px]">
-          {[
-            { alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" }
-          ].map((icon, index) => (
-            <div
-              key={index}
-              className="p-2 border border-solid border-[#F3F4F6FF] rounded-sm"
-            >
-              <Image width={24} height={24} alt={icon.alt} src={icon.src} />
-            </div>
-          ))}
+          {[{ alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" }].map(
+            (icon, index) => (
+              <div
+                key={index}
+                className="p-2 border border-solid border-[#F3F4F6FF] rounded-sm"
+              >
+                <Image width={24} height={24} alt={icon.alt} src={icon.src} />
+              </div>
+            )
+          )}
         </div>
       </div>
       <div className="grid grid-cols-3 sm:flex sm:flex-row gap-8 sm:gap-12 lg:gap-20 lg:mr-20">
         {[
           { title: "Product", items: ["Features", "Pricing"] },
           { title: "Resources", items: ["Blog", "User guides"] },
-          { title: "Legal", items: ["Privacy", "Terms"] }
+          { title: "Legal", items: ["Privacy", "Terms"] },
         ].map((section, index) => (
           <div
             key={index}
@@ -909,9 +963,7 @@ const Footer: React.FC = () => (
       </div>
     </div>
     <div className="flex flex-col items-center lg:flex-row lg:justify-between px-4 sm:px-6 lg:px-20 mt-12 lg:mt-20 py-8 border-t border-[#F3F4F6FF]">
-      <div className="flex flex-col gap-1 text-center lg:text-left mb-4 lg:mb-0">
-
-      </div>
+      <div className="flex flex-col gap-1 text-center lg:text-left mb-4 lg:mb-0"></div>
       <div className="flex">
         <p className="text-xs font-normal text-[#6F7787FF] leading-5">
           @2024 ProspectEdge. All rights reserved.
