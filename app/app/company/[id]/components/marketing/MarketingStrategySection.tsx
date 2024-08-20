@@ -26,7 +26,6 @@ export interface MarketingProps {
   callToAction: string;
 }
 
-
 interface genTMResType {
   call_to_action: string;
   channel: string;
@@ -52,24 +51,17 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   const { invokeToast } = useToastContext();
   const setUserInfo = useSetAtom(userInfoAtom);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
-  const [selectedStrats, setSelectedStrats] = useState<MarketingProps | null>(
-    null
-  );
-  const [generalStrats, setGeneralStrats] = useState<MarketingProps[] | null>(
-    null
-  );
-  const [tailoredMarketings, setTMs] = useState<MarketingProps[] | null>(
-    null
-  );
-
+  const [selectedStrats, setSelectedMS] = useState<MarketingProps | null>(null);
+  const [generalStrats, setGMs] = useState<MarketingProps[] | null>(null);
+  const [tailoredMarketings, setTMs] = useState<MarketingProps[] | null>(null);
   const [isGeneralLoading, setIsGeneralLoading] = useState<boolean>(false);
   const [isTailoredLoading, setIsTailoredLoading] = useState<boolean>(false);
-  const [isGeneratingTM, setIsGeneratingTM] =
-    useState<boolean>(false);
+  const [isGeneratingTM, setIsGeneratingTM] = useState<boolean>(false);
 
   useEffect(() => {
     if (etID) {
       fetchMarketingStrategies(etID);
+      setTMs(null);
     }
   }, [etID]);
 
@@ -100,7 +92,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
         callToAction: item.call_to_action,
       }));
 
-      setGeneralStrats(strategies);
+      setGMs(strategies);
       setActiveTab("general");
     } catch (error) {
       console.error("Error fetching marketing strategies:", error);
@@ -161,7 +153,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   };
 
   const handleQuickAction = (strt: MarketingProps) => {
-    setSelectedStrats(strt);
+    setSelectedMS(strt);
   };
 
   return (
@@ -262,7 +254,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 
       <MarketingPlanModal
         open={!!selectedStrats}
-        onClose={() => setSelectedStrats(null)}
+        onClose={() => setSelectedMS(null)}
         selectedStrats={selectedStrats}
       />
     </div>
