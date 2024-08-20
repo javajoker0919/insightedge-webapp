@@ -197,12 +197,19 @@ const SummarySection: React.FC<SummarySectionProps> = ({
       {generalSummary && generalSummary.keywords.length > 0 && (
         <Details title="Keywords">
           <div className="p-2 flex flex-wrap overflow-y-auto max-h-80 gap-2">
-            {generalSummary.keywords.map((keywordObj, index) => (
-              <span className="flex items-center divide-x rounded divide-gray-300 border bg-gray-100 overflow-hidden border-gray-300 text-gray-600">
-                <span className={`px-2 py-0.5`}>{keywordObj.keyword}</span>
-                <span className={`px-2 py-0.5`}>{keywordObj.weight}</span>
-              </span>
-            ))}
+            {generalSummary.keywords
+              .sort((a, b) => b.weight - a.weight)
+              .map((keywordObj, index) => (
+                <span
+                  key={index}
+                  className={`flex items-center divide-x rounded divide-gray-300 border bg-gray-100 overflow-hidden border-gray-300 text-gray-600 ${
+                    index < 5 ? "bg-yellow-200 text-yellow-800" : ""
+                  }`}
+                >
+                  <span className={`px-2 py-0.5`}>{keywordObj.keyword}</span>
+                  <span className={`px-2 py-0.5`}>{keywordObj.weight}</span>
+                </span>
+              ))}
           </div>
         </Details>
       )}
