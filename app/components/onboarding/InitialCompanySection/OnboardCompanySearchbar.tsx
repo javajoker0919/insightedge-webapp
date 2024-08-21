@@ -98,7 +98,6 @@ const OnboardCompanySearchbar = ({
     if (error) {
       console.error("Error fetching search results:", error);
     } else {
-      console.log(data);
       setSearchResults(data || []);
     }
     setIsSearching(false);

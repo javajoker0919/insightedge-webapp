@@ -149,9 +149,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
       return;
     }
 
-    console.log("etIDs: ", etIDs);
-    console.log("orgInfo: ", orgInfo);
-
     setIsFetchingTO(true);
     setTOs(null);
     setCompanyCount(null);

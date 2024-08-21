@@ -156,8 +156,6 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
         .eq("organization_id", orgID)
         .in("earnings_transcript_id", etIDs);
 
-      console.log(data);
-
       if (error) throw error;
 
       const companyIDs = Array.from(
