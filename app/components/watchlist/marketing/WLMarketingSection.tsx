@@ -6,8 +6,8 @@ import MarketingPlanModal from "./WLMarketingModal";
 import Loading from "@/app/components/Loading";
 import { generateTMAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
-import { userInfoAtom } from "@/utils/atoms";
-import { useSetAtom } from "jotai";
+import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
+import { useAtomValue, useSetAtom } from "jotai";
 
 interface MarketingStrategiesProps {
   etIDs: number[] | null;
@@ -41,28 +41,30 @@ interface genTMResType {
 const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
   const { invokeToast } = useToastContext();
   const setUserInfo = useSetAtom(userInfoAtom);
+  const orgInfo = useAtomValue(orgInfoAtom);
 
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
-  const [selectedStrats, setSelectedStrats] = useState<MarketingProps | null>(
-    null
-  );
-  const [generalStrats, setGeneralStrats] = useState<MarketingProps[] | null>(
-    null
-  );
+  const [selectedMSs, setSelectedMSs] = useState<MarketingProps | null>(null);
+  const [generalMarketings, setGMs] = useState<MarketingProps[] | null>(null);
   const [tailoredMarketings, setTMs] = useState<MarketingProps[] | null>(null);
 
-  const [isFetchingGM, setIsFetchingGM] = useState<boolean>(false);
-  const [isFetchingTM, setIsFetchingTM] = useState<boolean>(false);
+  const [isFetchingGM, setIsFetchingGM] = useState<boolean>(true);
+  const [isFetchingTM, setIsFetchingTM] = useState<boolean>(true);
   const [isGeneratingTM, setIsGeneratingTM] = useState<boolean>(false);
 
   useEffect(() => {
     if (etIDs && etIDs.length > 0) {
-      fetchMarketingStrategies(etIDs);
-      fetchTMs(etIDs);
+      fetchGMs(etIDs);
     }
   }, [etIDs]);
 
-  const fetchMarketingStrategies = async (etIDs: number[]) => {
+  useEffect(() => {
+    if (etIDs && etIDs.length > 0 && orgInfo && orgInfo.id) {
+      fetchTMs(etIDs, orgInfo.id);
+    }
+  }, [etIDs, orgInfo]);
+
+  const fetchGMs = async (etIDs: number[]) => {
     setIsFetchingGM(true);
 
     try {
@@ -116,7 +118,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
         callToAction: item.call_to_action,
       }));
 
-      setGeneralStrats(strategies);
+      setGMs(strategies);
       setActiveTab("general");
     } catch (error) {
       console.error("Error fetching marketing strategies:", error);
@@ -125,21 +127,64 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
     }
   };
 
-  const fetchTMs = async (etIDs: number[]) => {
+  const fetchTMs = async (etIDs: number[], orgID: number) => {
     setIsFetchingTM(true);
 
     try {
+      const { data, error } = await supabase
+        .from("tailored_marketings")
+        .select(
+          `
+          tactic, 
+          tactic_score, 
+          target_personas, 
+          channel, 
+          value_proposition, 
+          key_performance_indicators, 
+          strategic_alignment, 
+          call_to_action, 
+          earnings_transcripts (
+            company_id
+          )
+          `
+        )
+        .eq("organization_id", orgID)
+        .in("earnings_transcript_id", etIDs);
+
+      if (error) throw error;
+
+      const companyIds = data.map(
+        (item: any) => item.earnings_transcripts.company_id
+      );
+      const { data: companiesData, error: companiesError } = await supabase
+        .from("companies")
+        .select("id, name")
+        .in("id", companyIds);
+
+      if (companiesError) throw companiesError;
+
+      const companyMap = companiesData.reduce((acc: any, company: any) => {
+        acc[company.id] = company.name;
+        return acc;
+      }, {});
+
+      const marketings = data.map((item: any) => ({
+        tactic: item.tactic,
+        tacticScore: parseFloat(item.tactic_score),
+        companyName: companyMap[item.earnings_transcripts.company_id],
+        targetPersonas: item.target_personas,
+        channel: item.channel,
+        valueProposition: item.value_proposition,
+        keyPerformanceIndicators: item.key_performance_indicators
+          .replace(/[\[\]"]/g, "")
+          .split(", "),
+        strategicAlignment: item.strategic_alignment,
+        callToAction: item.call_to_action,
+      }));
+
+      setTMs(marketings);
+      setActiveTab("tailored");
     } catch (error) {
-      // invokeToast("error", "Failed to generate tailored opportunities", "top");
-      // if (axios.isAxiosError(error)) {
-      //   if (error.code === "ECONNABORTED") {
-      //     console.error(
-      //       "Request timed out. The backend operation might take longer than expected."
-      //     );
-      //   } else if (error.response?.status !== 200) {
-      //     console.error(`HTTP error! status: ${error.response?.status}`);
-      //   }
-      // }
       console.error("Error fetching tailored marketings:", error);
     } finally {
       setIsFetchingTM(false);
@@ -197,32 +242,13 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
   };
 
   const handleQuickAction = (strt: MarketingProps) => {
-    setSelectedStrats(strt);
+    setSelectedMSs(strt);
   };
 
   return (
     <div className="bg-primary border border-gray-300 rounded-lg overflow-hidden">
       <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
-        {tailoredMarketings === null ? (
-          <div className="flex w-full justify-between items-center pr-4 py-1">
-            <h3 className="px-4 py-3 font-medium text-gray-700">
-              Marketing Strategies
-            </h3>
-            {!isFetchingTM && (
-              <button
-                onClick={handleGenerateTMs}
-                disabled={isGeneratingTM}
-                className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
-              >
-                {isGeneratingTM ? (
-                  <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
-                ) : (
-                  "Generate Tailored Marketing Strategies"
-                )}
-              </button>
-            )}
-          </div>
-        ) : (
+        {tailoredMarketings && tailoredMarketings.length > 0 ? (
           <div className="flex">
             <button
               onClick={() => setActiveTab("general")}
@@ -245,7 +271,25 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
               Tailored Marketing Strategy
             </button>
           </div>
+        ) : (
+          <p className="p-4 font-medium text-gray-700">Marketing Strategies</p>
         )}
+
+        <div className="p-2">
+          {!isFetchingTM && (
+            <button
+              onClick={handleGenerateTMs}
+              disabled={isGeneratingTM}
+              className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+            >
+              {isGeneratingTM ? (
+                <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
+              ) : (
+                "Generate Tailored Marketing Strategies"
+              )}
+            </button>
+          )}
+        </div>
       </div>
 
       {etIDs === null ? (
@@ -257,9 +301,9 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
               <LoadingSection />
             ) : (
               <>
-                {generalStrats && (
+                {generalMarketings && (
                   <MarketingStrategyTable
-                    strategies={generalStrats}
+                    strategies={generalMarketings}
                     onQuickAction={handleQuickAction}
                   />
                 )}
@@ -282,9 +326,9 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
       )}
 
       <MarketingPlanModal
-        open={!!selectedStrats}
-        onClose={() => setSelectedStrats(null)}
-        selectedStrats={selectedStrats}
+        open={!!selectedMSs}
+        onClose={() => setSelectedMSs(null)}
+        selectedStrats={selectedMSs}
       />
     </div>
   );

@@ -6,13 +6,12 @@ import { supabase } from "@/utils/supabaseClient";
 import Modal from "@/app/components/Modal";
 import OpportunitiesTable from "./WLOpportunityTable";
 import { useToastContext } from "@/contexts/toastContext";
-import { Details, Loading } from "../..";
+import { Loading } from "../..";
 import { generateTOAPI } from "@/utils/apiClient";
-import { userInfoAtom } from "@/utils/atoms";
-import { useSetAtom } from "jotai";
+import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
+import { useAtomValue, useSetAtom } from "jotai";
 
 interface OpportunitiesProps {
-  companyName?: string;
   etIDs: number[] | null;
 }
 
@@ -36,35 +35,51 @@ export interface OpportunityProps {
   reasoning: string;
 }
 
-const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
-  companyName,
-  etIDs,
-}) => {
+const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
+  if (etIDs === null) {
+    return;
+  }
+
   const { invokeToast } = useToastContext();
+  const setUserInfo = useSetAtom(userInfoAtom);
+  const orgInfo = useAtomValue(orgInfoAtom);
+
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedOpp, setSelectedOpp] = useState<OpportunityProps | null>(null);
-  const [generalOpps, setGeneralOpps] = useState<OpportunityProps[] | null>(
+  const [generalOpportunities, setGOs] = useState<OpportunityProps[] | null>(
     null
   );
-  const [tailoredOpps, setTailoredOpps] = useState<OpportunityProps[] | null>(
+  const [tailoredOpportunities, setTOs] = useState<OpportunityProps[] | null>(
     null
   );
-  const [openedSection, setOpenedSection] = useState<1 | 2 | 3>(1);
-  const [isGOLoading, setIsGOLoading] = useState<boolean>(true);
-  const [isTOLoading, setIsTOLoading] = useState<boolean>(false);
-  const [isTOGenerating, setIsTOGenerating] = useState<boolean>(false);
-  const setUserInfo = useSetAtom(userInfoAtom);
+
+  const [isFetchingGO, setIsFetchingGO] = useState<boolean>(true);
+  const [isFetchingTO, setIsFetchingTO] = useState<boolean>(true);
+  const [isGeneratingTO, setIsGeneratingTO] = useState<boolean>(false);
+
+  const [companyCount, setCompanyCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (etIDs && etIDs.length > 0) {
-      fetchGeneralOpportunities(etIDs);
+      fetchGOs(etIDs);
     }
   }, [etIDs]);
 
-  const fetchGeneralOpportunities = async (etIDs: number[]) => {
-    try {
-      setIsGOLoading(true);
+  useEffect(() => {
+    if (etIDs && etIDs.length > 0 && orgInfo && orgInfo.id) {
+      fetchTOs(etIDs, orgInfo.id);
+    }
+  }, [etIDs, orgInfo]);
 
+  const fetchGOs = async (etIDs: number[]) => {
+    if (etIDs.length === 0) {
+      return;
+    }
+
+    setIsFetchingGO(true);
+    setGOs(null);
+
+    try {
       const { data, error } = await supabase
         .from("general_opportunities")
         .select(
@@ -121,18 +136,27 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
         reasoning: item.reasoning,
       }));
 
-      setGeneralOpps(formattedData);
+      setGOs(formattedData);
     } catch (error) {
-      console.error("Unexpected error in fetchGeneralOpportunities:", error);
+      console.error("Unexpected error in fetchGOs:", error);
     } finally {
-      setIsGOLoading(false);
+      setIsFetchingGO(false);
     }
   };
 
-  const fetchTailoredOpportunities = async (etID: number, orgID: number) => {
-    try {
-      setIsTOLoading(true);
+  const fetchTOs = async (etIDs: number[], orgID: number) => {
+    if (etIDs.length === 0) {
+      return;
+    }
 
+    console.log("etIDs: ", etIDs);
+    console.log("orgInfo: ", orgInfo);
+
+    setIsFetchingTO(true);
+    setTOs(null);
+    setCompanyCount(null);
+
+    try {
       const { data, error } = await supabase
         .from("tailored_opportunities")
         .select(
@@ -152,18 +176,21 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           )
           `
         )
-        .eq("earnings_transcript_id", etID)
-        .eq("organization_id", orgID);
+        .eq("organization_id", orgID)
+        .in("earnings_transcript_id", etIDs);
 
       if (error) throw error;
 
-      const companyIds = data.map(
-        (item: any) => item.earnings_transcripts.company_id
+      const companyIDs = Array.from(
+        new Set(data.map((item: any) => item.earnings_transcripts.company_id))
       );
+
+      setCompanyCount(companyIDs.length);
+
       const { data: companiesData, error: companiesError } = await supabase
         .from("companies")
         .select("id, name")
-        .in("id", companyIds);
+        .in("id", companyIDs);
 
       if (companiesError) throw companiesError;
 
@@ -173,45 +200,44 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
       }, {});
 
       if (data) {
-        const formattedData: OpportunityProps[] = data.map(
-          (item: any, indx: number) => ({
-            opportunityName: item.name,
-            opportunityScore: item.score,
-            companyName: companyMap[item.earnings_transcripts.company_id],
-            keywords: item.keywords,
-            targetBuyer: {
-              role: item.buyer_role,
-              department: item.buyer_department,
-            },
-            engagementTips: {
-              inbound: item.engagement_inbounds?.split("\n") || [],
-              outbound: item.engagement_outbounds?.split("\n") || [],
-            },
-            outboundEmail: {
-              subject: item.email_subject,
-              body: item.email_body,
-            },
-            reasoning: item.reasoning,
-          })
-        );
-        setTailoredOpps(formattedData);
+        const formattedData: OpportunityProps[] = data.map((item: any) => ({
+          opportunityName: item.name,
+          opportunityScore: item.score,
+          companyName: companyMap[item.earnings_transcripts.company_id],
+          keywords: item.keywords,
+          targetBuyer: {
+            role: item.buyer_role,
+            department: item.buyer_department,
+          },
+          engagementTips: {
+            inbound: item.engagement_inbounds?.split("\n") || [],
+            outbound: item.engagement_outbounds?.split("\n") || [],
+          },
+          outboundEmail: {
+            subject: item.email_subject,
+            body: item.email_body,
+          },
+          reasoning: item.reasoning,
+        }));
+
+        setTOs(formattedData);
       } else {
-        setTailoredOpps([]);
+        setTOs([]);
       }
     } catch (error) {
-      console.error("Unexpected error in fetchTailoredOpportunities:", error);
+      console.error("Unexpected error in fetchTOs:", error);
     } finally {
-      setIsTOLoading(false);
+      setIsFetchingTO(false);
     }
   };
 
-  const generateTailoredOpportunities = async () => {
+  const generateTOs = async () => {
     if (!etIDs || etIDs.length === 0) {
       invokeToast("error", "No earnings transcripts selected", "top");
       return;
     }
 
-    setIsTOGenerating(true);
+    setIsGeneratingTO(true);
 
     try {
       const { data } = await generateTOAPI(etIDs);
@@ -238,7 +264,13 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
         })
       );
 
-      setTailoredOpps(formattedData);
+      // Calculate unique company name count
+      const uniqueCompanyNames = new Set(
+        formattedData.map((item) => item.companyName)
+      );
+
+      setCompanyCount(uniqueCompanyNames.size);
+      setTOs(formattedData);
       setActiveTab("tailored");
       setUserInfo((prev) => {
         if (!prev || !prev.creditCount) return prev;
@@ -263,7 +295,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
       }
       console.error("Error fetching protected data:", error);
     } finally {
-      setIsTOGenerating(false);
+      setIsGeneratingTO(false);
     }
   };
 
@@ -272,9 +304,9 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   };
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-      <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
-        {tailoredOpps && tailoredOpps.length > 0 && !isTOGenerating ? (
+    <div className="bg-white border border-gray-300 rounded-lg">
+      <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between rounded-t-lg">
+        {companyCount && companyCount > 0 ? (
           <div className="flex">
             <button
               onClick={() => setActiveTab("general")}
@@ -298,22 +330,57 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
             </button>
           </div>
         ) : (
-          <div className="flex w-full justify-between items-center pr-4 py-1">
-            <h3 className="px-4 py-3 font-medium text-gray-700">
-              Opportunities
-            </h3>
-            {!isGOLoading && !isTOLoading && (
+          <div className="p-4">
+            <p className="font-medium text-gray-700">Opportunities</p>
+          </div>
+        )}
+
+        {isFetchingTO || companyCount === null ? (
+          <></>
+        ) : companyCount === etIDs.length ? (
+          <></>
+        ) : (
+          <div className="p-2">
+            {isGeneratingTO ? (
+              <button className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out">
+                <Loading size={5} color="white" />
+              </button>
+            ) : companyCount === 0 ? (
               <button
-                onClick={generateTailoredOpportunities}
-                disabled={isTOGenerating}
+                onClick={generateTOs}
                 className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
-                {isTOGenerating ? (
-                  <Loading size={5} color="white" />
-                ) : (
-                  "Generate Tailored Opportunities"
-                )}
+                <span>Generate Tailored Opportunities</span>
               </button>
+            ) : companyCount < etIDs.length ? (
+              <div className="flex items-center gap-2">
+                <div className="relative group">
+                  <span className="w-6 h-6 flex items-center justify-center text-xs font-semibold text-white bg-red-500 rounded-full">
+                    !
+                  </span>
+                  <div className="absolute bottom-full mb-2 z-50 hidden w-72 p-2 text-sm text-white bg-stone-700 rounded-md shadow-lg group-hover:block">
+                    {`Tailored opportunities are not generated for ${
+                      etIDs.length - companyCount
+                    } ${
+                      etIDs.length - companyCount > 1 ? "companies" : "company"
+                    }. Please click to generate for the remaining ${
+                      etIDs.length - companyCount > 1 ? "companies" : "company"
+                    }.`}
+                  </div>
+                </div>
+                <button
+                  onClick={generateTOs}
+                  className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+                >
+                  <span className="flex items-center gap-1">
+                    {`Update Tailored Opportunities (${
+                      etIDs.length - companyCount
+                    })`}
+                  </span>
+                </button>
+              </div>
+            ) : (
+              <></>
             )}
           </div>
         )}
@@ -321,42 +388,41 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
 
       <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
         {activeTab === "general" &&
-          (isGOLoading ? (
+          (isFetchingGO ? (
             <LoadingSection />
           ) : (
             <>
-              {companyName && (
-                <div className="p-4 bg-gray-100 text-black">
+              {/* <div className="p-4 bg-gray-100 text-black">
                   {companyName}'s top opportunities.
-                  {tailoredOpps?.length === 0 && (
+                  {tailoredOpportunities?.length === 0 && (
                     <span>
                       To find the best ways to sell your solutions to{" "}
                       {companyName}, click "Generate Tailored Opportunities."
                     </span>
                   )}
-                </div>
-              )}
-              {generalOpps && (
+                </div> */}
+
+              {generalOpportunities && (
                 <OpportunitiesTable
-                  opportunities={generalOpps}
+                  opportunities={generalOpportunities}
                   onQuickAction={handleQuickAction}
                 />
               )}
             </>
           ))}
         {activeTab === "tailored" &&
-          (isTOLoading ? (
+          (isFetchingTO ? (
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-gray-100 text-black">
+              {/* <div className="p-4 bg-gray-100 text-black">
                 Below is your company specific opportunity table. You can
                 explore the top sales opportunities for selling your solutions
-                to {companyName}
-              </div>
-              {tailoredOpps && (
+                to your specific company
+              </div> */}
+              {tailoredOpportunities && (
                 <OpportunitiesTable
-                  opportunities={tailoredOpps}
+                  opportunities={tailoredOpportunities}
                   onQuickAction={handleQuickAction}
                 />
               )}
