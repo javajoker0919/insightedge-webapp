@@ -41,7 +41,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   companyID,
   companyName,
   year,
-  quarter
+  quarter,
 }) => {
   if (!year || !quarter) {
     return null;
@@ -122,17 +122,17 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         opportunityScore: item.score,
         targetBuyer: {
           role: item.buyer_role,
-          department: item.buyer_department
+          department: item.buyer_department,
         },
         engagementTips: {
           inbound: item.engagement_inbounds?.split("\n") || [],
-          outbound: item.engagement_outbounds?.split("\n") || []
+          outbound: item.engagement_outbounds?.split("\n") || [],
         },
         outboundEmail: {
           subject: item.email_subject,
-          body: item.email_body
+          body: item.email_body,
         },
-        reasoning: item.reasoning
+        reasoning: item.reasoning,
       }));
       setGeneralOpps(formattedData);
     } catch (error) {
@@ -147,7 +147,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       const { data, error } = await supabase
         .from("tailored_opportunities")
         .select(
-          "name, score, keywords, buyer_role, buyer_department, tactics, engagement_inbounds, engagement_outbounds, email_subject, email_body, reasoning"
+          "name, score, keywords, buyer_role, buyer_department, engagement_inbounds, engagement_outbounds, email_subject, email_body, reasoning"
         )
         .eq("earnings_transcript_id", etID)
         .eq("organization_id", orgID);
@@ -164,17 +164,17 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             keywords: item.keywords,
             targetBuyer: {
               role: item.buyer_role,
-              department: item.buyer_department
+              department: item.buyer_department,
             },
             engagementTips: {
               inbound: item.engagement_inbounds?.split("\n") || [],
-              outbound: item.engagement_outbounds?.split("\n") || []
+              outbound: item.engagement_outbounds?.split("\n") || [],
             },
             outboundEmail: {
               subject: item.email_subject,
-              body: item.email_body
+              body: item.email_body,
             },
-            reasoning: item.reasoning
+            reasoning: item.reasoning,
           })
         );
         setTailoredOpps(formattedData);
@@ -196,7 +196,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         companyID: companyID.toString(),
         orgID: orgInfo?.id.toString() || "",
         year,
-        quarter
+        quarter,
       });
 
       if (data.status === "success") {
@@ -207,16 +207,16 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             keywords: item.keywords.split("\n"),
             targetBuyer: {
               role: item.buyer_role,
-              department: item.buyer_department
+              department: item.buyer_department,
             },
             engagementTips: {
               inbound: item.engagement_inbounds.split("\n"),
-              outbound: item.engagement_outbounds.split("\n")
+              outbound: item.engagement_outbounds.split("\n"),
             },
             outboundEmail: {
               subject: item.email_subject,
-              body: item.email_body
-            }
+              body: item.email_body,
+            },
           })
         );
         setTailoredOpps(formattedData);
@@ -225,7 +225,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           if (!prev || !prev.creditCount) return prev;
           return {
             ...prev,
-            creditCount: prev.creditCount ? prev.creditCount - 1 : 0
+            creditCount: prev.creditCount ? prev.creditCount - 1 : 0,
           };
         });
         invokeToast("success", data.message, "top");
