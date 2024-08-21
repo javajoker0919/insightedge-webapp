@@ -20,12 +20,12 @@ const SignUp = () => {
 
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
+    password: ""
   });
 
   const [errors, setErrors] = useState({
     email: "",
-    password: "",
+    password: ""
   });
 
   const [isValidate, setIsValidate] = useState(false);
@@ -63,14 +63,18 @@ const SignUp = () => {
 
     setIsLoading(true);
 
+    console.log(email, password);
+
     try {
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
+        email: email,
+        password: password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`,
-        },
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/onboarding`
+        }
       });
+
+      console.log(authData, authError);
 
       if (authError) throw authError;
 
@@ -85,7 +89,7 @@ const SignUp = () => {
         companyName: ""
       });
 
-      router.replace("/auth/verify-email");
+      // router.replace("/auth/verify-email");
     } catch (error: any) {
       console.error("Sign-up error:", error);
       invokeToast("error", error.message || "Something went wrong!", "top");
@@ -99,8 +103,8 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
-        },
+          redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`
+        }
       });
       if (error) {
         throw error;
@@ -113,8 +117,8 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex flex-row w-full h-screen">
-      <div className="flex flex-col w-1/2 h-full bg-white">
+    <div className="flex flex-col xl:flex-row w-full h-screen">
+      <div className="flex flex-col w-full xl:w-1/2 h-full bg-white">
         <Link href="/app">
           <div className="flex items-center mt-4 ml-4">
             <Image
@@ -126,12 +130,12 @@ const SignUp = () => {
             <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
           </div>
         </Link>
-        <div className="flex flex-col mt-24 items-center w-full">
-          <div className="flex flex-col w-[26rem] text-center">
-            <h1 className="text-3xl font-bold text-gray-900 leading-[48px] mb-3">
+        <div className="flex flex-col mt-8 lg:mt-24 items-center w-full">
+          <div className="flex flex-col w-full max-w-md text-center px-4">
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 leading-tight mb-3">
               Create an account
             </h1>
-            <div className="flex flex-col items-center justify-center max-w-[342px] w-full mx-auto text-center text-gray-600 mb-4 text-sm font-normal leading-[22px]">
+            <div className="flex flex-col items-center justify-center w-full mx-auto text-center text-gray-600 mb-6 text-sm font-normal leading-snug">
               <p>By creating an account, you agree to this app's</p>
               <div className="flex flex-row gap-1 text-sm">
                 <Link
@@ -151,7 +155,7 @@ const SignUp = () => {
             </div>
             <button
               onClick={handleGoogleSignIn}
-              className="w-full flex justify-center items-center gap-2 cursor-pointer text-base py-4 font-normal leading-6 rounded-full text-black border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
+              className="w-full flex justify-center items-center gap-2 cursor-pointer text-sm lg:text-base py-3 lg:py-4 font-normal leading-6 rounded-full text-black border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
             >
               <Image
                 src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
@@ -159,25 +163,25 @@ const SignUp = () => {
                 width={20}
                 height={20}
               />
-              <span className="text-base font-semibold">
+              <span className="font-semibold">
                 Sign Up with Google
               </span>
             </button>
-            <div className="flex items-center w-full mt-8 mb-6">
+            <div className="flex items-center w-full my-6">
               <div className="flex-grow border-t border-gray-300"></div>
-              <span className="flex-shrink mx-4 text-sm font-bold text-gray-500">
+              <span className="flex-shrink mx-4 text-xs lg:text-sm font-bold text-gray-500">
                 OR SIGN UP WITH YOUR EMAIL
               </span>
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
             <form
               onSubmit={handleFormSubmit}
-              className="flex flex-col w-full mt-3"
+              className="flex flex-col w-full"
             >
-              <div className="flex flex-col w-full">
+              <div className="flex flex-col w-full mb-4">
                 <label
                   htmlFor="email"
-                  className="text-left text-base font-bold leading-6 mb-2"
+                  className="text-left text-sm lg:text-base font-bold leading-6 mb-2"
                 >
                   Email address
                 </label>
@@ -185,18 +189,18 @@ const SignUp = () => {
                   id="email"
                   name="email"
                   type="email"
-                  className="outline-none text-base font-normal bg-gray-100 leading-6 p-4 rounded-md"
+                  className="outline-none text-sm lg:text-base font-normal bg-gray-100 leading-6 p-3 lg:p-4 rounded-md"
                   placeholder="example.email@gmail.com"
                   onChange={handleInputChange}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  <p className="text-red-500 text-xs lg:text-sm mt-1">{errors.email}</p>
                 )}
               </div>
-              <div className="flex flex-col w-ufll mt-2">
+              <div className="flex flex-col w-full mb-4">
                 <label
                   htmlFor="password"
-                  className="text-left text-base font-bold leading-6 mb-2"
+                  className="text-left text-sm lg:text-base font-bold leading-6 mb-2"
                 >
                   Password
                 </label>
@@ -204,23 +208,23 @@ const SignUp = () => {
                   id="password"
                   name="password"
                   type="password"
-                  className="outline-none text-base font-normal bg-gray-100 leading-6 p-4 rounded-md"
+                  className="outline-none text-sm lg:text-base font-normal bg-gray-100 leading-6 p-3 lg:p-4 rounded-md"
                   placeholder="••••••••"
                   onChange={handleInputChange}
                 />
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                  <p className="text-red-500 text-xs lg:text-sm mt-1">{errors.password}</p>
                 )}
               </div>
               <button
                 type="submit"
-                className="w-full bg-primary-600 text-white text-base font-semibold py-4 mt-4 rounded-md hover:bg-primary-700 active:bg-primary-800 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full bg-primary-600 text-white text-sm lg:text-base font-semibold py-3 lg:py-4 mt-2 rounded-md hover:bg-primary-700 active:bg-primary-800 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <span className="flex justify-center">
                     <svg
-                      className="animate-spin -ml-1 mr-3 h-6 w-6 text-white"
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 lg:h-6 lg:w-6 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -247,7 +251,7 @@ const SignUp = () => {
             </form>
           </div>
         </div>
-        <div className="absolute bottom-8 left-1/4 transform -translate-x-1/2 font-bold text-sm text-gray-600">
+        <div className="mt-8 text-center xl:absolute xl:bottom-8 xl:left-1/4 xl:transform xl:-translate-x-1/2 font-bold text-sm text-gray-600">
           <span>Have an account? </span>
           <Link
             href="/auth/sign-in"
@@ -257,25 +261,15 @@ const SignUp = () => {
           </Link>
         </div>
       </div>
-      <div className="flex items-center justify-center bg-gray-50 w-1/2 h-full">
+      <div className="hidden xl:flex justify-center w-1/2 h-full bg-[url('/sign.png')] bg-cover bg-center">
         <div className="flex flex-col items-center">
-          <div className="text-center mb-[70px]">
+          <div className="text-center mb-[70px] h-[70px] mt-44">
             <p className="text-[32px] leading-[48px] font-bold text-gray-700">
               Welcome to ProspectEdge!
             </p>
             <p className="text-lg font-normal leading-7 text-gray-600">
               First things first, let's set you up with an account! 👋
             </p>
-          </div>
-          <div className="relative">
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 rounded-[50%] bg-gray-200 w-[600px] h-[8.5rem] z-0"></div>
-            <Image
-              src="/welcome.svg"
-              width={513}
-              height={416}
-              alt="Welcome illustration"
-              className="relative z-10"
-            />
           </div>
         </div>
       </div>

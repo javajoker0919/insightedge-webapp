@@ -55,7 +55,7 @@ const Callback = () => {
           });
 
           if (sessionData?.session?.access_token) {
-            window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding#access_token=${sessionData?.session?.access_token}&expires_at=${sessionData.session.expires_at}&expires_in=${sessionData.session.expires_in}&provider_token=${sessionData.session.provider_token}&refresh_token=${sessionData.session.refresh_token}&token_type=${sessionData.session.token_type}`;
+            window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/onboarding#access_token=${sessionData?.session?.access_token}&expires_at=${sessionData.session.expires_at}&expires_in=${sessionData.session.expires_in}&provider_token=${sessionData.session.provider_token}&refresh_token=${sessionData.session.refresh_token}&token_type=${sessionData.session.token_type}`;
           } else {
             console.error("No access token found in session");
           }

@@ -57,7 +57,7 @@ const OpportunitiesTable: React.FC<{
       "bg-yellow-100 text-yellow-800",
       "bg-green-100 text-green-800",
       "bg-red-100 text-red-800",
-      "bg-gray-100 text-gray-800",
+      "bg-gray-100 text-gray-800"
     ];
     return classes[sum % classes.length];
   };
@@ -65,130 +65,143 @@ const OpportunitiesTable: React.FC<{
   return (
     <>
       {sortedOpportunities.length > 0 ? (
-        <table className="w-full relative border-collapse">
-          <thead className="sticky z-10 top-0">
-            <tr className="bg-gray-200 text-black">
-              <th
-                className="px-4 py-3 text-center font-medium w-32"
-                onClick={() => requestSort("companyName")}
-              >
-                <div className="justify-center gap-1 flex items-center cursor-pointer">
-                  <span>Company</span>
-                  <FaSort />
-                </div>
-              </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
-                Opportunity
-              </th>
-              <th
-                className="px-4 py-3 text-center font-medium w-24"
-                onClick={() => requestSort("opportunityScore")}
-              >
-                <div className="justify-center gap-1 flex items-center cursor-pointer">
-                  <span>Score</span>
-                  <FaSort />
-                </div>
-              </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
-                Target Buyer Role
-              </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
-                Target Buyer Department
-              </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
-                Quick Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="text-center relative">
-            {sortedOpportunities.map((opp, index) => (
-              <tr
-                key={index}
-                className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} ${
-                  opportunities.length > 0 ? "" : "blur"
-                }`}
-              >
-                <td className="px-4 py-3 border border-gray-300">
-                  {opp.companyName}
-                </td>
-                <td className="px-4 py-3 border text-left border-gray-300">
-                  {opp.opportunityName}
-                </td>
-                <td className="px-4 py-3 border border-gray-300">
-                  {opp.opportunityScore}
-                </td>
-                <td className="px-4 py-3 border border-gray-300">
-                  {opp.targetBuyer.role}
-                </td>
-                <td className="px-4 py-3 border border-gray-300">
-                  <span
-                    className={`inline-block px-2 py-1 rounded-2xl border text-sm font-medium ${getDepartmentClass(
-                      opp.targetBuyer.department
-                    )}`}
-                  >
-                    {opp.targetBuyer.department}
-                  </span>
-                </td>
-                <td className="px-4 py-3 border border-gray-300">
-                  <div className="flex justify-center space-x-2">
-                    <button
-                      onClick={() => onQuickAction(opp)}
-                      className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
-                    >
-                      Prospect <IoBulb />
-                    </button>
-
-                    <a
-                      href={`https://www.google.com/search?q=${encodeURIComponent(
-                        opp.companyName
-                      )}+${encodeURIComponent(
-                        opp.targetBuyer.role
-                      )}+${encodeURIComponent(
-                        opp.targetBuyer.department
-                      )}+"LinkedIn"`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
-                    >
-                      Find Buyer
-                      <IoPerson />
-                    </a>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {opportunities.length === 0 && (
-              <tr>
-                <td colSpan={6}>
-                  <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
-                    <span className="text-4xl text-gray-600">No data</span>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      ) : (
-        <div className="w-full">
-          <table className="w-full border-collapse">
-            <thead>
+        <div className="w-full lg:w-[600px] 2xl:w-full">
+          <table className="relative border-collapse min-w-[1200px] 2xl:min-w-[600px] overflow-x-auto">
+            <thead className="sticky z-10 top-0">
               <tr className="bg-gray-200 text-black">
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+                <th
+                  className="px-2 sm:px-4 py-3 text-center font-medium w-24 sm:w-32"
+                  onClick={() => requestSort("companyName")}
+                >
+                  <div className="justify-center gap-1 flex items-center cursor-pointer">
+                    <span className="hidden sm:inline">Company</span>
+                    <span className="sm:hidden">Co.</span>
+                    <FaSort />
+                  </div>
+                </th>
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300">
                   Opportunity
                 </th>
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
+                <th
+                  className="px-2 sm:px-4 py-3 text-center font-medium w-16 sm:w-24"
+                  onClick={() => requestSort("opportunityScore")}
+                >
+                  <div className="justify-center gap-1 flex items-center cursor-pointer">
+                    <span>Score</span>
+                    <FaSort />
+                  </div>
+                </th>
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-24 sm:w-32">
+                  <span className="hidden sm:inline">Target Buyer Role</span>
+                  <span className="sm:hidden">Role</span>
+                </th>
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-24 sm:w-32">
+                  <span className="hidden sm:inline">
+                    Target Buyer Department
+                  </span>
+                  <span className="sm:hidden">Dept.</span>
+                </th>
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-32 sm:w-64">
+                  Quick Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="text-center relative">
+              {sortedOpportunities.map((opp, index) => (
+                <tr
+                  key={index}
+                  className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} ${
+                    opportunities.length > 0 ? "" : "blur"
+                  }`}
+                >
+                  <td className="px-2 sm:px-4 py-3 border border-gray-300 text-xs sm:text-sm">
+                    {opp.companyName}
+                  </td>
+                  <td className="px-2 sm:px-4 py-3 border text-left border-gray-300 text-xs sm:text-sm">
+                    {opp.opportunityName}
+                  </td>
+                  <td className="px-2 sm:px-4 py-3 border border-gray-300 text-xs sm:text-sm">
+                    {opp.opportunityScore}
+                  </td>
+                  <td className="px-2 sm:px-4 py-3 border border-gray-300 text-xs sm:text-sm">
+                    {opp.targetBuyer.role}
+                  </td>
+                  <td className="px-2 sm:px-4 py-3 border border-gray-300">
+                    <span
+                      className={`inline-block px-1 sm:px-2 py-1 rounded-2xl border text-xs sm:text-sm font-medium ${getDepartmentClass(
+                        opp.targetBuyer.department
+                      )}`}
+                    >
+                      {opp.targetBuyer.department}
+                    </span>
+                  </td>
+                  <td className="px-2 sm:px-4 py-3 border border-gray-300">
+                    <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2">
+                      <button
+                        onClick={() => onQuickAction(opp)}
+                        className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500 text-xs sm:text-sm"
+                      >
+                        Prospect <IoBulb />
+                      </button>
+
+                      <a
+                        href={`https://www.google.com/search?q=${encodeURIComponent(
+                          opp.companyName
+                        )}+${encodeURIComponent(
+                          opp.targetBuyer.role
+                        )}+${encodeURIComponent(
+                          opp.targetBuyer.department
+                        )}+"LinkedIn"`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500 text-xs sm:text-sm"
+                      >
+                        Find Buyer
+                        <IoPerson />
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {opportunities.length === 0 && (
+                <tr>
+                  <td colSpan={6}>
+                    <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
+                      <span className="text-2xl sm:text-4xl text-gray-600">
+                        No data
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="w-full overflow-x-auto">
+          <table className="w-full border-collapse min-w-[800px]">
+            <thead>
+              <tr className="bg-gray-200 text-black">
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300">
+                  Opportunity
+                </th>
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-16 sm:w-24">
                   Score
                 </th>
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
-                  Target Buyer Role
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-24 sm:w-32">
+                  <span className="hidden sm:inline">Target Buyer Role</span>
+                  <span className="sm:hidden">Role</span>
                 </th>
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-52">
-                  Target Buyer Department
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-24 sm:w-32">
+                  <span className="hidden sm:inline">
+                    Target Buyer Department
+                  </span>
+                  <span className="sm:hidden">Dept.</span>
                 </th>
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-24 sm:w-32">
                   Company Name
                 </th>
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-32 sm:w-64">
                   Quick Actions
                 </th>
               </tr>
@@ -196,7 +209,7 @@ const OpportunitiesTable: React.FC<{
             <tbody>
               <tr>
                 <td colSpan={6}>
-                  <div className="w-full p-10 text-gray-500 text-xl flex items-center justify-center">
+                  <div className="w-full p-4 sm:p-10 text-gray-500 text-lg sm:text-xl flex items-center justify-center">
                     No data
                   </div>
                 </td>

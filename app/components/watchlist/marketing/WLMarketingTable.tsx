@@ -21,14 +21,14 @@ const getTextClass = (text: string) => {
     "bg-yellow-100 text-yellow-800",
     "bg-green-100 text-green-800",
     "bg-red-100 text-red-800",
-    "bg-gray-100 text-gray-800",
+    "bg-gray-100 text-gray-800"
   ];
   return classes[sum % classes.length];
 };
 
 const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
   strategies,
-  onQuickAction,
+  onQuickAction
 }) => {
   const marketings = strategies.length > 0 ? strategies : marketingStrategy;
 
@@ -58,71 +58,75 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
   return (
     <>
       {marketings.length > 0 ? (
-        <table className="w-full relative border-collapse">
-          <thead className="sticky z-10 top-0">
-            <TableHeadingRow />
-          </thead>
-          <tbody className="text-center relative">
-            {marketings.map((marketing, index) => {
-              return (
-                <tr
-                  key={`market-strategy-${index}`}
-                  className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} ${
-                    strategies.length > 0 ? "" : "blur"
-                  }`}
-                >
-                  <td className="px-4 py-3 border border-gray-300">
-                    {marketing.companyName}
-                  </td>
-                  <td className="px-4 py-3 border border-gray-300">
-                    {marketing.tactic}
-                  </td>
-                  <td className="px-4 py-3 border justify-items-center gap-2 border-gray-300">
-                    {marketing.targetPersonas.split("\n").join(", ")}
-                  </td>
-                  <td className="px-4 py-3 border border-gray-300">
-                    <span
-                      className={`inline-block min-w-7 px-2 py-1 m-[2px] rounded-2xl border text-sm font-medium ${getTextClass(
-                        marketing.channel
-                      )}`}
-                    >
-                      {marketing.channel}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 border border-gray-300">
-                    <div className="flex justify-center space-x-2">
-                      <button
-                        onClick={() => onQuickAction(marketing)}
-                        className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500"
+        <div className="w-full lg:w-[600px] 2xl:w-full">
+          <table className="relative border-collapse min-w-[1200px] overflow-x-auto">
+            <thead className="sticky z-10 top-0">
+              <TableHeadingRow />
+            </thead>
+            <tbody className="text-center relative">
+              {marketings.map((marketing, index) => {
+                return (
+                  <tr
+                    key={`market-strategy-${index}`}
+                    className={`${
+                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    } ${strategies.length > 0 ? "" : "blur"}`}
+                  >
+                    <td className="px-2 sm:px-4 py-2 sm:py-3 border border-gray-300 text-xs sm:text-sm">
+                      {marketing.companyName}
+                    </td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3 border border-gray-300 text-xs sm:text-sm">
+                      {marketing.tactic}
+                    </td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3 border justify-items-center gap-2 border-gray-300 text-xs sm:text-sm">
+                      {marketing.targetPersonas.split("\n").join(", ")}
+                    </td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3 border border-gray-300">
+                      <span
+                        className={`inline-block min-w-7 px-1 sm:px-2 py-1 m-[2px] rounded-2xl border text-xs sm:text-sm font-medium ${getTextClass(
+                          marketing.channel
+                        )}`}
                       >
-                        Details <FaLightbulb />
-                      </button>
+                        {marketing.channel}
+                      </span>
+                    </td>
+                    <td className="px-2 sm:px-4 py-2 sm:py-3 border border-gray-300">
+                      <div className="flex justify-center space-x-1 sm:space-x-2">
+                        <button
+                          onClick={() => onQuickAction(marketing)}
+                          className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500 text-xs sm:text-sm"
+                        >
+                          Details <FaLightbulb />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+              {strategies.length === 0 && (
+                <tr>
+                  <td colSpan={5}>
+                    <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
+                      <span className="text-2xl sm:text-4xl text-gray-600">
+                        No data
+                      </span>
                     </div>
                   </td>
                 </tr>
-              );
-            })}
-            {strategies.length === 0 && (
-              <tr>
-                <td colSpan={5}>
-                  <div className="w-full h-full items-center flex justify-center absolute top-0 left-0">
-                    <span className="text-4xl text-gray-600">No data</span>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <div className="w-full">
-          <table className="w-full border-collapse">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full border-collapse min-w-[640px]">
             <thead>
               <TableHeadingRow />
             </thead>
             <tbody>
               <tr>
                 <td colSpan={5}>
-                  <div className="w-full p-10 text-gray-500 text-xl flex items-center justify-center">
+                  <div className="w-full p-4 sm:p-10 text-gray-500 text-lg sm:text-xl flex items-center justify-center">
                     No data
                   </div>
                 </td>

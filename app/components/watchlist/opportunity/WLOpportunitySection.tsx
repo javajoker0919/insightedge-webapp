@@ -310,7 +310,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
           <div className="flex">
             <button
               onClick={() => setActiveTab("general")}
-              className={`px-4 py-4 border-primary-600 border-b-2 ${
+              className={`px-4 py-3 sm:py-4 border-primary-600 border-b-2 w-full sm:w-auto ${
                 activeTab === "general"
                   ? "text-primary-600 border-opacity-100"
                   : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
@@ -320,7 +320,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             </button>
             <button
               onClick={() => setActiveTab("tailored")}
-              className={`px-4 py-4 border-primary-600 border-b-2 ${
+              className={`px-4 py-3 sm:py-4 border-primary-600 border-b-2 w-full sm:w-auto ${
                 activeTab === "tailored"
                   ? "text-primary-600 border-opacity-100"
                   : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
@@ -398,7 +398,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
                     <span>
                       To find the best ways to sell your solutions to{" "}
                       {companyName}, click "Generate Tailored Opportunities."
-                    </span>
+                    </p>
                   )}
                 </div> */}
 
@@ -432,27 +432,29 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
 
       <Modal
         wrapperClass="backdrop-blur-[2px]"
-        modalClass="min-w-[80rem] max-w-full"
+        modalClass="w-full mx-16 min-w-[60rem] xl:min-w-[80rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
         isOpen={!!selectedOpp}
         onClose={() => setSelectedOpp(null)}
       >
-        <div className="p-3">
+        <div className="p-3 sm:p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-primary-600">
+            <h2 className="text-xl sm:text-2xl font-bold text-primary-600">
               Prospecting Tactics
             </h2>
           </div>
 
           <div className="space-y-6">
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
                 Inbound Strategies
               </h3>
-              <ul className="list-disc pl-8 space-y-3">
+              <ul className="list-disc pl-5 sm:pl-8 space-y-3">
                 {selectedOpp?.engagementTips?.inbound.map(
                   (tip: string, index: number) => (
                     <li key={`engagementTips_inbound_${index}`}>
-                      <p className="text-gray-700">{tip}</p>
+                      <p className="text-sm sm:text-base text-gray-700">
+                        {tip}
+                      </p>
                     </li>
                   )
                 )}
@@ -460,14 +462,16 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             </section>
 
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
                 Outbound Strategies
               </h3>
-              <ul className="list-disc pl-8 space-y-3">
+              <ul className="list-disc pl-5 sm:pl-8 space-y-3">
                 {selectedOpp?.engagementTips?.outbound.map(
                   (tip: string, index: number) => (
                     <li key={`engagementTips_outbound_${index}`}>
-                      <p className="text-gray-700">{tip}</p>
+                      <p className="text-sm sm:text-base text-gray-700">
+                        {tip}
+                      </p>
                     </li>
                   )
                 )}
@@ -475,25 +479,27 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             </section>
 
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
                 Outbound Email
               </h3>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="text-lg font-medium text-gray-800 mb-2">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <h4 className="text-base sm:text-lg font-medium text-gray-800 mb-2">
                   {selectedOpp?.outboundEmail?.subject}
                 </h4>
-                <p className="text-gray-700 whitespace-pre-line">
+                <p className="text-sm sm:text-base text-gray-700 whitespace-pre-line">
                   {selectedOpp?.outboundEmail?.body}
                 </p>
               </div>
             </section>
 
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
                 Reasoning
               </h3>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-gray-700">{selectedOpp?.reasoning}</p>
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <p className="text-sm sm:text-base text-gray-700">
+                  {selectedOpp?.reasoning}
+                </p>
               </div>
             </section>
           </div>
