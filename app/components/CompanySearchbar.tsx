@@ -34,61 +34,9 @@ const CompanySearchbar = ({
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
 
-  const [hasNews, setHasNews] = useState<boolean>(false);
-  const [hasSummary, setHasSummary] = useState<boolean>(false);
-
-  const [summaryCompanyIds, setSummaryCompanyIds] = useState<number[]>([]);
-
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchBarRef.current &&
-        !searchBarRef.current.contains(event.target as Node)
-      ) {
-        if (type === "header") {
-          setIsInputFocused(false);
-        }
-        if (type === "watchlist") {
-          setIsSearchBarOpen(false);
-        }
-      }
-    };
-
-    // const fetchNewsCompanyIds = async () => {
-    //   const { data: newsData, error: newsError } = await supabase
-    //     .from("stock_news_sentiments")
-    //     .select("company_id");
-
-    //   if (newsError) {
-    //     console.error(newsError);
-    //   } else {
-    //     const companyIds = Array.from(
-    //       new Set(newsData?.map((item: any) => item.company_id) || [])
-    //     );
-    //     setNewsCompanyIds(companyIds);
-    //   }
-    // };
-
-    const fetchSummaryCompanyIds = async () => {
-      const { data: summaryData, error: summaryError } = await supabase
-        .from("earnings_transcripts")
-        .select("company_id")
-        .not("summary", "is", null);
-
-      if (summaryError) {
-        console.error(summaryError);
-      } else {
-        const companyIds = Array.from(
-          new Set(summaryData?.map((item: any) => item.company_id) || [])
-        );
-        setSummaryCompanyIds(companyIds);
-      }
-    };
-
-    // fetchNewsCompanyIds();
-    fetchSummaryCompanyIds();
-
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -101,63 +49,66 @@ const CompanySearchbar = ({
   }, [isSearchBarOpen]);
 
   useEffect(() => {
-    const fetchSearchResults = async () => {
-      setIsSearching(true);
-      let query = supabase
-        .from("companies")
-        .select("id, name, symbol, industry")
-        .limit(5);
-
-      // if (hasNews) {
-      //   const formattedCompanyIds = `(${newsCompanyIds.join(",")})`;
-      //   query = query.filter("id", "in", formattedCompanyIds);
-      // }
-
-      if (hasSummary) {
-        const formattedCompanyIds = `(${summaryCompanyIds.join(",")})`;
-        query = query.filter("id", "in", formattedCompanyIds);
-      }
-
-      if (searchInput.length > 0) {
-        if (searchType === "all") {
-          query = query.or(
-            `name.ilike.${searchInput}%,symbol.ilike.${searchInput}%`
-          );
-        } else if (searchType === "name") {
-          query = query.ilike("name", `${searchInput}%`);
-        } else if (searchType === "symbol") {
-          query = query.ilike("symbol", `${searchInput}%`);
-        }
-      }
-
-      query = query.order("revrank", { ascending: true });
-
-      if (searchType === "symbol") {
-        query = query
-          .order("symbol", { ascending: true })
-          .order("name", { ascending: true });
-      } else {
-        query = query
-          .order("name", { ascending: true })
-          .order("symbol", { ascending: true });
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error("Error fetching search results:", error);
-      } else {
-        setSearchResults(data || []);
-      }
-      setIsSearching(false);
-    };
-
     const debounce = setTimeout(() => {
       fetchSearchResults();
-    }, 800);
+    }, 300);
 
     return () => clearTimeout(debounce);
-  }, [searchInput, searchType, hasNews, hasSummary]);
+  }, [searchInput, searchType]);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      searchBarRef.current &&
+      !searchBarRef.current.contains(event.target as Node)
+    ) {
+      if (type === "header") {
+        setIsInputFocused(false);
+      } else if (type === "watchlist") {
+        setIsSearchBarOpen(false);
+      }
+    }
+  };
+
+  const fetchSearchResults = async () => {
+    setIsSearching(true);
+    let query = supabase
+      .from("companies")
+      .select("id, name, symbol, industry")
+      .limit(5);
+
+    if (searchInput.length > 0) {
+      if (searchType === "all") {
+        query = query.or(
+          `name.ilike.${searchInput}%,symbol.ilike.${searchInput}%`
+        );
+      } else if (searchType === "name") {
+        query = query.ilike("name", `${searchInput}%`);
+      } else if (searchType === "symbol") {
+        query = query.ilike("symbol", `${searchInput}%`);
+      }
+    }
+
+    query = query.order("revrank", { ascending: true });
+
+    if (searchType === "symbol") {
+      query = query
+        .order("symbol", { ascending: true })
+        .order("name", { ascending: true });
+    } else {
+      query = query
+        .order("name", { ascending: true })
+        .order("symbol", { ascending: true });
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("Error fetching search results:", error);
+    } else {
+      setSearchResults(data || []);
+    }
+    setIsSearching(false);
+  };
 
   const handleCloseSearchBar = () => {
     if (type === "header") {
@@ -224,8 +175,8 @@ const CompanySearchbar = ({
     <div
       id="search-bar"
       ref={searchBarRef}
-      className={`absolute w-full max-w-[900px] flex justify-center ${
-        type === "header" ? "" : "p-2 top-12 w-8/12 z-50 max-w-full"
+      className={`absolute w-full max-w-[750px] flex justify-center ${
+        type === "header" ? "" : "p-2 top-12 z-50"
       }`}
     >
       <div
@@ -269,49 +220,22 @@ const CompanySearchbar = ({
 
         {isInputFocused && (
           <>
-            <div className="flex justify-between space-x-2 py-2 px-4 border-t">
-              <div className="flex space-x-2 items-center">
-                {["all", "name", "symbol"].map((type) => (
-                  <button
-                    key={type}
-                    className={`px-3 py-0.5 text-gray-500 rounded-full ${
-                      searchType === type
-                        ? "bg-primary-100 text-primary-700"
-                        : "bg-white hover:bg-gray-100"
-                    }`}
-                    onClick={() =>
-                      setSearchType(type as "symbol" | "all" | "name")
-                    }
-                  >
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </button>
-                ))}
-              </div>
-
-              {type == "header" && (
-                <div className="flex space-x-2">
-                  {/* <button
-                    className={`px-3 py-0.5 text-gray-500 rounded-full ${
-                      hasNews
-                        ? "bg-primary-100 text-primary-700"
-                        : "bg-white hover:bg-gray-100"
-                    }`}
-                    onClick={() => setHasNews(!hasNews)}
-                  >
-                    Has News
-                  </button> */}
-                  <button
-                    className={`px-3 border text-gray-500 rounded-full ${
-                      hasSummary
-                        ? "bg-primary-100 text-primary-700"
-                        : "bg-white hover:bg-gray-100"
-                    }`}
-                    onClick={() => setHasSummary(!hasSummary)}
-                  >
-                    Has Summary
-                  </button>
-                </div>
-              )}
+            <div className="flex justify-start space-x-2 py-2 px-4 border-t">
+              {["all", "name", "symbol"].map((type) => (
+                <button
+                  key={type}
+                  className={`px-3 py-0.5 text-gray-500 rounded-full ${
+                    searchType === type
+                      ? "bg-primary-100 text-primary-700"
+                      : "bg-white hover:bg-gray-100"
+                  }`}
+                  onClick={() =>
+                    setSearchType(type as "symbol" | "all" | "name")
+                  }
+                >
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </button>
+              ))}
             </div>
 
             <div className="divide-y">
