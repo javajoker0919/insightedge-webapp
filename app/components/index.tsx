@@ -18,7 +18,7 @@ import WLHighlightSection from "./watchlist/WLHighlightSection";
 import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
 import OnboardingUserProfileSection from "./onboarding/UserProfileSection";
 import OnboardingCompanyProfileSection from "./onboarding/CompanyProfileSection";
-import OnboardingInitialCompanySection from "./onboarding/InitialCompanySection";
+import OnboardingInitialCompanySection from "./onboarding/InitialCompanySection/InitialCompanySection";
 import NoDataSection from "./NoDataSection";
 
 export {
