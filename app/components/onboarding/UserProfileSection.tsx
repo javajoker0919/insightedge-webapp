@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
-const UserInfo = ({
+const OnboardingUserProfileSection = ({
   setOnboardingStep,
   formData,
-  setFormData
+  setFormData,
 }: {
   setOnboardingStep: any;
   formData: any;
@@ -17,7 +17,7 @@ const UserInfo = ({
     firstName: "",
     lastName: "",
     companyName: "",
-    industry: ""
+    industry: "",
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
@@ -144,4 +144,4 @@ const UserInfo = ({
   );
 };
 
-export default UserInfo;
+export default OnboardingUserProfileSection;

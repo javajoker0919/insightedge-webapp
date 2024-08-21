@@ -4,7 +4,7 @@ import { useState } from "react";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { getScrapeData } from "@/utils/apiClient";
 
-const CompanyProfile = ({
+const OnboardingCompanyProfileSection = ({
   formData,
   website,
   companyOverview,
@@ -12,7 +12,7 @@ const CompanyProfile = ({
   setOnboardingStep,
   setWebsite,
   setCompanyOverview,
-  setProductsServices
+  setProductsServices,
 }: {
   setOnboardingStep: any;
   formData: any;
@@ -31,7 +31,7 @@ const CompanyProfile = ({
 
       const reqData = {
         company_url: website,
-        company_name: formData.companyName
+        company_name: formData.companyName,
       };
 
       const data = await getScrapeData(reqData);
@@ -160,4 +160,4 @@ const CompanyProfile = ({
   );
 };
 
-export default CompanyProfile;
+export default OnboardingCompanyProfileSection;
