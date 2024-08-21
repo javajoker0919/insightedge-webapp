@@ -12,7 +12,7 @@ const OnboardingCompanyProfileSection = ({
   setOnboardingStep,
   setWebsite,
   setCompanyOverview,
-  setProductsServices,
+  setProductsServices
 }: {
   setOnboardingStep: any;
   formData: any;
@@ -31,7 +31,7 @@ const OnboardingCompanyProfileSection = ({
 
       const reqData = {
         company_url: website,
-        company_name: formData.companyName,
+        company_name: formData.companyName
       };
 
       const data = await getScrapeData(reqData);
@@ -150,10 +150,7 @@ const OnboardingCompanyProfileSection = ({
             </div>
           </div>
           <div className="mt-8 w-full flex flex-col lg:flex-row justify-between gap-4 mb-8 lg:mb-0">
-            <button
-              className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed w-full md:w-auto"
-              onClick={() => setOnboardingStep(2)}
-            >
+            <button className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed w-full md:w-auto">
               Enter data manually
             </button>
             <div className="flex flex-row justify-between">

@@ -54,7 +54,7 @@ const OnboardingUserProfileSection = ({
           </div>
         </Link>
         <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full z-10 px-4 sm:px-8 lg:px-12 py-20 lg:py-0">
-          <div className="flex flex-col w-full max-w-md">
+          <div className="flex flex-col w-full">
             <h1 className="text-2xl sm:text-3xl font-bold leading-tight my-8 sm:my-16 text-center lg:text-left">
               Tell Us About Yourself
             </h1>
