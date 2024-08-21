@@ -112,7 +112,7 @@ const OnboardingCompanyProfileSection = ({
               </p>
             </div>
           </div>
-          <div className="justify-between mt-10 w-full lg:flex hidden">
+          {/* <div className="justify-between mt-10 w-full lg:flex hidden">
             <button
               className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
               onClick={() => setOnboardingStep(0)}
@@ -120,7 +120,7 @@ const OnboardingCompanyProfileSection = ({
               <GoArrowLeft className="mr-2 h-5 w-5" />
               Back
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="flex flex-col lg:bg-gray-50 w-full lg:w-1/2 px-4 lg:px-16 items-center justify-center h-full mt-10 lg:mt-0">
@@ -149,13 +149,13 @@ const OnboardingCompanyProfileSection = ({
               ></textarea>
             </div>
           </div>
-          <div className="mt-8 w-full flex flex-col lg:flex-row justify-between gap-4 mb-8 lg:mb-0">
-            <button className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed w-full md:w-auto">
+          <div className="mt-8 w-full flex flex-row justify-between gap-4 mb-8 lg:mb-0">
+            {/* <button className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed w-full md:w-auto">
               Enter data manually
-            </button>
-            <div className="flex flex-row justify-between">
+            </button> */}
+            <div className="flex flex-row justify-between w-full">
               <button
-                className="lg:hidden inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
                 onClick={() => setOnboardingStep(0)}
               >
                 <GoArrowLeft className="mr-2 h-5 w-5" />
