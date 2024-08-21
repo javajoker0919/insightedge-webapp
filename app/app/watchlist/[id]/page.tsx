@@ -314,7 +314,7 @@ export default function WatchlistPage() {
                   </button>
                 )}
               </div>
-              <div className="lg:w-[20rem] xl:w-[25rem] mr-4 shrink-0"></div>
+
               {isOptionsModalOpen && (
                 <div
                   ref={optionsModalRef}
@@ -347,6 +347,7 @@ export default function WatchlistPage() {
                 </div>
               )}
             </div>
+            <div className="lg:w-[20rem] xl:w-[25rem] shrink-0"></div>
           </div>
 
           {watchlistCompanies.length === 0 ? (
