@@ -6,16 +6,17 @@ import { supabase } from "@/utils/supabaseClient";
 import Modal from "@/app/components/Modal";
 import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
-import { generateTailoredOpportunitiesAPI } from "@/utils/apiClient";
+import {
+  generateTailoredOpportunitiesAPI,
+  generateTOAPI,
+} from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
 import { Details } from "../../../app/company/[id]/components";
 import { Loading } from "@/app/components";
 
 interface OpportunitiesProps {
-  companyID: number;
   companyName: string;
-  year: number | null;
-  quarter: number | null;
+  etID: number | null;
 }
 
 export interface OpportunityProps {
@@ -38,75 +39,42 @@ export interface OpportunityProps {
 }
 
 const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
-  companyID,
   companyName,
-  year,
-  quarter
+  etID,
 }) => {
-  if (!year || !quarter) {
+  if (!etID) {
     return null;
   }
 
   const { invokeToast } = useToastContext();
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
-  const [etID, setETID] = useState<number | null>(null);
+  // const [etID, setETID] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedOpp, setSelectedOpp] = useState<OpportunityProps | null>(null);
-  const [generalOpps, setGeneralOpps] = useState<OpportunityProps[] | null>(
-    null
-  );
-  const [tailoredOpps, setTailoredOpps] = useState<OpportunityProps[] | null>(
-    null
-  );
-  const [openedSection, setOpenedSection] = useState<1 | 2 | 3>(1);
-  const [isGeneralOppLoading, setIsGeneralOppLoading] =
-    useState<boolean>(false);
-  const [isTailoredOppLoading, setIsTailoredOppLoading] =
-    useState<boolean>(false);
-  const [isTailoredOppGenerating, setIsTailoredOppGenerating] =
-    useState<boolean>(false);
+  const [generalOpps, setGOs] = useState<OpportunityProps[] | null>(null);
+  const [tailoredOpps, setTOs] = useState<OpportunityProps[] | null>(null);
 
-  useEffect(() => {
-    setIsGeneralOppLoading(true);
-    setIsTailoredOppLoading(true);
-
-    setGeneralOpps(null);
-    setTailoredOpps(null);
-    fetchETID(companyID);
-  }, [year, quarter]);
+  const [isFetchingGO, setIsFetchingGO] = useState<boolean>(true);
+  const [isFetchingTO, setIsFetchingTO] = useState<boolean>(true);
+  const [isGeneratingTO, setIsGeneratingTO] = useState<boolean>(false);
 
   useEffect(() => {
     if (etID) {
-      fetchGeneralOpportunities(etID);
+      fetchGO(etID);
     }
   }, [etID]);
 
   useEffect(() => {
     if (orgInfo && etID) {
-      fetchTailoredOpportunities(etID, orgInfo.id);
+      fetchTO(etID, orgInfo.id);
     }
   }, [orgInfo, etID]);
 
-  const fetchETID = async (companyID: number) => {
-    try {
-      const { data, error } = await supabase
-        .from("earnings_transcripts")
-        .select("id")
-        .eq("company_id", companyID)
-        .eq("year", year)
-        .eq("quarter", quarter)
-        .single();
+  const fetchGO = async (etID: number) => {
+    setIsFetchingGO(true);
+    setGOs(null);
 
-      if (error) throw error;
-
-      setETID(data.id);
-    } catch (error) {
-      console.error("Unexpected error in fetchETID:", error);
-    }
-  };
-
-  const fetchGeneralOpportunities = async (etID: number) => {
     try {
       const { data, error } = await supabase
         .from("general_opportunities")
@@ -122,122 +90,117 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         opportunityScore: item.score,
         targetBuyer: {
           role: item.buyer_role,
-          department: item.buyer_department
+          department: item.buyer_department,
         },
         engagementTips: {
           inbound: item.engagement_inbounds?.split("\n") || [],
-          outbound: item.engagement_outbounds?.split("\n") || []
+          outbound: item.engagement_outbounds?.split("\n") || [],
         },
         outboundEmail: {
           subject: item.email_subject,
-          body: item.email_body
+          body: item.email_body,
         },
-        reasoning: item.reasoning
+        reasoning: item.reasoning,
       }));
-      setGeneralOpps(formattedData);
+      setGOs(formattedData);
     } catch (error) {
-      console.error("Unexpected error in fetchGeneralOpportunities:", error);
+      console.error("Unexpected error in fetchGO:", error);
     } finally {
-      setIsGeneralOppLoading(false);
+      setIsFetchingGO(false);
     }
   };
 
-  const fetchTailoredOpportunities = async (etID: number, orgID: number) => {
+  const fetchTO = async (etID: number, orgID: number) => {
+    setIsFetchingTO(true);
+    setTOs(null);
+
     try {
       const { data, error } = await supabase
         .from("tailored_opportunities")
         .select(
-          "name, score, keywords, buyer_role, buyer_department, tactics, engagement_inbounds, engagement_outbounds, email_subject, email_body, reasoning"
+          "name, score, keywords, buyer_role, buyer_department, engagement_inbounds, engagement_outbounds, email_subject, email_body, reasoning"
         )
         .eq("earnings_transcript_id", etID)
         .eq("organization_id", orgID);
 
       if (error) throw error;
 
+      console.log("TOs: ", data);
+
       if (data) {
-        // added mock data : tailoredOpportunities_v2
         const formattedData: OpportunityProps[] = data.map(
           (item: any, indx: number) => ({
-            // ...tailoredOpportunities_v2[indx % tailoredOpportunities_v2.length],
             opportunityName: item.name,
             opportunityScore: item.score,
             keywords: item.keywords,
             targetBuyer: {
               role: item.buyer_role,
-              department: item.buyer_department
+              department: item.buyer_department,
             },
             engagementTips: {
               inbound: item.engagement_inbounds?.split("\n") || [],
-              outbound: item.engagement_outbounds?.split("\n") || []
+              outbound: item.engagement_outbounds?.split("\n") || [],
             },
             outboundEmail: {
               subject: item.email_subject,
-              body: item.email_body
+              body: item.email_body,
             },
-            reasoning: item.reasoning
+            reasoning: item.reasoning,
           })
         );
-        setTailoredOpps(formattedData);
+        setTOs(formattedData);
       } else {
-        setTailoredOpps([]);
+        setTOs([]);
       }
     } catch (error) {
-      console.error("Unexpected error in fetchTailoredOpportunities:", error);
+      console.error("Unexpected error in fetchTO:", error);
     } finally {
-      setIsTailoredOppLoading(false);
+      setIsFetchingTO(false);
     }
   };
 
-  const generateTailoredOpportunities = async () => {
-    setIsTailoredOppGenerating(true);
+  const generateTO = async () => {
+    setIsGeneratingTO(true);
 
     try {
-      const { data } = await generateTailoredOpportunitiesAPI({
-        companyID: companyID.toString(),
-        orgID: orgInfo?.id.toString() || "",
-        year,
-        quarter
-      });
+      const { data } = await generateTOAPI([etID]);
 
-      if (data.status === "success") {
-        const formattedData: OpportunityProps[] = data.opportunities.map(
-          (item: any) => ({
-            opportunityName: item.name,
-            opportunityScore: item.score,
-            keywords: item.keywords.split("\n"),
-            targetBuyer: {
-              role: item.buyer_role,
-              department: item.buyer_department
-            },
-            engagementTips: {
-              inbound: item.engagement_inbounds.split("\n"),
-              outbound: item.engagement_outbounds.split("\n")
-            },
-            outboundEmail: {
-              subject: item.email_subject,
-              body: item.email_body
-            }
-          })
-        );
-        setTailoredOpps(formattedData);
-        setActiveTab("tailored");
-        setUserInfo((prev) => {
-          if (!prev || !prev.creditCount) return prev;
-          return {
-            ...prev,
-            creditCount: prev.creditCount ? prev.creditCount - 1 : 0
-          };
-        });
-        invokeToast("success", data.message, "top");
-      } else {
-        invokeToast(
-          "error",
-          "An error occured while generating tailored opportunities",
-          "top"
-        );
-      }
+      const formattedData: OpportunityProps[] = data.opportunities.map(
+        (item: any) => ({
+          opportunityName: item.name,
+          opportunityScore: item.score,
+          companyName: item.company_name,
+          keywords: item.keywords?.split(",") || [],
+          targetBuyer: {
+            role: item.buyer_role,
+            department: item.buyer_department,
+          },
+          engagementTips: {
+            inbound: item.engagement_inbounds?.split("\n") || [],
+            outbound: item.engagement_outbounds?.split("\n") || [],
+          },
+          outboundEmail: {
+            subject: item.email_subject,
+            body: item.email_body,
+          },
+          reasoning: item.reasoning,
+        })
+      );
+
+      setTOs(formattedData);
+      setActiveTab("tailored");
+      setUserInfo((prev) => {
+        if (!prev || !prev.creditCount) return prev;
+        return {
+          ...prev,
+          creditCount: prev.creditCount
+            ? prev.creditCount - data.used_credits
+            : 0,
+        };
+      });
+      invokeToast("success", data.message, "top");
     } catch (error) {
-      invokeToast("error", "Failred to generate tailored opportunities", "top");
+      invokeToast("error", "Failed to generate tailored opportunities", "top");
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNABORTED") {
           console.error(
@@ -249,7 +212,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       }
       console.error("Error fetching protected data:", error);
     } finally {
-      setIsTailoredOppGenerating(false);
+      setIsGeneratingTO(false);
     }
   };
 
@@ -260,7 +223,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
       <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
-        {tailoredOpps && tailoredOpps.length > 0 && !isTailoredOppGenerating ? (
+        {tailoredOpps && tailoredOpps.length > 0 && !isGeneratingTO ? (
           <div className="flex">
             <button
               onClick={() => setActiveTab("general")}
@@ -288,14 +251,14 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <h3 className="px-4 py-3 font-medium text-gray-700">
               Opportunities
             </h3>
-            {!isGeneralOppLoading && !isTailoredOppLoading && (
+            {!isFetchingGO && !isFetchingTO && (
               <button
                 title={`Discover the top opportunities for selling your solutions to ${companyName}`}
-                onClick={generateTailoredOpportunities}
-                disabled={isTailoredOppGenerating}
+                onClick={generateTO}
+                disabled={isGeneratingTO}
                 className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
-                {isTailoredOppGenerating ? (
+                {isGeneratingTO ? (
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
                 ) : (
                   "Generate Tailored Opportunities"
@@ -308,7 +271,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
       <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
         {activeTab === "general" &&
-          (isGeneralOppLoading ? (
+          (isFetchingGO ? (
             <LoadingSection />
           ) : (
             <>
@@ -331,7 +294,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             </>
           ))}
         {activeTab === "tailored" &&
-          (isTailoredOppLoading ? (
+          (isFetchingTO ? (
             <LoadingSection />
           ) : (
             <>

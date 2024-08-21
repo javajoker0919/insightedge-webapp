@@ -163,7 +163,7 @@ const SignIn = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`
         }
       });
 
