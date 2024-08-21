@@ -323,7 +323,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
                   <span className="w-6 h-6 flex items-center justify-center text-xs font-semibold text-white bg-red-500 rounded-full">
                     !
                   </span>
-                  <div className="absolute bottom-full mb-2 z-50 hidden w-80 p-2 text-sm text-white bg-stone-700 rounded-md shadow-lg group-hover:block">
+                  <div className="absolute bottom-full mb-2 z-50 hidden w-80 p-2 text-sm text-red-600 bg-red-100 border border-red-300 rounded-md shadow-lg group-hover:block">
                     {`Tailored marketing strategies are not generated for ${
                       etIDs.length - companyCount
                     } ${
