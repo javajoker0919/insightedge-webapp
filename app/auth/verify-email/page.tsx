@@ -22,7 +22,7 @@ const VerifyEmail = () => {
         type: "signup",
         email: userinfo?.email ?? "",
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/onboarding`,
         },
       });
       if (error) throw error;

@@ -99,8 +99,8 @@ const Header: React.FC = () => {
 
   return (
     <header className="py-3 bg-white z-20 shadow-md sticky top-0">
-      <nav className="mx-auto flex justify-between items-center pr-4 pl-2">
-        <div className="flex items-center gap-1">
+      <nav className="mx-auto flex flex-wrap justify-between items-center px-4">
+        <div className="flex items-center gap-1 w-full sm:w-auto mb-4 sm:mb-0">
           <button
             onClick={() => setIsSidebarExpanded(true)}
             className="hover:bg-gray-100 rounded-full p-3"
@@ -116,11 +116,12 @@ const Header: React.FC = () => {
               alt={"ProspectEdge"}
               width={200}
               height={40}
+              className="max-w-[150px] sm:max-w-[200px]"
             />
           </Link>
         </div>
 
-        <div className="relative h-10 w-[700px]">
+        <div className="relative w-full sm:w-[300px] lg:w-[400px] xl:w-[700px] mb-4 sm:mb-0 h-10">
           <CompanySearchbar
             type="header"
             isSearchBarOpen={true}
@@ -129,42 +130,27 @@ const Header: React.FC = () => {
           />
         </div>
 
-        <div className="flex items-center space-x-4">
-          {/* <button
-            onClick={() => {
-              router.push("/app/settings/usage");
-            }}
-            className="relative rounded-full hover:bg-gray-200 bg-gray-100 p-1"
-          >
-            <img src="/token.png" className="w-8 h-8" />
-            <span className="h-5 w-5 flex absolute top-0 right-0 items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-700 transition-colors duration-200 text-xs">
-              {userInfo?.creditCount}
-            </span>
-          </button> */}
-
+        <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto justify-between sm:justify-end">
           <div
-            className="flex items-center bg-gray-100 rounded-full px-3 py-2 hover:cursor-pointer hover:bg-gray-200 active:bg-gray-300 transition-colors duration-200"
+            className="flex items-center bg-gray-100 rounded-full px-3 py-2 hover:cursor-pointer hover:bg-gray-200 active:bg-gray-300 transition-colors duration-200 text-xs sm:text-sm"
             onClick={() => {
               router.push("/app/settings/usage");
             }}
           >
-            <img src="/token.png" alt="Credit token" className="w-5 h-5 mr-2" />
-            <span className="text-sm font-medium text-gray-700">
-              Remaining Credits:{" "}
-              <span className="text-primary-600">
-                {userInfo?.creditCount || 0}
-              </span>
+            <img src="/token.png" alt="Credit token" className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+            <span className="font-medium text-gray-700">
+              Credits: <span className="text-primary-600">{userInfo?.creditCount || 0}</span>
             </span>
           </div>
 
-          <div className="relative min-h-10 min-w-10" ref={dropdownRef}>
+          <div className="relative" ref={dropdownRef}>
             <Image
               onClick={toggleDropdown}
               src="/default_avatar.jpeg"
               alt="User avatar"
               width={40}
               height={40}
-              className="hover:cursor-pointer"
+              className="hover:cursor-pointer w-8 h-8 sm:w-10 sm:h-10"
             />
 
             {isDropdownOpen && (

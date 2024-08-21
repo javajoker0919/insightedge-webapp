@@ -252,7 +252,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
           <div className="flex">
             <button
               onClick={() => setActiveTab("general")}
-              className={`px-4 py-4 border-primary-600 border-b-2 ${
+              className={`px-4 py-4 border-primary-600 border-b-2 w-full sm:w-auto ${
                 activeTab === "general"
                   ? "text-primary-600 border-opacity-100"
                   : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
@@ -262,7 +262,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
             </button>
             <button
               onClick={() => setActiveTab("tailored")}
-              className={`px-4 py-4 border-primary-600 border-b-2 ${
+              className={`px-4 py-4 border-primary-600 border-b-2 w-full sm:w-auto ${
                 activeTab === "tailored"
                   ? "text-primary-600 border-opacity-100"
                   : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"

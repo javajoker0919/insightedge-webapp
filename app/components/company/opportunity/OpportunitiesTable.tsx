@@ -12,7 +12,7 @@ const OpportunitiesTable: React.FC<{
   return (
     <>
       {opps.length > 0 ? (
-        <table className="w-full relative border-collapse">
+        <table className="w-full relative border-collapse min-w-[1200px]">
           <thead className="sticky z-10 top-0">
             <tr className="bg-gray-200 text-black">
               <th className="px-4 py-3 text-center font-medium border-x border-gray-300">

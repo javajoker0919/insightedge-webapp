@@ -14,7 +14,7 @@ import {
   userMetadataAtom,
   userInfoAtom,
   orgInfoAtom,
-  watchlistAtom,
+  watchlistAtom
 } from "@/utils/atoms";
 
 const SignIn = () => {
@@ -52,7 +52,7 @@ const SignIn = () => {
     if (!isValidForm) {
       setErrors({
         email: validateEmail(email).error,
-        password: validatePassword(password).error,
+        password: validatePassword(password).error
       });
       invokeToast("error", "Please fill in all fields correctly", "top");
       return;
@@ -63,7 +63,7 @@ const SignIn = () => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password,
+        password
       });
       if (error) throw error;
 
@@ -87,7 +87,7 @@ const SignIn = () => {
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: "",
+        companyName: ""
       });
 
       invokeToast("success", "You have successfully logged in!", "top");
@@ -115,7 +115,7 @@ const SignIn = () => {
         website: orgData.website,
         overview: orgData.overview,
         products: orgData.products,
-        creatorID: orgData.creator_id,
+        creatorID: orgData.creator_id
       });
 
       const { data: watchlistData, error: watchlistError } = await supabase
@@ -142,7 +142,7 @@ const SignIn = () => {
             organizationID: item.organization_id,
             creatorID: item.creator_id,
             uuid: item.uuid,
-            company_count: item.watchlist_companies?.length,
+            company_count: item.watchlist_companies?.length
           };
         })
       );
@@ -163,8 +163,8 @@ const SignIn = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
-        },
+          redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`
+        }
       });
 
       if (error) {
@@ -176,26 +176,24 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex flex-row w-full h-screen">
-      <div className="flex flex-col w-1/2 h-full bg-white">
-        <Link href="/app">
-          <div className="flex items-center mt-4 ml-4">
-            <Image
-              src="/favicon.png"
-              alt="ProspectEdge Logo"
-              width={40}
-              height={40}
-            />
-            <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
-          </div>
+    <div className="flex flex-col xl:flex-row w-full h-screen">
+      <div className="flex flex-col w-full xl:w-1/2 bg-white">
+        <Link href="/app" className="flex items-center mt-4 ml-4">
+          <Image
+            src="/favicon.png"
+            alt="ProspectEdge Logo"
+            width={40}
+            height={40}
+          />
+          <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
         </Link>
-        <div className="flex flex-col mt-24 items-center w-full">
-          <div className="flex flex-col w-[26rem] text-center">
-            <h1 className="text-3xl font-bold text-gray-900 leading-[48px] mb-3">
+        <div className="flex flex-col mt-8 md:mt-24 items-center w-full px-4 md:px-0">
+          <div className="flex flex-col w-full max-w-[26rem] text-center">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-3">
               Sign in to your account
             </h1>
             <button
-              className="w-full flex justify-center items-center gap-2 cursor-pointer text-base py-4 font-normal leading-6 rounded-full text-black border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
+              className="w-full flex justify-center items-center gap-2 cursor-pointer text-sm md:text-base py-3 md:py-4 font-normal leading-6 rounded-full text-black border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
               onClick={handleGoogleSignIn}
             >
               <Image
@@ -204,13 +202,13 @@ const SignIn = () => {
                 width={20}
                 height={20}
               />
-              <span className="text-base font-semibold">
+              <span className="text-sm md:text-base font-semibold">
                 Continue with Google
               </span>
             </button>
-            <div className="flex items-center w-full mt-8 mb-6">
+            <div className="flex items-center w-full mt-6 mb-4 md:mt-8 md:mb-6">
               <div className="flex-grow border-t border-gray-300"></div>
-              <span className="flex-shrink mx-4 text-sm font-bold text-gray-500">
+              <span className="flex-shrink mx-2 md:mx-4 text-xs md:text-sm font-bold text-gray-500">
                 OR LOG IN WITH YOUR EMAIL
               </span>
               <div className="flex-grow border-t border-gray-300"></div>
@@ -219,12 +217,12 @@ const SignIn = () => {
               <div className="flex flex-col w-full">
                 <label
                   htmlFor="email"
-                  className="text-left text-base font-bold leading-6 mb-2"
+                  className="text-left text-sm md:text-base font-bold leading-6 mb-2"
                 >
                   Email address
                 </label>
-                <div className="text-lg font-normal bg-gray-100 leading-7 pl-6 pr-5 py-4 rounded-md flex items-center justify-center gap-3">
-                  <MdOutlineEmail className="w-7 h-7" />
+                <div className="text-base md:text-lg font-normal bg-gray-100 leading-7 pl-4 md:pl-6 pr-3 md:pr-5 py-3 md:py-4 rounded-md flex items-center justify-center gap-2 md:gap-3">
+                  <MdOutlineEmail className="w-6 h-6 md:w-7 md:h-7" />
                   <input
                     id="email"
                     name="email"
@@ -232,22 +230,22 @@ const SignIn = () => {
                     value={credentials.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                     placeholder="example.email@gmail.com"
-                    className="outline-none w-full bg-transparent"
+                    className="outline-none w-full bg-transparent text-sm md:text-base"
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  <p className="text-red-500 text-xs md:text-sm mt-1">{errors.email}</p>
                 )}
               </div>
               <div className="flex flex-col w-full mt-2">
                 <label
                   htmlFor="password"
-                  className="text-left text-base font-bold leading-6 mb-2"
+                  className="text-left text-sm md:text-base font-bold leading-6 mb-2"
                 >
                   Password
                 </label>
-                <div className="text-lg font-normal bg-gray-100 leading-7 pl-6 pr-5 py-[14px] rounded-md flex items-center justify-center gap-3">
-                  <MdOutlineLock className="w-8 h-8" />
+                <div className="text-base md:text-lg font-normal bg-gray-100 leading-7 pl-4 md:pl-6 pr-3 md:pr-5 py-3 md:py-[14px] rounded-md flex items-center justify-center gap-2 md:gap-3">
+                  <MdOutlineLock className="w-6 h-6 md:w-8 md:h-8" />
                   <input
                     id="password"
                     name="password"
@@ -256,7 +254,7 @@ const SignIn = () => {
                     onChange={(e) =>
                       handleInputChange("password", e.target.value)
                     }
-                    className="outline-none bg-transparent w-full"
+                    className="outline-none bg-transparent w-full text-sm md:text-base"
                     placeholder="••••••••"
                   />
                   <button
@@ -265,31 +263,31 @@ const SignIn = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <ImEye className="w-6 h-6" />
+                      <ImEye className="w-5 h-5 md:w-6 md:h-6" />
                     ) : (
-                      <ImEyeBlocked className="w-6 h-6" />
+                      <ImEyeBlocked className="w-5 h-5 md:w-6 md:h-6" />
                     )}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                  <p className="text-red-500 text-xs md:text-sm mt-1">{errors.password}</p>
                 )}
               </div>
               <Link
                 href="/auth/forgot-password"
-                className="text-left text-sm leading-6 font-normal text-[#004AADFF] mt-2 hover:underline"
+                className="text-left text-xs md:text-sm leading-6 font-normal text-[#004AADFF] mt-2 hover:underline"
               >
                 Forgot password?
               </Link>
               <button
                 onClick={handleSignInClick}
-                className="w-full bg-primary-600 text-white text-base font-semibold py-4 mt-4 rounded-md hover:bg-primary-700 active:bg-primary-800 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full bg-primary-600 text-white text-sm md:text-base font-semibold py-3 md:py-4 mt-4 rounded-md hover:bg-primary-700 active:bg-primary-800 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <span className="flex justify-center">
                     <svg
-                      className="animate-spin -ml-1 mr-3 h-6 w-6 text-white"
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 md:h-6 md:w-6 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -316,7 +314,7 @@ const SignIn = () => {
             </form>
           </div>
         </div>
-        <div className="absolute flex gap-1 bottom-8 left-1/4 transform -translate-x-1/2 font-bold text-sm text-gray-600">
+        <div className="flex gap-1 mt-8 mb-4 xl:absolute xl:bottom-8 xl:left-1/4 xl:transform xl:-translate-x-1/2 font-bold text-xs xl:text-sm text-gray-600 justify-center">
           <span>Don't have an account yet?</span>
           <Link
             href="/auth/sign-up"
@@ -326,25 +324,15 @@ const SignIn = () => {
           </Link>
         </div>
       </div>
-      <div className="flex items-center justify-center bg-gray-50 w-1/2 h-full">
+      <div className="hidden xl:flex justify-center w-1/2 h-full bg-[url('/sign.png')] bg-cover bg-center">
         <div className="flex flex-col items-center">
-          <div className="text-center mb-[70px]">
+          <div className="text-center mb-[70px] h-[70px] mt-44">
             <p className="text-[32px] leading-[48px] font-bold text-gray-700">
               Welcome to ProspectEdge!
             </p>
             <p className="text-lg font-normal leading-7 text-gray-600">
               First things first, let's set you up with an account! 👋
             </p>
-          </div>
-          <div className="relative">
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 rounded-[50%] bg-gray-200 w-[600px] h-[8.5rem] z-0"></div>
-            <Image
-              src="/welcome.svg"
-              width={513}
-              height={416}
-              alt="Welcome illustration"
-              className="relative z-10"
-            />
           </div>
         </div>
       </div>

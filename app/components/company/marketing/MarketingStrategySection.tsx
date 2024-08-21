@@ -222,7 +222,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
               <LoadingSection />
             ) : (
               <>
-                <div className="p-4 bg-gray-100 text-black">
+                <div className="p-4 bg-gray-100 text-black min-w-[1200px]">
                   {companyName}'s top Marketing Strategy.
                   {tailoredMarketings?.length === 0 && (
                     <span>
