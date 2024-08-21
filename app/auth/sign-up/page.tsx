@@ -20,12 +20,12 @@ const SignUp = () => {
 
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [errors, setErrors] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [isValidate, setIsValidate] = useState(false);
@@ -63,18 +63,14 @@ const SignUp = () => {
 
     setIsLoading(true);
 
-    console.log(email, password);
-
     try {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: email,
         password: password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`
-        }
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`,
+        },
       });
-
-      console.log(authData, authError);
 
       if (authError) throw authError;
 
@@ -86,7 +82,7 @@ const SignUp = () => {
         email: authData.user?.email || "",
         firstName: "",
         lastName: "",
-        companyName: ""
+        companyName: "",
       });
 
       // router.replace("/auth/verify-email");
@@ -103,8 +99,8 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`
-        }
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
+        },
       });
       if (error) {
         throw error;
@@ -163,9 +159,7 @@ const SignUp = () => {
                 width={20}
                 height={20}
               />
-              <span className="font-semibold">
-                Sign Up with Google
-              </span>
+              <span className="font-semibold">Sign Up with Google</span>
             </button>
             <div className="flex items-center w-full my-6">
               <div className="flex-grow border-t border-gray-300"></div>
@@ -174,10 +168,7 @@ const SignUp = () => {
               </span>
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
-            <form
-              onSubmit={handleFormSubmit}
-              className="flex flex-col w-full"
-            >
+            <form onSubmit={handleFormSubmit} className="flex flex-col w-full">
               <div className="flex flex-col w-full mb-4">
                 <label
                   htmlFor="email"
@@ -194,7 +185,9 @@ const SignUp = () => {
                   onChange={handleInputChange}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-xs lg:text-sm mt-1">{errors.email}</p>
+                  <p className="text-red-500 text-xs lg:text-sm mt-1">
+                    {errors.email}
+                  </p>
                 )}
               </div>
               <div className="flex flex-col w-full mb-4">
@@ -213,7 +206,9 @@ const SignUp = () => {
                   onChange={handleInputChange}
                 />
                 {errors.password && (
-                  <p className="text-red-500 text-xs lg:text-sm mt-1">{errors.password}</p>
+                  <p className="text-red-500 text-xs lg:text-sm mt-1">
+                    {errors.password}
+                  </p>
                 )}
               </div>
               <button

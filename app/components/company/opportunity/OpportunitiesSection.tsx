@@ -125,8 +125,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
       if (error) throw error;
 
-      console.log("TOs: ", data);
-
       if (data) {
         const formattedData: OpportunityProps[] = data.map(
           (item: any, indx: number) => ({
