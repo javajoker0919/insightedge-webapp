@@ -11,6 +11,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { createCustomer } from "@/utils/apiClient";
 import OnboardCompanySearchbar from "./OnboardCompanySearchbar";
 import OnboardSimilarCompanySection from "./OnboardSimilarCompanySection";
+import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
 export interface CompanyProps {
   id: number;
@@ -24,7 +25,7 @@ const OnboardingInitialCompanySection = ({
   website,
   companyOverview,
   productsServices,
-  setOnboardingStep,
+  setOnboardingStep
 }: {
   formData: any;
   website: any;
@@ -43,7 +44,7 @@ const OnboardingInitialCompanySection = ({
   const handleCreateProfile = async () => {
     try {
       const {
-        data: { user },
+        data: { user }
       } = await supabase.auth.getUser();
 
       if (!user) throw new Error("No user found");
@@ -57,7 +58,7 @@ const OnboardingInitialCompanySection = ({
           email: user.email,
           first_name: formData.firstName,
           last_name: formData.lastName,
-          onboarding_status: true,
+          onboarding_status: true
         })
         .select()
         .single();
@@ -71,7 +72,7 @@ const OnboardingInitialCompanySection = ({
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: formData.companyName,
+        companyName: formData.companyName
       });
 
       const insertOrganizationData = {
@@ -79,7 +80,7 @@ const OnboardingInitialCompanySection = ({
         website: website,
         overview: companyOverview,
         products: productsServices,
-        creator_id: userData.id,
+        creator_id: userData.id
       };
 
       const { data: orgData, error: orgError } = await supabase
@@ -96,13 +97,13 @@ const OnboardingInitialCompanySection = ({
         website: orgData.website,
         overview: orgData.overview,
         products: orgData.products,
-        creatorID: userData.id,
+        creatorID: userData.id
       });
 
       const insertWatchlistData = {
         name: "Watchlist",
         organization_id: orgData.id,
-        creator_id: userData.id,
+        creator_id: userData.id
       };
 
       const { data: watchlistData, error: watchlistError } = await supabase
@@ -119,9 +120,22 @@ const OnboardingInitialCompanySection = ({
           name: watchlistData.name,
           organizationID: watchlistData.organization_id,
           creatorID: watchlistData.creator_id,
-          uuid: watchlistData.uuid,
-        },
+          uuid: watchlistData.uuid
+        }
       ]);
+
+      const companyIDs = companies.map(company => company.id);
+
+      const { data: watchlistCompanies, error: watchlistCompanyError } = await supabase
+        .from("watchlist_companies")
+        .insert(
+          companyIDs.map(companyId => ({
+            watchlist_id: watchlistData.id,
+            company_id: companyId
+          }))
+        );
+
+      if (watchlistCompanyError) throw watchlistCompanyError;
       router.replace(`/app/watchlist/${watchlistData.uuid}`);
     } catch (error) {
       console.error(error);
@@ -138,7 +152,7 @@ const OnboardingInitialCompanySection = ({
 
   return (
     <div className="flex flex-row w-full h-screen">
-      <div className="w-1/2 flex items-center justify-center h-full">
+      <div className="w-1/2 flex items-center justify-center h-full px-4">
         <div className="w-full flex max-w-[40rem] relative justify-center">
           <OnboardCompanySearchbar
             isSearchBarOpen={false}
@@ -148,23 +162,42 @@ const OnboardingInitialCompanySection = ({
             setCompanies={setCompanies}
           />
 
-          <div className="border rounded mt-16 h-96 w-full overflow-y-auto divide-y">
-            {companies.map((company, index) => {
-              return (
-                <div
-                  key={`company-${company.id}-${index}`}
-                  className={`py-2 px-5 bg-white transition-colors duration-200 flex justify-between items-center`}
-                >
-                  <div>
-                    <p className="font-medium">{company.name}</p>
-                    <p className="text-gray-500 text-sm">{company.symbol}</p>
+          <div className="flex flex-col w-full">
+            <div className="border rounded mt-16 h-96 w-full overflow-y-auto divide-y">
+              {companies.map((company, index) => {
+                return (
+                  <div
+                    key={`company-${company.id}-${index}`}
+                    className={`py-2 px-5 bg-white transition-colors duration-200 flex justify-between items-center`}
+                  >
+                    <div>
+                      <p className="font-medium">{company.name}</p>
+                      <p className="text-gray-500 text-sm">{company.symbol}</p>
+                    </div>
+                    <p className="text-gray-500 text-sm rounded-full py-1 px-3 bg-yellow-50 border-yellow-200 border">
+                      {company.industry}
+                    </p>
                   </div>
-                  <p className="text-gray-500 text-sm rounded-full py-1 px-3 bg-yellow-50 border-yellow-200 border">
-                    {company.industry}
-                  </p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+
+            <div className="flex justify-between mt-10 w-full">
+              <button
+                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+                onClick={() => setOnboardingStep(1)}
+              >
+                <GoArrowLeft className="mr-2 h-5 w-5" />
+                Back
+              </button>
+              <button
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+                onClick={handleCreateProfile}
+              >
+                Dashboard
+                <GoArrowRight className="ml-2 h-5 w-5" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
