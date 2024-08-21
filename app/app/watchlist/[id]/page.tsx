@@ -8,7 +8,7 @@ import { supabase } from "@/utils/supabaseClient";
 import {
   latestCompanyEarningsData,
   userInfoAtom,
-  watchlistAtom
+  watchlistAtom,
 } from "@/utils/atoms";
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -23,7 +23,7 @@ import {
   WLIncomeStatementSection,
   WLHighlightSection,
   WLSimilarCompanySection,
-  Loading
+  Loading,
 } from "@/app/components";
 
 export interface CompanyDataType {
@@ -91,7 +91,7 @@ export default function WatchlistPage() {
             id: item.companies.id,
             name: item.companies.name,
             symbol: item.companies.symbol,
-            watchlist_company_id: item.id
+            watchlist_company_id: item.id,
           })) as CompanyDataType[];
 
           setWatchlistCompanies(res);
@@ -129,7 +129,7 @@ export default function WatchlistPage() {
             organizationID: item.organization_id,
             creatorID: item.creator_id,
             uuid: item.uuid,
-            company_count: item.watchlist_companies?.length
+            company_count: item.watchlist_companies?.length,
           };
         })
       );
@@ -284,6 +284,7 @@ export default function WatchlistPage() {
           <div className="flex flex-col sm:flex-row w-full items-center gap-4 mb-4">
             <div className="flex items-center justify-between w-full sm:w-auto flex-grow relative pl-4 py-2">
               <h1 className="font-bold text-lg">{watchlistName}</h1>
+              <div className="flex-grow"></div>
               <div className="flex items-center gap-2 ml-auto sm:ml-0">
                 <button
                   onClick={handleSortCompanies}
