@@ -281,19 +281,19 @@ export default function WatchlistPage() {
         </div>
       ) : (
         <div className="relative w-full">
-          <div className="flex w-full items-center gap-4">
-            <div className="flex items-center justify-between flex-grow relative pl-4 py-2">
+          <div className="flex flex-col sm:flex-row w-full items-center gap-4 mb-4">
+            <div className="flex items-center justify-between w-full sm:w-auto flex-grow relative pl-4 py-2">
               <h1 className="font-bold text-lg">{watchlistName}</h1>
-              <div className="flex items-center gap-2">
+              <div className="flex-grow"></div>
+              <div className="flex items-center gap-2 ml-auto sm:ml-0">
                 <button
                   onClick={handleSortCompanies}
-                  className={
-                    "rounded-full p-2 flex items-center gap-2 hover:text-primary-700" +
-                    (isSorted ? "text-primary-500" : "text-gray-500")
-                  }
+                  className={`rounded-full p-2 flex items-center gap-2 hover:text-primary-700 ${
+                    isSorted ? "text-primary-500" : "text-gray-500"
+                  }`}
                 >
                   {isSorted ? <FaSortAlphaDown /> : <FaSortAlphaUp />}
-                  <span>Sort by Name</span>
+                  <span className="hidden sm:inline">Sort by Name</span>
                 </button>
 
                 {watchlistCompanies.length > 0 && (
@@ -302,7 +302,7 @@ export default function WatchlistPage() {
                     onClick={handleAddInvestments}
                   >
                     <IoAddOutline className="text-xl" />
-                    <span>Company</span>
+                    <span className="hidden sm:inline">Company</span>
                   </button>
                 )}
                 {watchlist && watchlist[0] && paramID !== watchlist[0].uuid && (
@@ -317,7 +317,7 @@ export default function WatchlistPage() {
               {isOptionsModalOpen && (
                 <div
                   ref={optionsModalRef}
-                  className="absolute w-52 py-1 border border-gray-100 right-4 top-14 bg-white shadow-md rounded-md overflow-hidden"
+                  className="absolute w-52 py-1 border border-gray-100 right-4 top-14 bg-white shadow-md rounded-md overflow-hidden z-10"
                 >
                   <button
                     onClick={handleRenameWatchlist}
@@ -336,26 +336,26 @@ export default function WatchlistPage() {
                 </div>
               )}
               {isSearchBarOpen && (
-                <CompanySearchbar
-                  type={"watchlist"}
-                  isSearchBarOpen={isSearchBarOpen}
-                  setIsSearchBarOpen={setIsSearchBarOpen}
-                  setWatchlistCompanies={setWatchlistCompanies}
-                />
+                <div className="flex justify-end">
+                  <CompanySearchbar
+                    type={"watchlist"}
+                    isSearchBarOpen={isSearchBarOpen}
+                    setIsSearchBarOpen={setIsSearchBarOpen}
+                    setWatchlistCompanies={setWatchlistCompanies}
+                  />
+                </div>
               )}
             </div>
-
-            <div className="w-96 xl:w-[30rem]"></div>
           </div>
 
           {watchlistCompanies.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-[90%]">
+            <div className="flex flex-col items-center justify-center h-[90%] text-center">
               <p>Nothing in this watchlist yet</p>
-              <p className="text-gray-500">
+              <p className="text-gray-500 mt-2">
                 Track investments you care about here
               </p>
               <button
-                className="rounded-full p-2 text-primary-500 hover:bg-gray-100 flex items-center gap-2"
+                className="rounded-full p-2 mt-4 text-primary-500 hover:bg-gray-100 flex items-center gap-2"
                 onClick={handleAddInvestments}
               >
                 <IoAddOutline className="text-xl" />
@@ -363,8 +363,8 @@ export default function WatchlistPage() {
               </button>
             </div>
           ) : (
-            <div className="flex items-start w-full gap-4 my-2">
-              <div className="flex flex-grow flex-col gap-4 pb-5">
+            <div className="flex flex-col lg:flex-row items-start w-full gap-4 my-2">
+              <div className="flex-grow flex flex-col gap-4 pb-5 w-full">
                 <WLIncomeStatementSection
                   watchlistCompanies={watchlistCompanies}
                   isSorted={isSorted}
@@ -375,7 +375,7 @@ export default function WatchlistPage() {
                 <WLOpportunitySection etIDs={etIDs} />
                 <WLMarketingSection etIDs={etIDs} />
               </div>
-              <div className="xl:w-[30rem] w-96 h-full space-y-4 shrink-0">
+              <div className="w-full lg:w-[20rem] xl:w-[25rem] h-full flex flex-col space-y-4 shrink-0">
                 <WLHighlightSection companyList={watchlistCompanies} />
                 <WLCalendarSection companies={watchlistCompanies} />
                 <WLSimilarCompanySection

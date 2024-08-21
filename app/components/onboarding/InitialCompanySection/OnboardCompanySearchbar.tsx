@@ -1,24 +1,27 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 
 import { supabase } from "@/utils/supabaseClient";
 import { watchlistAtom } from "@/utils/atoms";
 import { IoClose } from "react-icons/io5";
+import { CompanyProps } from "./InitialCompanySection";
 
 interface CompanySearchbarProps {
-  type: string; //  "header" | "watchlist"
   isSearchBarOpen: boolean;
   setIsSearchBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setWatchlistCompanies: React.Dispatch<React.SetStateAction<any[]>>;
+  companies: CompanyProps[];
+  setCompanies: React.Dispatch<React.SetStateAction<CompanyProps[]>>;
 }
 
-const CompanySearchbar = ({
-  type,
+const OnboardCompanySearchbar = ({
   isSearchBarOpen,
   setIsSearchBarOpen,
   setWatchlistCompanies,
+  companies,
+  setCompanies,
 }: CompanySearchbarProps) => {
   const params = useParams();
   const paramID = params.id as string;
@@ -30,7 +33,7 @@ const CompanySearchbar = ({
   const watchlist = useAtomValue(watchlistAtom);
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchType, setSearchType] = useState<string>("all");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<CompanyProps[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
 
@@ -41,12 +44,6 @@ const CompanySearchbar = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  useEffect(() => {
-    if (type === "watchlist" && isSearchBarOpen && searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [isSearchBarOpen]);
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -61,11 +58,7 @@ const CompanySearchbar = ({
       searchBarRef.current &&
       !searchBarRef.current.contains(event.target as Node)
     ) {
-      if (type === "header") {
-        setIsInputFocused(false);
-      } else if (type === "watchlist") {
-        setIsSearchBarOpen(false);
-      }
+      setIsInputFocused(false);
     }
   };
 
@@ -105,17 +98,14 @@ const CompanySearchbar = ({
     if (error) {
       console.error("Error fetching search results:", error);
     } else {
+      console.log(data);
       setSearchResults(data || []);
     }
     setIsSearching(false);
   };
 
   const handleCloseSearchBar = () => {
-    if (type === "header") {
-      setSearchInput("");
-    } else if (type === "watchlist") {
-      setIsSearchBarOpen(false);
-    }
+    setSearchInput("");
   };
 
   const handleAddCompanyToWatchlist = async (companyId: number) => {
@@ -154,52 +144,37 @@ const CompanySearchbar = ({
     }
   };
 
-  const handleCompanyClick = (companyID: number) => {
-    setIsInputFocused(false);
-
-    switch (type) {
-      case "header":
-        router.push(`/app/company/${companyID}`);
-        break;
-
-      case "watchlist":
-        handleAddCompanyToWatchlist(companyID);
-        break;
-
-      default:
-        break;
+  const handleCompanyClick = (company: CompanyProps) => {
+    if (companies.map((company) => company.id).includes(company.id)) {
+      return;
     }
+
+    // setIsInputFocused(false);
+
+    setCompanies((prev) => {
+      return [...prev, company];
+    });
   };
 
   return (
     <div
       id="search-bar"
       ref={searchBarRef}
-      className={`absolute w-full max-w-[750px] flex justify-center ${
-        type === "header" ? "" : "p-2 top-12 z-50"
-      }`}
+      className={`absolute w-full flex justify-center`}
     >
       <div
         className={`${
-          isInputFocused ? (type === "header" ? "shadow-2xl" : "shadow-lg") : ""
-        } w-full border overflow-hidden bg-white border-gray-100 relative ${
-          type == "header" ? "rounded-md" : "rounded-xl"
-        }`}
+          isInputFocused ? "shadow-2xl" : ""
+        } w-full border overflow-hidden bg-white relative rounded-md`}
       >
         {isInputFocused && (
-          <div
-            className={`absolute ${
-              type == "header" ? "top-1 right-1" : "top-2 right-2"
-            } flex items-center`}
-          >
+          <div className={`absolute top-1 right-1 flex items-center`}>
             {isSearching && (
               <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary-500 mr-2" />
             )}
             <button
               onClick={handleCloseSearchBar}
-              className={`hover:bg-gray-200 rounded-full ${
-                type == "header" ? "p-1" : "p-2"
-              }`}
+              className={`hover:bg-gray-200 rounded-full p-1`}
             >
               <IoClose className="text-2xl" />
             </button>
@@ -209,8 +184,8 @@ const CompanySearchbar = ({
         <input
           ref={searchInputRef}
           className={`w-full rounded-md focus:outline-none ${
-            isInputFocused ? "" : "bg-gray-100"
-          } ${type == "header" ? "py-2 px-3" : "p-4"}`}
+            isInputFocused ? "" : "bg-gray-50"
+          } p-3`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Search for companies..."
@@ -242,8 +217,12 @@ const CompanySearchbar = ({
               {searchResults.map((company) => (
                 <div
                   key={company.id}
-                  className="py-2 px-5 bg-white hover:bg-gray-100 transition-colors duration-200 cursor-pointer flex justify-between items-center"
-                  onClick={() => handleCompanyClick(company.id)}
+                  className={`py-2 px-5  ${
+                    companies.map((company) => company.id).includes(company.id)
+                      ? "bg-gray-100 cursor-not-allowed"
+                      : "cursor-pointer bg-white hover:bg-gray-100"
+                  } transition-colors duration-200 flex justify-between items-center`}
+                  onClick={() => handleCompanyClick(company)}
                 >
                   <div>
                     <p className="font-medium">{company.name}</p>
@@ -262,4 +241,4 @@ const CompanySearchbar = ({
   );
 };
 
-export default CompanySearchbar;
+export default OnboardCompanySearchbar;

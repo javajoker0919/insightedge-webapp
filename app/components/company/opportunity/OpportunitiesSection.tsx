@@ -312,7 +312,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-gray-100 text-black">
+              <div className="p-4 bg-gray-100 text-black min-w-[1200px]">
                 {companyName}'s top opportunities.
                 {tailoredOpps?.length === 0 && (
                   <span>
@@ -353,7 +353,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
       <Modal
         wrapperClass="backdrop-blur-[2px]"
-        modalClass="min-w-[80rem] max-w-full"
+        modalClass="w-full mx-16 min-w-[60rem] xl:min-w-[80rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
         isOpen={!!selectedOpp}
         onClose={() => setSelectedOpp(null)}
       >

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { getScrapeData } from "@/utils/apiClient";
 
-const CompanyProfile = ({
+const OnboardingCompanyProfileSection = ({
   formData,
   website,
   companyOverview,
@@ -12,7 +12,7 @@ const CompanyProfile = ({
   setOnboardingStep,
   setWebsite,
   setCompanyOverview,
-  setProductsServices
+  setProductsServices,
 }: {
   setOnboardingStep: any;
   formData: any;
@@ -31,7 +31,7 @@ const CompanyProfile = ({
 
       const reqData = {
         company_url: website,
-        company_name: formData.companyName
+        company_name: formData.companyName,
       };
 
       const data = await getScrapeData(reqData);
@@ -47,10 +47,10 @@ const CompanyProfile = ({
   };
 
   return (
-    <div className="flex flex-row w-full h-screen">
-      <div className="flex flex-col items-center justify-center w-1/2 h-full">
-        <div className="flex flex-col justify-center items-center w-full">
-          <div className="flex flex-col items-center max-w-[500px] w-full">
+    <div className="flex flex-col lg:flex-row w-full h-screen overflow-y-scroll">
+      <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full p-4 lg:p-8 mt-20 lg:mt-0">
+        <div className="flex flex-col justify-center items-center w-full max-w-[500px]">
+          <div className="flex flex-col items-center w-full">
             <div className="flex flex-col justify-center text-lg leading-7 w-full mb-6">
               <label htmlFor="website" className="font-bold text-gray-800 mb-2">
                 Website
@@ -112,7 +112,7 @@ const CompanyProfile = ({
               </p>
             </div>
           </div>
-          <div className="flex justify-between mt-10 w-full px-32">
+          <div className="justify-between mt-10 w-full lg:flex hidden">
             <button
               className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
               onClick={() => setOnboardingStep(0)}
@@ -120,39 +120,59 @@ const CompanyProfile = ({
               <GoArrowLeft className="mr-2 h-5 w-5" />
               Back
             </button>
-            <button
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
-              onClick={() => setOnboardingStep(2)}
-            >
-              Continue
-              <GoArrowRight className="ml-2 h-5 w-5" />
-            </button>
           </div>
         </div>
       </div>
-      <div className="flex bg-gray-50 w-1/2 px-16 items-center justify-center h-full">
-        <div className="flex flex-col gap-10 w-full">
-          <div className="flex flex-col gap-8">
-            <p className="text-sm leading-5 font-normal text-[#171A1FFF]">
-              Company Profile
-            </p>
-            <textarea
-              className="text-sm leading-6 font-normal text-[#171A1FFF] w-full border border-[#BDC1CAFF] rounded-sm outline-none px-4 py-3"
-              rows={8}
-              value={companyOverview}
-              onChange={(e) => setCompanyOverview(e.target.value)}
-            ></textarea>
+      <div className="flex flex-col lg:bg-gray-50 w-full lg:w-1/2 px-4 lg:px-16 items-center justify-center h-full mt-10 lg:mt-0">
+        <div className="flex flex-col justify-center w-full max-w-[500px] lg:max-w-full">
+          <div className="flex flex-col gap-10 w-full">
+            <div className="flex flex-col gap-8">
+              <p className="text-sm leading-5 font-normal text-[#171A1FFF]">
+                Company Profile
+              </p>
+              <textarea
+                className="text-sm leading-6 font-normal text-[#171A1FFF] w-full border border-[#BDC1CAFF] rounded-sm outline-none px-4 py-3"
+                rows={8}
+                value={companyOverview}
+                onChange={(e) => setCompanyOverview(e.target.value)}
+              ></textarea>
+            </div>
+            <div className="flex flex-col gap-8">
+              <p className="text-sm leading-5 font-normal text-[#171A1FFF]">
+                Products & Services
+              </p>
+              <textarea
+                className="text-sm leading-6 font-normal text-[#171A1FFF] w-full border border-[#BDC1CAFF] rounded-sm outline-none px-4 py-3"
+                rows={8}
+                value={productsServices}
+                onChange={(e) => setProductsServices(e.target.value)}
+              ></textarea>
+            </div>
           </div>
-          <div className="flex flex-col gap-8">
-            <p className="text-sm leading-5 font-normal text-[#171A1FFF]">
-              Products & Services
-            </p>
-            <textarea
-              className="text-sm leading-6 font-normal text-[#171A1FFF] w-full border border-[#BDC1CAFF] rounded-sm outline-none px-4 py-3"
-              rows={8}
-              value={productsServices}
-              onChange={(e) => setProductsServices(e.target.value)}
-            ></textarea>
+          <div className="mt-8 w-full flex flex-col lg:flex-row justify-between gap-4 mb-8 lg:mb-0">
+            <button
+              className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed w-full md:w-auto"
+              onClick={() => setOnboardingStep(2)}
+            >
+              Enter data manually
+            </button>
+            <div className="flex flex-row justify-between">
+              <button
+                className="lg:hidden inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
+                onClick={() => setOnboardingStep(0)}
+              >
+                <GoArrowLeft className="mr-2 h-5 w-5" />
+                Back
+              </button>
+              <button
+                className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed w-full md:w-auto"
+                onClick={() => setOnboardingStep(2)}
+                disabled={!website || !companyOverview || !productsServices}
+              >
+                Continue
+                <GoArrowRight className="ml-2 h-5 w-5" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -160,4 +180,4 @@ const CompanyProfile = ({
   );
 };
 
-export default CompanyProfile;
+export default OnboardingCompanyProfileSection;

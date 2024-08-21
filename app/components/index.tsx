@@ -16,9 +16,9 @@ import Check from "./CheckIcon";
 import Close from "./CloseIcon";
 import WLHighlightSection from "./watchlist/WLHighlightSection";
 import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
-import UserInfo from "./onboarding/UserInfo";
-import CompanyProfile from "./onboarding/CompanyProfile";
-import UserAwareness from "./onboarding/UserAwareness";
+import OnboardingUserProfileSection from "./onboarding/UserProfileSection";
+import OnboardingCompanyProfileSection from "./onboarding/CompanyProfileSection";
+import OnboardingInitialCompanySection from "./onboarding/InitialCompanySection/InitialCompanySection";
 import NoDataSection from "./NoDataSection";
 
 export {
@@ -40,8 +40,8 @@ export {
   PrelineScript,
   Check,
   Close,
-  UserInfo,
-  CompanyProfile,
-  UserAwareness,
+  OnboardingUserProfileSection,
+  OnboardingCompanyProfileSection,
+  OnboardingInitialCompanySection,
   NoDataSection,
 };

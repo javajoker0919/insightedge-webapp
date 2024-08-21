@@ -27,7 +27,7 @@ export interface SummaryProps {
 const SummarySection: React.FC<SummarySectionProps> = ({
   year,
   quarter,
-  etID,
+  etID
 }) => {
   if (!year || !quarter) {
     return null;
@@ -49,6 +49,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   const [isTSLoading, setIsTSLoading] = useState(false);
   const [isTSGenerating, setIsTSGenerating] = useState(false);
   const [showFullSummary, setShowFullSummary] = useState(true);
+  const [showMore, setShowMore] = useState<boolean>(false);
 
   useEffect(() => {
     setActiveTab("general");
@@ -81,7 +82,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             ? data.opportunities.split("\n")
             : [],
           priorities: data.priorities ? data.priorities.split("\n") : [],
-          keywords: data.keywords ? JSON.parse(data.keywords) : [],
+          keywords: data.keywords ? JSON.parse(data.keywords) : []
         };
 
         setGeneralSummary(processedData);
@@ -130,7 +131,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           pain_points: tsData[0].pain_points.split("\n"),
           opportunities: tsData[0].opportunities.split("\n"),
           priorities: tsData[0].priorities.split("\n"),
-          keywords: [], // Assuming tailored summaries do not have keywords
+          keywords: [] // Assuming tailored summaries do not have keywords
         };
 
         setTailoredSummary(processedData);
@@ -157,7 +158,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         companyID: companyId,
         orgID: orgInfo?.id.toString(),
         year: year,
-        quarter: quarter,
+        quarter: quarter
       });
 
       if (data.status === "success") {
@@ -167,7 +168,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           pain_points: data.summary.pain_points.split("\n"),
           opportunities: data.summary.opportunities.split("\n"),
           priorities: data.summary.priorities.split("\n"),
-          keywords: [], // Assuming generated tailored summaries do not have keywords
+          keywords: [] // Assuming generated tailored summaries do not have keywords
         };
 
         setTailoredSummary(processedData);
@@ -175,7 +176,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           if (!prev || !prev.creditCount) return prev;
           return {
             ...prev,
-            creditCount: prev.creditCount ? prev.creditCount - 1 : 0,
+            creditCount: prev.creditCount ? prev.creditCount - 1 : 0
           };
         });
         invokeToast("success", data.message, "top");
@@ -203,20 +204,35 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         generalSummary &&
         generalSummary.keywords.length > 0 && (
           <Details title="Keywords">
-            <div className="p-2 flex flex-wrap overflow-y-auto max-h-80 gap-2">
-              {generalSummary.keywords
-                .sort((a, b) => b.weight - a.weight)
-                .map((keywordObj, index) => (
-                  <span
-                    key={index}
-                    className={`flex items-center divide-x rounded divide-gray-300 border bg-gray-100 overflow-hidden border-gray-300 text-gray-600 ${
-                      index < 5 ? "bg-yellow-200 text-yellow-800" : ""
-                    }`}
-                  >
-                    <span className={`px-2 py-0.5`}>{keywordObj.keyword}</span>
-                    <span className={`px-2 py-0.5`}>{keywordObj.weight}</span>
-                  </span>
-                ))}
+            <div className="p-4 bg-white rounded-lg shadow-sm">
+              <div className="flex flex-wrap gap-3 mb-4">
+                {generalSummary.keywords
+                  .sort((a, b) => b.weight - a.weight)
+                  .slice(0, showMore ? undefined : 5)
+                  .map((keywordObj, index) => (
+                    <span
+                      key={index}
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                        index < 5
+                          ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                          : "bg-gray-100 text-gray-800 border border-gray-200"
+                      }`}
+                    >
+                      {keywordObj.keyword}
+                      <span className="ml-2 px-2 py-0.5 bg-white rounded-full text-xs font-semibold">
+                        {keywordObj.weight}
+                      </span>
+                    </span>
+                  ))}
+              </div>
+              {generalSummary.keywords.length > 5 && (
+                <button
+                  onClick={() => setShowMore(!showMore)}
+                  className="text-primary-600 hover:text-primary-700 font-medium transition-colors duration-200"
+                >
+                  {showMore ? "Show less" : "Show more keywords"}
+                </button>
+              )}
             </div>
           </Details>
         )

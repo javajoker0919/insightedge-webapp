@@ -122,143 +122,117 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-center items-center bg-yellow-50 rounded p-2 border border-yellow-200">
-        <p className="text-gray-700 font-medium">
+        <p className="text-gray-700 font-medium text-xs sm:text-sm text-center">
           This is the latest quarterly earnings
         </p>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th className="text-left w-[300px] p-2"></th>
-            <th className="text-sm text-left p-2">As Of</th>
-            <th className="text-left text-sm p-2">
-              Revenue <span className="text-xs">(QoQ Change)</span>
-            </th>
-            <th className="text-left text-sm p-2">
-              Net Income <span className="text-xs">(QoQ Change)</span>
-            </th>
-            {/* <th className="text-left text-sm">
-              Expense <span className="text-xs">(QoQ Change)</span>
-            </th> */}
-            <th className="text-left p-2"></th>
-          </tr>
-        </thead>
-        <tbody className="text-left">
-          {isLoading && (
-            <tr key="loading" className="text-center">
-              <td colSpan={5} className="py-4 text-sm">
-                <Loading />
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full">
+          <thead>
+            <tr>
+              <th className="text-left w-[150px] sm:w-[300px] p-2 text-xs sm:text-sm">Company</th>
+              <th className="text-left p-2 text-xs sm:text-sm">As Of</th>
+              <th className="text-left p-2 text-xs sm:text-sm">
+                Revenue <span className="text-xxs sm:text-xs">(QoQ)</span>
+              </th>
+              <th className="text-left p-2 text-xs sm:text-sm">
+                Net Income <span className="text-xxs sm:text-xs">(QoQ)</span>
+              </th>
+              <th className="text-left p-2"></th>
             </tr>
-          )}
-          {compIncStatement !== null &&
-            sortStatements(compIncStatement, isSorted).map(
-              (company: IncomeStatementType, indx: number) => {
-                const symbolClass = `${
-                  randomColor[indx % randomColor.length]
-                } text-white text-xs p-1`;
-
-                return (
-                  <tr
-                    key={company.id}
-                    onClick={() => router.push(`/app/company/${company.id}`)}
-                    className="py-2 hover:cursor-pointer px-4 hover:bg-primary-50 border-t last:border-b-0 group"
-                  >
-                    <td className="p-2">
-                      <div className="flex gap-2 items-center">
-                        <p className={symbolClass}>{company.symbol}</p>
-                        <p className="font-medium text-sm">{company.name}</p>
-                      </div>
-                    </td>
-
-                    <td title={company.period} className="text-sm p-2">
-                      {company.date}
-                    </td>
-
-                    <td title="Revenue/ Rev Growth" className="text-sm p-2">
-                      <div className="flex flex-col md:flex-row items-center gap-1 uppercase">
-                        {numeral(company.revenue).format("$0.0a")}
-                        {Number(company.revenue_yoy_growth) > 0 ? (
-                          <MdArrowUpward className="text-green-700" />
-                        ) : (
-                          <MdArrowDownward className="text-red-700" />
-                        )}
-                        <p
-                          className={`text-xs ${
-                            Number(company.revenue_yoy_growth) > 0
-                              ? "text-green-700"
-                              : "text-red-700"
-                          }`}
-                        >
-                          ({numeral(company.revenue_yoy_growth).format("0.00")}
-                          %)
-                        </p>
-                      </div>
-                    </td>
-                    <td title="Income/ Inc Growth" className="text-sm p-2">
-                      <div className="flex flex-col md:flex-row items-center gap-1 uppercase">
-                        {numeral(company.net_income).format("$0.0a")}
-                        {Number(company.net_income_yoy_growth) > 0 ? (
-                          <MdArrowUpward className="text-green-700" />
-                        ) : (
-                          <MdArrowDownward className="text-red-700" />
-                        )}
-
-                        <p
-                          className={`text-xs ${
-                            Number(company.net_income_yoy_growth) > 0
-                              ? "text-green-700"
-                              : "text-red-700"
-                          }`}
-                        >
-                          (
-                          {numeral(company.net_income_yoy_growth).format(
-                            "0.00"
-                          )}
-                          %)
-                        </p>
-                      </div>
-                    </td>
-                    {/* <td title="Expense/ Exp Growth" className="text-sm p-2">
-                      <div className="flex flex-col md:flex-row items-center gap-1 uppercase">
-                        {numeral(company.operating_expenses).format("$0.0a")}
-                        {Number(company.op_expense_yoy_growth) > 0 ? (
-                          <MdArrowUpward className="text-green-700" />
-                        ) : (
-                          <MdArrowDownward className="text-red-700" />
-                        )}
-                        <p
-                          className={`text-xs ${
-                            Number(company.op_expense_yoy_growth) > 0
-                              ? "text-green-700"
-                              : "text-red-700"
-                          }`}
-                        >
-                          (
-                          {numeral(company.op_expense_yoy_growth).format(
-                            "0.00"
-                          )}
-                          %)
-                        </p>
-                      </div>
-                    </td> */}
-                    <td>
-                      <button
-                        onClick={(e) => {
-                          onRemoveCompany(company.watchlist_company_id);
-                          e.stopPropagation();
-                        }}
-                        className="text-white hover:bg-gray-200 p-0.5 rounded-full group-hover:text-gray-500"
-                      >
-                        <IoClose className="text-lg" />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              }
+          </thead>
+          <tbody className="text-left">
+            {isLoading && (
+              <tr key="loading" className="text-center">
+                <td colSpan={5} className="py-4 text-xs sm:text-sm">
+                  <Loading />
+                </td>
+              </tr>
             )}
-        </tbody>
-      </table>
+            {compIncStatement !== null &&
+              sortStatements(compIncStatement, isSorted).map(
+                (company: IncomeStatementType, indx: number) => {
+                  const symbolClass = `${
+                    randomColor[indx % randomColor.length]
+                  } text-white text-xxs sm:text-xs p-1`;
+
+                  return (
+                    <tr
+                      key={company.id}
+                      onClick={() => router.push(`/app/company/${company.id}`)}
+                      className="py-2 hover:cursor-pointer px-2 sm:px-4 hover:bg-primary-50 border-t last:border-b-0 group"
+                    >
+                      <td className="p-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                          <p className={symbolClass}>{company.symbol}</p>
+                          <p className="font-medium text-xs sm:text-sm truncate">{company.name}</p>
+                        </div>
+                      </td>
+
+                      <td title={company.period} className="text-xs sm:text-sm p-2">
+                        {company.date}
+                      </td>
+
+                      <td title="Revenue/ Rev Growth" className="text-xs sm:text-sm p-2">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 uppercase">
+                          {numeral(company.revenue).format("$0.0a")}
+                          <div className="flex items-center">
+                            {Number(company.revenue_yoy_growth) > 0 ? (
+                              <MdArrowUpward className="text-green-700 text-xs sm:text-sm" />
+                            ) : (
+                              <MdArrowDownward className="text-red-700 text-xs sm:text-sm" />
+                            )}
+                            <p
+                              className={`text-xxs sm:text-xs ${
+                                Number(company.revenue_yoy_growth) > 0
+                                  ? "text-green-700"
+                                  : "text-red-700"
+                              }`}
+                            >
+                              ({numeral(company.revenue_yoy_growth).format("0.00")}%)
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td title="Income/ Inc Growth" className="text-xs sm:text-sm p-2">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 uppercase">
+                          {numeral(company.net_income).format("$0.0a")}
+                          <div className="flex items-center">
+                            {Number(company.net_income_yoy_growth) > 0 ? (
+                              <MdArrowUpward className="text-green-700 text-xs sm:text-sm" />
+                            ) : (
+                              <MdArrowDownward className="text-red-700 text-xs sm:text-sm" />
+                            )}
+                            <p
+                              className={`text-xxs sm:text-xs ${
+                                Number(company.net_income_yoy_growth) > 0
+                                  ? "text-green-700"
+                                  : "text-red-700"
+                              }`}
+                            >
+                              ({numeral(company.net_income_yoy_growth).format("0.00")}%)
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <button
+                          onClick={(e) => {
+                            onRemoveCompany(company.watchlist_company_id);
+                            e.stopPropagation();
+                          }}
+                          className="text-white hover:bg-gray-200 p-0.5 rounded-full group-hover:text-gray-500"
+                        >
+                          <IoClose className="text-base sm:text-lg" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

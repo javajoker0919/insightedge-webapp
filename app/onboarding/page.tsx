@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import HeaderImage from "@/app/components/HeaderImage";
-import UserInfo from "@/app/components/onboarding/UserInfo";
-import CompanyProfile from "@/app/components/onboarding/CompanyProfile";
-import UserAwareness from "@/app/components/onboarding/UserAwareness";
+import {
+  OnboardingUserProfileSection,
+  OnboardingCompanyProfileSection,
+  OnboardingInitialCompanySection,
+} from "@/app/components";
 
 const Onboarding = () => {
-  const [onboardingStep, setOnboardingStep] = useState<number>(0);
+  const [onboardingStep, setOnboardingStep] = useState<number>(2);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     companyName: "",
-    industry: ""
+    industry: "",
   });
   const [website, setWebsite] = useState("");
   const [companyOverview, setCompanyOverview] = useState("");
@@ -22,14 +24,14 @@ const Onboarding = () => {
     <>
       <HeaderImage />
       {onboardingStep === 0 && (
-        <UserInfo
+        <OnboardingUserProfileSection
           setOnboardingStep={setOnboardingStep}
           formData={formData}
           setFormData={setFormData}
         />
       )}
       {onboardingStep === 1 && (
-        <CompanyProfile
+        <OnboardingCompanyProfileSection
           formData={formData}
           website={website}
           companyOverview={companyOverview}
@@ -41,7 +43,7 @@ const Onboarding = () => {
         />
       )}
       {onboardingStep === 2 && (
-        <UserAwareness
+        <OnboardingInitialCompanySection
           formData={formData}
           website={website}
           companyOverview={companyOverview}

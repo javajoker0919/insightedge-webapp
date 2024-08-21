@@ -73,7 +73,16 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       const { data, error } = await supabase
         .from("general_marketings")
         .select(
-          "tactic, tactic_score, target_personas, channel, value_proposition, key_performance_indicators, strategic_alignment, call_to_action"
+          `
+          tactic,
+          tactic_score, 
+          target_personas, 
+          channel, 
+          value_proposition, 
+          key_performance_indicators, 
+          strategic_alignment, 
+          call_to_action
+          `
         )
         .eq("earnings_transcript_id", etID);
 
@@ -213,7 +222,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
               <LoadingSection />
             ) : (
               <>
-                <div className="p-4 bg-gray-100 text-black">
+                <div className="p-4 bg-gray-100 text-black min-w-[1200px]">
                   {companyName}'s top Marketing Strategy.
                   {tailoredMarketings?.length === 0 && (
                     <span>

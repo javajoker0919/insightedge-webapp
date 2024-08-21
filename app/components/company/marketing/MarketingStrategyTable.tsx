@@ -1,6 +1,9 @@
 import { useCallback, useEffect } from "react";
 import { FaLightbulb } from "react-icons/fa";
-import { coloredChannelList, marketingStrategy } from "../../Constants";
+import {
+  coloredChannelList,
+  marketingStrategy,
+} from "../../../app/company/[id]/Constants";
 import { MarketingProps } from "./MarketingStrategySection";
 
 interface MSTableCompProps {
@@ -37,7 +40,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
   return (
     <>
       {strats.length > 0 ? (
-        <table className="w-full relative border-collapse">
+        <table className="w-full relative border-collapse min-w-[1200px]">
           <thead className="sticky z-10 top-0">
             <TableHeadingRow />
           </thead>

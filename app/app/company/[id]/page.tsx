@@ -26,7 +26,7 @@ import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
 import SummarySection from "../../../components/company/summary/SummarySection";
 import AboutSection from "./AboutSection";
 import { FollowButton, ShareButton } from "./components";
-import MarketingStrategySection from "./components/marketing/MarketingStrategySection";
+import MarketingStrategySection from "../../../components/company/marketing/MarketingStrategySection";
 
 ChartJS.register(
   CategoryScale,
@@ -195,7 +195,11 @@ const CompanyDetailPage: React.FC = () => {
             setSelectedQuarter={setSelectedQuarter}
             isLoading={isLoadingYearQuarters}
           />
-          <SummarySection year={selectedYear} quarter={selectedQuarter} etID={selectedETID} />
+          <SummarySection
+            year={selectedYear}
+            quarter={selectedQuarter}
+            etID={selectedETID}
+          />
           <AboutSection companyData={companyData} />
         </div>
       </div>

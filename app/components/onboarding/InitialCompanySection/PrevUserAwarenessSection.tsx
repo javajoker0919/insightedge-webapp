@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { orgInfoAtom, userInfoAtom, watchlistAtom } from "@/utils/atoms";
-import { useAtom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
-import Loading from "../Loading";
+
+import { Loading } from "../..";
 import { supabase } from "@/utils/supabaseClient";
 import { createCustomer } from "@/utils/apiClient";
 
@@ -15,7 +16,7 @@ const UserAwareness = ({
   website,
   companyOverview,
   productsServices,
-  setOnboardingStep
+  setOnboardingStep,
 }: {
   formData: any;
   website: any;
@@ -26,13 +27,13 @@ const UserAwareness = ({
   const router = useRouter();
   const setOrgInfo = useSetAtom(orgInfoAtom);
   const setWatchList = useSetAtom(watchlistAtom);
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const setUserInfo = useSetAtom(userInfoAtom);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateProfile = async () => {
     try {
       const {
-        data: { user }
+        data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) throw new Error("No user found");
@@ -46,7 +47,7 @@ const UserAwareness = ({
           email: user.email,
           first_name: formData.firstName,
           last_name: formData.lastName,
-          onboarding_status: true
+          onboarding_status: true,
         })
         .select()
         .single();
@@ -60,7 +61,7 @@ const UserAwareness = ({
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: formData.companyName
+        companyName: formData.companyName,
       });
 
       const insertOrganizationData = {
@@ -68,7 +69,7 @@ const UserAwareness = ({
         website: website,
         overview: companyOverview,
         products: productsServices,
-        creator_id: userData.id
+        creator_id: userData.id,
       };
 
       const { data: orgData, error: orgError } = await supabase
@@ -85,13 +86,13 @@ const UserAwareness = ({
         website: orgData.website,
         overview: orgData.overview,
         products: orgData.products,
-        creatorID: userData.id
+        creatorID: userData.id,
       });
 
       const insertWatchlistData = {
         name: "Watchlist",
         organization_id: orgData.id,
-        creator_id: userData.id
+        creator_id: userData.id,
       };
 
       const { data: watchlistData, error: watchlistError } = await supabase
@@ -108,8 +109,8 @@ const UserAwareness = ({
           name: watchlistData.name,
           organizationID: watchlistData.organization_id,
           creatorID: watchlistData.creator_id,
-          uuid: watchlistData.uuid
-        }
+          uuid: watchlistData.uuid,
+        },
       ]);
       router.replace(`/app/watchlist/${watchlistData.uuid}`);
     } catch (error) {
@@ -133,7 +134,7 @@ const UserAwareness = ({
                   "Podcast or radio",
                   "Streaming platforms (YouTube, Twitch, etc.)",
                   "Email",
-                  "Word of mouth"
+                  "Word of mouth",
                 ].map((option, index) => (
                   <div key={index} className="flex items-center">
                     <input
