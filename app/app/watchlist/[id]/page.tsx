@@ -282,8 +282,9 @@ export default function WatchlistPage() {
       ) : (
         <div className="relative w-full">
           <div className="flex w-full items-center gap-4">
-            <div className="flex items-center justify-between flex-grow relative pl-4 py-2">
+            <div className="flex items-center flex-grow relative pl-4 py-2">
               <h1 className="font-bold text-lg">{watchlistName}</h1>
+              <div className="flex-grow"></div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleSortCompanies}
@@ -336,12 +337,14 @@ export default function WatchlistPage() {
                 </div>
               )}
               {isSearchBarOpen && (
-                <CompanySearchbar
-                  type={"watchlist"}
-                  isSearchBarOpen={isSearchBarOpen}
-                  setIsSearchBarOpen={setIsSearchBarOpen}
-                  setWatchlistCompanies={setWatchlistCompanies}
-                />
+                <div className="flex justify-end">
+                  <CompanySearchbar
+                    type={"watchlist"}
+                    isSearchBarOpen={isSearchBarOpen}
+                    setIsSearchBarOpen={setIsSearchBarOpen}
+                    setWatchlistCompanies={setWatchlistCompanies}
+                  />
+                </div>
               )}
             </div>
 
