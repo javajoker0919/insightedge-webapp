@@ -9,7 +9,7 @@ import {
 } from "@/app/components";
 
 const Onboarding = () => {
-  const [onboardingStep, setOnboardingStep] = useState<number>(2);
+  const [onboardingStep, setOnboardingStep] = useState<number>(0);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
