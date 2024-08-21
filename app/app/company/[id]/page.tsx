@@ -174,15 +174,12 @@ const CompanyDetailPage: React.FC = () => {
       <div className="flex gap-4 w-full">
         <div className="h-full w-full space-y-4 overflow-hidden">
           <OpportunitiesSection
-            companyID={parseInt(companyID)}
             companyName={companyData.name}
-            year={selectedYear}
-            quarter={selectedQuarter}
+            etID={selectedETID}
           />
           <MarketingStrategySection
             companyName={companyData.name}
             etID={selectedETID}
-            isLoading={isFetchingETID}
           />
           <IncomeStatementSection companyID={parseInt(companyID)} />
           <RecentNewsSection companyID={parseInt(companyID)} />

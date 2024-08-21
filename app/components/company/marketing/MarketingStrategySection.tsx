@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-
+import axios from "axios";
+import { useAtomValue, useSetAtom } from "jotai";
 import { supabase } from "@/utils/supabaseClient";
+
+import Modal from "@/app/components/Modal";
+import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import MarketingStrategyTable from "./MarketingStrategyTable";
-import MarketingPlanModal from "./MarketingPlanModal";
-import Loading from "@/app/components/Loading";
 import { generateTMAPI } from "@/utils/apiClient";
-import { userInfoAtom } from "@/utils/atoms";
-import { useSetAtom } from "jotai";
 import { useToastContext } from "@/contexts/toastContext";
+import { Loading } from "@/app/components";
 
 interface MarketingCompProps {
   companyName: string;
   etID: number | null;
-  isLoading: boolean;
 }
 
 export interface MarketingProps {
@@ -26,48 +26,41 @@ export interface MarketingProps {
   callToAction: string;
 }
 
-interface genTMResType {
-  call_to_action: string;
-  channel: string;
-  company_name: string;
-  earnings_transcript_id: number;
-  key_performance_indicators: string;
-  strategic_alignment: string;
-  tactic: string;
-  tactic_score: string;
-  target_personas: string;
-  value_proposition: string;
-}
-
 const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   companyName,
   etID,
-  isLoading,
 }) => {
   if (etID === null) {
     return null;
   }
 
   const { invokeToast } = useToastContext();
+  const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedStrats, setSelectedMS] = useState<MarketingProps | null>(null);
-  const [generalStrats, setGMs] = useState<MarketingProps[] | null>(null);
+  const [generalMarketings, setGMs] = useState<MarketingProps[] | null>(null);
   const [tailoredMarketings, setTMs] = useState<MarketingProps[] | null>(null);
-  const [isGeneralLoading, setIsGeneralLoading] = useState<boolean>(false);
-  const [isTailoredLoading, setIsTailoredLoading] = useState<boolean>(false);
+
+  const [isFetchingGM, setIsFetchingGM] = useState<boolean>(true);
+  const [isFetchingTM, setIsFetchingTM] = useState<boolean>(true);
   const [isGeneratingTM, setIsGeneratingTM] = useState<boolean>(false);
 
   useEffect(() => {
     if (etID) {
-      fetchMarketingStrategies(etID);
-      setTMs(null);
+      fetchGM(etID);
     }
   }, [etID]);
 
-  const fetchMarketingStrategies = async (etID: number) => {
-    setIsGeneralLoading(true);
-    setIsTailoredLoading(true);
+  useEffect(() => {
+    if (etID && orgInfo && orgInfo.id) {
+      fetchTM(etID, orgInfo.id);
+    }
+  }, [etID, orgInfo]);
+
+  const fetchGM = async (etID: number) => {
+    setIsFetchingGM(true);
+    setGMs(null);
 
     try {
       const { data, error } = await supabase
@@ -106,8 +99,52 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
     } catch (error) {
       console.error("Error fetching marketing strategies:", error);
     } finally {
-      setIsGeneralLoading(false);
-      setIsTailoredLoading(false);
+      setIsFetchingGM(false);
+    }
+  };
+
+  const fetchTM = async (etID: number, orgID: number) => {
+    setIsFetchingTM(true);
+    setTMs(null);
+
+    try {
+      const { data, error } = await supabase
+        .from("tailored_marketings")
+        .select(
+          `
+          tactic,
+          tactic_score, 
+          target_personas, 
+          channel, 
+          value_proposition, 
+          key_performance_indicators, 
+          strategic_alignment, 
+          call_to_action
+          `
+        )
+        .eq("earnings_transcript_id", etID)
+        .eq("organization_id", orgID);
+
+      if (error) throw error;
+
+      const strategies = data.map((item: any) => ({
+        tactic: item.tactic,
+        tacticScore: parseFloat(item.tactic_score),
+        targetPersonas: item.target_personas,
+        channel: item.channel,
+        valueProposition: item.value_proposition,
+        keyPerformanceIndicators: item.key_performance_indicators
+          .replace(/[\[\]"]/g, "")
+          .split(", "),
+        strategicAlignment: item.strategic_alignment,
+        callToAction: item.call_to_action,
+      }));
+
+      setTMs(strategies);
+    } catch (error) {
+      console.error("Error fetching tailored marketing strategies:", error);
+    } finally {
+      setIsFetchingTM(false);
     }
   };
 
@@ -122,10 +159,9 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       const { data } = await generateTMAPI([etID]);
 
       const formattedData: MarketingProps[] = data.marketings.map(
-        (item: genTMResType) => ({
+        (item: any) => ({
           tactic: item.tactic,
           tacticScore: parseFloat(item.tactic_score),
-          companyName: item.company_name,
           targetPersonas: item.target_personas,
           channel: item.channel,
           valueProposition: item.value_proposition,
@@ -166,28 +202,11 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   };
 
   return (
-    <div className="bg-primary border border-gray-300 rounded-lg bg-white overflow-hidden">
+    <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
       <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
-        {tailoredMarketings === null ? (
-          <div className="flex w-full justify-between items-center pr-4 py-1">
-            <h3 className="px-4 py-3 font-medium text-gray-700">
-              Marketing Strategy
-            </h3>
-            {tailoredMarketings === null && !isTailoredLoading && (
-              <button
-                onClick={handleGenerateTMs}
-                disabled={isGeneratingTM}
-                className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
-              >
-                {isGeneratingTM ? (
-                  <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
-                ) : (
-                  "Generate Tailored Marketing Strategies"
-                )}
-              </button>
-            )}
-          </div>
-        ) : (
+        {tailoredMarketings &&
+        tailoredMarketings.length > 0 &&
+        !isFetchingTM ? (
           <div className="flex">
             <button
               onClick={() => setActiveTab("general")}
@@ -210,62 +229,124 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
               Tailored Marketing Strategy
             </button>
           </div>
+        ) : (
+          <div className="flex w-full justify-between items-center pr-4 py-1">
+            <h3 className="px-4 py-3 font-medium text-gray-700">
+              Marketing Strategy
+            </h3>
+
+            {!isFetchingTM && (
+              <button
+                onClick={handleGenerateTMs}
+                disabled={isGeneratingTM}
+                className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+              >
+                {isGeneratingTM ? (
+                  <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
+                ) : (
+                  "Generate Tailored Marketing Strategies"
+                )}
+              </button>
+            )}
+          </div>
         )}
       </div>
 
-      {isLoading ? (
-        <LoadingSection />
-      ) : (
-        <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
-          {activeTab === "general" &&
-            (isGeneralLoading ? (
-              <LoadingSection />
-            ) : (
-              <>
-                <div className="p-4 bg-gray-100 text-black min-w-[1200px]">
-                  {companyName}'s top Marketing Strategy.
-                  {tailoredMarketings?.length === 0 && (
-                    <span>
-                      {`To find the best ways to sell your solutions to 
+      <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
+        {activeTab === "general" &&
+          (isFetchingGM ? (
+            <LoadingSection />
+          ) : (
+            <>
+              <div className="p-4 bg-gray-100 text-black min-w-[1200px]">
+                {companyName}'s top Marketing Strategy.
+                {tailoredMarketings?.length === 0 && (
+                  <span>
+                    {`To find the best ways to sell your solutions to 
                       ${companyName}, click "Generate Tailored Marketing
                       Strategy."`}
-                    </span>
-                  )}
-                </div>
-                {generalStrats && (
-                  <MarketingStrategyTable
-                    strategies={generalStrats}
-                    onQuickAction={handleQuickAction}
-                  />
+                  </span>
                 )}
-              </>
-            ))}
-          {activeTab === "tailored" &&
-            (isTailoredLoading ? (
-              <LoadingSection />
-            ) : (
-              <>
-                <div className="p-4 bg-gray-100 text-black">
-                  Below is your company specific marketing strategy. You can
-                  explore the top marketing tactics for selling your solutions
-                  to {companyName}
-                </div>
-                {tailoredMarketings && (
-                  <MarketingStrategyTable
-                    strategies={tailoredMarketings}
-                    onQuickAction={handleQuickAction}
-                  />
-                )}
-              </>
-            ))}
-        </div>
-      )}
+              </div>
+              {generalMarketings && (
+                <MarketingStrategyTable
+                  strategies={generalMarketings}
+                  onQuickAction={handleQuickAction}
+                />
+              )}
+            </>
+          ))}
+        {activeTab === "tailored" &&
+          (isFetchingTM ? (
+            <LoadingSection />
+          ) : (
+            <>
+              <div className="p-4 bg-gray-100 text-black">
+                Below is your company specific marketing strategy. You can
+                explore the top marketing tactics for selling your solutions to{" "}
+                {companyName}
+              </div>
+              {tailoredMarketings && (
+                <MarketingStrategyTable
+                  strategies={tailoredMarketings}
+                  onQuickAction={handleQuickAction}
+                />
+              )}
+            </>
+          ))}
+      </div>
 
-      <MarketingPlanModal
-        open={!!selectedStrats}
+      <Modal
+        wrapperClass="backdrop-blur-[2px]"
+        modalClass="w-full mx-16 min-w-[60rem] xl:min-w-[80rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
+        isOpen={!!selectedStrats}
         onClose={() => setSelectedMS(null)}
-        selectedStrats={selectedStrats}
-      />
+      >
+        <div className="p-3">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-primary-600">
+              Marketing Plan
+            </h2>
+          </div>
+
+          <div className="space-y-6">
+            <section>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                Key Performance Indicators
+              </h3>
+              <ul className="list-disc pl-8 space-y-3">
+                {selectedStrats?.keyPerformanceIndicators.map(
+                  (kpi: string, index: number) => (
+                    <li key={`kpi_${index}`}>
+                      <p className="text-gray-700">{kpi}</p>
+                    </li>
+                  )
+                )}
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                Strategic Alignment
+              </h3>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-gray-700">
+                  {selectedStrats?.strategicAlignment}
+                </p>
+              </div>
+            </section>
+
+            <section>
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                Call to Action
+              </h3>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-gray-700">{selectedStrats?.callToAction}</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
