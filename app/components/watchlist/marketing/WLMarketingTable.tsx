@@ -21,14 +21,14 @@ const getTextClass = (text: string) => {
     "bg-yellow-100 text-yellow-800",
     "bg-green-100 text-green-800",
     "bg-red-100 text-red-800",
-    "bg-gray-100 text-gray-800"
+    "bg-gray-100 text-gray-800",
   ];
   return classes[sum % classes.length];
 };
 
 const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
   strategies,
-  onQuickAction
+  onQuickAction,
 }) => {
   const marketings = strategies.length > 0 ? strategies : marketingStrategy;
 
@@ -59,7 +59,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
     <>
       {marketings.length > 0 ? (
         <div className="w-full lg:w-[600px] 2xl:w-full">
-          <table className="relative border-collapse min-w-[1200px] overflow-x-auto">
+          <table className="relative border-collapse min-w-[1200px] w-full overflow-x-auto">
             <thead className="sticky z-10 top-0">
               <TableHeadingRow />
             </thead>
