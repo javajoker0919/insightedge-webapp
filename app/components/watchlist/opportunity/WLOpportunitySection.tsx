@@ -33,6 +33,7 @@ export interface OpportunityProps {
     body: string;
   };
   reasoning: string;
+  date: string;
 }
 
 const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
@@ -81,7 +82,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
 
     try {
       const { data, error } = await supabase
-        .from("general_opportunities")
+        .from("general_opportunities_with_date_v1")
         .select(
           `
           name, 
@@ -92,35 +93,20 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
           engagement_outbounds, 
           email_subject, 
           email_body,
-          earnings_transcripts (
-            company_id
-          ),
-          reasoning
+          reasoning,
+          date,
+          company_id,
+          company_name
           `
         )
         .in("earnings_transcript_id", etIDs);
 
       if (error) throw error;
 
-      const companyIds = data.map(
-        (item: any) => item.earnings_transcripts.company_id
-      );
-      const { data: companiesData, error: companiesError } = await supabase
-        .from("companies")
-        .select("id, name")
-        .in("id", companyIds);
-
-      if (companiesError) throw companiesError;
-
-      const companyMap = companiesData.reduce((acc: any, company: any) => {
-        acc[company.id] = company.name;
-        return acc;
-      }, {});
-
-      const formattedData: OpportunityProps[] = data.map((item: any) => ({
+      const formattedData: OpportunityProps[] = data.map((item) => ({
         opportunityName: item.name,
         opportunityScore: item.score,
-        companyName: companyMap[item.earnings_transcripts.company_id],
+        companyName: item.company_name,
         targetBuyer: {
           role: item.buyer_role,
           department: item.buyer_department,
@@ -134,6 +120,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
           body: item.email_body,
         },
         reasoning: item.reasoning,
+        date: item.date,
       }));
 
       setGOs(formattedData);
@@ -155,12 +142,11 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
 
     try {
       const { data, error } = await supabase
-        .from("tailored_opportunities")
+        .from("tailored_opportunities_with_date_v1")
         .select(
           `
           name, 
           score, 
-          keywords, 
           buyer_role, 
           buyer_department, 
           engagement_inbounds, 
@@ -168,9 +154,10 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
           email_subject, 
           email_body,
           reasoning,
-          earnings_transcripts (
-            company_id
-          )
+          keywords,
+          date,
+          company_id,
+          company_name
           `
         )
         .eq("organization_id", orgID)
@@ -179,28 +166,16 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
       if (error) throw error;
 
       const companyIDs = Array.from(
-        new Set(data.map((item: any) => item.earnings_transcripts.company_id))
+        new Set(data.map((item) => item.company_id))
       );
 
       setCompanyCount(companyIDs.length);
 
-      const { data: companiesData, error: companiesError } = await supabase
-        .from("companies")
-        .select("id, name")
-        .in("id", companyIDs);
-
-      if (companiesError) throw companiesError;
-
-      const companyMap = companiesData.reduce((acc: any, company: any) => {
-        acc[company.id] = company.name;
-        return acc;
-      }, {});
-
       if (data) {
-        const formattedData: OpportunityProps[] = data.map((item: any) => ({
+        const formattedData: OpportunityProps[] = data.map((item) => ({
           opportunityName: item.name,
           opportunityScore: item.score,
-          companyName: companyMap[item.earnings_transcripts.company_id],
+          companyName: item.company_name,
           keywords: item.keywords,
           targetBuyer: {
             role: item.buyer_role,
@@ -215,6 +190,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             body: item.email_body,
           },
           reasoning: item.reasoning,
+          date: item.date,
         }));
 
         setTOs(formattedData);
@@ -258,6 +234,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             body: item.email_body,
           },
           reasoning: item.reasoning,
+          date: "",
         })
       );
 
