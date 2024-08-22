@@ -52,7 +52,3 @@ export interface ICompanyData {
   company_id: string;
   symbol: string;
 }
-export const latestCompanyEarningsData = atomWithStorage<{
-  data: ICompanyData[] | null;
-  storedAt: string | null;
-}>("latest-company-earnings-data", { data: null, storedAt: null });
