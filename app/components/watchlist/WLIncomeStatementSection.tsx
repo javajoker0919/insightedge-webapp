@@ -23,7 +23,7 @@ interface IncomeStatementType extends CompanyDataType {
   revenue_yoy_growth: number;
   net_income: number;
   net_income_yoy_growth: number;
-  date: string;
+  filling_date: string;
   period: string;
 }
 
@@ -59,7 +59,7 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
             `
             company_id,
             symbol,
-            date,
+            filling_date,
             period,
             revenue,
             revenue_yoy_growth,
@@ -69,7 +69,7 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
           )
           .in("symbol", companySymbols)
           .neq("period", "FY")
-          .order("date", { ascending: false });
+          .order("filling_date", { ascending: false });
 
       if (incomeStatementError) throw incomeStatementError;
 
@@ -80,7 +80,7 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
 
         if (
           !existingData ||
-          moment(curr.date).isAfter(moment(existingData.date))
+          moment(curr.filling_date).isAfter(moment(existingData.filling_date))
         ) {
           const updatedItem = {
             ...watchlistCompanies.find((e) => e.symbol === curr.symbol),
@@ -130,7 +130,9 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
         <table className="min-w-full">
           <thead>
             <tr>
-              <th className="text-left w-[150px] sm:w-[300px] p-2 text-xs sm:text-sm">Company</th>
+              <th className="text-left w-[150px] sm:w-[300px] p-2 text-xs sm:text-sm">
+                Company
+              </th>
               <th className="text-left p-2 text-xs sm:text-sm">As Of</th>
               <th className="text-left p-2 text-xs sm:text-sm">
                 Revenue <span className="text-xxs sm:text-xs">(QoQ)</span>
@@ -165,15 +167,23 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
                       <td className="p-2">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                           <p className={symbolClass}>{company.symbol}</p>
-                          <p className="font-medium text-xs sm:text-sm truncate">{company.name}</p>
+                          <p className="font-medium text-xs sm:text-sm truncate">
+                            {company.name}
+                          </p>
                         </div>
                       </td>
 
-                      <td title={company.period} className="text-xs sm:text-sm p-2">
-                        {company.date}
+                      <td
+                        title={company.period}
+                        className="text-xs sm:text-sm p-2"
+                      >
+                        {company.filling_date}
                       </td>
 
-                      <td title="Revenue/ Rev Growth" className="text-xs sm:text-sm p-2">
+                      <td
+                        title="Revenue/ Rev Growth"
+                        className="text-xs sm:text-sm p-2"
+                      >
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 uppercase">
                           {numeral(company.revenue).format("$0.0a")}
                           <div className="flex items-center">
@@ -189,12 +199,19 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
                                   : "text-red-700"
                               }`}
                             >
-                              ({numeral(company.revenue_yoy_growth).format("0.00")}%)
+                              (
+                              {numeral(company.revenue_yoy_growth).format(
+                                "0.00"
+                              )}
+                              %)
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td title="Income/ Inc Growth" className="text-xs sm:text-sm p-2">
+                      <td
+                        title="Income/ Inc Growth"
+                        className="text-xs sm:text-sm p-2"
+                      >
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 uppercase">
                           {numeral(company.net_income).format("$0.0a")}
                           <div className="flex items-center">
@@ -210,7 +227,11 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
                                   : "text-red-700"
                               }`}
                             >
-                              ({numeral(company.net_income_yoy_growth).format("0.00")}%)
+                              (
+                              {numeral(company.net_income_yoy_growth).format(
+                                "0.00"
+                              )}
+                              %)
                             </p>
                           </div>
                         </div>
