@@ -1,12 +1,15 @@
 "use client";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState, useCallback, useRef } from "react";
 import { FaClock, FaRecycle, FaBookReader } from "react-icons/fa";
 import { FaPuzzlePiece } from "react-icons/fa6";
 import { LuBrainCircuit } from "react-icons/lu";
 import { MdOutlineToken } from "react-icons/md";
 import { IoTelescope } from "react-icons/io5";
-import React from "react";
+import { useAtomValue } from "jotai";
+
+import { userMetadataAtom } from "@/utils/atoms";
 
 interface HeaderProps {
   isHeaderVisible: boolean;
@@ -132,58 +135,78 @@ const NavMenu: React.FC<{
   isMenuOpen: boolean;
   toggleMenu: () => void;
   scrollToSection: (sectionId: string) => void;
-}> = ({ isMenuOpen, toggleMenu, scrollToSection }) => (
-  <nav
-    className={`flex flex-col md:flex-row md:justify-end items-center space-y-4 md:space-y-0 md:space-x-8 bg-white md:bg-transparent p-4 md:p-0`}
-  >
-    <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
-      <a
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          scrollToSection("salesandmarketing");
-        }}
-        className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
-      >
-        Benefits
-      </a>
-      <a
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          scrollToSection("summary");
-        }}
-        className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
-      >
-        Features
-      </a>
-      <a
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          scrollToSection("pricing");
-        }}
-        className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
-      >
-        Pricing
-      </a>
-    </div>
-    <div className="flex flex-col md:flex-row items-center gap-4 md:gap-4">
-      <a
-        href="/auth/sign-in"
-        className="w-full md:w-auto px-4 md:py-2 text-center md:hover:text-primary-600 transition-colors md:border rounded-full flex items-center justify-center"
-      >
-        Log In
-      </a>
-      <a
-        href="/auth/sign-up"
-        className="w-full md:w-auto px-4 md:py-2 text-center md:bg-primary-600 text-black md:text-white rounded-full md:hover:bg-primary-700 transition-colors flex items-center justify-center"
-      >
-        Sign Up
-      </a>
-    </div>
-  </nav>
-);
+}> = ({ isMenuOpen, toggleMenu, scrollToSection }) => {
+  const router = useRouter();
+  const userMetadata = useAtomValue(userMetadataAtom);
+
+  const handleDashboardClick = () => {
+    router.push("/app");
+  };
+
+  return (
+    <nav
+      className={`flex flex-col md:flex-row md:justify-end items-center space-y-4 md:space-y-0 md:space-x-8 bg-white md:bg-transparent p-4 md:p-0`}
+    >
+      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection("salesandmarketing");
+          }}
+          className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
+        >
+          Benefits
+        </a>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection("summary");
+          }}
+          className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
+        >
+          Features
+        </a>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection("pricing");
+          }}
+          className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
+        >
+          Pricing
+        </a>
+      </div>
+      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-4">
+        {userMetadata ? (
+          <button
+            onClick={handleDashboardClick}
+            className="w-full md:w-auto px-4 md:py-2 text-center md:bg-primary-600 text-black md:text-white rounded-full md:hover:bg-primary-700 transition-colors flex items-center justify-center"
+          >
+            Dashboard
+          </button>
+        ) : (
+          <>
+            <a
+              href="/auth/sign-in"
+              className="w-full md:w-auto px-4 md:py-2 text-center md:hover:text-primary-600 transition-colors md:border rounded-full flex items-center justify-center"
+            >
+              Log In
+            </a>
+            <a
+              href="/auth/sign-up"
+              className="w-full md:w-auto px-4 md:py-2 text-center md:bg-primary-600 text-black md:text-white rounded-full md:hover:bg-primary-700 transition-colors flex items-center justify-center"
+            >
+              Sign Up
+            </a>
+          </>
+        )}
+      </div>
+    </nav>
+  );
+};
 
 const MainContent: React.FC<{
   salesAndMarketingSectionRef: React.RefObject<HTMLElement>;

@@ -6,12 +6,8 @@ import { supabase } from "@/utils/supabaseClient";
 import Modal from "@/app/components/Modal";
 import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
-import {
-  generateTailoredOpportunitiesAPI,
-  generateTOAPI,
-} from "@/utils/apiClient";
+import { generateTOAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
-import { Details } from "../../../app/company/[id]/components";
 import { Loading } from "@/app/components";
 
 interface OpportunitiesProps {
