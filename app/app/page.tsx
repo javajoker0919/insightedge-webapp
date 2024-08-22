@@ -1,12 +1,13 @@
 "use client";
 
-import { useAtom } from "jotai";
-import { userMetadataAtom, watchlistAtom } from "@/utils/atoms";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+
+import { watchlistAtom } from "@/utils/atoms";
+import { Loading } from "../components";
 
 export default function DashboardPage() {
-  const [userMetadata] = useAtom(userMetadataAtom);
   const [watchlist] = useAtom(watchlistAtom);
   const router = useRouter();
 
@@ -18,8 +19,7 @@ export default function DashboardPage() {
 
   return (
     <div className="text-black mx-auto flex flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-      <p className="mb-8">Welcome to your dashboard.</p>
+      <Loading />
     </div>
   );
 }

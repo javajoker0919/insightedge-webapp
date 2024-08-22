@@ -14,8 +14,10 @@ import {
   userMetadataAtom,
   userInfoAtom,
   orgInfoAtom,
-  watchlistAtom
+  profileAtom,
+  watchlistAtom,
 } from "@/utils/atoms";
+import { Logo } from "@/app/components";
 
 const SignIn = () => {
   const router = useRouter();
@@ -23,6 +25,7 @@ const SignIn = () => {
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const setOrgInfo = useSetAtom(orgInfoAtom);
+  const setProfile = useSetAtom(profileAtom);
   const setWatchlist = useSetAtom(watchlistAtom);
 
   const { validateEmail, validatePassword } = useValidation();
@@ -52,7 +55,7 @@ const SignIn = () => {
     if (!isValidForm) {
       setErrors({
         email: validateEmail(email).error,
-        password: validatePassword(password).error
+        password: validatePassword(password).error,
       });
       invokeToast("error", "Please fill in all fields correctly", "top");
       return;
@@ -63,7 +66,7 @@ const SignIn = () => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
       if (error) throw error;
 
@@ -87,7 +90,7 @@ const SignIn = () => {
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: ""
+        companyName: "",
       });
 
       invokeToast("success", "You have successfully logged in!", "top");
@@ -109,13 +112,19 @@ const SignIn = () => {
 
       if (orgError) throw orgError;
 
+      setProfile({
+        user_id: userData.id,
+        org_id: orgData.id,
+        credits: null,
+      });
+
       setOrgInfo({
         id: orgData.id,
         name: orgData.name,
         website: orgData.website,
         overview: orgData.overview,
         products: orgData.products,
-        creatorID: orgData.creator_id
+        creatorID: orgData.creator_id,
       });
 
       const { data: watchlistData, error: watchlistError } = await supabase
@@ -142,7 +151,7 @@ const SignIn = () => {
             organizationID: item.organization_id,
             creatorID: item.creator_id,
             uuid: item.uuid,
-            company_count: item.watchlist_companies?.length
+            company_count: item.watchlist_companies?.length,
           };
         })
       );
@@ -163,8 +172,8 @@ const SignIn = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`
-        }
+          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
+        },
       });
 
       if (error) {
@@ -178,15 +187,17 @@ const SignIn = () => {
   return (
     <div className="flex flex-col xl:flex-row w-full h-screen">
       <div className="flex flex-col w-full xl:w-1/2 bg-white">
-        <Link href="/app" className="flex items-center mt-4 ml-4">
-          <Image
-            src="/favicon.png"
-            alt="ProspectEdge Logo"
-            width={40}
-            height={40}
-          />
-          <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
-        </Link>
+        <div className="flex items-center mt-4 ml-4">
+          <Link href="/app">
+            <Image
+              src="/favicon.png"
+              alt="ProspectEdge Logo"
+              width={40}
+              height={40}
+            />
+          </Link>
+          <Logo />
+        </div>
         <div className="flex flex-col mt-8 md:mt-24 items-center w-full px-4 md:px-0">
           <div className="flex flex-col w-full max-w-[26rem] text-center">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-3">
@@ -234,7 +245,9 @@ const SignIn = () => {
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-red-500 text-xs md:text-sm mt-1">{errors.email}</p>
+                  <p className="text-red-500 text-xs md:text-sm mt-1">
+                    {errors.email}
+                  </p>
                 )}
               </div>
               <div className="flex flex-col w-full mt-2">
@@ -270,7 +283,9 @@ const SignIn = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-xs md:text-sm mt-1">{errors.password}</p>
+                  <p className="text-red-500 text-xs md:text-sm mt-1">
+                    {errors.password}
+                  </p>
                 )}
               </div>
               <Link

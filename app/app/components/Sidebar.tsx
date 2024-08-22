@@ -15,6 +15,7 @@ import {
 import { watchlistAtom, isSidebarExpandedAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import Image from "next/image";
+import { Logo } from "@/app/components";
 
 const Sidebar: React.FC = () => {
   const params = useParams();
@@ -90,13 +91,8 @@ const Sidebar: React.FC = () => {
 
 const SidebarHeader: React.FC<{ watchlist: any }> = ({ watchlist }) => {
   return (
-    <div className="p-3">
-      <Link
-        href={`/app/watchlist/${watchlist?.[0]?.uuid}`}
-        className={`text-2xl font-bold gap-2 text-primary-600 flex items-center p-3`}
-      >
-        <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
-      </Link>
+    <div className="p-6">
+      <Logo />
     </div>
   );
 };

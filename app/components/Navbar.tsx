@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { supabase } from "@/utils/supabaseClient";
 import Image from "next/image";
+import Logo from "./Logo";
 
 export default function Navbar() {
   const router = useRouter();
@@ -36,12 +37,7 @@ export default function Navbar() {
     <header className="py-4 fixed top-0 left-0 right-0 bg-white z-10 shadow-md">
       <nav className="container mx-auto flex justify-between items-center px-4">
         <div className="text-2xl font-bold text-blue-600 flex items-center">
-          <Image
-            src={"/logo.png"}
-            alt={"ProspectEdge"}
-            width={200}
-            height={40}
-          />
+          <Logo />
         </div>
         <div className="sm:hidden">
           <button onClick={toggleMenu} className="text-blue-600">

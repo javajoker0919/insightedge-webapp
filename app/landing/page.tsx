@@ -10,6 +10,8 @@ import { IoTelescope } from "react-icons/io5";
 import { useAtomValue } from "jotai";
 
 import { userMetadataAtom } from "@/utils/atoms";
+import { Logo } from "../components";
+import Link from "next/link";
 
 interface HeaderProps {
   isHeaderVisible: boolean;
@@ -80,15 +82,17 @@ const Header: React.FC<HeaderProps> = ({
     }`}
   >
     <div className="flex flex-wrap justify-between items-center px-4">
-      <a className="flex items-center cursor-pointer" href="/app">
-        <Image
-          src={"/favicon.png"}
-          alt={"ProspectEdge"}
-          width={40}
-          height={40}
-        />
-        <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
-      </a>
+      <div className="flex items-center cursor-pointer">
+        <Link href={`/app`}>
+          <Image
+            src={"/favicon.png"}
+            alt={"ProspectEdge"}
+            width={40}
+            height={40}
+          />
+        </Link>
+        <Logo />
+      </div>
       <div className="md:hidden">
         <button
           onClick={toggleMenu}
@@ -947,12 +951,7 @@ const Footer: React.FC = () => (
             width={40}
             height={40}
           />
-          <Image
-            src={"/logo.png"}
-            alt={"ProspectEdge"}
-            width={200}
-            height={40}
-          />
+          <Logo />
         </div>
         <div className="flex flex-row gap-4 mt-6 lg:mt-8 lg:ml-[100px]">
           {[{ alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" }].map(

@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { IoClose } from "react-icons/io5";
 import { useAtomValue } from "jotai";
 
 import { supabase } from "@/utils/supabaseClient";
 import { watchlistAtom } from "@/utils/atoms";
-import { IoClose } from "react-icons/io5";
 import { CompanyProps } from "./InitialCompanySection";
 
 interface CompanySearchbarProps {
