@@ -5,11 +5,7 @@ import { useParams } from "next/navigation";
 import { useAtomValue, useSetAtom } from "jotai";
 import { IoAddOutline, IoPencil, IoTrash } from "react-icons/io5";
 import { supabase } from "@/utils/supabaseClient";
-import {
-  latestCompanyEarningsData,
-  userInfoAtom,
-  watchlistAtom,
-} from "@/utils/atoms";
+import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import moment from "moment";
@@ -40,7 +36,6 @@ export default function WatchlistPage() {
   const userInfo = useAtomValue(userInfoAtom);
   const watchlist = useAtomValue(watchlistAtom);
   const setWatchlist = useSetAtom(watchlistAtom);
-  const setLastestETData = useSetAtom(latestCompanyEarningsData);
   const [watchlistName, setWatchlistName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -136,10 +131,6 @@ export default function WatchlistPage() {
     }
     if (userInfo?.id) fetchLatestWatchlistsData(userInfo.id);
     if (watchlistCompanies.length > 0) fetchCompanyData();
-
-    return () => {
-      setLastestETData({ data: null, storedAt: null });
-    };
   }, [userInfo?.id, isSearchBarOpen, watchlistCompanies]);
 
   useEffect(() => {
@@ -267,7 +258,6 @@ export default function WatchlistPage() {
         group.reduce((a, b) => (moment(a.date).isAfter(moment(b.date)) ? a : b))
       );
 
-      setLastestETData({ data: sortedETData, storedAt: moment().format() });
       // return sortedETData;
     }
   };
