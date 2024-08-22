@@ -2,7 +2,12 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAtom, useAtomValue } from "jotai";
-import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";
+import {
+  userMetadataAtom,
+  userInfoAtom,
+  orgInfoAtom,
+  watchlistAtom,
+} from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
@@ -10,7 +15,9 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom);
-  const userInfo = useAtomValue(userInfoAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [orgInfo, setOrgInfo] = useAtom(orgInfoAtom);
+  const [watchlist, setWatchlist] = useAtom(watchlistAtom);
 
   const authPaths = [
     "/auth/sign-in",
@@ -23,7 +30,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/landing",
     "/landing/app",
     "/terms",
-    "/privacy"
+    "/privacy",
   ];
   const landingPath = "/";
 
@@ -31,29 +38,18 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     const checkUser = async () => {
       try {
         const {
-          data: { session }
+          data: { session },
         } = await supabase.auth.getSession();
 
         if (session?.user) {
           setUserMetadata(session.user.user_metadata);
-
-          // Check if onboardingStatus is true and redirect if necessary
-          // if (userInfo) {
-          //   if (
-          //     !userInfo.onboardingStatus &&
-          //     !authPaths.includes(pathname) &&
-          //     pathname !== landingPath
-          //   ) {
-          //     router.push("/auth/create-profile");
-          //   }
-          // }
         } else {
           setUserMetadata(null);
-          if (
-            !userMetadata &&
-            !authPaths.includes(pathname) &&
-            pathname !== landingPath
-          ) {
+          setUserInfo(null);
+          setOrgInfo(null);
+          setWatchlist(null);
+
+          if (!authPaths.includes(pathname) && pathname !== landingPath) {
             router.push("/auth/sign-in");
           }
         }
