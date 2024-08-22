@@ -20,6 +20,7 @@ import OnboardingUserProfileSection from "./onboarding/UserProfileSection";
 import OnboardingCompanyProfileSection from "./onboarding/CompanyProfileSection";
 import OnboardingInitialCompanySection from "./onboarding/InitialCompanySection/InitialCompanySection";
 import NoDataSection from "./NoDataSection";
+import Logo from "./Logo";
 
 export {
   CompanySearchbar,
@@ -44,4 +45,5 @@ export {
   OnboardingCompanyProfileSection,
   OnboardingInitialCompanySection,
   NoDataSection,
+  Logo,
 };

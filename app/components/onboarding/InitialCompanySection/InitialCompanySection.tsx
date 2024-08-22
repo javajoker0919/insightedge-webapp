@@ -1,13 +1,17 @@
 "use client";
 
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { orgInfoAtom, userInfoAtom, watchlistAtom } from "@/utils/atoms";
 import { useSetAtom } from "jotai";
-import Image from "next/image";
 
 import { Loading } from "../..";
 import { supabase } from "@/utils/supabaseClient";
+import {
+  orgInfoAtom,
+  userInfoAtom,
+  profileAtom,
+  watchlistAtom,
+} from "@/utils/atoms";
 import { createCustomer } from "@/utils/apiClient";
 import OnboardCompanySearchbar from "./OnboardCompanySearchbar";
 import OnboardSimilarCompanySection from "./OnboardSimilarCompanySection";
@@ -25,7 +29,7 @@ const OnboardingInitialCompanySection = ({
   website,
   companyOverview,
   productsServices,
-  setOnboardingStep
+  setOnboardingStep,
 }: {
   formData: any;
   website: any;
@@ -34,6 +38,7 @@ const OnboardingInitialCompanySection = ({
   setOnboardingStep: any;
 }) => {
   const router = useRouter();
+  const setProfile = useSetAtom(profileAtom);
   const setOrgInfo = useSetAtom(orgInfoAtom);
   const setWatchList = useSetAtom(watchlistAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
@@ -44,7 +49,7 @@ const OnboardingInitialCompanySection = ({
   const handleCreateProfile = async () => {
     try {
       const {
-        data: { user }
+        data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) throw new Error("No user found");
@@ -58,7 +63,7 @@ const OnboardingInitialCompanySection = ({
           email: user.email,
           first_name: formData.firstName,
           last_name: formData.lastName,
-          onboarding_status: true
+          onboarding_status: true,
         })
         .select()
         .single();
@@ -72,7 +77,7 @@ const OnboardingInitialCompanySection = ({
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: formData.companyName
+        companyName: formData.companyName,
       });
 
       const insertOrganizationData = {
@@ -80,7 +85,7 @@ const OnboardingInitialCompanySection = ({
         website: website,
         overview: companyOverview,
         products: productsServices,
-        creator_id: userData.id
+        creator_id: userData.id,
       };
 
       const { data: orgData, error: orgError } = await supabase
@@ -97,13 +102,19 @@ const OnboardingInitialCompanySection = ({
         website: orgData.website,
         overview: orgData.overview,
         products: orgData.products,
-        creatorID: userData.id
+        creatorID: userData.id,
+      });
+
+      setProfile({
+        user_id: userData.id,
+        org_id: orgData.id,
+        credits: null,
       });
 
       const insertWatchlistData = {
         name: "Watchlist",
         organization_id: orgData.id,
-        creator_id: userData.id
+        creator_id: userData.id,
       };
 
       const { data: watchlistData, error: watchlistError } = await supabase
@@ -120,18 +131,17 @@ const OnboardingInitialCompanySection = ({
           name: watchlistData.name,
           organizationID: watchlistData.organization_id,
           creatorID: watchlistData.creator_id,
-          uuid: watchlistData.uuid
-        }
+          uuid: watchlistData.uuid,
+        },
       ]);
 
-      const companyIDs = companies.map(company => company.id);
+      const companyIDs = companies.map((company) => company.id);
 
-      const { data: watchlistCompanies, error: watchlistCompanyError } = await supabase
-        .from("watchlist_companies")
-        .insert(
-          companyIDs.map(companyId => ({
+      const { data: watchlistCompanies, error: watchlistCompanyError } =
+        await supabase.from("watchlist_companies").insert(
+          companyIDs.map((companyId) => ({
             watchlist_id: watchlistData.id,
-            company_id: companyId
+            company_id: companyId,
           }))
         );
 
