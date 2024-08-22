@@ -69,7 +69,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
 
     try {
       const { data, error } = await supabase
-        .from("general_marketings")
+        .from("general_marketings_with_date_v1")
         .select(
           `
           tactic, 
@@ -80,34 +80,19 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
           key_performance_indicators, 
           strategic_alignment, 
           call_to_action, 
-          earnings_transcripts (
-            company_id
-          )
+          date, 
+          company_id, 
+          company_name
           `
         )
         .in("earnings_transcript_id", etIDs);
 
       if (error) throw error;
 
-      const companyIds = data.map(
-        (item: any) => item.earnings_transcripts.company_id
-      );
-      const { data: companiesData, error: companiesError } = await supabase
-        .from("companies")
-        .select("id, name")
-        .in("id", companyIds);
-
-      if (companiesError) throw companiesError;
-
-      const companyMap = companiesData.reduce((acc: any, company: any) => {
-        acc[company.id] = company.name;
-        return acc;
-      }, {});
-
       const strategies = data.map((item: any) => ({
         tactic: item.tactic,
         tacticScore: parseFloat(item.tactic_score),
-        companyName: companyMap[item.earnings_transcripts.company_id],
+        companyName: item.company_name,
         targetPersonas: item.target_personas,
         channel: item.channel,
         valueProposition: item.value_proposition,
@@ -116,6 +101,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
           .split(", "),
         strategicAlignment: item.strategic_alignment,
         callToAction: item.call_to_action,
+        date: item.date,
       }));
 
       setGMs(strategies);
@@ -137,7 +123,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
 
     try {
       const { data, error } = await supabase
-        .from("tailored_marketings")
+        .from("tailored_marketings_with_date_v1")
         .select(
           `
           tactic, 
@@ -148,9 +134,9 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
           key_performance_indicators, 
           strategic_alignment, 
           call_to_action, 
-          earnings_transcripts (
-            company_id
-          )
+          date, 
+          company_id, 
+          company_name
           `
         )
         .eq("organization_id", orgID)
@@ -159,27 +145,15 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
       if (error) throw error;
 
       const companyIDs = Array.from(
-        new Set(data.map((item: any) => item.earnings_transcripts.company_id))
+        new Set(data.map((item: any) => item.company_id))
       );
 
       setCompanyCount(companyIDs.length);
 
-      const { data: companiesData, error: companiesError } = await supabase
-        .from("companies")
-        .select("id, name")
-        .in("id", companyIDs);
-
-      if (companiesError) throw companiesError;
-
-      const companyMap = companiesData.reduce((acc: any, company: any) => {
-        acc[company.id] = company.name;
-        return acc;
-      }, {});
-
       const marketings = data.map((item: any) => ({
         tactic: item.tactic,
         tacticScore: parseFloat(item.tactic_score),
-        companyName: companyMap[item.earnings_transcripts.company_id],
+        companyName: item.company_name,
         targetPersonas: item.target_personas,
         channel: item.channel,
         valueProposition: item.value_proposition,
@@ -188,6 +162,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
           .split(", "),
         strategicAlignment: item.strategic_alignment,
         callToAction: item.call_to_action,
+        date: item.date,
       }));
 
       setTMs(marketings);
