@@ -10,7 +10,7 @@ import { MdOutlineToken } from "react-icons/md";
 import { IoTelescope } from "react-icons/io5";
 
 import { userMetadataAtom } from "@/utils/atoms";
-import { Logo } from "../components";
+import { Logo } from "..";
 import Link from "next/link";
 
 interface HeaderProps {

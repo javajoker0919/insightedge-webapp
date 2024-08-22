@@ -19,7 +19,7 @@ export default function DashboardPage() {
 
   return (
     <div className="text-black mx-auto flex flex-col items-center justify-center">
-      <Loading />
+      {/* <Loading /> */}
     </div>
   );
 }

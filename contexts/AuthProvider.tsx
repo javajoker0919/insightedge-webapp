@@ -10,6 +10,7 @@ import {
   watchlistAtom,
 } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
+import { Loading } from "@/app/components";
 
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const router = useRouter();
@@ -17,9 +18,10 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setProfile = useSetAtom(profileAtom);
+  const setWatchlist = useSetAtom(watchlistAtom);
+
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
   const setOrgInfo = useSetAtom(orgInfoAtom);
-  const setWatchlist = useSetAtom(watchlistAtom);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,15 +33,13 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/reset-password",
     "/auth/reset-confirm",
     "/auth/reset-success",
-    "/landing",
-    "/landing/app",
-    "/terms",
-    "/privacy",
   ];
-  const landingPath = "/";
+
+  const publicPaths = ["/", "/terms", "/privacy"];
 
   useEffect(() => {
     checkUser();
+
     const intervalId = setInterval(checkUser, 60000); // Check every 60 seconds
 
     const { data: authListener } = supabase.auth.onAuthStateChange(() => {
@@ -50,7 +50,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
       clearInterval(intervalId); // Cleanup interval on unmount
       authListener.subscription.unsubscribe();
     };
-  }, [pathname, userInfo]); // Effect depends on pathname changes
+  }, [pathname]); // Effect depends on pathname changes
 
   const checkUser = async () => {
     try {
@@ -60,6 +60,10 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
       if (session?.user) {
         setUserMetadata(session.user.user_metadata);
+
+        if (authPaths.includes(pathname)) {
+          router.push("/app");
+        }
       } else {
         setUserMetadata(null);
         setProfile(null);
@@ -68,9 +72,11 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
         setUserInfo(null);
         setOrgInfo(null);
 
-        if (!authPaths.includes(pathname) && pathname !== landingPath) {
-          router.push("/auth/sign-in");
+        if (publicPaths.includes(pathname)) {
+          return;
         }
+
+        router.push("/auth/sign-in");
       }
     } catch (error) {
       console.error("Failed to verify user session:", error);
@@ -84,7 +90,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center w-screen h-screen">
-        <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></span>
+        <Loading />
       </div>
     );
   }
