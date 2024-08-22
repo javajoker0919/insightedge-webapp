@@ -65,8 +65,6 @@ const Sidebar: React.FC = () => {
       >
         <SidebarHeader watchlist={watchlist} />
         <SidebarMenu
-          watchlist={watchlist}
-          paramUUID={paramUUID}
           setIsExpanded={setIsExpanded}
           isSettingsExpanded={isSettingsExpanded}
           toggleSettings={toggleSettings}
@@ -98,25 +96,15 @@ const SidebarHeader: React.FC<{ watchlist: any }> = ({ watchlist }) => {
 };
 
 const SidebarMenu: React.FC<{
-  watchlist: any;
-  paramUUID: string;
   setIsExpanded: (value: boolean) => void;
   isSettingsExpanded: boolean;
   toggleSettings: () => void;
-}> = ({
-  watchlist,
-  paramUUID,
-  setIsExpanded,
-  isSettingsExpanded,
-  toggleSettings,
-}) => (
+}> = ({ setIsExpanded, isSettingsExpanded, toggleSettings }) => (
   <div className="p-3">
     <ul>
       <li className="mb-1">
         <Link
-          href={`/app${
-            watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
-          }`}
+          href={`/app`}
           onClick={() => setIsExpanded(false)}
           className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
         >
