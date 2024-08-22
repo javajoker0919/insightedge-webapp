@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useAtomValue } from "jotai";
+
 import { FaClock, FaRecycle, FaBookReader } from "react-icons/fa";
 import { FaPuzzlePiece } from "react-icons/fa6";
 import { LuBrainCircuit } from "react-icons/lu";
 import { MdOutlineToken } from "react-icons/md";
 import { IoTelescope } from "react-icons/io5";
-import { useAtomValue } from "jotai";
 
 import { userMetadataAtom } from "@/utils/atoms";
 import { Logo } from "../components";
@@ -116,36 +116,21 @@ const Header: React.FC<HeaderProps> = ({
         </button>
       </div>
       <div className="hidden md:block flex-grow">
-        <NavMenu
-          isMenuOpen={isMenuOpen}
-          toggleMenu={toggleMenu}
-          scrollToSection={scrollToSection}
-        />
+        <NavMenu scrollToSection={scrollToSection} />
       </div>
     </div>
     {isMenuOpen && (
       <div className="md:hidden w-full">
-        <NavMenu
-          isMenuOpen={isMenuOpen}
-          toggleMenu={toggleMenu}
-          scrollToSection={scrollToSection}
-        />
+        <NavMenu scrollToSection={scrollToSection} />
       </div>
     )}
   </header>
 );
 
 const NavMenu: React.FC<{
-  isMenuOpen: boolean;
-  toggleMenu: () => void;
   scrollToSection: (sectionId: string) => void;
-}> = ({ isMenuOpen, toggleMenu, scrollToSection }) => {
-  const router = useRouter();
+}> = ({ scrollToSection }) => {
   const userMetadata = useAtomValue(userMetadataAtom);
-
-  const handleDashboardClick = () => {
-    router.push("/app");
-  };
 
   return (
     <nav
@@ -185,12 +170,12 @@ const NavMenu: React.FC<{
       </div>
       <div className="flex flex-col md:flex-row items-center gap-4 md:gap-4">
         {userMetadata ? (
-          <button
-            onClick={handleDashboardClick}
+          <Link
+            href={"/app"}
             className="w-full md:w-auto px-4 md:py-2 text-center md:bg-primary-600 text-black md:text-white rounded-full md:hover:bg-primary-700 transition-colors flex items-center justify-center"
           >
             Dashboard
-          </button>
+          </Link>
         ) : (
           <>
             <a

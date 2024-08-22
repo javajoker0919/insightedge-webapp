@@ -14,14 +14,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useAtomValue } from "jotai";
 
-import { watchlistAtom } from "@/utils/atoms";
 import OpportunitiesSection from "../../../components/company/opportunity/OpportunitiesSection";
 import IncomeStatementSection from "../../../components/company/income-statement/IncomeStatementSection";
-import RecentNewsSection, {
-  NewsItem,
-} from "../../../components/company/RecentNewsSection";
+import RecentNewsSection from "../../../components/company/RecentNewsSection";
 import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
 import SummarySection from "../../../components/company/summary/SummarySection";
 import AboutSection from "./AboutSection";
@@ -59,8 +55,6 @@ const CompanyDetailPage: React.FC = () => {
   const [isLoadingCompany, setIsLoadingCompany] = useState<boolean>(true);
   const [isLoadingYearQuarters, setIsLoadingYearQuarters] =
     useState<boolean>(true);
-  const [isFetchingETID, setIsFetchingETID] = useState<boolean>(false);
-  const watchlist = useAtomValue(watchlistAtom);
 
   useEffect(() => {
     const fetchCompanyData = async () => {
@@ -108,8 +102,6 @@ const CompanyDetailPage: React.FC = () => {
     }
 
     const fetchETID = async () => {
-      setIsFetchingETID(true);
-
       try {
         const { data: yearQuarterData, error: yearQuarterError } =
           await supabase
@@ -124,8 +116,6 @@ const CompanyDetailPage: React.FC = () => {
         setSelectedETID(yearQuarterData.id);
       } catch (error) {
         console.error("Error fetching earnings transcript ID:", error);
-      } finally {
-        setIsFetchingETID(false);
       }
     };
 
@@ -150,12 +140,7 @@ const CompanyDetailPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex text-sm items-center gap-2 text-gray-400">
-            <Link
-              href={`/app${
-                watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
-              }`}
-              className="hover:underline"
-            >
+            <Link href={`/app`} className="hover:underline">
               Home
             </Link>
             <FaArrowRight className="w-3 h-3" />
