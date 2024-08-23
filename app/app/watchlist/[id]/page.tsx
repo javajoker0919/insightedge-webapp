@@ -48,8 +48,8 @@ interface EarningsTranscriptProps {
 const WatchlistPage = () => {
   const params = useParams();
   const paramID = params.id as string;
-  const { invokeToast } = useToastContext();
 
+  const { invokeToast } = useToastContext();
   const [watchlist, setWatchlist] = useAtom(watchlistAtom);
 
   const [watchlistInfo, setWatchlistInfo] = useState<WatchlistProps | null>(
@@ -173,8 +173,7 @@ const WatchlistPage = () => {
       if (error) {
         invokeToast(
           "error",
-          `Failed to fetch watchlist companies: ${error.message}`,
-          "top"
+          `Failed to fetch watchlist companies: ${error.message}`
         );
         throw error;
       }
@@ -264,8 +263,7 @@ const WatchlistPage = () => {
       if (error) {
         invokeToast(
           "error",
-          `Failed to add company to watchlist: ${error.message}`,
-          "top"
+          `Failed to add company to watchlist: ${error.message}`
         );
         setIsAddingCompany(false);
 
@@ -275,8 +273,7 @@ const WatchlistPage = () => {
       if (data) {
         invokeToast(
           "success",
-          "Company has been added to watchlist successfully",
-          "top"
+          "Company has been added to watchlist successfully"
         );
         fetchWatchlistCompanies(paramID);
 
@@ -332,8 +329,7 @@ const WatchlistPage = () => {
       if (error) {
         invokeToast(
           "error",
-          `Failed to remove company from watchlist: ${error.message}`,
-          "top"
+          `Failed to remove company from watchlist: ${error.message}`
         );
         throw error;
       }
@@ -341,8 +337,7 @@ const WatchlistPage = () => {
       if (data) {
         invokeToast(
           "success",
-          "Company has been removed from watchlist successfully",
-          "top"
+          "Company has been removed from watchlist successfully"
         );
 
         /**

@@ -51,7 +51,7 @@ const Usage = () => {
       setIsLoading(false);
     } catch (error) {
       console.error(error);
-      invokeToast("error", `Failed to fetch credit logs: ${error}`, "top");
+      invokeToast("error", `Failed to fetch credit logs: ${error}`);
     }
   };
 

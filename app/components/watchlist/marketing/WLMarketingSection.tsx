@@ -181,7 +181,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
 
   const handleGenerateTMs = async () => {
     if (!etIDs || etIDs.length === 0) {
-      invokeToast("error", "No earnings transcripts selected", "top");
+      invokeToast("error", "No earnings transcripts selected");
       return;
     }
 
@@ -223,13 +223,9 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
             : 0,
         };
       });
-      invokeToast("success", data.message, "top");
+      invokeToast("success", data.message);
     } catch (error) {
-      invokeToast(
-        "error",
-        "Failed to generate tailored marketing strategies",
-        "top"
-      );
+      invokeToast("error", "Failed to generate tailored marketing strategies");
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNABORTED") {
           console.error(

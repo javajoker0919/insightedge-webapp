@@ -192,9 +192,9 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             : 0,
         };
       });
-      invokeToast("success", data.message, "top");
+      invokeToast("success", data.message);
     } catch (error) {
-      invokeToast("error", "Failed to generate tailored opportunities", "top");
+      invokeToast("error", "Failed to generate tailored opportunities");
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNABORTED") {
           console.error(

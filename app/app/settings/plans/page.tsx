@@ -70,10 +70,10 @@ const Plans = () => {
   useEffect(() => {
     const status = searchParams.get("status");
     if (status === "success" && userInfo) {
-      invokeToast("success", "Subscription successful!", "top");
+      invokeToast("success", "Subscription successful!");
       router.replace(`/app/settings/billing`);
     } else if (status === "cancel") {
-      invokeToast("error", "Subscription cancelled.", "top");
+      invokeToast("error", "Subscription cancelled.");
       router.replace("/app/settings/plans");
     }
   }, [searchParams, router, userInfo]);

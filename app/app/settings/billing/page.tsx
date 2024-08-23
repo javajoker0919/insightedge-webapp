@@ -65,10 +65,10 @@ const Membership: React.FC = () => {
 
   useEffect(() => {
     if (status === "success") {
-      invokeToast("success", "Subscription has been successful", "top");
+      invokeToast("success", "Subscription has been successful");
       router.push("/app/settings/billing");
     } else if (status === "canceled") {
-      invokeToast("error", "Something went wrong", "top");
+      invokeToast("error", "Something went wrong");
       router.push("/app/settings/billing");
     }
   }, [status, router]);
@@ -151,7 +151,7 @@ const Membership: React.FC = () => {
       router.push(response.url);
     } catch (error) {
       console.error(error);
-      invokeToast("error", `Failed to upgrade plan: ${error}`, "top");
+      invokeToast("error", `Failed to upgrade plan: ${error}`);
     } finally {
       setIsUpgradeLoading(false);
     }
@@ -163,7 +163,7 @@ const Membership: React.FC = () => {
       const response = await cancelSubscription();
 
       if (response.status === "success") {
-        invokeToast("success", response.message, "top");
+        invokeToast("success", response.message);
         setTimeout(() => {
           fetchCurrentPlan();
         }, 5000);
@@ -181,14 +181,14 @@ const Membership: React.FC = () => {
       const response = await stopCancelSubscription();
 
       if (response.status === "success") {
-        invokeToast("success", response.message, "top");
+        invokeToast("success", response.message);
         setTimeout(() => {
           fetchCurrentPlan();
         }, 5000);
       }
     } catch (error) {
       console.error(error);
-      invokeToast("error", `Failed to renew plan: ${error}`, "top");
+      invokeToast("error", `Failed to renew plan: ${error}`);
     } finally {
       setIsStopCancelLoading(false);
     }

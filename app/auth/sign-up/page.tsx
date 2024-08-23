@@ -58,7 +58,7 @@ const SignUp = () => {
     const { email, password } = formData;
 
     if (!isValidate) {
-      invokeToast("error", "Please fill in all fields correctly", "top");
+      invokeToast("error", "Please fill in all fields correctly");
       return;
     }
 
@@ -89,7 +89,7 @@ const SignUp = () => {
       // router.replace("/auth/verify-email");
     } catch (error: any) {
       console.error("Sign-up error:", error);
-      invokeToast("error", error.message || "Something went wrong!", "top");
+      invokeToast("error", error.message || "Something went wrong!");
     } finally {
       setIsLoading(false);
     }
