@@ -111,6 +111,14 @@ const getScrapeData = async (data: {
   return response.data;
 };
 
+const getSchedule = async (data: any) => {
+  const response = await axios.post(
+    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/v1/schedule`,
+    data
+  );
+  return response.data;
+};
+
 export {
   generateTailoredSummaryAPI,
   updatePlan,
@@ -121,4 +129,5 @@ export {
   generateTOAPI,
   generateTMAPI,
   getScrapeData,
+  getSchedule
 };

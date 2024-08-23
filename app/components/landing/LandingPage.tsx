@@ -2,22 +2,28 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
 import { useAtomValue } from "jotai";
-
+import { useToastContext } from "@/contexts/toastContext";
+import Link from "next/link";
 import { FaClock, FaRecycle, FaBookReader } from "react-icons/fa";
 import { FaPuzzlePiece } from "react-icons/fa6";
 import { LuBrainCircuit } from "react-icons/lu";
 import { MdOutlineToken } from "react-icons/md";
 import { IoTelescope } from "react-icons/io5";
-
 import { userMetadataAtom } from "@/utils/atoms";
 import { Logo } from "..";
-import Link from "next/link";
+import { getSchedule } from "@/utils/apiClient";
 
 interface HeaderProps {
   isHeaderVisible: boolean;
   isMenuOpen: boolean;
   toggleMenu: () => void;
   scrollToSection: (sectionId: string) => void;
+}
+
+interface FormData {
+  name: string;
+  company: string;
+  email: string;
 }
 
 const LandingPage: React.FC = () => {
@@ -28,6 +34,43 @@ const LandingPage: React.FC = () => {
   const salesAndMarketingSectionRef = useRef<HTMLElement>(null);
   const featureSectionRef = useRef<HTMLElement>(null);
   const pricingSectionRef = useRef<HTMLElement>(null);
+
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    company: "",
+    email: ""
+  });
+
+  const [blogs, setBlogs] = useState([]);
+
+  const { invokeToast } = useToastContext();
+
+  const handleSchedule = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+    try {
+      const response = await getSchedule(formData);
+      invokeToast(
+        "success",
+        "Your demo has been scheduled successfully!",
+        "top"
+      );
+      setFormData({ name: "", company: "", email: "" });
+    } catch (error) {
+      console.error("Error scheduling demo:", error);
+      invokeToast(
+        "error",
+        "There was an issue scheduling your demo. Please try again later.",
+        "top"
+      );
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
@@ -42,16 +85,30 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  const toggleMenu = () => {
+  const toggleMenu = (): void => {
     setIsMenuOpen((prev) => !prev);
   };
 
-  const scrollToSection = (sectionId: string) => {
+  const scrollToSection = (sectionId: string): void => {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  // const getBlogData = async () => {
+  //   const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+  //   const res = await fetch(`${strapiUrl}/api/blogs?populate=*`);
+  //   const posts = await res.json();
+  //   if (!process.env.NEXT_PUBLIC_STRAPI_URL) {
+  //     console.warn('STRAPI_URL is not defined in the environment variables. Using default: http://localhost:1337');
+  //   }
+  //   setBlogs(posts.data);
+  // };
+
+  // useEffect(() => {
+  //   getBlogData();
+  // }, []);
 
   return (
     <div className="w-full text-black bg-gradient-to-b">
@@ -65,6 +122,10 @@ const LandingPage: React.FC = () => {
         salesAndMarketingSectionRef={salesAndMarketingSectionRef}
         featureSectionRef={featureSectionRef}
         pricingSectionRef={pricingSectionRef}
+        handleChange={handleChange}
+        handleSchedule={handleSchedule}
+        formData={formData}
+        blogs={blogs}
       />
     </div>
   );
@@ -141,7 +202,7 @@ const NavMenu: React.FC<{
           href="#"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection("salesandmarketing");
+            scrollToSection("business");
           }}
           className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
         >
@@ -201,10 +262,18 @@ const MainContent: React.FC<{
   salesAndMarketingSectionRef: React.RefObject<HTMLElement>;
   featureSectionRef: React.RefObject<HTMLElement>;
   pricingSectionRef: React.RefObject<HTMLElement>;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSchedule: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  formData: { name: string; company: string; email: string };
+  blogs: any;
 }> = ({
   salesAndMarketingSectionRef,
   featureSectionRef,
   pricingSectionRef,
+  handleChange,
+  handleSchedule,
+  formData,
+  blogs
 }) => (
   <main className="mt-16 sm:mt-16">
     <HeroSection />
@@ -212,8 +281,12 @@ const MainContent: React.FC<{
     <SummarySection ref={featureSectionRef} />
     <BusinessSection />
     <CreditSection ref={pricingSectionRef} />
-    <NewSection />
-    <ScheduleDemo />
+    <NewSection blogs={blogs} />
+    <ScheduleDemo
+      handleChange={handleChange}
+      handleSchedule={handleSchedule}
+      formData={formData}
+    />
     <Footer />
   </main>
 );
@@ -414,7 +487,7 @@ const DashboardContent: React.FC = () => (
   </div>
 );
 
-const BusinessSection: React.FC = () => (
+const BusinessSection = React.forwardRef<HTMLElement>((props, ref) => (
   <section id="business" className="py-16 px-4 flex flex-col items-center">
     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] mb-16 sm:mb-24 md:mb-32">
       What it means for <span className="text-primary-500">your business</span>
@@ -444,7 +517,7 @@ const BusinessSection: React.FC = () => (
       />
     </div>
   </section>
-);
+));
 
 const BusinessFeature: React.FC<{
   icon: React.ReactNode;
@@ -834,7 +907,7 @@ const CreditSection = React.forwardRef<HTMLElement>((props, ref) => (
   </section>
 ));
 
-const NewSection: React.FC = () => (
+const NewSection: React.FC<{ blogs: any[] }> = ({ blogs }) => (
   <section id="new" className="py-16 px-4 flex flex-col items-center gap-10">
     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem]">
       What's new?
@@ -843,6 +916,14 @@ const NewSection: React.FC = () => (
     <p className="text-gray-600">Explore our blogs</p>
 
     <div className="flex flex-col md:flex-row w-full max-w-[80rem] items-center md:items-start justify-around gap-6">
+      {/* {blogs.map((item: any) => (
+        <BlogCard
+          key={item.id}
+          title={item.attributes.title}
+          description={item.attributes.description}
+          src={`http://localhost:1337${item.attributes.cover.data.attributes.url}`}
+        />
+      ))} */}
       <BlogCard
         title="5 Game-Changing Ways AI-Powered Market Intelligence is Revolutionizing B2B Sales"
         description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
@@ -891,7 +972,11 @@ const BlogCard: React.FC<{
   </div>
 );
 
-const ScheduleDemo: React.FC = () => (
+const ScheduleDemo: React.FC<{
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSchedule: (e: React.FormEvent<HTMLFormElement>) => void;
+  formData: { name: string; company: string; email: string };
+}> = ({ handleChange, handleSchedule, formData }) => (
   <div className="flex flex-col xl:flex-row w-full justify-center items-center gap-8 lg:gap-20 py-16 px-4 xl:px-0">
     <div className="w-full xl:w-[577px] h-[300px] lg:h-[512px] bg-primary-100 rounded-lg">
       <img
@@ -904,23 +989,41 @@ const ScheduleDemo: React.FC = () => (
       <h2 className="text-3xl lg:text-6xl font-bold leading-tight lg:leading-[64px] text-[#171A1FFF] mb-6 lg:mb-8 text-center lg:text-left">
         Generate your opportunities
       </h2>
-      <div className="flex flex-col w-full gap-4 lg:gap-6">
+      <form
+        className="flex flex-col w-full gap-4 lg:gap-6"
+        onSubmit={handleSchedule}
+      >
         <input
+          name="name"
+          type="text"
+          value={formData.name}
+          onChange={handleChange}
           placeholder="Name"
           className="peer px-4 lg:px-5 h-12 lg:h-14 w-full border-b border-blue-gray-200 bg-transparent font-sans text-base lg:text-lg font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
         />
         <input
+          name="company"
+          type="text"
+          value={formData.company}
+          onChange={handleChange}
           placeholder="Company"
           className="peer px-4 lg:px-5 h-12 lg:h-14 w-full border-b border-blue-gray-200 bg-transparent font-sans text-base lg:text-lg font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
         />
         <input
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
           placeholder="Email address"
           className="peer px-4 lg:px-5 h-12 lg:h-14 w-full border-b border-blue-gray-200 bg-transparent font-sans text-base lg:text-lg font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
         />
-        <button className="mt-4 lg:mt-6 w-full bg-primary-500 text-white rounded-full text-base lg:text-lg font-semibold py-3 lg:py-4 hover:bg-primary-600 active:bg-primary-700 transition-colors">
+        <button
+          type="submit"
+          className="mt-4 lg:mt-6 w-full bg-primary-500 text-white rounded-full text-base lg:text-lg font-semibold py-3 lg:py-4 hover:bg-primary-600 active:bg-primary-700 transition-colors"
+        >
           Schedule a demo
         </button>
-      </div>
+      </form>
     </div>
   </div>
 );
@@ -939,23 +1042,26 @@ const Footer: React.FC = () => (
           <Logo />
         </div>
         <div className="flex flex-row gap-4 mt-6 lg:mt-8 lg:ml-[100px]">
-          {[{ alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" }].map(
-            (icon, index) => (
-              <div
-                key={index}
-                className="p-2 border border-solid border-[#F3F4F6FF] rounded-sm"
-              >
-                <Image width={24} height={24} alt={icon.alt} src={icon.src} />
-              </div>
-            )
-          )}
+          {[
+            { alt: "tiktok", src: "/icons/phosphor-tiktok-logo.svg" },
+            { alt: "facebook", src: "/icons/phosphor-facebook-logo.svg" },
+            { alt: "youtube", src: "/icons/phosphor-youtube-logo.svg" },
+            { alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" }
+          ].map((icon, index) => (
+            <div
+              key={index}
+              className="p-2 border border-solid border-[#F3F4F6FF] rounded-sm"
+            >
+              <Image width={24} height={24} alt={icon.alt} src={icon.src} />
+            </div>
+          ))}
         </div>
       </div>
       <div className="grid grid-cols-3 sm:flex sm:flex-row gap-8 sm:gap-12 lg:gap-20 lg:mr-20">
         {[
           { title: "Product", items: ["Features", "Pricing"] },
           { title: "Resources", items: ["Blog", "User guides"] },
-          { title: "Legal", items: ["Privacy", "Terms"] },
+          { title: "Legal", items: ["Privacy", "Terms"] }
         ].map((section, index) => (
           <div
             key={index}
