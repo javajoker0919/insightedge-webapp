@@ -71,6 +71,8 @@ const WatchlistPage = () => {
   >([]);
 
   const [isFetchingWLCs, setIsFetchingWLCs] = useState<boolean>(false);
+  const [isAddingCompany, setIsAddingCompany] = useState<boolean>(false);
+
   const [ISs, setISs] = useState<IncomeStatementProps[]>([]);
   const [highlights, setHighlights] = useState<HighlightProps[]>([]);
   const [calendars, setCalendars] = useState<CalendarProps[]>([]);
@@ -124,13 +126,6 @@ const WatchlistPage = () => {
 
   const fetchWatchlistCompanies = async (watchlistUUID: string) => {
     setIsFetchingWLCs(true);
-
-    setWatchlistCompanies([]);
-    setETIDs([]);
-    setETs([]);
-    setISs([]);
-    setHighlights([]);
-    setCalendars([]);
 
     const tempWLCompanies: CompanyProps[] = [];
     const tempETIDs: number[] = [];
@@ -243,6 +238,7 @@ const WatchlistPage = () => {
       console.error(error);
     } finally {
       setIsFetchingWLCs(false);
+      setIsAddingCompany(false);
     }
   };
 
@@ -250,6 +246,11 @@ const WatchlistPage = () => {
     if (watchlistInfo === null || watchlistInfo.id === null) {
       return;
     }
+
+    console.log("watchlist id: ", watchlistInfo.id);
+    console.log("company id: ", companyID);
+
+    setIsAddingCompany(true);
 
     try {
       const { data, error } = await supabase
@@ -266,6 +267,8 @@ const WatchlistPage = () => {
           `Failed to add company to watchlist: ${error.message}`,
           "top"
         );
+        setIsAddingCompany(false);
+
         throw error;
       }
 
@@ -276,6 +279,8 @@ const WatchlistPage = () => {
           "top"
         );
         fetchWatchlistCompanies(paramID);
+      } else {
+        setIsAddingCompany(false);
       }
     } catch (error) {
       console.error(error);
@@ -330,7 +335,7 @@ const WatchlistPage = () => {
 
   return (
     <div className="flex justify-center p-4 h-full overflow-auto">
-      {isFetchingWLCs ? (
+      {isFetchingWLCs && !isAddingCompany ? (
         <div className="flex flex-col items-center m-auto gap-4">
           <Loading />
           <h1>Loading</h1>

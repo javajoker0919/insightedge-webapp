@@ -52,7 +52,7 @@ const WLHighlightSection: React.FC<WatchlistHighlightsProps> = ({
 
 const LoadingSection = () => {
   return (
-    <div className="h-40 flex items-center jusitfy-center">
+    <div className="h-40 w-full flex items-center justify-center">
       <Loading />
     </div>
   );
