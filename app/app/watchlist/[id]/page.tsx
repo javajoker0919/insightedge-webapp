@@ -50,9 +50,7 @@ const WatchlistPage = () => {
   const paramID = params.id as string;
   const { invokeToast } = useToastContext();
 
-  const userInfo = useAtomValue(userInfoAtom);
   const watchlist = useAtomValue(watchlistAtom);
-  const setWatchlist = useSetAtom(watchlistAtom);
 
   const [watchlistInfo, setWatchlistInfo] = useState<WatchlistProps | null>(
     null
