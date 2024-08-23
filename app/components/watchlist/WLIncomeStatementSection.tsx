@@ -1,30 +1,30 @@
 "use client";
+
 import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/supabaseClient";
 import numeral from "numeral";
 
 import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 
-import { CompanyDataType } from "../../app/watchlist/[id]/page";
-import { useEffect, useState } from "react";
-import moment from "moment";
-import Loading from "../Loading";
+import { Loading } from "..";
 
-interface WLIncomeStatementProps {
-  watchlistCompanies: CompanyDataType[];
-  isSorted: boolean;
-  onRemoveCompany: (id: number) => void;
+export interface IncomeStatementProps {
+  companyID: number;
+  companySymbol: string;
+  companyName: string;
+  revenue: number;
+  revenueYoyGrowth: number;
+  netIncome: number;
+  netIncomeYoyGrowth: number;
+  fillingDate: string;
+  period: string;
 }
 
-interface IncomeStatementType extends CompanyDataType {
-  symbol: string;
-  revenue: number;
-  revenue_yoy_growth: number;
-  net_income: number;
-  net_income_yoy_growth: number;
-  filling_date: string;
-  period: string;
+interface WLIncomeStatementProps {
+  incomeStatements: IncomeStatementProps[];
+  handleRemoveCompanyFromWatchlist: (companyID: number) => void;
+  isSorted: boolean;
+  isLoading: boolean;
 }
 
 const randomColor = [
@@ -38,84 +38,23 @@ const randomColor = [
 ];
 
 const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
-  watchlistCompanies,
+  incomeStatements,
+  handleRemoveCompanyFromWatchlist,
   isSorted,
-  onRemoveCompany,
+  isLoading,
 }) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [compIncStatement, setCompIncStatement] = useState<
-    IncomeStatementType[] | null
-  >(null);
-
-  useEffect(() => {
-    const fetchLatestWatchlistsData = async (companySymbols: string[]) => {
-      setIsLoading(true);
-
-      const { data: incomeStatementData, error: incomeStatementError } =
-        await supabase
-          .from("income_statements")
-          .select(
-            `
-            company_id,
-            symbol,
-            filling_date,
-            period,
-            revenue,
-            revenue_yoy_growth,
-            net_income,
-            net_income_yoy_growth
-          `
-          )
-          .in("symbol", companySymbols)
-          .neq("period", "FY")
-          .order("filling_date", { ascending: false });
-
-      if (incomeStatementError) throw incomeStatementError;
-
-      const updatedIncomeStatement = incomeStatementData.reduce<
-        IncomeStatementType[]
-      >((acc, curr) => {
-        const existingData = acc.find((item) => item?.symbol === curr.symbol);
-
-        if (
-          !existingData ||
-          moment(curr.filling_date).isAfter(moment(existingData.filling_date))
-        ) {
-          const updatedItem = {
-            ...watchlistCompanies.find((e) => e.symbol === curr.symbol),
-            ...curr,
-          } as IncomeStatementType;
-
-          const index = acc.findIndex((item) => item?.symbol === curr.symbol);
-
-          if (index !== -1) {
-            acc[index] = updatedItem;
-          } else {
-            acc.push(updatedItem);
-          }
-        }
-
-        return acc;
-      }, []);
-
-      setCompIncStatement(updatedIncomeStatement);
-      setIsLoading(false);
-    };
-
-    if (watchlistCompanies.length) {
-      fetchLatestWatchlistsData(watchlistCompanies.map((item) => item.symbol));
-    }
-  }, [watchlistCompanies]);
 
   const sortStatements = (
-    statements: IncomeStatementType[],
+    statements: IncomeStatementProps[],
     isSorted: boolean
   ) => {
     return statements
       ?.slice()
       .sort((a, b) =>
-        isSorted ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
+        isSorted
+          ? a.companyName.localeCompare(b.companyName)
+          : b.companyName.localeCompare(a.companyName)
       );
   };
 
@@ -140,7 +79,7 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
               <th className="text-left p-2 text-xs sm:text-sm">
                 Net Income <span className="text-xxs sm:text-xs">(QoQ)</span>
               </th>
-              <th className="text-left p-2"></th>
+              <th className="text-left p-2 w-10"></th>
             </tr>
           </thead>
           <tbody className="text-left">
@@ -151,33 +90,37 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
                 </td>
               </tr>
             )}
-            {compIncStatement !== null &&
-              sortStatements(compIncStatement, isSorted).map(
-                (company: IncomeStatementType, indx: number) => {
+            {incomeStatements !== null &&
+              sortStatements(incomeStatements, isSorted).map(
+                (incomeStatement: IncomeStatementProps, indx: number) => {
                   const symbolClass = `${
                     randomColor[indx % randomColor.length]
                   } text-white text-xxs sm:text-xs p-1`;
 
                   return (
                     <tr
-                      key={company.id}
-                      onClick={() => router.push(`/app/company/${company.id}`)}
-                      className="py-2 hover:cursor-pointer px-2 sm:px-4 hover:bg-primary-50 border-t last:border-b-0 group"
+                      key={incomeStatement.companyID}
+                      onClick={() =>
+                        router.push(`/app/company/${incomeStatement.companyID}`)
+                      }
+                      className="py-2 hover:cursor-pointer px-2 sm:px-4 hover:bg-gray-50 border-t last:border-b-0 group"
                     >
                       <td className="p-2">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                          <p className={symbolClass}>{company.symbol}</p>
+                          <p className={symbolClass}>
+                            {incomeStatement.companySymbol}
+                          </p>
                           <p className="font-medium text-xs sm:text-sm truncate">
-                            {company.name}
+                            {incomeStatement.companyName}
                           </p>
                         </div>
                       </td>
 
                       <td
-                        title={company.period}
+                        title={incomeStatement.period}
                         className="text-xs sm:text-sm p-2"
                       >
-                        {company.filling_date}
+                        {incomeStatement.fillingDate}
                       </td>
 
                       <td
@@ -185,22 +128,22 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
                         className="text-xs sm:text-sm p-2"
                       >
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 uppercase">
-                          {numeral(company.revenue).format("$0.0a")}
+                          {numeral(incomeStatement.revenue).format("$0.0a")}
                           <div className="flex items-center">
-                            {Number(company.revenue_yoy_growth) > 0 ? (
+                            {Number(incomeStatement.revenueYoyGrowth) > 0 ? (
                               <MdArrowUpward className="text-green-700 text-xs sm:text-sm" />
                             ) : (
                               <MdArrowDownward className="text-red-700 text-xs sm:text-sm" />
                             )}
                             <p
                               className={`text-xxs sm:text-xs ${
-                                Number(company.revenue_yoy_growth) > 0
+                                Number(incomeStatement.revenueYoyGrowth) > 0
                                   ? "text-green-700"
                                   : "text-red-700"
                               }`}
                             >
                               (
-                              {numeral(company.revenue_yoy_growth).format(
+                              {numeral(incomeStatement.revenueYoyGrowth).format(
                                 "0.00"
                               )}
                               %)
@@ -213,24 +156,24 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
                         className="text-xs sm:text-sm p-2"
                       >
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 uppercase">
-                          {numeral(company.net_income).format("$0.0a")}
+                          {numeral(incomeStatement.netIncome).format("$0.0a")}
                           <div className="flex items-center">
-                            {Number(company.net_income_yoy_growth) > 0 ? (
+                            {Number(incomeStatement.netIncomeYoyGrowth) > 0 ? (
                               <MdArrowUpward className="text-green-700 text-xs sm:text-sm" />
                             ) : (
                               <MdArrowDownward className="text-red-700 text-xs sm:text-sm" />
                             )}
                             <p
                               className={`text-xxs sm:text-xs ${
-                                Number(company.net_income_yoy_growth) > 0
+                                Number(incomeStatement.netIncomeYoyGrowth) > 0
                                   ? "text-green-700"
                                   : "text-red-700"
                               }`}
                             >
                               (
-                              {numeral(company.net_income_yoy_growth).format(
-                                "0.00"
-                              )}
+                              {numeral(
+                                incomeStatement.netIncomeYoyGrowth
+                              ).format("0.00")}
                               %)
                             </p>
                           </div>
@@ -239,10 +182,12 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
                       <td>
                         <button
                           onClick={(e) => {
-                            onRemoveCompany(company.watchlist_company_id);
                             e.stopPropagation();
+                            handleRemoveCompanyFromWatchlist(
+                              incomeStatement.companyID
+                            );
                           }}
-                          className="text-white hover:bg-gray-200 p-0.5 rounded-full group-hover:text-gray-500"
+                          className="text-white hover:bg-gray-200 p-2 rounded-full group-hover:text-gray-500"
                         >
                           <IoClose className="text-base sm:text-lg" />
                         </button>

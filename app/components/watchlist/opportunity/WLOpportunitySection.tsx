@@ -1,19 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { supabase } from "@/utils/supabaseClient";
+import { useAtomValue, useSetAtom } from "jotai";
 
+import { supabase } from "@/utils/supabaseClient";
 import Modal from "@/app/components/Modal";
 import OpportunitiesTable from "./WLOpportunityTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { Loading } from "../..";
 import { generateTOAPI } from "@/utils/apiClient";
 import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
-import { useAtomValue, useSetAtom } from "jotai";
-
-interface OpportunitiesProps {
-  etIDs: number[] | null;
-}
 
 export interface OpportunityProps {
   opportunityName: string;
@@ -36,11 +32,15 @@ export interface OpportunityProps {
   date: string;
 }
 
-const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
-  if (etIDs === null) {
-    return;
-  }
+interface OpportunitiesProps {
+  etIDs: number[];
+  isLoading: boolean;
+}
 
+const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
+  etIDs,
+  isLoading,
+}) => {
   const { invokeToast } = useToastContext();
   const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
@@ -61,15 +61,19 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
   const [companyCount, setCompanyCount] = useState<number | null>(null);
 
   useEffect(() => {
-    if (etIDs && etIDs.length > 0) {
-      fetchGOs(etIDs);
+    if (isLoading) {
+      return;
     }
+
+    fetchGOs(etIDs);
   }, [etIDs]);
 
   useEffect(() => {
-    if (etIDs && etIDs.length > 0 && orgInfo && orgInfo.id) {
-      fetchTOs(etIDs, orgInfo.id);
+    if (isLoading || orgInfo === null || orgInfo.id === null) {
+      return;
     }
+
+    fetchTOs(etIDs, orgInfo.id);
   }, [etIDs, orgInfo]);
 
   const fetchGOs = async (etIDs: number[]) => {
@@ -366,16 +370,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             <LoadingSection />
           ) : (
             <>
-              {/* <div className="p-4 bg-gray-100 text-black">
-                  {companyName}'s top opportunities.
-                  {tailoredOpportunities?.length === 0 && (
-                    <span>
-                      To find the best ways to sell your solutions to{" "}
-                      {companyName}, click "Generate Tailored Opportunities."
-                    </p>
-                  )}
-                </div> */}
-
               {generalOpportunities && (
                 <OpportunitiesTable
                   opportunities={generalOpportunities}
@@ -389,11 +383,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             <LoadingSection />
           ) : (
             <>
-              {/* <div className="p-4 bg-gray-100 text-black">
-                Below is your company specific opportunity table. You can
-                explore the top sales opportunities for selling your solutions
-                to your specific company
-              </div> */}
               {tailoredOpportunities && (
                 <OpportunitiesTable
                   opportunities={tailoredOpportunities}
