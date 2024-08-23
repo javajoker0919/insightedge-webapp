@@ -1,19 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { supabase } from "@/utils/supabaseClient";
-
-import Modal from "@/app/components/Modal";
-import MarketingStrategyTable from "./WLMarketingTable";
-import { useToastContext } from "@/contexts/toastContext";
-import { Loading } from "../..";
-import { generateTMAPI } from "@/utils/apiClient";
-import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
 import { useAtomValue, useSetAtom } from "jotai";
 
-interface MarketingStrategiesProps {
-  etIDs: number[] | null;
-}
+import { supabase } from "@/utils/supabaseClient";
+import { Modal, Loading } from "@/app/components";
+import MarketingStrategyTable from "./WLMarketingTable";
+import { useToastContext } from "@/contexts/toastContext";
+import { generateTMAPI } from "@/utils/apiClient";
+import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
 
 export interface MarketingProps {
   tactic: string;
@@ -27,11 +22,15 @@ export interface MarketingProps {
   callToAction: string;
 }
 
-const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
-  if (etIDs === null) {
-    return;
-  }
+interface MarketingStrategiesProps {
+  etIDs: number[];
+  isLoading: boolean;
+}
 
+const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
+  etIDs,
+  isLoading,
+}) => {
   const { invokeToast } = useToastContext();
   const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
@@ -48,15 +47,22 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
   const [companyCount, setCompanyCount] = useState<number | null>(null);
 
   useEffect(() => {
-    if (etIDs && etIDs.length > 0) {
-      fetchGMs(etIDs);
+    if (isLoading || etIDs === null) {
     }
+    fetchGMs(etIDs);
   }, [etIDs]);
 
   useEffect(() => {
-    if (etIDs && etIDs.length > 0 && orgInfo && orgInfo.id) {
-      fetchTMs(etIDs, orgInfo.id);
+    if (
+      isLoading ||
+      etIDs === null ||
+      orgInfo === null ||
+      orgInfo.id === null
+    ) {
+      return;
     }
+
+    fetchTMs(etIDs, orgInfo.id);
   }, [etIDs, orgInfo]);
 
   const fetchGMs = async (etIDs: number[]) => {

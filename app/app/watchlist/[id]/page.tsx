@@ -4,14 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useAtomValue, useSetAtom } from "jotai";
 import { IoAddOutline, IoPencil, IoTrash } from "react-icons/io5";
-import { supabase } from "@/utils/supabaseClient";
-import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
+
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import moment from "moment";
 
-import WatchlistModal from "@/app/components/WatchlistModal";
-import CompanySearchbar from "@/app/components/CompanySearchbar";
+import { supabase } from "@/utils/supabaseClient";
+import { useToastContext } from "@/contexts/toastContext";
+import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
+
 import {
   WLOpportunitySection,
   WLMarketingSection,
@@ -20,24 +20,43 @@ import {
   WLHighlightSection,
   WLSimilarCompanySection,
   Loading,
+  WLCompanySearchbar,
+  WatchlistModal,
 } from "@/app/components";
 
-export interface CompanyDataType {
+import { HighlightProps } from "@/app/components/watchlist/WLHighlightSection";
+import { CalendarProps } from "@/app/components/watchlist/WLCalendarSection";
+import { IncomeStatementProps } from "@/app/components/watchlist/WLIncomeStatementSection";
+
+export interface CompanyProps {
   id: number;
   name: string;
   symbol: string;
-  watchlist_company_id: number;
+  industry: string;
 }
 
-export default function WatchlistPage() {
+interface WatchlistProps {
+  id: number;
+  name: string;
+}
+
+interface EarningsTranscriptProps {
+  etID: number;
+  companyID: number;
+}
+
+const WatchlistPage = () => {
   const params = useParams();
   const paramID = params.id as string;
+  const { invokeToast } = useToastContext();
 
   const userInfo = useAtomValue(userInfoAtom);
   const watchlist = useAtomValue(watchlistAtom);
   const setWatchlist = useSetAtom(watchlistAtom);
-  const [watchlistName, setWatchlistName] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [watchlistInfo, setWatchlistInfo] = useState<WatchlistProps | null>(
+    null
+  );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalType, setModalType] = useState<"add" | "rename" | "delete">(
     "add"
@@ -46,92 +65,23 @@ export default function WatchlistPage() {
   const optionsModalRef = useRef<HTMLDivElement>(null);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState<boolean>(false);
   const [isSorted, setIsSorted] = useState<boolean>(true);
+
   const [watchlistCompanies, setWatchlistCompanies] = useState<
-    CompanyDataType[] | []
+    CompanyProps[] | []
   >([]);
-  const [etIDs, setETIDs] = useState<number[] | null>(null);
+
+  const [isFetchingWLCs, setIsFetchingWLCs] = useState<boolean>(false);
+  const [ISs, setISs] = useState<IncomeStatementProps[]>([]);
+  const [highlights, setHighlights] = useState<HighlightProps[]>([]);
+  const [calendars, setCalendars] = useState<CalendarProps[]>([]);
+  const [etIDs, setETIDs] = useState<number[]>([]);
+  const [ETs, setETs] = useState<EarningsTranscriptProps[]>([]);
 
   useEffect(() => {
-    async function fetchWatchlistData() {
-      setIsLoading(true);
-      const { data: watchlistData, error: watchlistError } = await supabase
-        .from("watchlists")
-        .select("id, name")
-        .eq("uuid", paramID)
-        .single();
-
-      if (watchlistError) {
-        console.error("Error fetching watchlist:", watchlistError);
-      } else if (watchlistData) {
-        setWatchlistName(watchlistData.name);
-
-        const { data: companiesData, error: companiesError } = await supabase
-          .from("watchlist_companies")
-          .select(
-            `
-            id,
-            companies (
-              id,
-              name,
-              symbol
-            )
-          `
-          )
-          .eq("watchlist_id", watchlistData.id);
-
-        if (companiesError) {
-          console.error("Error fetching watchlist companies:", companiesError);
-        } else {
-          const res = companiesData.map((item: any) => ({
-            id: item.companies.id,
-            name: item.companies.name,
-            symbol: item.companies.symbol,
-            watchlist_company_id: item.id,
-          })) as CompanyDataType[];
-
-          setWatchlistCompanies(res);
-        }
-      }
-      setIsLoading(false);
+    if (paramID) {
+      fetchWatchlistCompanies(paramID);
     }
-
-    fetchWatchlistData();
   }, [paramID]);
-
-  useEffect(() => {
-    async function fetchLatestWatchlistsData(userId: string) {
-      const { data: watchlistData, error: watchlistError } = await supabase
-        .from("watchlists")
-        .select(
-          `
-          id, 
-          name, 
-          organization_id, 
-          creator_id,
-          uuid,
-          watchlist_companies!left(id, company_id)
-          `
-        )
-        .eq("creator_id", userId);
-
-      if (watchlistError) throw watchlistError;
-
-      setWatchlist(
-        watchlistData.map((item) => {
-          return {
-            id: item.id,
-            name: item.name,
-            organizationID: item.organization_id,
-            creatorID: item.creator_id,
-            uuid: item.uuid,
-            company_count: item.watchlist_companies?.length,
-          };
-        })
-      );
-    }
-    if (userInfo?.id) fetchLatestWatchlistsData(userInfo.id);
-    if (watchlistCompanies.length > 0) fetchCompanyData();
-  }, [userInfo?.id, isSearchBarOpen, watchlistCompanies]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -148,44 +98,6 @@ export default function WatchlistPage() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  useEffect(() => {
-    if (watchlistCompanies.length === 0) return;
-
-    const fetchLatestEarningsTranscripts = async () => {
-      const companyIDs = watchlistCompanies.map((item) => item.id);
-
-      const { data: earningsTranscriptsData, error: earningsTranscriptsError } =
-        await supabase
-          .from("earnings_transcripts")
-          .select("id, company_id, date")
-          .in("company_id", companyIDs)
-          .order("date", { ascending: false });
-
-      if (earningsTranscriptsError) {
-        console.error(
-          "Error fetching earnings transcripts:",
-          earningsTranscriptsError
-        );
-        return;
-      }
-
-      const latestETIDs = companyIDs
-        .map((companyID) => {
-          const transcripts = earningsTranscriptsData.filter(
-            (transcript) => transcript.company_id === companyID
-          );
-          return transcripts.length > 0 ? transcripts[0].id : null;
-        })
-        .filter((transcript) => transcript !== null);
-
-      if (latestETIDs.length > 0) {
-        setETIDs(latestETIDs);
-      }
-    };
-
-    fetchLatestEarningsTranscripts();
-  }, [watchlistCompanies]);
 
   const toggleOptionsModal = () => {
     setIsOptionsModalOpen(!isOptionsModalOpen);
@@ -210,61 +122,215 @@ export default function WatchlistPage() {
     setIsSorted((prev) => !prev);
   };
 
-  const handleRemoveCompanyFromWatchlist = async (
-    watchlistCompanyId: number
-  ) => {
-    const { error } = await supabase
-      .from("watchlist_companies")
-      .delete()
-      .eq("id", watchlistCompanyId);
+  const fetchWatchlistCompanies = async (watchlistUUID: string) => {
+    setIsFetchingWLCs(true);
 
-    if (error) {
-      console.error("Error removing company from watchlist:", error);
-    } else {
-      setWatchlistCompanies((prevCompanies) =>
-        prevCompanies.filter(
-          (company) => company.watchlist_company_id !== watchlistCompanyId
+    setWatchlistCompanies([]);
+    setETIDs([]);
+    setETs([]);
+    setISs([]);
+    setHighlights([]);
+    setCalendars([]);
+
+    const tempWLCompanies: CompanyProps[] = [];
+    const tempETIDs: number[] = [];
+    const tempETs: EarningsTranscriptProps[] = [];
+    const tempISs: IncomeStatementProps[] = [];
+    const tempHLs: HighlightProps[] = [];
+    const tempECs: CalendarProps[] = [];
+
+    try {
+      const { data, error } = await supabase
+        .from("watchlist_companies_with_all_v1")
+        .select(
+          `
+          company_id,
+          company_industry,
+          company_name,
+          company_revrank,
+          company_symbol,
+          earnings_calendar_date,
+          income_statement_filling_date,
+          income_statement_net_income,
+          income_statement_net_income_yoy_growth,
+          income_statement_period,
+          income_statement_revenue,
+          income_statement_revenue_yoy_growth,
+          keyhighlight,
+          latest_earnings_transcript_id,
+          organization_id,
+          watchlist_creator_id,
+          watchlist_id,
+          watchlist_name
+          `
         )
-      );
+        .eq("watchlist_uuid", watchlistUUID);
+
+      if (error) {
+        invokeToast(
+          "error",
+          `Failed to fetch watchlist companies: ${error.message}`,
+          "top"
+        );
+        throw error;
+      }
+
+      if (data && data.length > 0) {
+        setWatchlistInfo({
+          id: data[0].watchlist_id,
+          name: data[0].watchlist_name,
+        });
+
+        data.map((item) => {
+          /// set watchlist companies
+          tempWLCompanies.push({
+            id: item.company_id,
+            name: item.company_name,
+            symbol: item.company_symbol,
+            industry: item.company_industry,
+          });
+
+          /// set earnings transcript IDs
+
+          if (item.latest_earnings_transcript_id) {
+            tempETIDs.push(item.latest_earnings_transcript_id);
+            tempETs.push({
+              etID: item.latest_earnings_transcript_id,
+              companyID: item.company_id,
+            });
+          }
+
+          /// set income statements
+          tempISs.push({
+            companyID: item.company_id,
+            companySymbol: item.company_symbol,
+            companyName: item.company_name,
+            revenue: item.income_statement_revenue,
+            revenueYoyGrowth: item.income_statement_revenue_yoy_growth,
+            netIncome: item.income_statement_net_income,
+            netIncomeYoyGrowth: item.income_statement_net_income_yoy_growth,
+            fillingDate: item.income_statement_filling_date,
+            period: item.income_statement_period,
+          });
+
+          /// set highlights
+          if (item.keyhighlight) {
+            tempHLs.push({
+              companyID: item.company_id,
+              companyName: item.company_name,
+              highlight: item.keyhighlight,
+            });
+          }
+
+          /// set earnings calendar
+          if (item.earnings_calendar_date) {
+            tempECs.push({
+              companyID: item.company_id,
+              companyName: item.company_name,
+              date: item.earnings_calendar_date,
+            });
+          }
+        });
+
+        if (tempWLCompanies.length > 0) setWatchlistCompanies(tempWLCompanies);
+        if (tempETIDs.length > 0) setETIDs(tempETIDs);
+        if (tempETs.length > 0) setETs(tempETs);
+        if (tempISs.length > 0) setISs(tempISs);
+        if (tempHLs.length > 0) setHighlights(tempHLs);
+        if (tempECs.length > 0) setCalendars(tempECs);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsFetchingWLCs(false);
     }
   };
 
-  const fetchCompanyData = async () => {
-    // First Get Lates Year & Quarter
-    const { data: earningsTranscriptsData, error: earningsTranscriptsError } =
-      await supabase
-        .from("earnings_transcripts")
-        .select(`company_id, symbol, date, year, quarter`)
-        .in(
-          "company_id",
-          watchlistCompanies.map((el) => el.id)
-        )
-        .order("date", { ascending: true });
+  const handleAddCompanyToWatchlist = async (companyID: number) => {
+    if (watchlistInfo === null || watchlistInfo.id === null) {
+      return;
+    }
 
-    if (earningsTranscriptsError) {
-      console.error(
-        "Error fetching earnings_transcripts:",
-        earningsTranscriptsError
-      );
-    } else if (earningsTranscriptsData) {
-      const sortedETData = Object.values(
-        earningsTranscriptsData.reduce<
-          Record<number, (typeof earningsTranscriptsData)[0][]>
-        >((acc, curr) => {
-          acc[curr.company_id] = (acc[curr.company_id] || []).concat(curr);
-          return acc;
-        }, {})
-      ).map((group) =>
-        group.reduce((a, b) => (moment(a.date).isAfter(moment(b.date)) ? a : b))
-      );
+    try {
+      const { data, error } = await supabase
+        .from("watchlist_companies")
+        .insert({
+          watchlist_id: watchlistInfo?.id,
+          company_id: companyID,
+        })
+        .select();
 
-      // return sortedETData;
+      if (error) {
+        invokeToast(
+          "error",
+          `Failed to add company to watchlist: ${error.message}`,
+          "top"
+        );
+        throw error;
+      }
+
+      if (data) {
+        invokeToast(
+          "success",
+          "Company has been added to watchlist successfully",
+          "top"
+        );
+        fetchWatchlistCompanies(paramID);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleRemoveCompanyFromWatchlist = async (companyID: number) => {
+    if (watchlistInfo === null || watchlistInfo.id === null) {
+      return;
+    }
+
+    setWatchlistCompanies((prev) =>
+      prev.filter((item) => item.id !== companyID)
+    );
+    setISs((prev) => prev.filter((item) => item.companyID !== companyID));
+    setHighlights((prev) =>
+      prev.filter((item) => item.companyID !== companyID)
+    );
+    setCalendars((prev) => prev.filter((item) => item.companyID !== companyID));
+
+    const etItem = ETs.find((item) => item.companyID === companyID);
+    setETIDs((prev) => prev.filter((item) => item !== etItem?.etID));
+
+    try {
+      const { data, error } = await supabase
+        .from("watchlist_companies")
+        .delete()
+        .eq("watchlist_id", watchlistInfo.id)
+        .eq("company_id", companyID)
+        .select();
+
+      if (error) {
+        invokeToast(
+          "error",
+          `Failed to remove company from watchlist: ${error.message}`,
+          "top"
+        );
+        throw error;
+      }
+
+      if (data) {
+        invokeToast(
+          "success",
+          "Company has been removed from watchlist successfully",
+          "top"
+        );
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return (
     <div className="flex justify-center p-4 h-full overflow-auto">
-      {isLoading ? (
+      {isFetchingWLCs ? (
         <div className="flex flex-col items-center m-auto gap-4">
           <Loading />
           <h1>Loading</h1>
@@ -273,7 +339,7 @@ export default function WatchlistPage() {
         <div className="relative w-full">
           <div className="flex flex-col sm:flex-row w-full items-center gap-4 mb-4">
             <div className="flex items-center justify-between w-full sm:w-auto flex-grow relative pl-4 py-2">
-              <h1 className="font-bold text-lg">{watchlistName}</h1>
+              <h1 className="font-bold text-lg">{watchlistInfo?.name}</h1>
               <div className="flex-grow"></div>
               <div className="flex items-center gap-2 ml-auto sm:ml-0">
                 <button
@@ -328,11 +394,10 @@ export default function WatchlistPage() {
               )}
               {isSearchBarOpen && (
                 <div className="flex justify-end">
-                  <CompanySearchbar
-                    type={"watchlist"}
+                  <WLCompanySearchbar
                     isSearchBarOpen={isSearchBarOpen}
                     setIsSearchBarOpen={setIsSearchBarOpen}
-                    setWatchlistCompanies={setWatchlistCompanies}
+                    handleAddCompanyToWatchlist={handleAddCompanyToWatchlist}
                   />
                 </div>
               )}
@@ -358,21 +423,32 @@ export default function WatchlistPage() {
             <div className="flex flex-col lg:flex-row items-start w-full gap-4 my-2">
               <div className="flex-grow flex flex-col gap-4 pb-5 w-full">
                 <WLIncomeStatementSection
-                  watchlistCompanies={watchlistCompanies}
-                  isSorted={isSorted}
-                  onRemoveCompany={(wl_compId: number) =>
-                    handleRemoveCompanyFromWatchlist(wl_compId)
+                  incomeStatements={ISs}
+                  handleRemoveCompanyFromWatchlist={
+                    handleRemoveCompanyFromWatchlist
                   }
+                  isSorted={isSorted}
+                  isLoading={isFetchingWLCs}
                 />
-                <WLOpportunitySection etIDs={etIDs} />
-                <WLMarketingSection etIDs={etIDs} />
+                <WLOpportunitySection
+                  etIDs={etIDs}
+                  isLoading={isFetchingWLCs}
+                />
+                <WLMarketingSection etIDs={etIDs} isLoading={isFetchingWLCs} />
               </div>
               <div className="w-full lg:w-[20rem] xl:w-[25rem] h-full flex flex-col space-y-4 shrink-0">
-                <WLHighlightSection companyList={watchlistCompanies} />
-                <WLCalendarSection companies={watchlistCompanies} />
+                <WLHighlightSection
+                  highlights={highlights}
+                  isLoading={isFetchingWLCs}
+                />
+                <WLCalendarSection
+                  calendars={calendars}
+                  isLoading={isFetchingWLCs}
+                />
                 <WLSimilarCompanySection
-                  companies={watchlistCompanies}
-                  setWatchlistCompanies={setWatchlistCompanies}
+                  watchlistCompanies={watchlistCompanies}
+                  handleAddCompanyToWatchlist={handleAddCompanyToWatchlist}
+                  isLoading={isFetchingWLCs}
                 />
               </div>
             </div>
@@ -387,4 +463,6 @@ export default function WatchlistPage() {
       )}
     </div>
   );
-}
+};
+
+export default WatchlistPage;
