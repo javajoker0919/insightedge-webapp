@@ -395,7 +395,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
 
       <Modal
         wrapperClass="backdrop-blur-[2px]"
-        modalClass="w-full mx-16 min-w-[60rem] xl:min-w-[80rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
+        modalClass="w-full mx-16 min-w-[60rem] xl:max-w-[50rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
         isOpen={!!selectedOpp}
         onClose={() => setSelectedOpp(null)}
       >
@@ -408,7 +408,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
 
           <div className="space-y-6">
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Inbound Strategies
               </h3>
               <ul className="list-disc pl-5 sm:pl-8 space-y-3">
@@ -425,7 +425,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
             </section>
 
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Outbound Strategies
               </h3>
               <ul className="list-disc pl-5 sm:pl-8 space-y-3">
@@ -442,10 +442,10 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
             </section>
 
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Outbound Email
               </h3>
-              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
                 <h4 className="text-base sm:text-lg font-medium text-gray-800 mb-2">
                   {selectedOpp?.outboundEmail?.subject}
                 </h4>
@@ -456,10 +456,10 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
             </section>
 
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Reasoning
               </h3>
-              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
                 <p className="text-sm sm:text-base text-gray-700">
                   {selectedOpp?.reasoning}
                 </p>
