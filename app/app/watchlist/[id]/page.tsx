@@ -10,7 +10,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 import { supabase } from "@/utils/supabaseClient";
 import { useToastContext } from "@/contexts/toastContext";
-import { userInfoAtom, watchlistAtom } from "@/utils/atoms";
+import { watchlistAtom } from "@/utils/atoms";
 
 import {
   WLOpportunitySection,
@@ -78,12 +78,6 @@ const WatchlistPage = () => {
   const [ETs, setETs] = useState<EarningsTranscriptProps[]>([]);
 
   useEffect(() => {
-    if (paramID) {
-      fetchWatchlistCompanies(paramID);
-    }
-  }, [paramID]);
-
-  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         optionsModalRef.current &&
@@ -98,6 +92,26 @@ const WatchlistPage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (paramID) {
+      fetchWatchlistCompanies(paramID);
+    }
+  }, [paramID]);
+
+  useEffect(() => {
+    if (paramID && watchlist && watchlist.length > 0) {
+      const watchlistItem =
+        watchlist.find((item) => item.uuid === paramID) ?? null;
+
+      if (watchlistItem) {
+        setWatchlistInfo({
+          id: watchlistItem.id,
+          name: watchlistItem.name,
+        });
+      }
+    }
+  }, [paramID, watchlist]);
 
   const toggleOptionsModal = () => {
     setIsOptionsModalOpen(!isOptionsModalOpen);
@@ -168,12 +182,7 @@ const WatchlistPage = () => {
         throw error;
       }
 
-      if (data && data.length > 0) {
-        setWatchlistInfo({
-          id: data[0].watchlist_id,
-          name: data[0].watchlist_name,
-        });
-
+      if (data.length > 0) {
         data.map((item) => {
           /// set watchlist companies
           tempWLCompanies.push({
@@ -184,7 +193,6 @@ const WatchlistPage = () => {
           });
 
           /// set earnings transcript IDs
-
           if (item.latest_earnings_transcript_id) {
             tempETIDs.push(item.latest_earnings_transcript_id);
             tempETs.push({
@@ -244,9 +252,6 @@ const WatchlistPage = () => {
     if (watchlistInfo === null || watchlistInfo.id === null) {
       return;
     }
-
-    console.log("watchlist id: ", watchlistInfo.id);
-    console.log("company id: ", companyID);
 
     setIsAddingCompany(true);
 
