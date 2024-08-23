@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
-import { useAtomValue, useSetAtom } from "jotai";
-import { IoAddOutline, IoPencil, IoTrash } from "react-icons/io5";
+import { useAtom } from "jotai";
 
+import { IoAddOutline, IoPencil, IoTrash } from "react-icons/io5";
 import { FaSortAlphaDown, FaSortAlphaUp } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
@@ -50,7 +50,7 @@ const WatchlistPage = () => {
   const paramID = params.id as string;
   const { invokeToast } = useToastContext();
 
-  const watchlist = useAtomValue(watchlistAtom);
+  const [watchlist, setWatchlist] = useAtom(watchlistAtom);
 
   const [watchlistInfo, setWatchlistInfo] = useState<WatchlistProps | null>(
     null
@@ -64,13 +64,10 @@ const WatchlistPage = () => {
   const [isSearchBarOpen, setIsSearchBarOpen] = useState<boolean>(false);
   const [isSorted, setIsSorted] = useState<boolean>(true);
 
-  const [watchlistCompanies, setWatchlistCompanies] = useState<
-    CompanyProps[] | []
-  >([]);
-
   const [isFetchingWLCs, setIsFetchingWLCs] = useState<boolean>(false);
   const [isAddingCompany, setIsAddingCompany] = useState<boolean>(false);
 
+  const [WLCompanies, setWLCompanies] = useState<CompanyProps[] | []>([]);
   const [ISs, setISs] = useState<IncomeStatementProps[]>([]);
   const [highlights, setHighlights] = useState<HighlightProps[]>([]);
   const [calendars, setCalendars] = useState<CalendarProps[]>([]);
@@ -233,7 +230,7 @@ const WatchlistPage = () => {
           }
         });
 
-        if (tempWLCompanies.length > 0) setWatchlistCompanies(tempWLCompanies);
+        if (tempWLCompanies.length > 0) setWLCompanies(tempWLCompanies);
         if (tempETIDs.length > 0) setETIDs(tempETIDs);
         if (tempETs.length > 0) setETs(tempETs);
         if (tempISs.length > 0) setISs(tempISs);
@@ -282,6 +279,25 @@ const WatchlistPage = () => {
           "top"
         );
         fetchWatchlistCompanies(paramID);
+
+        /**
+         * if company is added to watchlist successfully,
+         * update company count of watchlist in local storage
+         */
+        setWatchlist((prev) => {
+          if (!prev) return null;
+
+          return prev.map((item) => {
+            if (item.uuid === paramID && item.company_count) {
+              return {
+                ...item,
+                company_count: item.company_count + 1,
+              };
+            }
+
+            return item;
+          });
+        });
       } else {
         setIsAddingCompany(false);
       }
@@ -295,9 +311,7 @@ const WatchlistPage = () => {
       return;
     }
 
-    setWatchlistCompanies((prev) =>
-      prev.filter((item) => item.id !== companyID)
-    );
+    setWLCompanies((prev) => prev.filter((item) => item.id !== companyID));
     setISs((prev) => prev.filter((item) => item.companyID !== companyID));
     setHighlights((prev) =>
       prev.filter((item) => item.companyID !== companyID)
@@ -330,6 +344,25 @@ const WatchlistPage = () => {
           "Company has been removed from watchlist successfully",
           "top"
         );
+
+        /**
+         * if company is added to watchlist successfully,
+         * update company count of watchlist in local storage
+         */
+        setWatchlist((prev) => {
+          if (!prev) return null;
+
+          return prev.map((item) => {
+            if (item.uuid === paramID && item.company_count) {
+              return {
+                ...item,
+                company_count: item.company_count - 1,
+              };
+            }
+
+            return item;
+          });
+        });
       }
     } catch (error) {
       console.error(error);
@@ -360,7 +393,7 @@ const WatchlistPage = () => {
                   <span className="hidden sm:inline">Sort by Name</span>
                 </button>
 
-                {watchlistCompanies.length > 0 && (
+                {WLCompanies.length > 0 && (
                   <button
                     className="rounded-full py-2 px-4 bg-primary-500 hover:bg-primary-600 text-gray-100 flex items-center"
                     onClick={handleAddInvestments}
@@ -413,7 +446,7 @@ const WatchlistPage = () => {
             <div className="lg:w-[20rem] xl:w-[25rem] shrink-0"></div>
           </div>
 
-          {watchlistCompanies.length === 0 ? (
+          {WLCompanies.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-[90%] text-center">
               <p>Nothing in this watchlist yet</p>
               <p className="text-gray-500 mt-2">
@@ -454,7 +487,7 @@ const WatchlistPage = () => {
                   isLoading={isFetchingWLCs}
                 />
                 <WLSimilarCompanySection
-                  watchlistCompanies={watchlistCompanies}
+                  watchlistCompanies={WLCompanies}
                   handleAddCompanyToWatchlist={handleAddCompanyToWatchlist}
                   isLoading={isFetchingWLCs}
                 />
