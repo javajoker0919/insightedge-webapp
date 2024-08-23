@@ -38,7 +38,8 @@ const Usage = () => {
       const { data, error } = await supabase
         .from("credit_logs")
         .select("created_at, count, action, used_credits, remained_credits")
-        .eq("user_id", userInfo.id);
+        .eq("user_id", userInfo.id)
+        .order("created_at", { ascending: false });
 
       if (error) {
         console.error("Error fetching credit logs:", error);
