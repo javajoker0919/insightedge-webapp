@@ -1,36 +1,26 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
 
-import { CompanyDataType } from "../../app/watchlist/[id]/page";
-import { supabase } from "@/utils/supabaseClient";
-import Loading from "../Loading";
-import { PlusSvg } from "@/app/app/company/[id]/components";
-import { watchlistAtom } from "@/utils/atoms";
-import { useAtomValue } from "jotai";
+import { useState, useEffect } from "react";
+
 import { FaPlus } from "react-icons/fa";
 
-interface WatchlistSimilarCompaniesProps {
-  companies: CompanyDataType[];
-  setWatchlistCompanies: React.Dispatch<React.SetStateAction<any[]>>;
+import { supabase } from "@/utils/supabaseClient";
+import { CompanyProps } from "../../app/watchlist/[id]/page";
+import Loading from "../Loading";
+
+interface WLSimilarCompanySectionProps {
+  watchlistCompanies: CompanyProps[];
+  handleAddCompanyToWatchlist: (companyID: number) => void;
+  isLoading: boolean;
 }
 
-interface SimilarCompanyDataType extends CompanyDataType {
-  revrank: number;
-  industry: string;
-}
-
-const WLSimilarCompanySection: React.FC<WatchlistSimilarCompaniesProps> = ({
-  companies,
-  setWatchlistCompanies,
+const WLSimilarCompanySection: React.FC<WLSimilarCompanySectionProps> = ({
+  watchlistCompanies,
+  handleAddCompanyToWatchlist,
+  isLoading,
 }) => {
-  const params = useParams();
-  const paramID = params.id as string;
-  const watchlist = useAtomValue(watchlistAtom);
-  const [similarCompanies, setSimilarCompanies] = useState<
-    SimilarCompanyDataType[]
-  >([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [similarCompanies, setSimilarCompanies] = useState<CompanyProps[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
   const randomColor = [
     "bg-fuchsia-800",
@@ -43,98 +33,49 @@ const WLSimilarCompanySection: React.FC<WatchlistSimilarCompaniesProps> = ({
   ];
 
   useEffect(() => {
-    if (companies.length > 0) {
-      fetchSimilarCompanies();
+    if (isLoading || watchlistCompanies.length === 0) {
+      return;
     }
-  }, [companies]);
 
-  const fetchSimilarCompanies = async () => {
+    const companyIDs = watchlistCompanies.map((company) => company.id);
+    const companyIndustries = Array.from(
+      new Set(watchlistCompanies.map((company) => company.industry))
+    );
+
+    fetchSimilarCompanies(companyIDs, companyIndustries);
+  }, [watchlistCompanies]);
+
+  const fetchSimilarCompanies = async (IDs: number[], industries: string[]) => {
+    setIsFetching(true);
+
     try {
-      setIsLoading(true);
+      const { data: similarCompaniesData, error: similarCompaniesError } =
+        await supabase
+          .from("companies")
+          .select("id, name, symbol, industry")
+          .in("industry", industries)
+          .not("id", "in", `(${IDs.join(",")})`) // Exclude companies already in the watchlist
+          .order("revrank", { ascending: true })
+          .limit(10);
 
-      const companyIDs = companies.map((company) => company.id);
-
-      const { data: industryData, error: industryError } = await supabase
-        .from("companies")
-        .select("industry")
-        .in("id", companyIDs);
-
-      if (industryError) {
-        console.error("Error fetching industries:", industryError);
-      } else if (industryData) {
-        const industries = industryData.map(
-          (item: { industry: string }) => item.industry
+      if (similarCompaniesError) {
+        console.error(
+          "Error fetching similar companies:",
+          similarCompaniesError
         );
-
-        const { data: similarCompaniesData, error: similarCompaniesError } =
-          await supabase
-            .from("companies")
-            .select("id, name, symbol, revrank, industry")
-            .in("industry", industries)
-            .not("id", "in", `(${companyIDs.join(",")})`) // Exclude companies already in the watchlist
-            .order("revrank", { ascending: true })
-            .limit(10);
-
-        if (similarCompaniesError) {
-          console.error(
-            "Error fetching similar companies:",
-            similarCompaniesError
-          );
-        } else if (similarCompaniesData) {
-          const formattedData = similarCompaniesData.map((company: any) => ({
-            id: company.id,
-            name: company.name,
-            symbol: company.symbol,
-            revrank: company.revrank,
-            industry: company.industry,
-            watchlist_company_id: 0,
-          }));
-          setSimilarCompanies(formattedData);
-        }
+      } else if (similarCompaniesData) {
+        const formattedData = similarCompaniesData.map((company) => ({
+          id: company.id,
+          name: company.name,
+          symbol: company.symbol,
+          industry: company.industry,
+        }));
+        setSimilarCompanies(formattedData);
       }
     } catch (error) {
       console.error("Error fetching similar companies:", error);
     } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleAddToWatchlist = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    companyID: number
-  ) => {
-    e.stopPropagation();
-    e.preventDefault();
-    const watchlistId = watchlist?.find((item) => item.uuid === paramID)?.id;
-
-    if (!watchlistId) {
-      console.error("Watchlist ID not found");
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("watchlist_companies")
-      .insert({ company_id: companyID, watchlist_id: watchlistId })
-      .select();
-
-    if (error) {
-      console.error("Error adding company to watchlist:", error);
-    } else {
-      // Fetch the newly added company and update the state
-      const { data: newCompany, error: fetchError } = await supabase
-        .from("companies")
-        .select("id, name, symbol")
-        .eq("id", companyID)
-        .single();
-
-      if (fetchError) {
-        console.error("Error fetching new company:", fetchError);
-      } else if (data && data.length > 0) {
-        setWatchlistCompanies((prevCompanies) => [
-          ...prevCompanies,
-          { ...newCompany, watchlist_company_id: data[0].id },
-        ]);
-      }
+      setIsFetching(false);
     }
   };
 
@@ -146,7 +87,7 @@ const WLSimilarCompanySection: React.FC<WatchlistSimilarCompaniesProps> = ({
       </div>
 
       <div className="max-h-96 overflow-y-auto">
-        {isLoading ? (
+        {isFetching ? (
           <div className="flex justify-center h-20 items-center">
             <Loading />
           </div>
@@ -180,7 +121,13 @@ const WLSimilarCompanySection: React.FC<WatchlistSimilarCompaniesProps> = ({
                   </div>
 
                   <button
-                    onClick={(e) => handleAddToWatchlist(e, company.id)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleAddCompanyToWatchlist(company.id);
+                      setSimilarCompanies((prev) =>
+                        prev.filter((item) => item.id !== company.id)
+                      );
+                    }}
                     className="p-4 hover:bg-gray-200 rounded-full"
                   >
                     <FaPlus className="text-primary-500" />

@@ -27,7 +27,7 @@ export interface SummaryProps {
 const SummarySection: React.FC<SummarySectionProps> = ({
   year,
   quarter,
-  etID
+  etID,
 }) => {
   if (!year || !quarter) {
     return null;
@@ -82,7 +82,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
             ? data.opportunities.split("\n")
             : [],
           priorities: data.priorities ? data.priorities.split("\n") : [],
-          keywords: data.keywords ? JSON.parse(data.keywords) : []
+          keywords: data.keywords ? JSON.parse(data.keywords) : [],
         };
 
         setGeneralSummary(processedData);
@@ -131,7 +131,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           pain_points: tsData[0].pain_points.split("\n"),
           opportunities: tsData[0].opportunities.split("\n"),
           priorities: tsData[0].priorities.split("\n"),
-          keywords: [] // Assuming tailored summaries do not have keywords
+          keywords: [], // Assuming tailored summaries do not have keywords
         };
 
         setTailoredSummary(processedData);
@@ -158,7 +158,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         companyID: companyId,
         orgID: orgInfo?.id.toString(),
         year: year,
-        quarter: quarter
+        quarter: quarter,
       });
 
       if (data.status === "success") {
@@ -168,7 +168,7 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           pain_points: data.summary.pain_points.split("\n"),
           opportunities: data.summary.opportunities.split("\n"),
           priorities: data.summary.priorities.split("\n"),
-          keywords: [] // Assuming generated tailored summaries do not have keywords
+          keywords: [], // Assuming generated tailored summaries do not have keywords
         };
 
         setTailoredSummary(processedData);
@@ -176,16 +176,16 @@ const SummarySection: React.FC<SummarySectionProps> = ({
           if (!prev || !prev.creditCount) return prev;
           return {
             ...prev,
-            creditCount: prev.creditCount ? prev.creditCount - 1 : 0
+            creditCount: prev.creditCount ? prev.creditCount - 1 : 0,
           };
         });
-        invokeToast("success", data.message, "top");
+        invokeToast("success", data.message);
         setActiveTab("tailored");
       } else if (data.status === "error") {
-        invokeToast("error", `${data.message}`, "top");
+        invokeToast("error", `${data.message}`);
       }
     } catch (error) {
-      invokeToast("error", "Failed to generate tailored summary", "top");
+      invokeToast("error", "Failed to generate tailored summary");
       console.error("Error fetching tailored summary:", error);
       setTailoredSummary(null);
     } finally {

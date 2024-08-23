@@ -1,16 +1,29 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAtom, useAtomValue } from "jotai";
-import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";
+import { useAtom, useSetAtom } from "jotai";
+import {
+  userMetadataAtom,
+  profileAtom,
+  userInfoAtom,
+  orgInfoAtom,
+  watchlistAtom,
+} from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
+import { Loading } from "@/app/components";
 
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const router = useRouter();
   const pathname = usePathname();
+
+  const setUserMetadata = useSetAtom(userMetadataAtom);
+  const setProfile = useSetAtom(profileAtom);
+  const setWatchlist = useSetAtom(watchlistAtom);
+
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const setOrgInfo = useSetAtom(orgInfoAtom);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom);
-  const userInfo = useAtomValue(userInfoAtom);
 
   const authPaths = [
     "/auth/sign-in",
@@ -20,62 +33,64 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/reset-password",
     "/auth/reset-confirm",
     "/auth/reset-success",
-    "/landing",
-    "/landing/app",
-    "/terms",
-    "/privacy"
   ];
-  const landingPath = "/";
+
+  const publicPaths = ["/", "/terms", "/privacy"];
 
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const {
-          data: { session }
-        } = await supabase.auth.getSession();
-
-        if (session?.user) {
-          setUserMetadata(session.user.user_metadata);
-
-          // Check if onboardingStatus is true and redirect if necessary
-          // if (userInfo) {
-          //   if (
-          //     !userInfo.onboardingStatus &&
-          //     !authPaths.includes(pathname) &&
-          //     pathname !== landingPath
-          //   ) {
-          //     router.push("/auth/create-profile");
-          //   }
-          // }
-        } else {
-          setUserMetadata(null);
-          if (
-            !userMetadata &&
-            !authPaths.includes(pathname) &&
-            pathname !== landingPath
-          ) {
-            router.push("/auth/sign-in");
-          }
-        }
-      } catch (error) {
-        console.error("Failed to verify user session:", error);
-      } finally {
-        // Mark loading as complete
-        setIsLoading(false);
-      }
-    };
-
     checkUser();
+
     const intervalId = setInterval(checkUser, 60000); // Check every 60 seconds
 
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, [pathname, userInfo]); // Effect depends on pathname changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(() => {
+      checkUser();
+    });
+
+    return () => {
+      clearInterval(intervalId); // Cleanup interval on unmount
+      authListener.subscription.unsubscribe();
+    };
+  }, [pathname]); // Effect depends on pathname changes
+
+  const checkUser = async () => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session?.user) {
+        setUserMetadata(session.user.user_metadata);
+
+        if (authPaths.includes(pathname)) {
+          router.push("/app");
+        }
+      } else {
+        setUserMetadata(null);
+        setProfile(null);
+        setWatchlist(null);
+
+        setUserInfo(null);
+        setOrgInfo(null);
+
+        if (publicPaths.includes(pathname)) {
+          return;
+        }
+
+        router.push("/auth/sign-in");
+      }
+    } catch (error) {
+      console.error("Failed to verify user session:", error);
+    } finally {
+      // Mark loading as complete
+      setIsLoading(false);
+    }
+  };
 
   // Display loading indicator while authentication status is being checked
   if (isLoading) {
     return (
       <div className="flex justify-center items-center w-screen h-screen">
-        <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></span>
+        <Loading />
       </div>
     );
   }

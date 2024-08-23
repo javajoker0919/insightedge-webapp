@@ -15,6 +15,7 @@ import {
 import { watchlistAtom, isSidebarExpandedAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import Image from "next/image";
+import { Logo } from "@/app/components";
 
 const Sidebar: React.FC = () => {
   const params = useParams();
@@ -64,8 +65,6 @@ const Sidebar: React.FC = () => {
       >
         <SidebarHeader watchlist={watchlist} />
         <SidebarMenu
-          watchlist={watchlist}
-          paramUUID={paramUUID}
           setIsExpanded={setIsExpanded}
           isSettingsExpanded={isSettingsExpanded}
           toggleSettings={toggleSettings}
@@ -90,37 +89,22 @@ const Sidebar: React.FC = () => {
 
 const SidebarHeader: React.FC<{ watchlist: any }> = ({ watchlist }) => {
   return (
-    <div className="p-3">
-      <Link
-        href={`/app/watchlist/${watchlist?.[0]?.uuid}`}
-        className={`text-2xl font-bold gap-2 text-primary-600 flex items-center p-3`}
-      >
-        <Image src={"/logo.png"} alt={"ProspectEdge"} width={200} height={40} />
-      </Link>
+    <div className="p-6">
+      <Logo />
     </div>
   );
 };
 
 const SidebarMenu: React.FC<{
-  watchlist: any;
-  paramUUID: string;
   setIsExpanded: (value: boolean) => void;
   isSettingsExpanded: boolean;
   toggleSettings: () => void;
-}> = ({
-  watchlist,
-  paramUUID,
-  setIsExpanded,
-  isSettingsExpanded,
-  toggleSettings,
-}) => (
+}> = ({ setIsExpanded, isSettingsExpanded, toggleSettings }) => (
   <div className="p-3">
     <ul>
       <li className="mb-1">
         <Link
-          href={`/app${
-            watchlist?.[0]?.uuid ? `/watchlist/${watchlist[0].uuid}` : ""
-          }`}
+          href={`/app`}
           onClick={() => setIsExpanded(false)}
           className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
         >

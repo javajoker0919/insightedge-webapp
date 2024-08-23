@@ -7,19 +7,23 @@ import Modal from "./Modal";
 import Navbar from "./Navbar";
 import AuthInput from "./SignInput";
 import WatchlistModal from "./WatchlistModal";
-import WLMarketingSection from "./watchlist/marketing/WLMarketingSection";
-import WLOpportunitySection from "./watchlist/opportunity/WLOpportunitySection";
-import WLCalendarSection from "./watchlist/WLCalendarSection";
-import WLIncomeStatementSection from "./watchlist/WLIncomeStatementSection";
 import PrelineScript from "./PrelineScript";
 import Check from "./CheckIcon";
 import Close from "./CloseIcon";
-import WLHighlightSection from "./watchlist/WLHighlightSection";
-import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
 import OnboardingUserProfileSection from "./onboarding/UserProfileSection";
 import OnboardingCompanyProfileSection from "./onboarding/CompanyProfileSection";
 import OnboardingInitialCompanySection from "./onboarding/InitialCompanySection/InitialCompanySection";
 import NoDataSection from "./NoDataSection";
+import Logo from "./Logo";
+
+/// watchlist
+import WLMarketingSection from "./watchlist/marketing/WLMarketingSection";
+import WLOpportunitySection from "./watchlist/opportunity/WLOpportunitySection";
+import WLCalendarSection from "./watchlist/WLCalendarSection";
+import WLIncomeStatementSection from "./watchlist/WLIncomeStatementSection";
+import WLHighlightSection from "./watchlist/WLHighlightSection";
+import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
+import WLCompanySearchbar from "./watchlist/WLCompanySearchbar";
 
 export {
   CompanySearchbar,
@@ -31,12 +35,6 @@ export {
   Navbar,
   AuthInput,
   WatchlistModal,
-  WLMarketingSection,
-  WLOpportunitySection,
-  WLCalendarSection,
-  WLIncomeStatementSection,
-  WLHighlightSection,
-  WLSimilarCompanySection,
   PrelineScript,
   Check,
   Close,
@@ -44,4 +42,14 @@ export {
   OnboardingCompanyProfileSection,
   OnboardingInitialCompanySection,
   NoDataSection,
+  Logo,
+
+  /// Watchlist
+  WLMarketingSection,
+  WLOpportunitySection,
+  WLCalendarSection,
+  WLIncomeStatementSection,
+  WLHighlightSection,
+  WLSimilarCompanySection,
+  WLCompanySearchbar,
 };

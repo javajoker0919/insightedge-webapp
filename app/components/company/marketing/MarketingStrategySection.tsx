@@ -184,14 +184,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             : 0,
         };
       });
-      invokeToast("success", data.message, "top");
+      invokeToast("success", data.message);
     } catch (error) {
       console.error(error);
-      invokeToast(
-        "error",
-        "Failed to generate tailored marketing strategies",
-        "top"
-      );
+      invokeToast("error", "Failed to generate tailored marketing strategies");
     } finally {
       setIsGeneratingTM(false);
     }
@@ -298,7 +294,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 
       <Modal
         wrapperClass="backdrop-blur-[2px]"
-        modalClass="w-full mx-16 min-w-[60rem] xl:min-w-[80rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
+        modalClass="w-full mx-16 min-w-[60rem] xl:max-w-[50rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
         isOpen={!!selectedStrats}
         onClose={() => setSelectedMS(null)}
       >
@@ -311,7 +307,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 
           <div className="space-y-6">
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Key Performance Indicators
               </h3>
               <ul className="list-disc pl-8 space-y-3">
@@ -326,10 +322,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             </section>
 
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Strategic Alignment
               </h3>
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <p className="text-gray-700">
                   {selectedStrats?.strategicAlignment}
                 </p>
@@ -337,10 +333,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             </section>
 
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Call to Action
               </h3>
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <p className="text-gray-700">{selectedStrats?.callToAction}</p>
               </div>
             </section>

@@ -30,10 +30,18 @@ interface Watchlist {
   company_count?: number;
 }
 
+interface Profile {
+  user_id: string;
+  org_id: number;
+  credits: number | null;
+}
+
 export const userMetadataAtom = atomWithStorage<UserMetadata | null>(
   "user-meta-data",
   null
 );
+
+export const profileAtom = atomWithStorage<Profile | null>("profile", null);
 
 export const userInfoAtom = atomWithStorage<User | null>("user-info", null);
 export const orgInfoAtom = atomWithStorage<Organization | null>(
@@ -45,14 +53,3 @@ export const watchlistAtom = atomWithStorage<Watchlist[] | null>(
   null
 );
 export const isSidebarExpandedAtom = atom<boolean>(false);
-
-export interface ICompanyData {
-  year: number;
-  quarter: number;
-  company_id: string;
-  symbol: string;
-}
-export const latestCompanyEarningsData = atomWithStorage<{
-  data: ICompanyData[] | null;
-  storedAt: string | null;
-}>("latest-company-earnings-data", { data: null, storedAt: null });

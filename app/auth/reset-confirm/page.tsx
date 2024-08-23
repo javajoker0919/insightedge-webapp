@@ -20,12 +20,11 @@ const ResetConfirm = () => {
       });
       if (error) throw error;
       localStorage.removeItem("email");
-      invokeToast("success", "Resend request sent to your email!", "top");
+      invokeToast("success", "Resend request sent to your email!");
     } catch (error: any) {
       invokeToast(
         "error",
-        `Error: ${error.message || "An error occurred during password reset"}`,
-        "top"
+        `Error: ${error.message || "An error occurred during password reset"}`
       );
       console.error(error);
     } finally {

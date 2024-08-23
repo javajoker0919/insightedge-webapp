@@ -1,37 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
+import Logo from "./Logo";
 
 const HeaderImage = () => {
   return (
-    <>
-      {/* <Link href="/app">
-        <div className="flex items-center absolute top-4 left-4">
-          <Image
-            src="/favicon.png"
-            alt="ProspectEdge Logo"
-            width={40}
-            height={40}
-          />
-          <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
-        </div>
-      </Link> */}
+    <div className="flex items-center absolute top-4 left-4 z-20">
       <Link href="/app">
-        <div className="flex items-center absolute top-4 left-4 z-20">
-          <Image
-            src="/favicon.png"
-            alt="ProspectEdge Logo"
-            width={40}
-            height={40}
-          />
-          <Image
-            src="/logo.png"
-            alt="ProspectEdge"
-            width={200}
-            height={40}
-          />
-        </div>
+        <Image
+          src="/favicon.png"
+          alt="ProspectEdge Logo"
+          width={40}
+          height={40}
+        />
       </Link>
-    </>
+      <Logo />
+    </div>
   );
 };
 

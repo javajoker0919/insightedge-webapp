@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import Link from "next/link";
+import Logo from "../Logo";
 
 const OnboardingUserProfileSection = ({
   setOnboardingStep,
@@ -42,17 +43,19 @@ const OnboardingUserProfileSection = ({
   return (
     <>
       <div className="flex flex-col lg:flex-row w-full h-screen">
-        <Link href="/app">
-          <div className="flex items-center absolute top-4 left-4 z-20">
+        <div className="flex items-center absolute top-4 left-4 z-20">
+          <Link href="/app">
             <Image
               src="/favicon.png"
               alt="ProspectEdge Logo"
               width={40}
               height={40}
             />
-            <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} className="hidden sm:block" />
+          </Link>
+          <div className="hidden sm:block">
+            <Logo />
           </div>
-        </Link>
+        </div>
         <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full z-10 px-4 sm:px-8 lg:px-12 py-20 lg:py-0">
           <div className="flex flex-col w-full">
             <h1 className="text-2xl sm:text-3xl font-bold leading-tight my-8 sm:my-16 text-center lg:text-left">

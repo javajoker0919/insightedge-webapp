@@ -9,6 +9,7 @@ import { useSetAtom } from "jotai";
 import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 import useValidation from "@/hooks/useValidation";
+import { Logo } from "@/app/components";
 
 const SignUp = () => {
   const { validateEmail, validatePassword } = useValidation();
@@ -57,7 +58,7 @@ const SignUp = () => {
     const { email, password } = formData;
 
     if (!isValidate) {
-      invokeToast("error", "Please fill in all fields correctly", "top");
+      invokeToast("error", "Please fill in all fields correctly");
       return;
     }
 
@@ -88,7 +89,7 @@ const SignUp = () => {
       // router.replace("/auth/verify-email");
     } catch (error: any) {
       console.error("Sign-up error:", error);
-      invokeToast("error", error.message || "Something went wrong!", "top");
+      invokeToast("error", error.message || "Something went wrong!");
     } finally {
       setIsLoading(false);
     }
@@ -115,17 +116,17 @@ const SignUp = () => {
   return (
     <div className="flex flex-col xl:flex-row w-full h-screen">
       <div className="flex flex-col w-full xl:w-1/2 h-full bg-white">
-        <Link href="/app">
-          <div className="flex items-center mt-4 ml-4">
+        <div className="flex items-center mt-4 ml-4">
+          <Link href="/app">
             <Image
               src="/favicon.png"
               alt="ProspectEdge Logo"
               width={40}
               height={40}
             />
-            <Image src="/logo.png" alt="ProspectEdge" width={200} height={40} />
-          </div>
-        </Link>
+          </Link>
+          <Logo />
+        </div>
         <div className="flex flex-col mt-8 lg:mt-24 items-center w-full">
           <div className="flex flex-col w-full max-w-md text-center px-4">
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 leading-tight mb-3">

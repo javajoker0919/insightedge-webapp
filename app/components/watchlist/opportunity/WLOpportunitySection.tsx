@@ -1,19 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { supabase } from "@/utils/supabaseClient";
+import { useAtomValue, useSetAtom } from "jotai";
 
+import { supabase } from "@/utils/supabaseClient";
 import Modal from "@/app/components/Modal";
 import OpportunitiesTable from "./WLOpportunityTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { Loading } from "../..";
 import { generateTOAPI } from "@/utils/apiClient";
 import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
-import { useAtomValue, useSetAtom } from "jotai";
-
-interface OpportunitiesProps {
-  etIDs: number[] | null;
-}
 
 export interface OpportunityProps {
   opportunityName: string;
@@ -33,13 +29,18 @@ export interface OpportunityProps {
     body: string;
   };
   reasoning: string;
+  date: string;
 }
 
-const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
-  if (etIDs === null) {
-    return;
-  }
+interface OpportunitiesProps {
+  etIDs: number[];
+  isLoading: boolean;
+}
 
+const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
+  etIDs,
+  isLoading,
+}) => {
   const { invokeToast } = useToastContext();
   const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
@@ -60,15 +61,19 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
   const [companyCount, setCompanyCount] = useState<number | null>(null);
 
   useEffect(() => {
-    if (etIDs && etIDs.length > 0) {
-      fetchGOs(etIDs);
+    if (isLoading) {
+      return;
     }
+
+    fetchGOs(etIDs);
   }, [etIDs]);
 
   useEffect(() => {
-    if (etIDs && etIDs.length > 0 && orgInfo && orgInfo.id) {
-      fetchTOs(etIDs, orgInfo.id);
+    if (isLoading || orgInfo === null || orgInfo.id === null) {
+      return;
     }
+
+    fetchTOs(etIDs, orgInfo.id);
   }, [etIDs, orgInfo]);
 
   const fetchGOs = async (etIDs: number[]) => {
@@ -81,7 +86,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
 
     try {
       const { data, error } = await supabase
-        .from("general_opportunities")
+        .from("general_opportunities_with_date_v1")
         .select(
           `
           name, 
@@ -92,35 +97,20 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
           engagement_outbounds, 
           email_subject, 
           email_body,
-          earnings_transcripts (
-            company_id
-          ),
-          reasoning
+          reasoning,
+          date,
+          company_id,
+          company_name
           `
         )
         .in("earnings_transcript_id", etIDs);
 
       if (error) throw error;
 
-      const companyIds = data.map(
-        (item: any) => item.earnings_transcripts.company_id
-      );
-      const { data: companiesData, error: companiesError } = await supabase
-        .from("companies")
-        .select("id, name")
-        .in("id", companyIds);
-
-      if (companiesError) throw companiesError;
-
-      const companyMap = companiesData.reduce((acc: any, company: any) => {
-        acc[company.id] = company.name;
-        return acc;
-      }, {});
-
-      const formattedData: OpportunityProps[] = data.map((item: any) => ({
+      const formattedData: OpportunityProps[] = data.map((item) => ({
         opportunityName: item.name,
         opportunityScore: item.score,
-        companyName: companyMap[item.earnings_transcripts.company_id],
+        companyName: item.company_name,
         targetBuyer: {
           role: item.buyer_role,
           department: item.buyer_department,
@@ -134,6 +124,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
           body: item.email_body,
         },
         reasoning: item.reasoning,
+        date: item.date,
       }));
 
       setGOs(formattedData);
@@ -155,12 +146,11 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
 
     try {
       const { data, error } = await supabase
-        .from("tailored_opportunities")
+        .from("tailored_opportunities_with_date_v1")
         .select(
           `
           name, 
           score, 
-          keywords, 
           buyer_role, 
           buyer_department, 
           engagement_inbounds, 
@@ -168,9 +158,10 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
           email_subject, 
           email_body,
           reasoning,
-          earnings_transcripts (
-            company_id
-          )
+          keywords,
+          date,
+          company_id,
+          company_name
           `
         )
         .eq("organization_id", orgID)
@@ -179,28 +170,16 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
       if (error) throw error;
 
       const companyIDs = Array.from(
-        new Set(data.map((item: any) => item.earnings_transcripts.company_id))
+        new Set(data.map((item) => item.company_id))
       );
 
       setCompanyCount(companyIDs.length);
 
-      const { data: companiesData, error: companiesError } = await supabase
-        .from("companies")
-        .select("id, name")
-        .in("id", companyIDs);
-
-      if (companiesError) throw companiesError;
-
-      const companyMap = companiesData.reduce((acc: any, company: any) => {
-        acc[company.id] = company.name;
-        return acc;
-      }, {});
-
       if (data) {
-        const formattedData: OpportunityProps[] = data.map((item: any) => ({
+        const formattedData: OpportunityProps[] = data.map((item) => ({
           opportunityName: item.name,
           opportunityScore: item.score,
-          companyName: companyMap[item.earnings_transcripts.company_id],
+          companyName: item.company_name,
           keywords: item.keywords,
           targetBuyer: {
             role: item.buyer_role,
@@ -215,6 +194,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             body: item.email_body,
           },
           reasoning: item.reasoning,
+          date: item.date,
         }));
 
         setTOs(formattedData);
@@ -230,7 +210,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
 
   const generateTOs = async () => {
     if (!etIDs || etIDs.length === 0) {
-      invokeToast("error", "No earnings transcripts selected", "top");
+      invokeToast("error", "No earnings transcripts selected");
       return;
     }
 
@@ -258,6 +238,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             body: item.email_body,
           },
           reasoning: item.reasoning,
+          date: "",
         })
       );
 
@@ -278,9 +259,9 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             : 0,
         };
       });
-      invokeToast("success", data.message, "top");
+      invokeToast("success", data.message);
     } catch (error) {
-      invokeToast("error", "Failed to generate tailored opportunities", "top");
+      invokeToast("error", "Failed to generate tailored opportunities");
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNABORTED") {
           console.error(
@@ -389,16 +370,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             <LoadingSection />
           ) : (
             <>
-              {/* <div className="p-4 bg-gray-100 text-black">
-                  {companyName}'s top opportunities.
-                  {tailoredOpportunities?.length === 0 && (
-                    <span>
-                      To find the best ways to sell your solutions to{" "}
-                      {companyName}, click "Generate Tailored Opportunities."
-                    </p>
-                  )}
-                </div> */}
-
               {generalOpportunities && (
                 <OpportunitiesTable
                   opportunities={generalOpportunities}
@@ -412,11 +383,6 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             <LoadingSection />
           ) : (
             <>
-              {/* <div className="p-4 bg-gray-100 text-black">
-                Below is your company specific opportunity table. You can
-                explore the top sales opportunities for selling your solutions
-                to your specific company
-              </div> */}
               {tailoredOpportunities && (
                 <OpportunitiesTable
                   opportunities={tailoredOpportunities}
@@ -429,7 +395,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
 
       <Modal
         wrapperClass="backdrop-blur-[2px]"
-        modalClass="w-full mx-16 min-w-[60rem] xl:min-w-[80rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
+        modalClass="w-full mx-16 min-w-[60rem] xl:max-w-[50rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
         isOpen={!!selectedOpp}
         onClose={() => setSelectedOpp(null)}
       >
@@ -442,7 +408,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
 
           <div className="space-y-6">
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Inbound Strategies
               </h3>
               <ul className="list-disc pl-5 sm:pl-8 space-y-3">
@@ -459,7 +425,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             </section>
 
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Outbound Strategies
               </h3>
               <ul className="list-disc pl-5 sm:pl-8 space-y-3">
@@ -476,10 +442,10 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             </section>
 
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Outbound Email
               </h3>
-              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
                 <h4 className="text-base sm:text-lg font-medium text-gray-800 mb-2">
                   {selectedOpp?.outboundEmail?.subject}
                 </h4>
@@ -490,10 +456,10 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({ etIDs }) => {
             </section>
 
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Reasoning
               </h3>
-              <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
                 <p className="text-sm sm:text-base text-gray-700">
                   {selectedOpp?.reasoning}
                 </p>

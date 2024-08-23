@@ -139,7 +139,7 @@ const OnboardingCompanyProfileSection = ({
             </div>
             <div className="flex flex-col gap-8">
               <p className="text-sm leading-5 font-normal text-[#171A1FFF]">
-                Products & Services
+                Products and Services that you sell
               </p>
               <textarea
                 className="text-sm leading-6 font-normal text-[#171A1FFF] w-full border border-[#BDC1CAFF] rounded-sm outline-none px-4 py-3"

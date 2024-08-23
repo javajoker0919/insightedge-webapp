@@ -1,40 +1,37 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+
 import { supabase } from "@/utils/supabaseClient";
-import { useAtom, useSetAtom } from "jotai";
 import {
-  userMetadataAtom,
   userInfoAtom,
-  orgInfoAtom,
+  profileAtom,
   watchlistAtom,
   isSidebarExpandedAtom,
 } from "@/utils/atoms";
-import Image from "next/image";
-import Link from "next/link";
-import CompanySearchbar from "@/app/components/CompanySearchbar";
-import { IoMenu } from "react-icons/io5";
+import { CompanySearchbar, Logo } from "@/app/components";
 
 const Header: React.FC = () => {
+  const router = useRouter();
+
+  const [profile, setProfile] = useAtom(profileAtom);
+  const watchlist = useAtomValue(watchlistAtom);
+  const setIsSidebarExpanded = useSetAtom(isSidebarExpandedAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const setIsSidebarExpanded = useSetAtom(isSidebarExpandedAtom);
-  const router = useRouter();
-  const setUserMetadata = useSetAtom(userMetadataAtom);
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-  const setOrgInfo = useSetAtom(orgInfoAtom);
-  const [watchlist, setWatchlist] = useAtom(watchlistAtom);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
+
     try {
       await supabase.auth.signOut();
-      setUserMetadata(null);
-      setUserInfo(null);
-      setOrgInfo(null);
-      setWatchlist(null);
-      router.push("/auth/sign-in");
     } catch (error) {
       console.error("Error logging out:", error);
     } finally {
@@ -68,27 +65,39 @@ const Header: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchCreditCount();
-  }, [userInfo?.id]);
+    if (profile && profile.credits === null) {
+      fetchCreditCount(profile.user_id);
+    }
+  }, [profile]);
 
-  const fetchCreditCount = async () => {
+  const fetchCreditCount = async (userID: string) => {
     try {
-      if (userInfo) {
-        const { data, error } = await supabase
-          .from("user_packages")
-          .select("value")
-          .eq("user_id", userInfo.id)
-          .eq("package_id", 1)
-          .maybeSingle();
-        if (error) {
-          throw error;
-        }
+      const { data, error } = await supabase
+        .from("user_packages")
+        .select("value")
+        .eq("user_id", userID)
+        .eq("package_id", 1)
+        .maybeSingle();
 
+      if (error) {
+        throw error;
+      }
+
+      if (data) {
         setUserInfo((prev) => {
           if (!prev) return prev;
           return {
             ...prev,
             creditCount: parseInt(data?.value),
+          };
+        });
+
+        setProfile((prev) => {
+          if (!prev) return prev;
+
+          return {
+            ...prev,
+            credits: parseInt(data.value),
           };
         });
       }
@@ -107,18 +116,7 @@ const Header: React.FC = () => {
           >
             <IoMenu className="text-2xl" />
           </button>
-          <Link
-            href={`/app/watchlist/${watchlist?.[0]?.uuid}`}
-            className={`text-2xl font-bold gap-2 text-primary-600 flex items-center`}
-          >
-            <Image
-              src={"/logo.png"}
-              alt={"ProspectEdge"}
-              width={200}
-              height={40}
-              className="max-w-[150px] sm:max-w-[200px]"
-            />
-          </Link>
+          <Logo />
         </div>
 
         <div className="relative w-full sm:w-[300px] lg:w-[400px] xl:w-[700px] mb-4 sm:mb-0 h-10">
@@ -137,9 +135,14 @@ const Header: React.FC = () => {
               router.push("/app/settings/usage");
             }}
           >
-            <img src="/token.png" alt="Credit token" className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+            <img
+              src="/token.png"
+              alt="Credit token"
+              className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2"
+            />
             <span className="font-medium text-gray-700">
-              Credits: <span className="text-primary-600">{userInfo?.creditCount || 0}</span>
+              Credits:{" "}
+              <span className="text-primary-600">{profile?.credits || 0}</span>
             </span>
           </div>
 
@@ -156,7 +159,7 @@ const Header: React.FC = () => {
             {isDropdownOpen && (
               <div className="absolute border border-gray-200 right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                 <Link
-                  href={`/app/watchlist/${watchlist?.[0]?.uuid}`}
+                  href={`/app`}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={closeDropdown}
                 >

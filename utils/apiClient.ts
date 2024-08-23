@@ -4,7 +4,7 @@ import { supabase } from "./supabaseClient";
 const getAuthToken = async () => {
   const {
     data: { session },
-    error
+    error,
   } = await supabase.auth.getSession();
   if (error || !session) throw new Error("No user logged in");
   // return session.provider_token || session.access_token;
@@ -15,7 +15,7 @@ const createApiClient = async () => {
   const token = await getAuthToken();
   return axios.create({
     baseURL: process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:8000",
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   });
 };
 
@@ -32,16 +32,9 @@ const generateTailoredAPI = async (
   const apiClient = await createApiClient();
   const url = `/api/v1/${endpoint}/${companyID}`;
   return apiClient.get(url, {
-    params: { org_id: orgID, ...queryParams }
+    params: { org_id: orgID, ...queryParams },
   });
 };
-
-const generateTailoredOpportunitiesAPI = (params: {
-  companyID: string;
-  orgID: string;
-  year: number;
-  quarter: number;
-}) => generateTailoredAPI("opportunities", params);
 
 const generateTailoredSummaryAPI = (params: {
   companyID: string;
@@ -53,7 +46,7 @@ const generateTailoredSummaryAPI = (params: {
 const updatePlan = async (plan: string) => {
   const apiClient = await createApiClient();
   const response = await apiClient.post("/api/v1/update-plan", {
-    plan
+    plan,
   });
   return response.data;
 };
@@ -112,14 +105,21 @@ const getScrapeData = async (data: {
   const response = await apiClient.get("/api/v1/signup_onboarding", {
     params: {
       company_name: data.company_name,
-      company_url: data.company_url
-    }
+      company_url: data.company_url,
+    },
   });
   return response.data;
 };
 
+const getSchedule = async (data: any) => {
+  const response = await axios.post(
+    `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/v1/schedule`,
+    data
+  );
+  return response.data;
+};
+
 export {
-  generateTailoredOpportunitiesAPI,
   generateTailoredSummaryAPI,
   updatePlan,
   createCustomer,
@@ -128,5 +128,6 @@ export {
   stopCancelSubscription,
   generateTOAPI,
   generateTMAPI,
-  getScrapeData
+  getScrapeData,
+  getSchedule
 };

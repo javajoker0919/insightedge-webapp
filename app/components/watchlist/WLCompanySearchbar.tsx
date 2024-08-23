@@ -1,27 +1,23 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { IoClose } from "react-icons/io5";
 import { useAtomValue } from "jotai";
+
+import { IoClose } from "react-icons/io5";
 
 import { supabase } from "@/utils/supabaseClient";
 import { watchlistAtom } from "@/utils/atoms";
-import { CompanyProps } from "./InitialCompanySection";
 
 interface CompanySearchbarProps {
   isSearchBarOpen: boolean;
   setIsSearchBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setWatchlistCompanies: React.Dispatch<React.SetStateAction<any[]>>;
-  companies: CompanyProps[];
-  setCompanies: React.Dispatch<React.SetStateAction<CompanyProps[]>>;
+  handleAddCompanyToWatchlist: (companyID: number) => void;
 }
 
-const OnboardCompanySearchbar = ({
+const WLCompanySearchbar = ({
   isSearchBarOpen,
   setIsSearchBarOpen,
-  setWatchlistCompanies,
-  companies,
-  setCompanies,
+  handleAddCompanyToWatchlist,
 }: CompanySearchbarProps) => {
   const params = useParams();
   const paramID = params.id as string;
@@ -33,7 +29,7 @@ const OnboardCompanySearchbar = ({
   const watchlist = useAtomValue(watchlistAtom);
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchType, setSearchType] = useState<string>("all");
-  const [searchResults, setSearchResults] = useState<CompanyProps[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
 
@@ -46,9 +42,15 @@ const OnboardCompanySearchbar = ({
   }, []);
 
   useEffect(() => {
+    if (isSearchBarOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchBarOpen]);
+
+  useEffect(() => {
     const debounce = setTimeout(() => {
       fetchSearchResults();
-    }, 300);
+    }, 150);
 
     return () => clearTimeout(debounce);
   }, [searchInput, searchType]);
@@ -58,7 +60,7 @@ const OnboardCompanySearchbar = ({
       searchBarRef.current &&
       !searchBarRef.current.contains(event.target as Node)
     ) {
-      setIsInputFocused(false);
+      setIsSearchBarOpen(false);
     }
   };
 
@@ -104,76 +106,34 @@ const OnboardCompanySearchbar = ({
   };
 
   const handleCloseSearchBar = () => {
-    setSearchInput("");
+    setIsSearchBarOpen(false);
   };
 
-  const handleAddCompanyToWatchlist = async (companyId: number) => {
-    const watchlistId = watchlist?.find((item) => item.uuid === paramID)?.id;
+  const handleCompanyClick = (companyID: number) => {
+    setIsSearchBarOpen(false);
 
-    if (!watchlistId) {
-      console.error("Watchlist ID not found");
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("watchlist_companies")
-      .insert({ company_id: companyId, watchlist_id: watchlistId })
-      .select();
-
-    if (error) {
-      console.error("Error adding company to watchlist:", error);
-    } else {
-      setIsSearchBarOpen(false);
-
-      // Fetch the newly added company and update the state
-      const { data: newCompany, error: fetchError } = await supabase
-        .from("companies")
-        .select("id, name, symbol")
-        .eq("id", companyId)
-        .single();
-
-      if (fetchError) {
-        console.error("Error fetching new company:", fetchError);
-      } else if (data && data.length > 0) {
-        setWatchlistCompanies((prevCompanies) => [
-          ...prevCompanies,
-          { ...newCompany, watchlist_company_id: data[0].id },
-        ]);
-      }
-    }
-  };
-
-  const handleCompanyClick = (company: CompanyProps) => {
-    if (companies.map((company) => company.id).includes(company.id)) {
-      return;
-    }
-
-    // setIsInputFocused(false);
-
-    setCompanies((prev) => {
-      return [...prev, company];
-    });
+    handleAddCompanyToWatchlist(companyID);
   };
 
   return (
     <div
       id="search-bar"
       ref={searchBarRef}
-      className={`absolute w-full flex justify-center`}
+      className="absolute w-full max-w-[750px] flex justify-center top-14 z-50"
     >
       <div
         className={`${
-          isInputFocused ? "shadow-2xl" : ""
-        } w-full border overflow-hidden bg-white relative rounded-md`}
+          isInputFocused ? "shadow-lg" : ""
+        } w-full border overflow-hidden bg-white border-gray-100 relative rounded-xl`}
       >
         {isInputFocused && (
-          <div className={`absolute top-1 right-1 flex items-center`}>
+          <div className="absolute top-2 right-2 flex items-center">
             {isSearching && (
               <span className="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary-500 mr-2" />
             )}
             <button
               onClick={handleCloseSearchBar}
-              className={`hover:bg-gray-200 rounded-full p-1`}
+              className="hover:bg-gray-200 rounded-full p-2"
             >
               <IoClose className="text-2xl" />
             </button>
@@ -183,8 +143,8 @@ const OnboardCompanySearchbar = ({
         <input
           ref={searchInputRef}
           className={`w-full rounded-md focus:outline-none ${
-            isInputFocused ? "" : "bg-gray-50"
-          } p-3`}
+            isInputFocused ? "" : "bg-gray-100"
+          } p-4`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Search for companies..."
@@ -216,12 +176,8 @@ const OnboardCompanySearchbar = ({
               {searchResults.map((company) => (
                 <div
                   key={company.id}
-                  className={`py-2 px-5  ${
-                    companies.map((company) => company.id).includes(company.id)
-                      ? "bg-gray-100 cursor-not-allowed"
-                      : "cursor-pointer bg-white hover:bg-gray-100"
-                  } transition-colors duration-200 flex justify-between items-center`}
-                  onClick={() => handleCompanyClick(company)}
+                  className="py-2 px-5 bg-white hover:bg-gray-100 transition-colors duration-200 cursor-pointer flex justify-between items-center"
+                  onClick={() => handleCompanyClick(company.id)}
                 >
                   <div>
                     <p className="font-medium">{company.name}</p>
@@ -240,4 +196,4 @@ const OnboardCompanySearchbar = ({
   );
 };
 
-export default OnboardCompanySearchbar;
+export default WLCompanySearchbar;

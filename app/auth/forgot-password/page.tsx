@@ -30,7 +30,6 @@ const ForgotPassword = () => {
   };
 
   const handleForgotPassword = async () => {
-
     if (!isValidForm) {
       setError({ email: validateEmail(email).error });
       return;
@@ -40,20 +39,19 @@ const ForgotPassword = () => {
 
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/reset-password`
+        redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/reset-password`,
       });
       if (error) throw error;
 
       localStorage.setItem("email", email);
 
-      invokeToast("success", "Password reset link sent to your email!", "top");
+      invokeToast("success", "Password reset link sent to your email!");
       router.push("/auth/reset-confirm");
     } catch (error: any) {
       console.error("Password reset error:", error.message, error.status);
       invokeToast(
         "error",
-        `Error: ${error.message || "An error occurred during password reset"}`,
-        "top"
+        `Error: ${error.message || "An error occurred during password reset"}`
       );
     } finally {
       setIsLoading(false);

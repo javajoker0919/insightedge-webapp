@@ -6,12 +6,8 @@ import { supabase } from "@/utils/supabaseClient";
 import Modal from "@/app/components/Modal";
 import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
-import {
-  generateTailoredOpportunitiesAPI,
-  generateTOAPI,
-} from "@/utils/apiClient";
+import { generateTOAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
-import { Details } from "../../../app/company/[id]/components";
 import { Loading } from "@/app/components";
 
 interface OpportunitiesProps {
@@ -196,9 +192,9 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             : 0,
         };
       });
-      invokeToast("success", data.message, "top");
+      invokeToast("success", data.message);
     } catch (error) {
-      invokeToast("error", "Failed to generate tailored opportunities", "top");
+      invokeToast("error", "Failed to generate tailored opportunities");
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNABORTED") {
           console.error(
@@ -314,7 +310,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
       <Modal
         wrapperClass="backdrop-blur-[2px]"
-        modalClass="w-full mx-16 min-w-[60rem] xl:min-w-[80rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
+        modalClass="w-full mx-16 min-w-[60rem] xl:max-w-[50rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
         isOpen={!!selectedOpp}
         onClose={() => setSelectedOpp(null)}
       >
@@ -327,7 +323,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
           <div className="space-y-6">
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Inbound Strategies
               </h3>
               <ul className="list-disc pl-8 space-y-3">
@@ -342,7 +338,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             </section>
 
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Outbound Strategies
               </h3>
               <ul className="list-disc pl-8 space-y-3">
@@ -357,10 +353,10 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             </section>
 
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Outbound Email
               </h3>
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <h4 className="text-lg font-medium text-gray-800 mb-2">
                   {selectedOpp?.outboundEmail?.subject}
                 </h4>
@@ -371,10 +367,10 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             </section>
 
             <section>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Reasoning
               </h3>
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <p className="text-gray-700">{selectedOpp?.reasoning}</p>
               </div>
             </section>

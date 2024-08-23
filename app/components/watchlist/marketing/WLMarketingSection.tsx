@@ -1,19 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { supabase } from "@/utils/supabaseClient";
-
-import Modal from "@/app/components/Modal";
-import MarketingStrategyTable from "./WLMarketingTable";
-import { useToastContext } from "@/contexts/toastContext";
-import { Loading } from "../..";
-import { generateTMAPI } from "@/utils/apiClient";
-import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
 import { useAtomValue, useSetAtom } from "jotai";
 
-interface MarketingStrategiesProps {
-  etIDs: number[] | null;
-}
+import { supabase } from "@/utils/supabaseClient";
+import { Modal, Loading } from "@/app/components";
+import MarketingStrategyTable from "./WLMarketingTable";
+import { useToastContext } from "@/contexts/toastContext";
+import { generateTMAPI } from "@/utils/apiClient";
+import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
 
 export interface MarketingProps {
   tactic: string;
@@ -27,11 +22,15 @@ export interface MarketingProps {
   callToAction: string;
 }
 
-const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
-  if (etIDs === null) {
-    return;
-  }
+interface MarketingStrategiesProps {
+  etIDs: number[];
+  isLoading: boolean;
+}
 
+const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
+  etIDs,
+  isLoading,
+}) => {
   const { invokeToast } = useToastContext();
   const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
@@ -48,15 +47,22 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
   const [companyCount, setCompanyCount] = useState<number | null>(null);
 
   useEffect(() => {
-    if (etIDs && etIDs.length > 0) {
-      fetchGMs(etIDs);
+    if (isLoading || etIDs === null) {
     }
+    fetchGMs(etIDs);
   }, [etIDs]);
 
   useEffect(() => {
-    if (etIDs && etIDs.length > 0 && orgInfo && orgInfo.id) {
-      fetchTMs(etIDs, orgInfo.id);
+    if (
+      isLoading ||
+      etIDs === null ||
+      orgInfo === null ||
+      orgInfo.id === null
+    ) {
+      return;
     }
+
+    fetchTMs(etIDs, orgInfo.id);
   }, [etIDs, orgInfo]);
 
   const fetchGMs = async (etIDs: number[]) => {
@@ -69,7 +75,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
 
     try {
       const { data, error } = await supabase
-        .from("general_marketings")
+        .from("general_marketings_with_date_v1")
         .select(
           `
           tactic, 
@@ -80,34 +86,19 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
           key_performance_indicators, 
           strategic_alignment, 
           call_to_action, 
-          earnings_transcripts (
-            company_id
-          )
+          date, 
+          company_id, 
+          company_name
           `
         )
         .in("earnings_transcript_id", etIDs);
 
       if (error) throw error;
 
-      const companyIds = data.map(
-        (item: any) => item.earnings_transcripts.company_id
-      );
-      const { data: companiesData, error: companiesError } = await supabase
-        .from("companies")
-        .select("id, name")
-        .in("id", companyIds);
-
-      if (companiesError) throw companiesError;
-
-      const companyMap = companiesData.reduce((acc: any, company: any) => {
-        acc[company.id] = company.name;
-        return acc;
-      }, {});
-
       const strategies = data.map((item: any) => ({
         tactic: item.tactic,
         tacticScore: parseFloat(item.tactic_score),
-        companyName: companyMap[item.earnings_transcripts.company_id],
+        companyName: item.company_name,
         targetPersonas: item.target_personas,
         channel: item.channel,
         valueProposition: item.value_proposition,
@@ -116,6 +107,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
           .split(", "),
         strategicAlignment: item.strategic_alignment,
         callToAction: item.call_to_action,
+        date: item.date,
       }));
 
       setGMs(strategies);
@@ -137,7 +129,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
 
     try {
       const { data, error } = await supabase
-        .from("tailored_marketings")
+        .from("tailored_marketings_with_date_v1")
         .select(
           `
           tactic, 
@@ -148,9 +140,9 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
           key_performance_indicators, 
           strategic_alignment, 
           call_to_action, 
-          earnings_transcripts (
-            company_id
-          )
+          date, 
+          company_id, 
+          company_name
           `
         )
         .eq("organization_id", orgID)
@@ -159,27 +151,15 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
       if (error) throw error;
 
       const companyIDs = Array.from(
-        new Set(data.map((item: any) => item.earnings_transcripts.company_id))
+        new Set(data.map((item: any) => item.company_id))
       );
 
       setCompanyCount(companyIDs.length);
 
-      const { data: companiesData, error: companiesError } = await supabase
-        .from("companies")
-        .select("id, name")
-        .in("id", companyIDs);
-
-      if (companiesError) throw companiesError;
-
-      const companyMap = companiesData.reduce((acc: any, company: any) => {
-        acc[company.id] = company.name;
-        return acc;
-      }, {});
-
       const marketings = data.map((item: any) => ({
         tactic: item.tactic,
         tacticScore: parseFloat(item.tactic_score),
-        companyName: companyMap[item.earnings_transcripts.company_id],
+        companyName: item.company_name,
         targetPersonas: item.target_personas,
         channel: item.channel,
         valueProposition: item.value_proposition,
@@ -188,6 +168,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
           .split(", "),
         strategicAlignment: item.strategic_alignment,
         callToAction: item.call_to_action,
+        date: item.date,
       }));
 
       setTMs(marketings);
@@ -200,7 +181,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
 
   const handleGenerateTMs = async () => {
     if (!etIDs || etIDs.length === 0) {
-      invokeToast("error", "No earnings transcripts selected", "top");
+      invokeToast("error", "No earnings transcripts selected");
       return;
     }
 
@@ -242,13 +223,9 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
             : 0,
         };
       });
-      invokeToast("success", data.message, "top");
+      invokeToast("success", data.message);
     } catch (error) {
-      invokeToast(
-        "error",
-        "Failed to generate tailored marketing strategies",
-        "top"
-      );
+      invokeToast("error", "Failed to generate tailored marketing strategies");
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNABORTED") {
           console.error(
@@ -382,7 +359,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
 
       <Modal
         wrapperClass="backdrop-blur-[2px]"
-        modalClass="w-full mx-16 min-w-[60rem] xl:min-w-[80rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
+        modalClass="w-full mx-16 min-w-[60rem] xl:max-w-[50rem] xl:max-w-full max-h-[90vh] overflow-y-auto"
         isOpen={!!selectedMSs}
         onClose={() => setSelectedMSs(null)}
       >
@@ -395,25 +372,25 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
 
           <div className="space-y-6">
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Tactic
               </h3>
-              <p className="text-sm sm:text-base text-gray-700">
+              <p className="text-sm sm:text-base text-gray-700 bg-gray-50 rounded-lg p-4 border border-gray-200">
                 {selectedMSs?.tactic}
               </p>
             </section>
 
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Value Proposition
               </h3>
-              <p className="text-sm sm:text-base text-gray-700">
+              <p className="text-sm sm:text-base text-gray-700 bg-gray-50 rounded-lg p-4 border border-gray-200">
                 {selectedMSs?.valueProposition}
               </p>
             </section>
 
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Key Performance Indicators
               </h3>
               <ul className="list-disc pl-5 sm:pl-8 space-y-3">
@@ -430,10 +407,10 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({ etIDs }) => {
             </section>
 
             <section>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b-2 border-primary-600 pb-2">
                 Call to Action
               </h3>
-              <p className="text-sm sm:text-base text-gray-700">
+              <p className="text-sm sm:text-base text-gray-700 bg-gray-50 rounded-lg p-4 border border-gray-200">
                 {selectedMSs?.callToAction}
               </p>
             </section>
