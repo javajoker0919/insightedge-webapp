@@ -43,11 +43,9 @@ const WLCalendarSection: React.FC<EarningsCalendarProps> = ({
   );
 };
 
-export default WLCalendarSection;
-
 const LoadingSection: React.FC = () => {
   return (
-    <div className="h-40 flex items-center jusityf-center">
+    <div className="h-40 flex items-center w-full justify-center">
       <Loading />
     </div>
   );
@@ -98,3 +96,5 @@ const NoEvents: React.FC = () => {
     </div>
   );
 };
+
+export default WLCalendarSection;
