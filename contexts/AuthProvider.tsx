@@ -61,7 +61,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
       if (session?.user) {
         setUserMetadata(session.user.user_metadata);
 
-        if (authPaths.includes(pathname)) {
+        if (authPaths.includes(pathname) && pathname !== "/auth/sign-up") {
           router.push("/app");
         }
       } else {
@@ -72,7 +72,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
         setUserInfo(null);
         setOrgInfo(null);
 
-        if (publicPaths.includes(pathname)) {
+        if (publicPaths.includes(pathname) || pathname === "/auth/sign-up") {
           return;
         }
 
