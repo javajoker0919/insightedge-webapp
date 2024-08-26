@@ -19,17 +19,17 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
 
   const TableHeadingRow = useCallback(
     () => (
-      <tr className="bg-gray-200 text-black">
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-4/12">
+      <tr className="bg-gray-100 text-black">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-4/12">
           Tactic
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 ">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-200 ">
           Target Personas
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-2/12">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-2/12">
           Channels
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 ">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-200 ">
           Quick Actions
         </th>
       </tr>
@@ -53,10 +53,10 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                     strategies.length > 0 ? "" : "blur"
                   }`}
                 >
-                  <td className="px-4 py-3 border text-left border-gray-300">
+                  <td className="px-4 py-3 border text-left border-gray-200">
                     {strgy.tactic}
                   </td>
-                  <td className="px-4 py-3 border border-gray-300 text-left ">
+                  <td className="px-4 py-3 border border-gray-200 text-left ">
                     {strgy.targetPersonas.split(", ").map((aud, indx) => (
                       <span
                         key={`audience-${indx}-${aud}`}
@@ -69,7 +69,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                       </span>
                     ))}
                   </td>
-                  <td className="px-4 py-3 border border-gray-300">
+                  <td className="px-4 py-3 border border-gray-200">
                     {strgy.channel.split(", ").map((chnl, indx) => {
                       const coloredChnl = coloredChannelList.find((el) =>
                         el.content.includes(chnl)
@@ -92,7 +92,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
                       );
                     })}
                   </td>
-                  <td className="px-4 py-3 border border-gray-300">
+                  <td className="px-4 py-3 border border-gray-200">
                     <div className="flex justify-center space-x-2">
                       <button
                         onClick={() => onQuickAction(strgy)}

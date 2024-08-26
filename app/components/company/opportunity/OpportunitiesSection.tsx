@@ -4,7 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { supabase } from "@/utils/supabaseClient";
 
 import Modal from "@/app/components/Modal";
-import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
+import { profileAtom, orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTOAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
@@ -43,8 +43,10 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   }
 
   const { invokeToast } = useToastContext();
+  const setProfile = useSetAtom(profileAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
+
   // const [etID, setETID] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedOpp, setSelectedOpp] = useState<OpportunityProps | null>(null);
@@ -183,6 +185,16 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
       setTOs(formattedData);
       setActiveTab("tailored");
+
+      setProfile((prev) => {
+        if (!prev || !prev.credits) return prev;
+
+        return {
+          ...prev,
+          credits: prev.credits - data.used_credits,
+        };
+      });
+
       setUserInfo((prev) => {
         if (!prev || !prev.creditCount) return prev;
         return {
@@ -216,25 +228,25 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-      <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
+      <div className="w-full border-b border-gray-200 flex items-center bg-gray-200 justify-between">
         {tailoredOpps && tailoredOpps.length > 0 && !isGeneratingTO ? (
-          <div className="flex">
+          <div className="flex px-2 pt-1.5 pb-0 gap-1">
             <button
               onClick={() => setActiveTab("general")}
-              className={`px-4 py-4 border-primary-600 border-b-2 ${
+              className={`px-4 py-3 sm:py-3 w-full sm:w-auto rounded-t-lg border border-b-0 ${
                 activeTab === "general"
-                  ? "text-primary-600 border-opacity-100"
-                  : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
+                  ? "text-gray-900 bg-gray-100"
+                  : "text-gray-700 bg-gray-200 hover:bg-gray-100"
               }`}
             >
               General Opportunities
             </button>
             <button
               onClick={() => setActiveTab("tailored")}
-              className={`px-4 py-4 border-primary-600 border-b-2 ${
+              className={`px-4 py-3 sm:py-3 w-full sm:w-auto rounded-t-lg border border-b-0 ${
                 activeTab === "tailored"
-                  ? "text-primary-600 border-opacity-100"
-                  : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
+                  ? "text-gray-900 bg-gray-100"
+                  : "text-gray-700 bg-gray-200 hover:bg-gray-100"
               }`}
             >
               Tailored Opportunities
@@ -269,7 +281,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-gray-100 text-black min-w-[1200px]">
+              <div className="p-4 bg-white text-black min-w-[1200px]">
                 {companyName}'s top opportunities.
                 {tailoredOpps?.length === 0 && (
                   <span>
@@ -292,7 +304,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-gray-100 text-black">
+              <div className="p-4 bg-white text-black min-w-[1200px]">
                 Below is your company specific opportunity table. You can
                 explore the top sales opportunities for selling your solutions
                 to {companyName}

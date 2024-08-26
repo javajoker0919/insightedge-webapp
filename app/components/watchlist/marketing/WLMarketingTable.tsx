@@ -34,7 +34,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
 
   const TableHeadingRow = useCallback(
     () => (
-      <tr className="bg-gray-200 text-black">
+      <tr className="bg-gray-100 text-black">
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
           Company Name
         </th>

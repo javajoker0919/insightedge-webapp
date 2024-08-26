@@ -150,7 +150,6 @@ const Callback = () => {
       }
     } catch (error) {
       console.error("Error during callback:", error);
-      // Handle error (e.g., redirect to error page or show error message)
     }
   };
 

@@ -8,7 +8,7 @@ import { Modal, Loading } from "@/app/components";
 import MarketingStrategyTable from "./WLMarketingTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { generateTMAPI } from "@/utils/apiClient";
-import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
+import { profileAtom, userInfoAtom, orgInfoAtom } from "@/utils/atoms";
 
 export interface MarketingProps {
   tactic: string;
@@ -32,6 +32,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
   isLoading,
 }) => {
   const { invokeToast } = useToastContext();
+  const setProfile = useSetAtom(profileAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
 
@@ -214,6 +215,16 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
       setCompanyCount(uniqueCompanyNames.size);
       setTMs(formattedData);
       setActiveTab("tailored");
+
+      setProfile((prev) => {
+        if (!prev || !prev.credits) return prev;
+
+        return {
+          ...prev,
+          credits: prev.credits - data.used_credits,
+        };
+      });
+
       setUserInfo((prev) => {
         if (!prev || !prev.creditCount) return prev;
         return {
@@ -247,25 +258,25 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg">
-      <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between rounded-t-lg">
+      <div className="w-full border-b border-gray-300 flex items-center bg-gray-200 justify-between rounded-t-lg">
         {companyCount && companyCount > 0 ? (
-          <div className="flex">
+          <div className="flex px-2 pt-1.5 pb-0 gap-1">
             <button
               onClick={() => setActiveTab("general")}
-              className={`px-4 py-3 sm:py-4 border-primary-600 border-b-2 w-full sm:w-auto ${
+              className={`px-4 py-3 sm:py-3 w-full sm:w-auto rounded-t-lg border border-b-0 ${
                 activeTab === "general"
-                  ? "text-primary-600 border-opacity-100"
-                  : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
+                  ? "text-gray-900 bg-gray-100 border-gray-300"
+                  : "text-gray-700 bg-gray-200 hover:bg-gray-100"
               }`}
             >
               General Marketing Strategy
             </button>
             <button
               onClick={() => setActiveTab("tailored")}
-              className={`px-4 py-3 sm:py-4 border-primary-600 border-b-2 w-full sm:w-auto ${
+              className={`px-4 py-3 sm:py-3 w-full sm:w-auto rounded-t-lg border border-b-0 ${
                 activeTab === "tailored"
-                  ? "text-primary-600 border-opacity-100"
-                  : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
+                  ? "text-gray-900 bg-gray-100 border-gray-300"
+                  : "text-gray-700 bg-gray-200 hover:bg-gray-100"
               }`}
             >
               Tailored Marketing Strategy

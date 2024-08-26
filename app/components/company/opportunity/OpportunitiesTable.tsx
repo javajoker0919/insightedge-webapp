@@ -14,17 +14,17 @@ const OpportunitiesTable: React.FC<{
       {opps.length > 0 ? (
         <table className="w-full relative border-collapse min-w-[1200px]">
           <thead className="sticky z-10 top-0">
-            <tr className="bg-gray-200 text-black">
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+            <tr className="bg-gray-100 text-black">
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-200">
                 Opportunity
               </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-1/6">
                 Target Buyer Role
               </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-52">
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-52">
                 Target Buyer Department
               </th>
-              <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
+              <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-64">
                 Quick Actions
               </th>
             </tr>
@@ -37,13 +37,13 @@ const OpportunitiesTable: React.FC<{
                   opportunities.length > 0 ? "" : "blur"
                 }`}
               >
-                <td className="px-4 py-3 border text-left border-gray-300">
+                <td className="px-4 py-3 border text-left border-gray-200">
                   {opp.opportunityName}
                 </td>
-                <td className="px-4 py-3 border border-gray-300">
+                <td className="px-4 py-3 border border-gray-200">
                   {opp.targetBuyer.role}
                 </td>
-                <td className="px-4 py-3 border border-gray-300">
+                <td className="px-4 py-3 border border-gray-200">
                   <span
                     className={`inline-block px-2 py-1 rounded-full text-sm font-medium ${(() => {
                       const sum = opp.targetBuyer.department
@@ -64,7 +64,7 @@ const OpportunitiesTable: React.FC<{
                     {opp.targetBuyer.department}
                   </span>
                 </td>
-                <td className="px-4 py-3 border border-gray-300">
+                <td className="px-4 py-3 border border-gray-200">
                   <div className="flex justify-center space-x-2">
                     <button
                       onClick={() => onQuickAction(opp)}
@@ -108,16 +108,16 @@ const OpportunitiesTable: React.FC<{
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-200 text-black">
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300">
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-200">
                   Opportunity
                 </th>
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-1/6">
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-1/6">
                   Target Buyer Role
                 </th>
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-52">
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-52">
                   Target Buyer Department
                 </th>
-                <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-64">
+                <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-64">
                   Quick Actions
                 </th>
               </tr>
