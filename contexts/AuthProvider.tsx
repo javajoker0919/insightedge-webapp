@@ -7,7 +7,7 @@ import {
   profileAtom,
   userInfoAtom,
   orgInfoAtom,
-  watchlistAtom,
+  watchlistAtom
 } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 import { Loading } from "@/app/components";
@@ -32,7 +32,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/verify-email",
     "/auth/reset-password",
     "/auth/reset-confirm",
-    "/auth/reset-success",
+    "/auth/reset-success"
   ];
 
   const publicPaths = ["/", "/terms", "/privacy"];
@@ -55,7 +55,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const checkUser = async () => {
     try {
       const {
-        data: { session },
+        data: { session }
       } = await supabase.auth.getSession();
 
       if (session?.user) {
@@ -72,7 +72,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
         setUserInfo(null);
         setOrgInfo(null);
 
-        if (publicPaths.includes(pathname)) {
+        if (publicPaths.includes(pathname) || authPaths.includes(pathname)) {
           return;
         }
 

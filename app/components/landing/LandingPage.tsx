@@ -38,7 +38,7 @@ const LandingPage: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     company: "",
-    email: "",
+    email: ""
   });
 
   const [blogs, setBlogs] = useState([]);
@@ -268,7 +268,7 @@ const MainContent: React.FC<{
   handleChange,
   handleSchedule,
   formData,
-  blogs,
+  blogs
 }) => (
   <main className="mt-16 sm:mt-16">
     <HeroSection />
@@ -1041,7 +1041,7 @@ const Footer: React.FC = () => (
             { alt: "tiktok", src: "/icons/phosphor-tiktok-logo.svg" },
             { alt: "facebook", src: "/icons/phosphor-facebook-logo.svg" },
             { alt: "youtube", src: "/icons/phosphor-youtube-logo.svg" },
-            { alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" },
+            { alt: "linkedin", src: "/icons/phosphor-linkedin-logo.svg" }
           ].map((icon, index) => (
             <div
               key={index}
@@ -1056,7 +1056,7 @@ const Footer: React.FC = () => (
         {[
           { title: "Product", items: ["Features", "Pricing"] },
           { title: "Resources", items: ["Blog", "User guides"] },
-          { title: "Legal", items: ["Privacy", "Terms"] },
+          { title: "Legal", items: ["Privacy", "Terms"] }
         ].map((section, index) => (
           <div
             key={index}

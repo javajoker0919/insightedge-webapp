@@ -48,7 +48,6 @@ interface EarningsTranscriptProps {
 const WatchlistPage = () => {
   const params = useParams();
   const paramID = params.id as string;
-
   const { invokeToast } = useToastContext();
   const [watchlist, setWatchlist] = useAtom(watchlistAtom);
 
@@ -63,6 +62,10 @@ const WatchlistPage = () => {
   const optionsModalRef = useRef<HTMLDivElement>(null);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState<boolean>(false);
   const [isSorted, setIsSorted] = useState<boolean>(true);
+
+  const [watchlistCompanies, setWatchlistCompanies] = useState<
+    CompanyProps[] | []
+  >([]);
 
   const [isFetchingWLCs, setIsFetchingWLCs] = useState<boolean>(false);
   const [isAddingCompany, setIsAddingCompany] = useState<boolean>(false);
