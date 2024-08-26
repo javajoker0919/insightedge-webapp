@@ -148,7 +148,7 @@ const WatchlistPage = () => {
 
     try {
       const { data, error } = await supabase
-        .from("watchlist_companies_with_all_v1")
+        .from("watchlist_companies_with_all_view_v3")
         .select(
           `
           company_id,
