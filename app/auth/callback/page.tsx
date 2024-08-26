@@ -11,7 +11,7 @@ import {
   profileAtom,
   watchlistAtom,
   userInfoAtom,
-  orgInfoAtom,
+  orgInfoAtom
 } from "@/utils/atoms";
 
 const Callback = () => {
@@ -33,7 +33,7 @@ const Callback = () => {
     try {
       const {
         data: { user },
-        error: userError,
+        error: userError
       } = await supabase.auth.getUser();
 
       if (userError) throw userError;
@@ -58,11 +58,11 @@ const Callback = () => {
           email: sessionData.session?.user?.email || "",
           firstName: "",
           lastName: "",
-          companyName: "",
+          companyName: ""
         });
 
         if (sessionData?.session?.access_token) {
-          const mainURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`;
+          const mainURL = `${process.env.NEXT_PUBLIC_APP_URL}/onboarding`;
           const accessTokenURL = `access_token=${sessionData?.session?.access_token}`;
           const expiresAtURL = `expires_at=${sessionData.session.expires_at}`;
           const expiresInURL = `expires_in=${sessionData.session.expires_in}`;
@@ -82,7 +82,7 @@ const Callback = () => {
           email: userData.email,
           firstName: userData.first_name,
           lastName: userData.last_name,
-          companyName: "",
+          companyName: ""
         });
 
         const { data: orgData, error: orgError } = await supabase
@@ -108,13 +108,13 @@ const Callback = () => {
           website: orgData.website,
           overview: orgData.overview,
           products: orgData.products,
-          creatorID: orgData.creator_id,
+          creatorID: orgData.creator_id
         });
 
         setProfile({
           user_id: userData.id,
           org_id: orgData.id,
-          credits: null,
+          credits: null
         });
 
         const { data: watchlistData, error: watchlistError } = await supabase
@@ -141,7 +141,7 @@ const Callback = () => {
               organizationID: item.organization_id,
               creatorID: item.creator_id,
               uuid: item.uuid,
-              company_count: item.watchlist_companies?.length,
+              company_count: item.watchlist_companies?.length
             };
           })
         );
