@@ -21,12 +21,12 @@ const SignUp = () => {
 
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
+    password: ""
   });
 
   const [errors, setErrors] = useState({
     email: "",
-    password: "",
+    password: ""
   });
 
   const [isValidate, setIsValidate] = useState(false);
@@ -69,8 +69,8 @@ const SignUp = () => {
         email: email,
         password: password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`,
-        },
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/onboarding`
+        }
       });
 
       if (authError) throw authError;
@@ -83,7 +83,7 @@ const SignUp = () => {
         email: authData.user?.email || "",
         firstName: "",
         lastName: "",
-        companyName: "",
+        companyName: ""
       });
 
       router.replace("/auth/verify-email");
@@ -100,8 +100,8 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback`,
-        },
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
+        }
       });
       if (error) {
         throw error;

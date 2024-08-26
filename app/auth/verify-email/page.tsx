@@ -22,8 +22,8 @@ const VerifyEmail = () => {
         type: "signup",
         email: userinfo?.email ?? "",
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SERVER_URL}/onboarding`,
-        },
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/onboarding`
+        }
       });
       if (error) throw error;
       invokeToast("success", "Resend request sent to your email!");
