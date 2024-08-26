@@ -83,7 +83,7 @@ const OnboardSimilarCompanySection: React.FC<
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
       <div className={`bg-gray-100 border-b font-medium text-gray-700 p-3`}>
-        <p className="font-bold">Similar Companies</p>
+        <p className="font-bold">Recommended companies based on your profile</p>
         <p className="text-sm text-gray-400">Based on your watchlist</p>
       </div>
 
