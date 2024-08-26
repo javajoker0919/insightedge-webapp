@@ -86,7 +86,7 @@ const SignUp = () => {
         companyName: "",
       });
 
-      // router.replace("/auth/verify-email");
+      router.replace("/auth/verify-email");
     } catch (error: any) {
       console.error("Sign-up error:", error);
       invokeToast("error", error.message || "Something went wrong!");
