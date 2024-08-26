@@ -9,7 +9,7 @@ import OpportunitiesTable from "./WLOpportunityTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { Loading } from "../..";
 import { generateTOAPI } from "@/utils/apiClient";
-import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
+import { profileAtom, userInfoAtom, orgInfoAtom } from "@/utils/atoms";
 
 export interface OpportunityProps {
   opportunityName: string;
@@ -42,6 +42,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   isLoading,
 }) => {
   const { invokeToast } = useToastContext();
+  const setProfile = useSetAtom(profileAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
 
@@ -250,6 +251,16 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
       setCompanyCount(uniqueCompanyNames.size);
       setTOs(formattedData);
       setActiveTab("tailored");
+
+      setProfile((prev) => {
+        if (!prev || !prev.credits) return prev;
+
+        return {
+          ...prev,
+          credits: prev.credits - data.used_credits,
+        };
+      });
+
       setUserInfo((prev) => {
         if (!prev || !prev.creditCount) return prev;
         return {
@@ -259,6 +270,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
             : 0,
         };
       });
+
       invokeToast("success", data.message);
     } catch (error) {
       invokeToast("error", "Failed to generate tailored opportunities");

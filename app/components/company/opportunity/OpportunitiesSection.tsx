@@ -4,7 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { supabase } from "@/utils/supabaseClient";
 
 import Modal from "@/app/components/Modal";
-import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
+import { profileAtom, orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTOAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
@@ -43,8 +43,10 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   }
 
   const { invokeToast } = useToastContext();
+  const setProfile = useSetAtom(profileAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
+
   // const [etID, setETID] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedOpp, setSelectedOpp] = useState<OpportunityProps | null>(null);
@@ -183,6 +185,16 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
       setTOs(formattedData);
       setActiveTab("tailored");
+
+      setProfile((prev) => {
+        if (!prev || !prev.credits) return prev;
+
+        return {
+          ...prev,
+          credits: prev.credits - data.used_credits,
+        };
+      });
+
       setUserInfo((prev) => {
         if (!prev || !prev.creditCount) return prev;
         return {

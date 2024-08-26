@@ -8,7 +8,7 @@ import { Modal, Loading } from "@/app/components";
 import MarketingStrategyTable from "./WLMarketingTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { generateTMAPI } from "@/utils/apiClient";
-import { userInfoAtom, orgInfoAtom } from "@/utils/atoms";
+import { profileAtom, userInfoAtom, orgInfoAtom } from "@/utils/atoms";
 
 export interface MarketingProps {
   tactic: string;
@@ -32,6 +32,7 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
   isLoading,
 }) => {
   const { invokeToast } = useToastContext();
+  const setProfile = useSetAtom(profileAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
 
@@ -214,6 +215,16 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
       setCompanyCount(uniqueCompanyNames.size);
       setTMs(formattedData);
       setActiveTab("tailored");
+
+      setProfile((prev) => {
+        if (!prev || !prev.credits) return prev;
+
+        return {
+          ...prev,
+          credits: prev.credits - data.used_credits,
+        };
+      });
+
       setUserInfo((prev) => {
         if (!prev || !prev.creditCount) return prev;
         return {

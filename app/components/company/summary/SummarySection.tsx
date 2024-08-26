@@ -4,7 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 
 import { supabase } from "@/utils/supabaseClient";
 import { generateTailoredSummaryAPI } from "@/utils/apiClient";
-import { orgInfoAtom, userInfoAtom } from "@/utils/atoms";
+import { profileAtom, orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import RenderSummaryContent from "./RenderSummaryContent";
 import { useToastContext } from "@/contexts/toastContext";
 import { Details, Loading } from "../..";
@@ -36,8 +36,10 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   const { id: companyId } = useParams<{ id: string }>();
 
   const { invokeToast } = useToastContext();
+  const setProfile = useSetAtom(profileAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
+
   const [generalSummary, setGeneralSummary] = useState<SummaryProps | null>(
     null
   );
@@ -172,6 +174,16 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         };
 
         setTailoredSummary(processedData);
+
+        setProfile((prev) => {
+          if (!prev || !prev.credits) return prev;
+
+          return {
+            ...prev,
+            credits: prev.credits - 1,
+          };
+        });
+
         setUserInfo((prev) => {
           if (!prev || !prev.creditCount) return prev;
           return {
