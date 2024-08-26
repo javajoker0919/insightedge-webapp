@@ -379,7 +379,7 @@ const Membership: React.FC = () => {
                           {format(new Date(tracking.created_at), "yyyy-MM-dd")}
                         </td>
                         <td className="py-2 px-4 border-b">
-                          {getPlanName(tracking.plan_id)}
+                          {getPlanName(tracking.plan_id).toUpperCase()}
                         </td>
                         <td className="py-2 px-4 border-b">
                           {tracking.description}

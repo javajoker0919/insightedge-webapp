@@ -39,7 +39,7 @@ interface OpportunitiesProps {
 
 const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   etIDs,
-  isLoading,
+  isLoading
 }) => {
   const { invokeToast } = useToastContext();
   const setProfile = useSetAtom(profileAtom);
@@ -114,18 +114,18 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
         companyName: item.company_name,
         targetBuyer: {
           role: item.buyer_role,
-          department: item.buyer_department,
+          department: item.buyer_department
         },
         engagementTips: {
           inbound: item.engagement_inbounds?.split("\n") || [],
-          outbound: item.engagement_outbounds?.split("\n") || [],
+          outbound: item.engagement_outbounds?.split("\n") || []
         },
         outboundEmail: {
           subject: item.email_subject,
-          body: item.email_body,
+          body: item.email_body
         },
         reasoning: item.reasoning,
-        date: item.date,
+        date: item.date
       }));
 
       setGOs(formattedData);
@@ -184,18 +184,18 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           keywords: item.keywords,
           targetBuyer: {
             role: item.buyer_role,
-            department: item.buyer_department,
+            department: item.buyer_department
           },
           engagementTips: {
             inbound: item.engagement_inbounds?.split("\n") || [],
-            outbound: item.engagement_outbounds?.split("\n") || [],
+            outbound: item.engagement_outbounds?.split("\n") || []
           },
           outboundEmail: {
             subject: item.email_subject,
-            body: item.email_body,
+            body: item.email_body
           },
           reasoning: item.reasoning,
-          date: item.date,
+          date: item.date
         }));
 
         setTOs(formattedData);
@@ -228,18 +228,18 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           keywords: item.keywords?.split(",") || [],
           targetBuyer: {
             role: item.buyer_role,
-            department: item.buyer_department,
+            department: item.buyer_department
           },
           engagementTips: {
             inbound: item.engagement_inbounds?.split("\n") || [],
-            outbound: item.engagement_outbounds?.split("\n") || [],
+            outbound: item.engagement_outbounds?.split("\n") || []
           },
           outboundEmail: {
             subject: item.email_subject,
-            body: item.email_body,
+            body: item.email_body
           },
           reasoning: item.reasoning,
-          date: "",
+          date: ""
         })
       );
 
@@ -257,7 +257,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
 
         return {
           ...prev,
-          credits: prev.credits - data.used_credits,
+          credits: prev.credits - data.used_credits
         };
       });
 
@@ -267,7 +267,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           ...prev,
           creditCount: prev.creditCount
             ? prev.creditCount - data.used_credits
-            : 0,
+            : 0
         };
       });
 

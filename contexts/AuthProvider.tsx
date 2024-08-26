@@ -68,8 +68,6 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
         setUserMetadata(null);
         setProfile(null);
         setWatchlist(null);
-
-        setUserInfo(null);
         setOrgInfo(null);
 
         if (publicPaths.includes(pathname) || authPaths.includes(pathname)) {
