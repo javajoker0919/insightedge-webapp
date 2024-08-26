@@ -29,17 +29,29 @@ const OnboardSimilarCompanySection: React.FC<
 
   useEffect(() => {
     fetchSimilarCompanies();
-  }, []);
+  }, [companies]);
 
   const fetchSimilarCompanies = async () => {
     try {
       setIsLoading(true);
 
-      const { data, error } = await supabase
+      let query = supabase
         .from("companies")
         .select("id, name, symbol, revrank, industry")
         .order("revrank", { ascending: true })
         .limit(10);
+
+      if (companies.length > 0) {
+        const IDs = Array.from(new Set(companies.map((company) => company.id)));
+        query = query.not("id", "in", `(${IDs.join(",")})`);
+
+        const industries = Array.from(
+          new Set(companies.map((company) => company.industry))
+        );
+        query = query.in("industry", industries);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error("Error fetching similar companies:", error);

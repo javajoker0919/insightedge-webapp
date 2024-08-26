@@ -19,9 +19,9 @@ import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
 export interface CompanyProps {
   id: number;
-  industry: string;
   name: string;
   symbol: string;
+  industry: string;
 }
 
 const OnboardingInitialCompanySection = ({
