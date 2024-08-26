@@ -184,14 +184,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             : 0,
         };
       });
-      invokeToast("success", data.message, "top");
+      invokeToast("success", data.message);
     } catch (error) {
       console.error(error);
-      invokeToast(
-        "error",
-        "Failed to generate tailored marketing strategies",
-        "top"
-      );
+      invokeToast("error", "Failed to generate tailored marketing strategies");
     } finally {
       setIsGeneratingTM(false);
     }

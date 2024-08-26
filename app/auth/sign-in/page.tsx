@@ -57,7 +57,7 @@ const SignIn = () => {
         email: validateEmail(email).error,
         password: validatePassword(password).error,
       });
-      invokeToast("error", "Please fill in all fields correctly", "top");
+      invokeToast("error", "Please fill in all fields correctly");
       return;
     }
 
@@ -93,7 +93,7 @@ const SignIn = () => {
         companyName: "",
       });
 
-      invokeToast("success", "You have successfully logged in!", "top");
+      invokeToast("success", "You have successfully logged in!");
 
       const { data: orgData, error: orgError } = await supabase
         .from("organizations")
@@ -160,7 +160,7 @@ const SignIn = () => {
     } catch (error: any) {
       console.error("Sign-in error:", error);
       if (error.message === "Invalid login credentials") {
-        invokeToast("error", "Please confirm your email and password", "top");
+        invokeToast("error", "Please confirm your email and password");
       }
     } finally {
       setIsLoading(false);

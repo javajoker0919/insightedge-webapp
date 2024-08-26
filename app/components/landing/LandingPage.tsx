@@ -51,18 +51,13 @@ const LandingPage: React.FC = () => {
     e.preventDefault();
     try {
       const response = await getSchedule(formData);
-      invokeToast(
-        "success",
-        "Your demo has been scheduled successfully!",
-        "top"
-      );
+      invokeToast("success", "Your demo has been scheduled successfully!");
       setFormData({ name: "", company: "", email: "" });
     } catch (error) {
       console.error("Error scheduling demo:", error);
       invokeToast(
         "error",
-        "There was an issue scheduling your demo. Please try again later.",
-        "top"
+        "There was an issue scheduling your demo. Please try again later."
       );
     }
   };

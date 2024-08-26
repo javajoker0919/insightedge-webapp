@@ -46,7 +46,7 @@ const RenderSummaryContent = ({
       {renderDetails("Priorities", data?.priorities)}
       {renderDetails("Challenges", data?.challenges)}
       {renderDetails("Pain Points", data?.pain_points)}
-      {renderDetails("Opportunities", data?.opportunities)}
+      {renderDetails("Key Initiatives", data?.opportunities)}
     </>
   );
 };
