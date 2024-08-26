@@ -10,15 +10,15 @@ const LandingNewsSection = ({ blogs }: any) => {
       <p className="text-gray-600">Explore our blogs</p>
 
       <div className="flex flex-col md:flex-row w-full max-w-[80rem] items-center md:items-start justify-around gap-6">
-        {/* {blogs.map((item: any) => (
+        {blogs.map((item: any) => (
           <BlogCard
             key={item.id}
             title={item.attributes.title}
             description={item.attributes.description}
-            src={`http://localhost:1337${item.attributes.cover.data.attributes.url}`}
+            src={`${item.attributes.cover.data.attributes.url}`}
           />
-        ))} */}
-        <BlogCard
+        ))}
+        {/* <BlogCard
           title="5 Game-Changing Ways AI-Powered Market Intelligence is Revolutionizing B2B Sales"
           description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
           src="/image/blog-1.jpg"
@@ -32,7 +32,7 @@ const LandingNewsSection = ({ blogs }: any) => {
           title="6 Innovative Approaches AI-Driven Market Intelligence is Shaping B2B Sales"
           description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
           src="/image/blog-3.jpg"
-        />
+        /> */}
       </div>
     </section>
   );
