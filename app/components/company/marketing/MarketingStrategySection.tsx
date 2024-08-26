@@ -199,27 +199,27 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-      <div className="w-full border-b border-gray-300 flex items-center bg-gray-100 justify-between">
+      <div className="w-full border-b border-gray-200 flex items-center bg-gray-200 justify-between">
         {tailoredMarketings &&
         tailoredMarketings.length > 0 &&
         !isFetchingTM ? (
-          <div className="flex">
+          <div className="flex px-2 pt-1.5 pb-0 gap-1">
             <button
               onClick={() => setActiveTab("general")}
-              className={`px-4 py-4 border-primary-600 border-b-2 ${
+              className={`px-4 py-3 sm:py-3 w-full sm:w-auto rounded-t-lg border border-b-0 ${
                 activeTab === "general"
-                  ? "text-primary-600 border-opacity-100"
-                  : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
+                  ? "text-gray-900 bg-gray-100"
+                  : "text-gray-700 bg-gray-200 hover:bg-gray-100"
               }`}
             >
               General Marketing Strategy
             </button>
             <button
               onClick={() => setActiveTab("tailored")}
-              className={`px-4 py-4 border-primary-600 border-b-2 ${
+              className={`px-4 py-3 sm:py-3 w-full sm:w-auto rounded-t-lg border border-b-0 ${
                 activeTab === "tailored"
-                  ? "text-primary-600 border-opacity-100"
-                  : "text-gray-600 border-opacity-0 hover:border-gray-300 hover:border-opacity-100 hover:text-gray-900"
+                  ? "text-gray-900 bg-gray-100"
+                  : "text-gray-700 bg-gray-200 hover:bg-gray-100"
               }`}
             >
               Tailored Marketing Strategy
@@ -254,7 +254,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-gray-100 text-black min-w-[1200px]">
+              <div className="p-4 bg-white text-black min-w-[1200px]">
                 {companyName}'s top Marketing Strategy.
                 {tailoredMarketings?.length === 0 && (
                   <span>
@@ -277,7 +277,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-gray-100 text-black">
+              <div className="p-4 bg-white text-black min-w-[1200px]">
                 Below is your company specific marketing strategy. You can
                 explore the top marketing tactics for selling your solutions to{" "}
                 {companyName}

@@ -57,7 +57,7 @@ const OpportunitiesTable: React.FC<{
       "bg-yellow-100 text-yellow-800",
       "bg-green-100 text-green-800",
       "bg-red-100 text-red-800",
-      "bg-gray-100 text-gray-800"
+      "bg-gray-100 text-gray-800",
     ];
     return classes[sum % classes.length];
   };
@@ -68,7 +68,7 @@ const OpportunitiesTable: React.FC<{
         <div className="w-full lg:w-[600px] 2xl:w-full">
           <table className="relative border-collapse min-w-[1200px] 2xl:min-w-[600px] overflow-x-auto">
             <thead className="sticky z-10 top-0">
-              <tr className="bg-gray-200 text-black">
+              <tr className="bg-gray-100 text-black">
                 <th
                   className="px-2 sm:px-4 py-3 text-center font-medium w-24 sm:w-32"
                   onClick={() => requestSort("companyName")}
