@@ -6,6 +6,7 @@ import { supabase } from "@/utils/supabaseClient";
 import { orgInfoAtom } from "@/utils/atoms";
 import { Loading } from "@/app/components";
 import { useToastContext } from "@/contexts/toastContext";
+import { getScrapeData } from "@/utils/apiClient";
 
 const CompanyProfile = () => {
   const [orgInfo, setOrgInfo] = useAtom(orgInfoAtom);
@@ -14,6 +15,7 @@ const CompanyProfile = () => {
   const [overview, setOverview] = useState("");
   const [products, setProducts] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isSummarizing, setIsSummarizing] = useState(false);
   const { invokeToast } = useToastContext();
 
   useEffect(() => {
@@ -54,6 +56,32 @@ const CompanyProfile = () => {
     setIsUpdating(false);
   };
 
+  const SummarizeAI = async () => {
+    try {
+      setIsSummarizing(true);
+
+      const reqData = {
+        company_url: website,
+        company_name: name
+      };
+
+      const data = await getScrapeData(reqData);
+
+      setOverview(data.data.overview);
+      setProducts(data.data.products);
+
+      invokeToast("success", "AI summarization completed successfully");
+    } catch (error) {
+      console.error("Error scraping company data:", error);
+      invokeToast("error", "Error scraping company data");
+      throw error;
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
+  console.log(overview, products);
+
   if (!orgInfo) {
     return (
       <div className="m-auto p-10 w-[60rem] bg-white flex justify-center items-center">
@@ -77,12 +105,58 @@ const CompanyProfile = () => {
         </div>
         <div>
           <strong>Website:</strong>
-          <input
-            type="text"
-            value={website}
-            onChange={(e) => setWebsite(e.target.value)}
-            className="p-2 border bg-gray-50 mt-1 rounded w-full"
-          />
+          <div className="flex items-center mt-1">
+            <input
+              type="text"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              className="p-2 border bg-gray-50 rounded flex-grow"
+            />
+            <button
+              onClick={SummarizeAI}
+              className="ml-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              title="Summarize with AI"
+              disabled={isSummarizing}
+            >
+              {isSummarizing ? (
+                <span className="flex justify-center">
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </span>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
         <div>
           <strong>Overview:</strong>

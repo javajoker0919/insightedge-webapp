@@ -20,7 +20,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
   const TableHeadingRow = useCallback(
     () => (
       <tr className="bg-gray-100 text-black">
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-4/12">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-200 w-1/2">
           Tactic
         </th>
         <th className="px-4 py-3 text-center font-medium border-x border-gray-200 ">
