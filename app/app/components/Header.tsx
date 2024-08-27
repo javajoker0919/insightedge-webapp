@@ -25,6 +25,8 @@ const Header: React.FC = () => {
 
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [isCreditLoaded, setIsCreditLoaded] = useState<boolean>(false);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
@@ -32,6 +34,7 @@ const Header: React.FC = () => {
 
     try {
       await supabase.auth.signOut();
+      router.push("/auth/sign-in");
     } catch (error) {
       console.error("Error logging out:", error);
     } finally {
@@ -49,26 +52,34 @@ const Header: React.FC = () => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   useEffect(() => {
-    if (profile && profile.credits === null) {
+    if (!profile) {
+      return;
+    }
+
+    if (profile.credits === null) {
+      fetchCreditCount(profile.user_id);
+    } else if (!isCreditLoaded) {
+      setIsCreditLoaded(true);
       fetchCreditCount(profile.user_id);
     }
   }, [profile]);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsDropdownOpen(false);
+    }
+  };
 
   const fetchCreditCount = async (userID: string) => {
     try {
