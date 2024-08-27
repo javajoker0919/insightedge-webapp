@@ -254,7 +254,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         data={csvData}
         headers={headers}
         filename={filename}
-        className="px-4 py-2 sm:py-2 w-full sm:w-auto rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center gap-2"
+        className="px-4 py-2 sm:py-2 w-40 sm:w-40 rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center justify-center gap-2"
       >
         <FontAwesomeIcon icon={faFileCsv} />
         Export as CSV
@@ -293,20 +293,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <h3 className="px-4 py-3 font-medium text-gray-700">
               Opportunities
             </h3>
-            {!isFetchingGO && !isFetchingTO && (
-              <button
-                title={`Discover the top opportunities for selling your solutions to ${companyName}`}
-                onClick={generateTO}
-                disabled={isGeneratingTO}
-                className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
-              >
-                {isGeneratingTO ? (
-                  <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
-                ) : (
-                  "Generate Tailored Opportunities"
-                )}
-              </button>
-            )}
           </div>
         )}
 
@@ -316,7 +302,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
               title={`Discover the top opportunities for selling your solutions to ${companyName}`}
               onClick={generateTO}
               disabled={isGeneratingTO}
-              className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+              className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
             >
               {isGeneratingTO ? (
                 <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
