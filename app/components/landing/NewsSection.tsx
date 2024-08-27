@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import Link from "next/link";
 
 const LandingNewsSection = ({ blogs }: any) => {
   return (
@@ -45,6 +46,7 @@ const LandingNewsSection = ({ blogs }: any) => {
             <SwiperSlide key={index}>
               <BlogCard
                 key={item.id}
+                id={item.id}
                 title={item.attributes.title}
                 description={item.attributes.description}
                 src={`${item.attributes.cover.data.attributes.url}`}
@@ -56,6 +58,7 @@ const LandingNewsSection = ({ blogs }: any) => {
           {blogs.map((item: any, index: number) => (
             <BlogCard
               key={item.id}
+              id={item.id}
               title={item.attributes.title}
               description={item.attributes.description}
               src={`${item.attributes.cover.data.attributes.url}`}
@@ -70,10 +73,11 @@ const LandingNewsSection = ({ blogs }: any) => {
 export default LandingNewsSection;
 
 const BlogCard: React.FC<{
+  id: string;
   title: string;
   description: string;
   src: string;
-}> = ({ title, description, src }) => (
+}> = ({ id, title, description, src }) => (
   <div className="border shadow rounded-md overflow-hidden w-auto max-w-sm mx-auto">
     <div className="w-full h-48 sm:h-64 bg-primary-100">
       <Image
@@ -90,9 +94,12 @@ const BlogCard: React.FC<{
         <p className="text-gray-600 text-sm sm:text-base line-clamp-3 mb-2">
           {description}
         </p>
-        <button className="text-primary-500 text-sm sm:text-base">
+        <Link
+          href={`/blog/${id}`}
+          className="text-primary-600 text-sm sm:text-base hover:text-primary-700 hover:underline active:text-primary-800 transition-all"
+        >
           Read more
-        </button>
+        </Link>
       </span>
     </div>
   </div>
