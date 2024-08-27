@@ -19,6 +19,7 @@ const Onboarding = () => {
   const [website, setWebsite] = useState("");
   const [companyOverview, setCompanyOverview] = useState("");
   const [productsServices, setProductsServices] = useState("");
+  const [symbols, setSymbols] = useState<string[]>([]);
 
   return (
     <>
@@ -40,6 +41,7 @@ const Onboarding = () => {
           setWebsite={setWebsite}
           setCompanyOverview={setCompanyOverview}
           setProductsServices={setProductsServices}
+          setSymbols={setSymbols}
         />
       )}
       {onboardingStep === 2 && (
@@ -49,6 +51,7 @@ const Onboarding = () => {
           companyOverview={companyOverview}
           productsServices={productsServices}
           setOnboardingStep={setOnboardingStep}
+          symbols={symbols}
         />
       )}
     </>
