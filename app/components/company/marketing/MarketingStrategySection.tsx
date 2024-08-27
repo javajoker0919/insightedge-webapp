@@ -227,7 +227,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       <CSVLink
         data={csvData}
         filename={filename}
-        className="px-4 py-2 sm:py-2 w-full sm:w-auto rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center gap-2"
+        className="px-4 py-2 sm:py-2 w-40 sm:w-40 rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center justify-center gap-2"
       >
         <FontAwesomeIcon icon={faFileCsv} />
         Export as CSV
@@ -237,7 +237,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-      <div className="w-full border-b border-gray-200 flex items-center bg-gray-200 justify-between">
+      <div className="w-full border-b border-gray-300 flex items-center bg-gray-200 justify-between">
         {tailoredMarketings &&
         tailoredMarketings.length > 0 &&
         !isFetchingTM ? (
@@ -278,7 +278,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
               <button
                 onClick={handleGenerateTMs}
                 disabled={isGeneratingTM}
-                className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+                className="px-4 py-2 w-80 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
                 {isGeneratingTM ? (
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
@@ -311,7 +311,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-white text-black min-w-[1200px]">
+              {/* <div className="p-4 bg-white text-black min-w-[1200px]">
                 {companyName}'s top Marketing Strategy.
                 {tailoredMarketings?.length === 0 && (
                   <span>
@@ -320,7 +320,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
                       Strategy."`}
                   </span>
                 )}
-              </div>
+              </div> */}
               {generalMarketings && (
                 <MarketingStrategyTable
                   strategies={generalMarketings}
@@ -334,11 +334,11 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-white text-black min-w-[1200px]">
+              {/* <div className="p-4 bg-white text-black min-w-[1200px]">
                 Below is your company specific marketing strategy. You can
                 explore the top marketing tactics for selling your solutions to{" "}
                 {companyName}
-              </div>
+              </div> */}
               {tailoredMarketings && (
                 <MarketingStrategyTable
                   strategies={tailoredMarketings}
