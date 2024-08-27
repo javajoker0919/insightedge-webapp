@@ -237,7 +237,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-      <div className="w-full border-b border-gray-200 flex items-center bg-gray-200 justify-between">
+      <div className="w-full border-b border-gray-300 flex items-center bg-gray-200 justify-between">
         {tailoredMarketings &&
         tailoredMarketings.length > 0 &&
         !isFetchingTM ? (
@@ -311,7 +311,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-white text-black min-w-[1200px]">
+              {/* <div className="p-4 bg-white text-black min-w-[1200px]">
                 {companyName}'s top Marketing Strategy.
                 {tailoredMarketings?.length === 0 && (
                   <span>
@@ -320,7 +320,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
                       Strategy."`}
                   </span>
                 )}
-              </div>
+              </div> */}
               {generalMarketings && (
                 <MarketingStrategyTable
                   strategies={generalMarketings}
@@ -334,11 +334,11 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-white text-black min-w-[1200px]">
+              {/* <div className="p-4 bg-white text-black min-w-[1200px]">
                 Below is your company specific marketing strategy. You can
                 explore the top marketing tactics for selling your solutions to{" "}
                 {companyName}
-              </div>
+              </div> */}
               {tailoredMarketings && (
                 <MarketingStrategyTable
                   strategies={tailoredMarketings}

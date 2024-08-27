@@ -264,7 +264,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-      <div className="w-full border-b border-gray-200 flex items-center bg-gray-200 justify-between">
+      <div className="w-full border-b border-gray-300 flex items-center bg-gray-200 justify-between">
         {tailoredOpps && tailoredOpps.length > 0 && !isGeneratingTO ? (
           <div className="flex px-2 pt-1.5 pb-0 gap-1">
             <button
@@ -336,7 +336,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-white text-black min-w-[1200px]">
+              {/* <div className="p-4 bg-white text-black min-w-[1200px]">
                 {companyName}'s top opportunities.
                 {tailoredOpps?.length === 0 && (
                   <span>
@@ -344,7 +344,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
                     {companyName}, click "Generate Tailored Opportunities."
                   </span>
                 )}
-              </div>
+              </div> */}
               {generalOpps && (
                 <OpportunitiesTable
                   companyName={companyName}
@@ -359,11 +359,11 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             <LoadingSection />
           ) : (
             <>
-              <div className="p-4 bg-white text-black min-w-[1200px]">
+              {/* <div className="p-4 bg-white text-black min-w-[1200px]">
                 Below is your company specific opportunity table. You can
                 explore the top sales opportunities for selling your solutions
                 to {companyName}
-              </div>
+              </div> */}
               {tailoredOpps && (
                 <OpportunitiesTable
                   companyName={companyName}
