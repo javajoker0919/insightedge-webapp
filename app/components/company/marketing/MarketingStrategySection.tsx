@@ -227,7 +227,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       <CSVLink
         data={csvData}
         filename={filename}
-        className="px-4 py-2 sm:py-2 w-full sm:w-auto rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center gap-2"
+        className="px-4 py-2 sm:py-2 w-40 sm:w-40 rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center justify-center gap-2"
       >
         <FontAwesomeIcon icon={faFileCsv} />
         Export as CSV
@@ -278,7 +278,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
               <button
                 onClick={handleGenerateTMs}
                 disabled={isGeneratingTM}
-                className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+                className="px-4 py-2 w-80 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
               >
                 {isGeneratingTM ? (
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
