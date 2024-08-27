@@ -74,12 +74,12 @@ const WLCompanySearchbar = ({
     if (searchInput.length > 0) {
       if (searchType === "all") {
         query = query.or(
-          `name.ilike.${searchInput}%,symbol.ilike.${searchInput}%`
+          `name.ilike.%${searchInput}%,symbol.ilike.%${searchInput}%`
         );
       } else if (searchType === "name") {
-        query = query.ilike("name", `${searchInput}%`);
+        query = query.ilike("name", `%${searchInput}%`);
       } else if (searchType === "symbol") {
-        query = query.ilike("symbol", `${searchInput}%`);
+        query = query.ilike("symbol", `%${searchInput}%`);
       }
     }
 
