@@ -2,6 +2,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAtomValue, useSetAtom } from "jotai";
+import { CSVLink } from "react-csv";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Import FontAwesomeIcon
+import { faFileCsv } from "@fortawesome/free-solid-svg-icons"; // Add this import
 
 import { supabase } from "@/utils/supabaseClient";
 import { Modal, Loading } from "@/app/components";
@@ -256,6 +259,21 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
     setSelectedMSs(strt);
   };
 
+  const exportData = (data: MarketingProps[] | null) => {
+    if (!data) return [];
+    return data.map((item) => ({
+      Tactic: item.tactic,
+      "Tactic Score": item.tacticScore,
+      "Company Name": item.companyName,
+      "Target Personas": item.targetPersonas,
+      Channel: item.channel,
+      "Value Proposition": item.valueProposition,
+      "Key Performance Indicators": item.keyPerformanceIndicators.join(", "),
+      "Strategic Alignment": item.strategicAlignment,
+      "Call to Action": item.callToAction,
+    }));
+  };
+
   return (
     <div className="bg-white border border-gray-300 rounded-lg">
       <div className="w-full border-b border-gray-300 flex items-center bg-gray-200 justify-between rounded-t-lg">
@@ -288,55 +306,74 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
           </div>
         )}
 
-        {isFetchingTM || companyCount === null ? (
-          <></>
-        ) : companyCount === etIDs.length ? (
-          <></>
-        ) : (
-          <div className="p-2">
-            {isGeneratingTM ? (
-              <button className="px-4 py-2 w-80 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out">
-                <Loading size={5} color="white" />
-              </button>
-            ) : companyCount === 0 ? (
-              <button
-                onClick={handleGenerateTMs}
-                className="px-4 py-2 w-80 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
-              >
-                <span>Generate Tailored Marketing Strategies</span>
-              </button>
-            ) : companyCount < etIDs.length ? (
-              <div className="flex items-center gap-2">
-                <div className="relative group">
-                  <span className="w-6 h-6 flex items-center justify-center text-xs font-semibold text-white bg-yellow-400 rounded-full">
-                    !
-                  </span>
-                  <div className="absolute bottom-full mb-2 z-50 hidden w-80 p-2 text-sm text-yellow-600 bg-yellow-100 border border-yellow-300 rounded-md shadow-lg group-hover:block">
-                    {`Tailored marketing strategies are not generated for ${
-                      etIDs.length - companyCount
-                    } ${
-                      etIDs.length - companyCount > 1 ? "companies" : "company"
-                    }. Please click to generate for the remaining ${
-                      etIDs.length - companyCount > 1 ? "companies" : "company"
-                    }.`}
-                  </div>
-                </div>
+        <div className="flex items-center gap-2 px-2">
+          {isFetchingTM || companyCount === null ? (
+            <></>
+          ) : companyCount === etIDs.length ? (
+            <></>
+          ) : (
+            <div className="p-2">
+              {isGeneratingTM ? (
+                <button className="px-4 py-2 w-80 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out">
+                  <Loading size={5} color="white" />
+                </button>
+              ) : companyCount === 0 ? (
                 <button
                   onClick={handleGenerateTMs}
                   className="px-4 py-2 w-80 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
                 >
-                  <span className="flex items-center gap-1">
-                    {`Update Tailored Marketing Strategies (${
-                      etIDs.length - companyCount
-                    })`}
-                  </span>
+                  <span>Generate Tailored Marketing Strategies</span>
                 </button>
-              </div>
-            ) : (
-              <></>
-            )}
-          </div>
-        )}
+              ) : companyCount < etIDs.length ? (
+                <div className="flex items-center gap-2">
+                  <div className="relative group">
+                    <span className="w-6 h-6 flex items-center justify-center text-xs font-semibold text-white bg-yellow-400 rounded-full">
+                      !
+                    </span>
+                    <div className="absolute bottom-full mb-2 z-50 hidden w-80 p-2 text-sm text-yellow-600 bg-yellow-100 border border-yellow-300 rounded-md shadow-lg group-hover:block">
+                      {`Tailored marketing strategies are not generated for ${
+                        etIDs.length - companyCount
+                      } ${
+                        etIDs.length - companyCount > 1
+                          ? "companies"
+                          : "company"
+                      }. Please click to generate for the remaining ${
+                        etIDs.length - companyCount > 1
+                          ? "companies"
+                          : "company"
+                      }.`}
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleGenerateTMs}
+                    className="px-4 py-2 w-80 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+                  >
+                    <span className="flex items-center gap-1">
+                      {`Update Tailored Marketing Strategies (${
+                        etIDs.length - companyCount
+                      })`}
+                    </span>
+                  </button>
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
+          )}
+
+          {!isFetchingGM && !isFetchingTM && (
+            <CSVLink
+              data={exportData(
+                activeTab === "general" ? generalMarketings : tailoredMarketings
+              )}
+              filename={`${activeTab}_marketing_strategies.csv`}
+              className="px-4 py-2 sm:py-2 w-full sm:w-auto rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center gap-2"
+            >
+              <FontAwesomeIcon icon={faFileCsv} />
+              Export as CSV
+            </CSVLink>
+          )}
+        </div>
       </div>
 
       <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">

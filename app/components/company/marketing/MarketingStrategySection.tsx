@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { supabase } from "@/utils/supabaseClient";
+import { CSVLink } from "react-csv";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Import FontAwesomeIcon
+import { faFileCsv } from "@fortawesome/free-solid-svg-icons"; // Add this import
 
 import Modal from "@/app/components/Modal";
 import { profileAtom, orgInfoAtom, userInfoAtom } from "@/utils/atoms";
@@ -208,6 +211,30 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
     setSelectedMS(strt);
   };
 
+  const exportToCSV = (data: MarketingProps[], filename: string) => {
+    const csvData = data.map((item) => ({
+      Tactic: item.tactic,
+      "Tactic Score": item.tacticScore,
+      "Target Personas": item.targetPersonas,
+      Channel: item.channel,
+      "Value Proposition": item.valueProposition,
+      "Key Performance Indicators": item.keyPerformanceIndicators.join(", "),
+      "Strategic Alignment": item.strategicAlignment,
+      "Call to Action": item.callToAction,
+    }));
+
+    return (
+      <CSVLink
+        data={csvData}
+        filename={filename}
+        className="px-4 py-2 sm:py-2 w-full sm:w-auto rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center gap-2"
+      >
+        <FontAwesomeIcon icon={faFileCsv} />
+        Export as CSV
+      </CSVLink>
+    );
+  };
+
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
       <div className="w-full border-b border-gray-200 flex items-center bg-gray-200 justify-between">
@@ -241,8 +268,13 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
             <h3 className="px-4 py-3 font-medium text-gray-700">
               Marketing Strategy
             </h3>
+          </div>
+        )}
 
-            {!isFetchingTM && (
+        <div className="flex items-center gap-2 px-2">
+          {!isFetchingTM &&
+            tailoredMarketings &&
+            tailoredMarketings.length === 0 && (
               <button
                 onClick={handleGenerateTMs}
                 disabled={isGeneratingTM}
@@ -255,8 +287,22 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
                 )}
               </button>
             )}
-          </div>
-        )}
+
+          <>
+            {activeTab === "general" &&
+              generalMarketings &&
+              exportToCSV(
+                generalMarketings,
+                `${companyName}_tailored_marketing_strategies.csv`
+              )}
+            {activeTab === "tailored" &&
+              tailoredMarketings &&
+              exportToCSV(
+                tailoredMarketings,
+                `${companyName}_tailored_marketing_strategies.csv`
+              )}
+          </>
+        </div>
       </div>
 
       <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
