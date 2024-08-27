@@ -12,7 +12,8 @@ const OnboardingCompanyProfileSection = ({
   setOnboardingStep,
   setWebsite,
   setCompanyOverview,
-  setProductsServices
+  setProductsServices,
+  setSymbols,
 }: {
   setOnboardingStep: any;
   formData: any;
@@ -22,6 +23,7 @@ const OnboardingCompanyProfileSection = ({
   setWebsite: any;
   setCompanyOverview: any;
   setProductsServices: any;
+  setSymbols: (symbols: string[]) => void;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,13 +33,14 @@ const OnboardingCompanyProfileSection = ({
 
       const reqData = {
         company_url: website,
-        company_name: formData.companyName
+        company_name: formData.companyName,
       };
 
       const data = await getScrapeData(reqData);
 
       setCompanyOverview(data.data.overview);
       setProductsServices(data.data.products);
+      setSymbols(data.data.similar_company_symbols);
     } catch (error) {
       console.error("Error scraping company data:", error);
       throw error;

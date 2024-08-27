@@ -16,6 +16,7 @@ import { createCustomer } from "@/utils/apiClient";
 import OnboardCompanySearchbar from "./OnboardCompanySearchbar";
 import OnboardSimilarCompanySection from "./OnboardSimilarCompanySection";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
+import { IoClose } from "react-icons/io5";
 
 export interface CompanyProps {
   id: number;
@@ -30,12 +31,14 @@ const OnboardingInitialCompanySection = ({
   companyOverview,
   productsServices,
   setOnboardingStep,
+  symbols,
 }: {
   formData: any;
   website: any;
   companyOverview: any;
   productsServices: any;
   setOnboardingStep: any;
+  symbols: string[];
 }) => {
   const router = useRouter();
   const setProfile = useSetAtom(profileAtom);
@@ -45,6 +48,16 @@ const OnboardingInitialCompanySection = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const [companies, setCompanies] = useState<CompanyProps[]>([]);
+
+  const randomColor = [
+    "bg-fuchsia-800",
+    "bg-teal-800",
+    "bg-gray-800",
+    "bg-red-800",
+    "bg-blue-800",
+    "bg-green-800",
+    "bg-purple-800",
+  ];
 
   const handleCreateProfile = async () => {
     try {
@@ -152,6 +165,12 @@ const OnboardingInitialCompanySection = ({
     }
   };
 
+  const handleRemoveCompany = (companyId: number) => {
+    setCompanies((prevCompanies) =>
+      prevCompanies.filter((company) => company.id !== companyId)
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -178,15 +197,35 @@ const OnboardingInitialCompanySection = ({
                 return (
                   <div
                     key={`company-${company.id}-${index}`}
-                    className={`py-2 px-5 bg-white transition-colors duration-200 flex justify-between items-center`}
+                    className="hover:bg-gray-50 px-2 py-1 flex items-center gap-1 justify-between"
                   >
-                    <div>
-                      <p className="font-medium">{company.name}</p>
-                      <p className="text-gray-500 text-sm">{company.symbol}</p>
+                    <div className="space-y-2 w-full p-1">
+                      <div className="flex items-center gap-2">
+                        <p
+                          className={`text-sm text-white py-0.5 px-1 ${
+                            randomColor[
+                              Math.floor(Math.random() * randomColor.length)
+                            ]
+                          }`}
+                        >
+                          {company.symbol}
+                        </p>
+                        <h4 className="font-semibold text-gray-700">
+                          {company.name}
+                        </h4>
+                      </div>
+
+                      <p className="text-gray-600 border rounded-full w-fit border-yellow-500 bg-yellow-50 text-sm py-0.5 px-2">
+                        {company.industry}
+                      </p>
                     </div>
-                    <p className="text-gray-500 text-sm rounded-full py-1 px-3 bg-yellow-50 border-yellow-200 border">
-                      {company.industry}
-                    </p>
+
+                    <button
+                      onClick={() => handleRemoveCompany(company.id)}
+                      className="p-4 hover:bg-gray-200 rounded-full"
+                    >
+                      <IoClose className="w-6 h-6" />
+                    </button>
                   </div>
                 );
               })}
@@ -213,6 +252,7 @@ const OnboardingInitialCompanySection = ({
       </div>
       <div className="flex bg-gray-50 w-1/2 items-center justify-center h-full">
         <OnboardSimilarCompanySection
+          symbols={symbols}
           companies={companies}
           setCompanies={setCompanies}
         />

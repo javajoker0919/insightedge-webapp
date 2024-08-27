@@ -7,13 +7,14 @@ import { Loading } from "../..";
 import { CompanyProps } from "./InitialCompanySection";
 
 interface WatchlistSimilarCompaniesProps {
+  symbols: string[];
   companies: CompanyProps[];
-  setCompanies: React.Dispatch<React.SetStateAction<any[]>>;
+  setCompanies: React.Dispatch<React.SetStateAction<CompanyProps[]>>;
 }
 
 const OnboardSimilarCompanySection: React.FC<
   WatchlistSimilarCompaniesProps
-> = ({ companies, setCompanies }) => {
+> = ({ symbols, companies, setCompanies }) => {
   const [similarCompanies, setSimilarCompanies] = useState<CompanyProps[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -29,7 +30,7 @@ const OnboardSimilarCompanySection: React.FC<
 
   useEffect(() => {
     fetchSimilarCompanies();
-  }, [companies]);
+  }, [symbols]);
 
   const fetchSimilarCompanies = async () => {
     try {
@@ -41,14 +42,8 @@ const OnboardSimilarCompanySection: React.FC<
         .order("revrank", { ascending: true })
         .limit(10);
 
-      if (companies.length > 0) {
-        const IDs = Array.from(new Set(companies.map((company) => company.id)));
-        query = query.not("id", "in", `(${IDs.join(",")})`);
-
-        const industries = Array.from(
-          new Set(companies.map((company) => company.industry))
-        );
-        query = query.in("industry", industries);
+      if (symbols.length > 0) {
+        query = query.in("symbol", symbols);
       }
 
       const { data, error } = await query;
@@ -63,7 +58,12 @@ const OnboardSimilarCompanySection: React.FC<
           industry: company.industry,
         }));
 
-        setSimilarCompanies(formattedData);
+        // Filter out companies that are already in the companies prop
+        const filteredData = formattedData.filter(
+          (company: CompanyProps) => !companies.some((c) => c.id === company.id)
+        );
+
+        setSimilarCompanies(filteredData);
       }
     } catch (error) {
       console.error("Error fetching similar companies:", error);
@@ -73,11 +73,17 @@ const OnboardSimilarCompanySection: React.FC<
   };
 
   const handleAddCompanyToCompanies = async (company: CompanyProps) => {
-    if (companies.map((company) => company.id).includes(company.id)) {
-      return;
-    }
+    setCompanies((prevCompanies) => {
+      if (prevCompanies.some((c) => c.id === company.id)) {
+        return prevCompanies; // Return the previous state if the company already exists
+      }
+      return [...prevCompanies, company];
+    });
 
-    setCompanies((prevCompanies) => [...prevCompanies, company]);
+    // Remove the added company from similarCompanies
+    setSimilarCompanies((prevSimilarCompanies) =>
+      prevSimilarCompanies.filter((c) => c.id !== company.id)
+    );
   };
 
   return (
@@ -94,44 +100,39 @@ const OnboardSimilarCompanySection: React.FC<
           </div>
         ) : (
           <ul className="divide-y">
-            {similarCompanies.map(
-              (company) =>
-                !companies
-                  .map((company) => company.id)
-                  .includes(company.id) && (
-                  <li key={company.id}>
-                    <div className="px-2 py-1 flex items-center gap-1 justify-between">
-                      <div className="space-y-2 w-full p-1">
-                        <div className="flex items-center gap-2">
-                          <p
-                            className={`text-sm text-white py-0.5 px-1 ${
-                              randomColor[
-                                Math.floor(Math.random() * randomColor.length)
-                              ]
-                            }`}
-                          >
-                            {company.symbol}
-                          </p>
-                          <h4 className="font-semibold text-gray-700">
-                            {company.name}
-                          </h4>
-                        </div>
-
-                        <p className="text-gray-600 border rounded-full w-fit border-yellow-500 bg-yellow-50 text-sm py-0.5 px-2">
-                          {company.industry}
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={(e) => handleAddCompanyToCompanies(company)}
-                        className="p-4 hover:bg-gray-200 rounded-full"
+            {similarCompanies.map((company) => (
+              <li key={company.id}>
+                <div className="px-2 py-1 flex items-center gap-1 justify-between">
+                  <div className="space-y-2 w-full p-1">
+                    <div className="flex items-center gap-2">
+                      <p
+                        className={`text-sm text-white py-0.5 px-1 ${
+                          randomColor[
+                            Math.floor(Math.random() * randomColor.length)
+                          ]
+                        }`}
                       >
-                        <FaPlus className="text-primary-500" />
-                      </button>
+                        {company.symbol}
+                      </p>
+                      <h4 className="font-semibold text-gray-700">
+                        {company.name}
+                      </h4>
                     </div>
-                  </li>
-                )
-            )}
+
+                    <p className="text-gray-600 border rounded-full w-fit border-yellow-500 bg-yellow-50 text-sm py-0.5 px-2">
+                      {company.industry}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={(e) => handleAddCompanyToCompanies(company)}
+                    className="p-4 hover:bg-gray-200 rounded-full"
+                  >
+                    <FaPlus className="text-primary-500" />
+                  </button>
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </div>
