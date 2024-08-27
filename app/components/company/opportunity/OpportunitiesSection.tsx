@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAtomValue, useSetAtom } from "jotai";
 import { supabase } from "@/utils/supabaseClient";
+import { CSVLink } from "react-csv";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Import FontAwesomeIcon
+import { faFileCsv } from "@fortawesome/free-solid-svg-icons"; // Add this import
 
 import Modal from "@/app/components/Modal";
 import { profileAtom, orgInfoAtom, userInfoAtom } from "@/utils/atoms";
@@ -226,6 +229,39 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
     setSelectedOpp(opp);
   };
 
+  const exportToCSV = (opportunities: OpportunityProps[], filename: string) => {
+    const headers = [
+      { label: "Opportunity Name", key: "opportunityName" },
+      { label: "Opportunity Score", key: "opportunityScore" },
+      { label: "Keywords", key: "keywords" },
+      { label: "Buyer Role", key: "targetBuyer.role" },
+      { label: "Buyer Department", key: "targetBuyer.department" },
+      { label: "Engagement Inbounds", key: "engagementTips.inbound" },
+      { label: "Engagement Outbounds", key: "engagementTips.outbound" },
+      { label: "Email Subject", key: "outboundEmail.subject" },
+      { label: "Email Body", key: "outboundEmail.body" },
+      { label: "Reasoning", key: "reasoning" },
+    ];
+
+    const csvData = opportunities.map((opp) => ({
+      ...opp,
+      "engagementTips.inbound": opp.engagementTips?.inbound.join("\n"),
+      "engagementTips.outbound": opp.engagementTips?.outbound.join("\n"),
+    }));
+
+    return (
+      <CSVLink
+        data={csvData}
+        headers={headers}
+        filename={filename}
+        className="px-4 py-2 sm:py-2 w-full sm:w-auto rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700"
+      >
+        <FontAwesomeIcon icon={faFileCsv} />
+        Export as CSV
+      </CSVLink>
+    );
+  };
+
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
       <div className="w-full border-b border-gray-200 flex items-center bg-gray-200 justify-between">
@@ -273,6 +309,39 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
             )}
           </div>
         )}
+
+        <div className="flex items-center gap-2 px-2">
+          {!isFetchingTO && tailoredOpps && tailoredOpps.length === 0 && (
+            <button
+              title={`Discover the top opportunities for selling your solutions to ${companyName}`}
+              onClick={generateTO}
+              disabled={isGeneratingTO}
+              className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+            >
+              {isGeneratingTO ? (
+                <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
+              ) : (
+                "Generate Tailored Opportunities"
+              )}
+            </button>
+          )}
+          {activeTab === "general" && generalOpps && (
+            <div className="ml-auto">
+              {exportToCSV(
+                generalOpps,
+                `${companyName}_general_opportunities.csv`
+              )}
+            </div>
+          )}
+          {activeTab === "tailored" && tailoredOpps && (
+            <div className="ml-auto">
+              {exportToCSV(
+                tailoredOpps,
+                `${companyName}_tailored_opportunities.csv`
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">

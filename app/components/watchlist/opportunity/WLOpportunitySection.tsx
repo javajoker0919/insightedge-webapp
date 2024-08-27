@@ -2,6 +2,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAtomValue, useSetAtom } from "jotai";
+import { CSVLink } from "react-csv";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Import FontAwesomeIcon
+import { faFileCsv } from "@fortawesome/free-solid-svg-icons"; // Add this import
 
 import { supabase } from "@/utils/supabaseClient";
 import Modal from "@/app/components/Modal";
@@ -39,7 +42,7 @@ interface OpportunitiesProps {
 
 const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   etIDs,
-  isLoading
+  isLoading,
 }) => {
   const { invokeToast } = useToastContext();
   const setProfile = useSetAtom(profileAtom);
@@ -114,18 +117,18 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
         companyName: item.company_name,
         targetBuyer: {
           role: item.buyer_role,
-          department: item.buyer_department
+          department: item.buyer_department,
         },
         engagementTips: {
           inbound: item.engagement_inbounds?.split("\n") || [],
-          outbound: item.engagement_outbounds?.split("\n") || []
+          outbound: item.engagement_outbounds?.split("\n") || [],
         },
         outboundEmail: {
           subject: item.email_subject,
-          body: item.email_body
+          body: item.email_body,
         },
         reasoning: item.reasoning,
-        date: item.date
+        date: item.date,
       }));
 
       setGOs(formattedData);
@@ -184,18 +187,18 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           keywords: item.keywords,
           targetBuyer: {
             role: item.buyer_role,
-            department: item.buyer_department
+            department: item.buyer_department,
           },
           engagementTips: {
             inbound: item.engagement_inbounds?.split("\n") || [],
-            outbound: item.engagement_outbounds?.split("\n") || []
+            outbound: item.engagement_outbounds?.split("\n") || [],
           },
           outboundEmail: {
             subject: item.email_subject,
-            body: item.email_body
+            body: item.email_body,
           },
           reasoning: item.reasoning,
-          date: item.date
+          date: item.date,
         }));
 
         setTOs(formattedData);
@@ -228,18 +231,18 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           keywords: item.keywords?.split(",") || [],
           targetBuyer: {
             role: item.buyer_role,
-            department: item.buyer_department
+            department: item.buyer_department,
           },
           engagementTips: {
             inbound: item.engagement_inbounds?.split("\n") || [],
-            outbound: item.engagement_outbounds?.split("\n") || []
+            outbound: item.engagement_outbounds?.split("\n") || [],
           },
           outboundEmail: {
             subject: item.email_subject,
-            body: item.email_body
+            body: item.email_body,
           },
           reasoning: item.reasoning,
-          date: ""
+          date: "",
         })
       );
 
@@ -257,7 +260,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
 
         return {
           ...prev,
-          credits: prev.credits - data.used_credits
+          credits: prev.credits - data.used_credits,
         };
       });
 
@@ -267,7 +270,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           ...prev,
           creditCount: prev.creditCount
             ? prev.creditCount - data.used_credits
-            : 0
+            : 0,
         };
       });
 
@@ -291,6 +294,31 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
 
   const handleQuickAction = (opp: OpportunityProps) => {
     setSelectedOpp(opp);
+  };
+
+  const exportToCSV = () => {
+    const headers = [
+      { label: "Opportunity Name", key: "opportunityName" },
+      { label: "Opportunity Score", key: "opportunityScore" },
+      { label: "Company Name", key: "companyName" },
+      { label: "Keywords", key: "keywords" },
+      { label: "Buyer Role", key: "targetBuyer.role" },
+      { label: "Buyer Department", key: "targetBuyer.department" },
+      { label: "Inbound Engagement Tips", key: "engagementTips.inbound" },
+      { label: "Outbound Engagement Tips", key: "engagementTips.outbound" },
+      { label: "Email Subject", key: "outboundEmail.subject" },
+      { label: "Email Body", key: "outboundEmail.body" },
+      { label: "Reasoning", key: "reasoning" },
+      { label: "Date", key: "date" },
+    ];
+
+    const data =
+      activeTab === "general" ? generalOpportunities : tailoredOpportunities;
+
+    return {
+      headers,
+      data: data || [],
+    };
   };
 
   return (
@@ -325,55 +353,72 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
           </div>
         )}
 
-        {isFetchingTO || companyCount === null ? (
-          <></>
-        ) : companyCount === etIDs.length ? (
-          <></>
-        ) : (
-          <div className="p-2">
-            {isGeneratingTO ? (
-              <button className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out">
-                <Loading size={5} color="white" />
-              </button>
-            ) : companyCount === 0 ? (
-              <button
-                onClick={generateTOs}
-                className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
-              >
-                <span>Generate Tailored Opportunities</span>
-              </button>
-            ) : companyCount < etIDs.length ? (
-              <div className="flex items-center gap-2">
-                <div className="relative group">
-                  <span className="w-6 h-6 flex items-center justify-center text-xs font-semibold text-white bg-yellow-400 rounded-full">
-                    !
-                  </span>
-                  <div className="absolute bottom-full mb-2 z-50 hidden w-72 p-2 text-sm text-yellow-600 bg-yellow-100 border border-yellow-300 rounded-md shadow-lg group-hover:block">
-                    {`Tailored opportunities are not generated for ${
-                      etIDs.length - companyCount
-                    } ${
-                      etIDs.length - companyCount > 1 ? "companies" : "company"
-                    }. Please click to generate for the remaining ${
-                      etIDs.length - companyCount > 1 ? "companies" : "company"
-                    }.`}
-                  </div>
-                </div>
+        <div className="flex items-center gap-2 px-2">
+          {isFetchingTO || companyCount === null ? (
+            <></>
+          ) : companyCount === etIDs.length ? (
+            <></>
+          ) : (
+            <div className="p-2">
+              {isGeneratingTO ? (
+                <button className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out">
+                  <Loading size={5} color="white" />
+                </button>
+              ) : companyCount === 0 ? (
                 <button
                   onClick={generateTOs}
                   className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
                 >
-                  <span className="flex items-center gap-1">
-                    {`Update Tailored Opportunities (${
-                      etIDs.length - companyCount
-                    })`}
-                  </span>
+                  <span>Generate Tailored Opportunities</span>
                 </button>
-              </div>
-            ) : (
-              <></>
-            )}
-          </div>
-        )}
+              ) : companyCount < etIDs.length ? (
+                <div className="flex items-center gap-2">
+                  <div className="relative group">
+                    <span className="w-6 h-6 flex items-center justify-center text-xs font-semibold text-white bg-yellow-400 rounded-full">
+                      !
+                    </span>
+                    <div className="absolute bottom-full mb-2 z-50 hidden w-72 p-2 text-sm text-yellow-600 bg-yellow-100 border border-yellow-300 rounded-md shadow-lg group-hover:block">
+                      {`Tailored opportunities are not generated for ${
+                        etIDs.length - companyCount
+                      } ${
+                        etIDs.length - companyCount > 1
+                          ? "companies"
+                          : "company"
+                      }. Please click to generate for the remaining ${
+                        etIDs.length - companyCount > 1
+                          ? "companies"
+                          : "company"
+                      }.`}
+                    </div>
+                  </div>
+                  <button
+                    onClick={generateTOs}
+                    className="px-4 py-2 w-64 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+                  >
+                    <span className="flex items-center gap-1">
+                      {`Update Tailored Opportunities (${
+                        etIDs.length - companyCount
+                      })`}
+                    </span>
+                  </button>
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
+          )}
+
+          {!isFetchingGO && !isFetchingTO && (
+            <CSVLink
+              {...exportToCSV()}
+              filename={`${activeTab}_opportunities.csv`}
+              className="px-4 py-2 sm:py-2 w-full sm:w-auto rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center gap-2"
+            >
+              <FontAwesomeIcon icon={faFileCsv} />
+              Export as CSV
+            </CSVLink>
+          )}
+        </div>
       </div>
 
       <div className="overflow-x-auto overflow-y-auto max-h-[500px] text-sm">
