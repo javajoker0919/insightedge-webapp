@@ -35,7 +35,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/reset-success"
   ];
 
-  const publicPaths = ["/", "/terms", "/privacy"];
+  const publicPaths = ["/", "/terms", "/privacy", "/blog"];
 
   useEffect(() => {
     checkUser();
@@ -61,7 +61,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
       if (session?.user) {
         setUserMetadata(session.user.user_metadata);
 
-        if (authPaths.includes(pathname)) {
+        if (authPaths.some(path => pathname.startsWith(path))) {
           router.push("/app");
         }
       } else {
@@ -70,7 +70,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
         setWatchlist(null);
         setOrgInfo(null);
 
-        if (publicPaths.includes(pathname) || authPaths.includes(pathname)) {
+        if (publicPaths.some(path => pathname.startsWith(path)) || authPaths.some(path => pathname.startsWith(path))) {
           return;
         }
 
