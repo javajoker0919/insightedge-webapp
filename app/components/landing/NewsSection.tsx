@@ -1,4 +1,8 @@
 import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 const LandingNewsSection = ({ blogs }: any) => {
   return (
@@ -10,29 +14,54 @@ const LandingNewsSection = ({ blogs }: any) => {
       <p className="text-gray-600">Explore our blogs</p>
 
       <div className="flex flex-col md:flex-row w-full max-w-[80rem] items-center md:items-start justify-around gap-6">
-        {blogs.map((item: any) => (
-          <BlogCard
-            key={item.id}
-            title={item.attributes.title}
-            description={item.attributes.description}
-            src={`${item.attributes.cover.data.attributes.url}`}
-          />
-        ))}
-        {/* <BlogCard
-          title="5 Game-Changing Ways AI-Powered Market Intelligence is Revolutionizing B2B Sales"
-          description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
-          src="/image/blog-1.jpg"
-        />
-        <BlogCard
-          title="7 Innovative Strategies AI-Driven Market Insights are Transforming B2B Sales"
-          description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
-          src="/image/blog-2.jpg"
-        />
-        <BlogCard
-          title="6 Innovative Approaches AI-Driven Market Intelligence is Shaping B2B Sales"
-          description="In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity. In today's fast-paced business environment, staying ahead of the curve is not just an advantage—it's a necessity."
-          src="/image/blog-3.jpg"
-        /> */}
+        <Swiper
+          pagination={{ clickable: true }}
+          onInit={(swiper) => {
+            swiper.navigation.init();
+            swiper.navigation.update();
+          }}
+          watchOverflow={false}
+          spaceBetween={15}
+          slidesPerView={3}
+          navigation={{
+            prevEl: ".swiper-button-prev",
+            nextEl: ".swiper-button-next"
+          }}
+          modules={[Navigation]}
+          // breakpoints={{
+          //   320: { slidesPerView: 1 },
+          //   768: { slidesPerView: 2 },
+          //   1024: { slidesPerView: 3 },
+          //   1280: { slidesPerView: 4 },
+          //   1440: { slidesPerView: 5 },
+          //   1600: { slidesPerView: 6 },
+          //   1920: { slidesPerView: 7 }
+          // }}
+          className="gap-2 items-center md:!flex !py-5 !px-7 !hidden"
+        >
+          <div className="swiper-button-prev border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
+          <div className="swiper-button-next border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
+          {blogs.map((item: any, index: number) => (
+            <SwiperSlide key={index}>
+              <BlogCard
+                key={item.id}
+                title={item.attributes.title}
+                description={item.attributes.description}
+                src={`${item.attributes.cover.data.attributes.url}`}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <div className="md:hidden flex flex-col gap-6">
+          {blogs.map((item: any, index: number) => (
+            <BlogCard
+              key={item.id}
+              title={item.attributes.title}
+              description={item.attributes.description}
+              src={`${item.attributes.cover.data.attributes.url}`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
