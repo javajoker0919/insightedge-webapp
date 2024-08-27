@@ -102,7 +102,7 @@ const getScrapeData = async (data: {
   company_url: string;
 }) => {
   const apiClient = await createApiClient();
-  const response = await apiClient.get("/api/v1/signup_onboarding", {
+  const response = await apiClient.get("/api/v1/onboarding", {
     params: {
       company_name: data.company_name,
       company_url: data.company_url,
