@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, FC } from "react";
+import { useState, useRef, useEffect, FC, RefObject } from "react";
 import { FaEnvelope, FaTimes, FaPlus } from "react-icons/fa";
 import { useAtomValue } from "jotai";
 
@@ -12,7 +12,7 @@ interface ShareButtonProps {
 }
 
 interface EmailInputProps {
-  newEmailRef: React.RefObject<HTMLInputElement>;
+  newEmailRef: RefObject<HTMLInputElement>;
   isInputNotEmpty: boolean;
   isEmailValid: boolean;
   handleInputChange: () => void;
@@ -87,11 +87,11 @@ const ShareButton: FC<ShareButtonProps> = ({ etID }) => {
   const [isInputNotEmpty, setIsInputNotEmpty] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(true);
 
-  const handleShare = () => {
+  const handleShare = (): void => {
     setIsModalOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     setIsModalOpen(false);
     setEmails([]);
     setIsInputNotEmpty(false);
@@ -101,12 +101,12 @@ const ShareButton: FC<ShareButtonProps> = ({ etID }) => {
     }
   };
 
-  const validateEmail = (email: string) => {
+  const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  const handleAddEmail = () => {
+  const handleAddEmail = (): void => {
     if (newEmailRef.current && newEmailRef.current.value.trim() !== "") {
       const newEmail = newEmailRef.current.value;
       if (validateEmail(newEmail)) {
@@ -122,12 +122,12 @@ const ShareButton: FC<ShareButtonProps> = ({ etID }) => {
     }
   };
 
-  const handleRemoveEmail = (index: number) => {
+  const handleRemoveEmail = (index: number): void => {
     const newEmails = emails.filter((_, i) => i !== index);
     setEmails(newEmails);
   };
 
-  const handleSendEmail = async () => {
+  const handleSendEmail = async (): Promise<void> => {
     if (!profile || !etID) return;
 
     setIsSending(true);
@@ -143,7 +143,7 @@ const ShareButton: FC<ShareButtonProps> = ({ etID }) => {
       invokeToast("success", data.message);
     } catch (error) {
       console.error("Error sending email:", error);
-      invokeToast("success", "Failed to send email.");
+      invokeToast("error", "Failed to send email.");
     } finally {
       setIsSending(false);
       handleClose();
@@ -151,7 +151,7 @@ const ShareButton: FC<ShareButtonProps> = ({ etID }) => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent): void => {
       if (
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
@@ -169,7 +169,7 @@ const ShareButton: FC<ShareButtonProps> = ({ etID }) => {
     };
   }, [isModalOpen]);
 
-  const handleInputChange = () => {
+  const handleInputChange = (): void => {
     if (newEmailRef.current) {
       setIsInputNotEmpty(newEmailRef.current.value.trim() !== "");
       setIsEmailValid(true);
