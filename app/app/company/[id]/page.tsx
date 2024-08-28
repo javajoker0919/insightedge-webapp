@@ -152,7 +152,7 @@ const CompanyDetailPage: React.FC = () => {
 
         <div className="flex space-x-2">
           <FollowButton />
-          <ShareButton />
+          <ShareButton etID={selectedETID} />
         </div>
       </div>
 
