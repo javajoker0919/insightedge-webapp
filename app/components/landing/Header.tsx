@@ -18,7 +18,7 @@ const LandingHeaderSection = ({
   return (
     <>
       <header
-        className={`py-4 fixed top-0 left-0 right-0 bg-white z-10 shadow-md transition-transform duration-300 ${
+        className={`py-4 sticky top-0 left-0 right-0 bg-white z-10 shadow-md transition-transform duration-300 ${
           isHeaderVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >

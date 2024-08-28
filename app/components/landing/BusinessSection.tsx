@@ -4,8 +4,8 @@ import { MdOutlineToken } from "react-icons/md";
 const LandingBusinessSection = () => {
   return (
     <section id="business" className="py-16 px-4 flex flex-col items-center">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] mb-16 sm:mb-24 md:mb-32">
-        What it means for{" "}
+      <h1 className="text-3xl md:text-[42px] leading-tight md:leading-[60px] font-bold text-center max-w-[60rem] mb-16 sm:mb-24 md:mb-32">
+        What our sales intelligence and engagement platform means{" "}
         <span className="text-primary-500">your business</span>
       </h1>
 

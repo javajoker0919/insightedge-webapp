@@ -117,6 +117,7 @@ const LandingPage: React.FC = () => {
         handleSchedule={handleSchedule}
         formData={formData}
         blogs={blogs}
+        scrollToSection={scrollToSection}
       />
     </div>
   );
@@ -130,7 +131,8 @@ const MainContent: React.FC<{
   handleSchedule: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   formData: { name: string; company: string; email: string };
   blogs: any;
-}> = ({ handleChange, handleSchedule, formData, blogs }) => (
+  scrollToSection: (sectionId: string) => void;
+}> = ({ handleChange, handleSchedule, formData, blogs, scrollToSection }) => (
   <main className="mt-16 sm:mt-16">
     <LandingHeroSection />
     <LandingSalesAndMarketingSection />
@@ -143,7 +145,7 @@ const MainContent: React.FC<{
       handleSchedule={handleSchedule}
       formData={formData}
     />
-    <LandingFooterSection />
+    <LandingFooterSection scrollToSection={scrollToSection} />
   </main>
 );
 
