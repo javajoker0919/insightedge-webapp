@@ -22,6 +22,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ etID }) => {
   const [emails, setEmails] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [isInputNotEmpty, setIsInputNotEmpty] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(true);
 
   const handleShare = () => {
     setIsModalOpen(true);
@@ -31,19 +32,30 @@ const ShareButton: React.FC<ShareButtonProps> = ({ etID }) => {
     setIsModalOpen(false);
     setEmails([""]);
     setIsInputNotEmpty(false);
+    setIsEmailValid(true);
     if (newEmailRef.current) {
       newEmailRef.current.value = "";
     }
   };
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleAddEmail = () => {
     if (newEmailRef.current && newEmailRef.current.value.trim() !== "") {
       const newEmail = newEmailRef.current.value;
-      if (!emails.includes(newEmail)) {
-        setEmails([...emails, newEmail]);
+      if (validateEmail(newEmail)) {
+        if (!emails.includes(newEmail)) {
+          setEmails([...emails, newEmail]);
+        }
+        newEmailRef.current.value = "";
+        setIsInputNotEmpty(false);
+        setIsEmailValid(true);
+      } else {
+        setIsEmailValid(false);
       }
-      newEmailRef.current.value = "";
-      setIsInputNotEmpty(false);
     }
   };
 
@@ -97,6 +109,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ etID }) => {
   const handleInputChange = () => {
     if (newEmailRef.current) {
       setIsInputNotEmpty(newEmailRef.current.value.trim() !== "");
+      setIsEmailValid(true);
     }
   };
 
@@ -147,6 +160,11 @@ const ShareButton: React.FC<ShareButtonProps> = ({ etID }) => {
                     </button>
                   )}
                 </div>
+                {!isEmailValid && (
+                  <p className="text-red-500 text-sm mt-2">
+                    Please enter a valid email address.
+                  </p>
+                )}
                 <div className="flex flex-wrap gap-2 w-full my-4">
                   {emails.map((email, index) => (
                     <div
