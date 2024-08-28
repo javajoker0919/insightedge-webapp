@@ -7,7 +7,6 @@ const getAuthToken = async () => {
     error,
   } = await supabase.auth.getSession();
   if (error || !session) throw new Error("No user logged in");
-  // return session.provider_token || session.access_token;
   return session?.access_token;
 };
 
@@ -119,6 +118,16 @@ const getSchedule = async (data: any) => {
   return response.data;
 };
 
+const emailShare = async (data: {
+  user_id: string;
+  earnings_transcript_id: string;
+  organization_id: string;
+  share_email_ids: string[];
+}) => {
+  const apiClient = await createApiClient();
+  return await apiClient.post("/api/v1/email-share", data);
+};
+
 export {
   generateTailoredSummaryAPI,
   updatePlan,
@@ -129,5 +138,6 @@ export {
   generateTOAPI,
   generateTMAPI,
   getScrapeData,
-  getSchedule
+  getSchedule,
+  emailShare,
 };
