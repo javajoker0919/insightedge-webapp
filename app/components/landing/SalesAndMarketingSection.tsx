@@ -12,7 +12,7 @@ const LandingSalesAndMarketingSection = () => {
       <h1 className="text-3xl md:text-[40px] leading-tight md:leading-[56px] font-bold text-center max-w-[994px] px-4 md:px-10 flex flex-col">
         Avoid wasted sales & marketing efforts.
         <span className="text-primary-500">
-          Focus your time on what matters most for your key accounts.
+          Focus your time on what matters most for your sales planning accounts.
         </span>
       </h1>
       <p className="text-lg md:text-2xl leading-normal md:leading-9 font-normal text-neutral-600 text-center max-w-3xl mx-auto mt-3 mb-8 md:mb-16">

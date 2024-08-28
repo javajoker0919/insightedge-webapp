@@ -5,7 +5,7 @@ const LandingSummarySection = () => {
       className="py-8 md:py-16 px-4 flex flex-col items-center"
     >
       <h1 className="text-3xl md:text-[42px] leading-tight md:leading-[60px] font-bold text-center max-w-[60rem] mb-3 md:mb-5">
-        Tailored insights and opportunities{" "}
+        Tailored earnings call transcripts database insights{" "}
         <span className="text-primary-500">delivered to your inbox</span>
       </h1>
       <p className="text-base md:text-[18px] leading-normal md:leading-7 font-normal text-neutral-600 max-w-[70rem] text-center mb-8 md:mb-5">
