@@ -65,12 +65,12 @@ const OpportunitiesTable: React.FC<{
   return (
     <>
       {sortedOpportunities.length > 0 ? (
-        <div className="w-full lg:w-[600px] 2xl:w-full">
-          <table className="relative border-collapse min-w-[1200px] 2xl:min-w-[600px] overflow-x-auto">
+        <div className="w-full lg:w-[600px] xl:w-full">
+          <table className="relative border-collapse min-w-[1200px] xl:min-w-[600px] overflow-x-auto">
             <thead className="sticky z-10 top-0">
               <tr className="bg-gray-100 text-black">
                 <th
-                  className="px-2 sm:px-4 py-3 text-center font-medium w-24 sm:w-32"
+                  className="px-2 sm:px-4 py-3 text-center font-medium w-24 xl:w-1/12 2xl:w-32"
                   onClick={() => requestSort("companyName")}
                 >
                   <div className="justify-center gap-1 flex items-center cursor-pointer">
@@ -83,7 +83,7 @@ const OpportunitiesTable: React.FC<{
                   Opportunity
                 </th>
                 <th
-                  className="px-2 sm:px-4 py-3 text-center font-medium w-16 sm:w-24"
+                  className="px-2 sm:px-4 py-3 text-center font-medium w-16 sm:w-fit"
                   onClick={() => requestSort("opportunityScore")}
                 >
                   <div className="justify-center gap-1 flex items-center cursor-pointer">
@@ -101,7 +101,7 @@ const OpportunitiesTable: React.FC<{
                   </span>
                   <span className="sm:hidden">Dept.</span>
                 </th>
-                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-32 sm:w-64">
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-32 xl:w-32 2xl:w-64">
                   Quick Actions
                 </th>
               </tr>
@@ -114,21 +114,21 @@ const OpportunitiesTable: React.FC<{
                     opportunities.length > 0 ? "" : "blur"
                   }`}
                 >
-                  <td className="px-2 sm:px-4 py-3 border border-gray-300 text-xs sm:text-sm">
+                  <td className="px-2 sm:px-4 py-3 border border-gray-300 text-xs 2xl:text-sm">
                     {opp.companyName}
                   </td>
-                  <td className="px-2 sm:px-4 py-3 border text-left border-gray-300 text-xs sm:text-sm">
+                  <td className="px-2 sm:px-4 py-3 border text-left border-gray-300 text-xs 2xl:text-sm">
                     {opp.opportunityName}
                   </td>
-                  <td className="px-2 sm:px-4 py-3 border border-gray-300 text-xs sm:text-sm">
+                  <td className="px-2 sm:px-4 py-3 border border-gray-300 text-xs 2xl:text-sm">
                     {opp.opportunityScore}
                   </td>
-                  <td className="px-2 sm:px-4 py-3 border border-gray-300 text-xs sm:text-sm">
+                  <td className="px-2 sm:px-4 py-3 border border-gray-300 text-xs 2xl:text-sm">
                     {opp.targetBuyer.role}
                   </td>
                   <td className="px-2 sm:px-4 py-3 border border-gray-300">
                     <span
-                      className={`inline-block px-1 sm:px-2 py-1 rounded-2xl border text-xs sm:text-sm font-medium ${getDepartmentClass(
+                      className={`inline-block px-1 sm:px-2 py-1 rounded-2xl border text-xs 2xl:text-sm font-medium ${getDepartmentClass(
                         opp.targetBuyer.department
                       )}`}
                     >
@@ -136,10 +136,10 @@ const OpportunitiesTable: React.FC<{
                     </span>
                   </td>
                   <td className="px-2 sm:px-4 py-3 border border-gray-300">
-                    <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2">
+                    <div className="flex flex-col 2xl:flex-row justify-center space-y-2 2xl:space-y-0 2xl:space-x-2">
                       <button
                         onClick={() => onQuickAction(opp)}
-                        className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500 text-xs sm:text-sm"
+                        className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500 text-xs 2xl:text-sm"
                       >
                         Prospect <IoBulb />
                       </button>
@@ -154,7 +154,7 @@ const OpportunitiesTable: React.FC<{
                         )}+"LinkedIn"`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500 text-xs sm:text-sm"
+                        className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500 text-xs 2xl:text-sm"
                       >
                         Find Buyer
                         <IoPerson />

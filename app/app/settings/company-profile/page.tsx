@@ -80,8 +80,6 @@ const CompanyProfile = () => {
     }
   };
 
-  console.log(overview, products);
-
   if (!orgInfo) {
     return (
       <div className="m-auto p-10 w-[60rem] bg-white flex justify-center items-center">
