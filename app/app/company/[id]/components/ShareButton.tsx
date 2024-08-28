@@ -93,7 +93,7 @@ const ShareButton: FC<ShareButtonProps> = ({ etID }) => {
 
   const handleClose = () => {
     setIsModalOpen(false);
-    setEmails([""]);
+    setEmails([]);
     setIsInputNotEmpty(false);
     setIsEmailValid(true);
     if (newEmailRef.current) {
