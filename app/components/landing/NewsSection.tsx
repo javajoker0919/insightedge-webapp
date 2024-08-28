@@ -46,7 +46,7 @@ const LandingNewsSection = ({ blogs }: any) => {
             <SwiperSlide key={index}>
               <BlogCard
                 key={item.id}
-                id={item.id}
+                id={item.attributes.slug}
                 title={item.attributes.title}
                 description={item.attributes.description}
                 src={`${item.attributes.cover.data.attributes.url}`}
@@ -58,7 +58,7 @@ const LandingNewsSection = ({ blogs }: any) => {
           {blogs.map((item: any, index: number) => (
             <BlogCard
               key={item.id}
-              id={item.id}
+              id={item.attributes.slug}
               title={item.attributes.title}
               description={item.attributes.description}
               src={`${item.attributes.cover.data.attributes.url}`}
