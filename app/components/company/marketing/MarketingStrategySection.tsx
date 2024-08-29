@@ -15,6 +15,8 @@ import { Loading } from "@/app/components";
 interface MarketingCompProps {
   companyName: string;
   etID: number | null;
+  setJsonGM: React.Dispatch<React.SetStateAction<any[] | null>>;
+  setJsonTM: React.Dispatch<React.SetStateAction<any[] | null>>;
 }
 
 export interface MarketingProps {
@@ -31,6 +33,8 @@ export interface MarketingProps {
 const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   companyName,
   etID,
+  setJsonGM,
+  setJsonTM,
 }) => {
   if (etID === null) {
     return null;
@@ -65,6 +69,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   const fetchGM = async (etID: number) => {
     setIsFetchingGM(true);
     setGMs(null);
+    setJsonGM(null);
 
     try {
       const { data, error } = await supabase
@@ -99,6 +104,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       }));
 
       setGMs(strategies);
+      setJsonGM(strategies);
       setActiveTab("general");
     } catch (error) {
       console.error("Error fetching marketing strategies:", error);
@@ -110,6 +116,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   const fetchTM = async (etID: number, orgID: number) => {
     setIsFetchingTM(true);
     setTMs(null);
+    setJsonTM(null);
 
     try {
       const { data, error } = await supabase
@@ -145,6 +152,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       }));
 
       setTMs(strategies);
+      setJsonTM(strategies);
     } catch (error) {
       console.error("Error fetching tailored marketing strategies:", error);
     } finally {
@@ -178,6 +186,7 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       );
 
       setTMs(formattedData);
+      setJsonTM(formattedData);
       setActiveTab("tailored");
 
       setProfile((prev) => {
