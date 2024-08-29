@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "../Logo";
-import NavMenu from "./NavMenu";
 import LandingNavMenuSection from "./NavMenu";
 
 const LandingHeaderSection = ({
@@ -10,10 +9,10 @@ const LandingHeaderSection = ({
   toggleMenu,
   scrollToSection
 }: {
-  isHeaderVisible: boolean;
-  isMenuOpen: boolean;
-  toggleMenu: () => void;
-  scrollToSection: (sectionId: string) => void;
+  isHeaderVisible?: boolean;
+  isMenuOpen?: boolean;
+  toggleMenu?: () => void;
+  scrollToSection?: (sectionId: string) => void;
 }) => {
   return (
     <>
@@ -24,7 +23,7 @@ const LandingHeaderSection = ({
       >
         <div className="flex flex-wrap justify-between items-center px-4">
           <div className="flex items-center cursor-pointer">
-            <Link href={`/app`}>
+            <Link href={`/`}>
               <Image
                 src={"/favicon.png"}
                 alt={"ProspectEdge"}
@@ -57,12 +56,16 @@ const LandingHeaderSection = ({
             </button>
           </div>
           <div className="hidden md:block flex-grow">
-            <LandingNavMenuSection scrollToSection={scrollToSection} />
+            <LandingNavMenuSection
+              scrollToSection={scrollToSection || (() => {})}
+            />
           </div>
         </div>
         {isMenuOpen && (
           <div className="md:hidden w-full">
-            <LandingNavMenuSection scrollToSection={scrollToSection} />
+            <LandingNavMenuSection
+              scrollToSection={scrollToSection || (() => {})}
+            />
           </div>
         )}
       </header>
