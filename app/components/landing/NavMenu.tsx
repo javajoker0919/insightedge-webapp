@@ -35,6 +35,12 @@ const LandingNavMenuSection = ({
             Features
           </Link>
           <Link
+            href="/blog"
+            className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
+          >
+            Blog
+          </Link>
+          <Link
             href="#"
             onClick={(e) => {
               e.preventDefault();

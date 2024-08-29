@@ -95,7 +95,7 @@ const OpportunitiesTable: React.FC<{
                   <span className="hidden sm:inline">Target Buyer Role</span>
                   <span className="sm:hidden">Role</span>
                 </th>
-                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-24 sm:w-32">
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-24 sm:w-32 2xl:w-64">
                   <span className="hidden sm:inline">
                     Target Buyer Department
                   </span>

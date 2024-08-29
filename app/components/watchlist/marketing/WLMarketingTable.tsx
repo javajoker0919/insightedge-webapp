@@ -44,7 +44,7 @@ const MarketingStrategyTable: React.FC<MSTableCompProps> = ({
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-48 2xl:w-96">
           Target Personas
         </th>
-        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
+        <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32 2xl:w-64">
           Channel
         </th>
         <th className="px-4 py-3 text-center font-medium border-x border-gray-300 w-32">
