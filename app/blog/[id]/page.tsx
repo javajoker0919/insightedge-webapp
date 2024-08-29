@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import LandingHeaderSection from "@/app/components/landing/Header";
+import BlockRendererClient from "@/app/components/BlockRenderClient";
+import Loading from "@/app/components/Loading";
 
 interface BlogPost {
   title: string;
@@ -56,44 +59,50 @@ const Blog = () => {
     fetchBlogData();
   }, [blogID]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!blogData) return <div>No blog post found</div>;
-
-  const renderBody = (body: Array<any>) => {
-    return body.map((item, index) => (
-      <p className="mt-2" key={index}>
-        {item.children[0].text}
-      </p>
-    ));
-  };
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loading />
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Error: {error}
+      </div>
+    );
+  if (!blogData)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        No blog post found
+      </div>
+    );
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <article className="prose lg:prose-xl">
-        <h1 className="text-4xl font-bold mb-4">{blogData.title}</h1>
-        <div className="mb-8">
-          <Image
-            src={blogData.cover.data.attributes.url}
-            alt={blogData.title}
-            width={1000}
-            height={500}
-            className="w-full h-auto object-cover rounded-lg shadow-md"
-          />
-        </div>
-        <div className="text-gray-600 mb-8">
-          <span>
-            Published on {new Date(blogData.createdAt).toLocaleDateString()}
-          </span>
-        </div>
-        <div
-          className="text-gray-800 leading-relaxed mb-8"
-          dangerouslySetInnerHTML={{ __html: blogData.description }}
-        />
-        <div className="text-gray-800 leading-relaxed">
-          {renderBody(blogData.body)}
-        </div>
-      </article>
+    <div className="w-full">
+      <LandingHeaderSection isHeaderVisible={true} />
+      <div className="flex max-w-3xl mx-auto px-4 py-8">
+        <article className="prose lg:prose-xl">
+          <h1 className="text-4xl font-bold mb-4">{blogData.title}</h1>
+          <div className="mb-8">
+            <Image
+              src={blogData.cover.data.attributes.url}
+              alt={blogData.title}
+              width={1000}
+              height={500}
+              className="w-full h-auto object-cover rounded-lg shadow-md"
+            />
+          </div>
+          <div className="text-gray-600 mb-8">
+            <span>
+              Published on {new Date(blogData.createdAt).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="text-gray-800 leading-relaxed">
+            <BlockRendererClient content={blogData.body} />
+          </div>
+        </article>
+      </div>
     </div>
   );
 };

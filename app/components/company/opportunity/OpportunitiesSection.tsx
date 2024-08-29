@@ -16,6 +16,8 @@ import { Loading } from "@/app/components";
 interface OpportunitiesProps {
   companyName: string;
   etID: number | null;
+  setJsonGO: React.Dispatch<React.SetStateAction<any[] | null>>;
+  setJsonTO: React.Dispatch<React.SetStateAction<any[] | null>>;
 }
 
 export interface OpportunityProps {
@@ -40,6 +42,8 @@ export interface OpportunityProps {
 const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   companyName,
   etID,
+  setJsonGO,
+  setJsonTO,
 }) => {
   if (!etID) {
     return null;
@@ -75,6 +79,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   const fetchGO = async (etID: number) => {
     setIsFetchingGO(true);
     setGOs(null);
+    setJsonGO(null);
 
     try {
       const { data, error } = await supabase
@@ -104,6 +109,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         reasoning: item.reasoning,
       }));
       setGOs(formattedData);
+      setJsonGO(formattedData);
     } catch (error) {
       console.error("Unexpected error in fetchGO:", error);
     } finally {
@@ -114,6 +120,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   const fetchTO = async (etID: number, orgID: number) => {
     setIsFetchingTO(true);
     setTOs(null);
+    setJsonTO(null);
 
     try {
       const { data, error } = await supabase
@@ -148,8 +155,10 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
           })
         );
         setTOs(formattedData);
+        setJsonTO(formattedData);
       } else {
         setTOs([]);
+        setJsonTO([]);
       }
     } catch (error) {
       console.error("Unexpected error in fetchTO:", error);
@@ -187,6 +196,7 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       );
 
       setTOs(formattedData);
+      setJsonTO(formattedData);
       setActiveTab("tailored");
 
       setProfile((prev) => {

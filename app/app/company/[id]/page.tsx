@@ -56,6 +56,13 @@ const CompanyDetailPage: React.FC = () => {
   const [isLoadingYearQuarters, setIsLoadingYearQuarters] =
     useState<boolean>(true);
 
+  const [jsonGS, setJsonGS] = useState<any | null>(null);
+  const [jsonTS, setJsonTS] = useState<any | null>(null);
+  const [jsonGO, setJsonGO] = useState<any[] | null>(null);
+  const [jsonTO, setJsonTO] = useState<any[] | null>(null);
+  const [jsonGM, setJsonGM] = useState<any[] | null>(null);
+  const [jsonTM, setJsonTM] = useState<any[] | null>(null);
+
   useEffect(() => {
     const fetchCompanyData = async () => {
       try {
@@ -122,6 +129,44 @@ const CompanyDetailPage: React.FC = () => {
     fetchETID();
   }, [companyID, selectedYear, selectedQuarter]);
 
+  const handleExportAsJson = () => {
+    if (
+      jsonGS === null ||
+      jsonTS === null ||
+      jsonGO === null ||
+      jsonTO === null ||
+      jsonGM === null ||
+      jsonTM === null
+    ) {
+      return;
+    }
+
+    const dataToExport = {
+      summary: {
+        general: jsonGS,
+        tailored: jsonTS,
+      },
+      opportunity: {
+        general: jsonGO,
+        tailored: jsonTO,
+      },
+      marketing: {
+        general: jsonGM,
+        tailored: jsonTM,
+      },
+    };
+
+    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${companyData?.name}_data.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   if (isLoadingCompany) {
     return (
       <div className="flex w-full h-full items-center justify-center bg-gray-100">
@@ -150,7 +195,13 @@ const CompanyDetailPage: React.FC = () => {
           <h1 className="text-2xl text-gray-800">{companyData.name}</h1>
         </div>
 
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 items-center">
+          <button
+            onClick={handleExportAsJson}
+            className="px-4 py-2 rounded-full bg-primary-500 text-white"
+          >
+            Export as Json
+          </button>
           <FollowButton />
           <ShareButton etID={selectedETID} />
         </div>
@@ -161,10 +212,14 @@ const CompanyDetailPage: React.FC = () => {
           <OpportunitiesSection
             companyName={companyData.name}
             etID={selectedETID}
+            setJsonGO={setJsonGO}
+            setJsonTO={setJsonTO}
           />
           <MarketingStrategySection
             companyName={companyData.name}
             etID={selectedETID}
+            setJsonGM={setJsonGM}
+            setJsonTM={setJsonTM}
           />
           <IncomeStatementSection companyID={parseInt(companyID)} />
           <RecentNewsSection companyID={parseInt(companyID)} />
@@ -181,6 +236,8 @@ const CompanyDetailPage: React.FC = () => {
             year={selectedYear}
             quarter={selectedQuarter}
             etID={selectedETID}
+            setJsonGS={setJsonGS}
+            setJsonTS={setJsonTS}
           />
           <AboutSection companyData={companyData} />
         </div>
