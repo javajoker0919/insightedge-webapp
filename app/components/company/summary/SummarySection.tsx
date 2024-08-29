@@ -13,6 +13,8 @@ interface SummarySectionProps {
   year: number | null;
   quarter: number | null;
   etID: number | null;
+  setJsonGS: React.Dispatch<React.SetStateAction<any | null>>;
+  setJsonTS: React.Dispatch<React.SetStateAction<any | null>>;
 }
 
 export interface SummaryProps {
@@ -28,6 +30,8 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   year,
   quarter,
   etID,
+  setJsonGS,
+  setJsonTS,
 }) => {
   if (!year || !quarter) {
     return null;
@@ -88,14 +92,17 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         };
 
         setGeneralSummary(processedData);
+        setJsonGS(processedData);
         setShowFullSummary(true);
       } else {
         setGeneralSummary(null);
+        setJsonGS([]);
         setShowFullSummary(false);
       }
     } catch (error) {
       console.error("Error fetching transcript data:", error);
       setGeneralSummary(null);
+      setJsonGS(null);
     } finally {
       setIsGSLoading(false);
     }
@@ -137,13 +144,16 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         };
 
         setTailoredSummary(processedData);
+        setJsonTS(processedData);
       } else {
         setTailoredSummary(null);
+        setJsonTS([]);
       }
       setShowFullSummary(true);
     } catch (error) {
       console.error("Error fetching transcript data:", error);
       setTailoredSummary(null);
+      setJsonTS(null);
     } finally {
       setIsTSLoading(false);
     }
