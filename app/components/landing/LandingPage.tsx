@@ -11,6 +11,7 @@ import LandingCreditSection from "./CreditSection";
 import LandingNewsSection from "./NewsSection";
 import LandingFooterSection from "./Footer";
 import LandingScheduleSection from "./Schedule";
+import LandingCompanySection from "./LandingComapnySection";
 
 interface FormData {
   name: string;
@@ -30,7 +31,7 @@ const LandingPage: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     company: "",
-    email: ""
+    email: "",
   });
 
   const [blogs, setBlogs] = useState([]);
@@ -135,6 +136,7 @@ const MainContent: React.FC<{
 }> = ({ handleChange, handleSchedule, formData, blogs, scrollToSection }) => (
   <main className="mt-16 sm:mt-16">
     <LandingHeroSection />
+    <LandingCompanySection />
     <LandingSalesAndMarketingSection />
     <LandingSummarySection />
     <LandingBusinessSection />
