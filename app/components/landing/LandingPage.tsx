@@ -35,6 +35,7 @@ const LandingPage: React.FC = () => {
   });
 
   const [blogs, setBlogs] = useState([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { invokeToast } = useToastContext();
 
@@ -43,6 +44,7 @@ const LandingPage: React.FC = () => {
   ): Promise<void> => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await getSchedule(formData);
       invokeToast("success", "Your demo has been scheduled successfully!");
       setFormData({ name: "", company: "", email: "" });
@@ -52,6 +54,8 @@ const LandingPage: React.FC = () => {
         "error",
         "There was an issue scheduling your demo. Please try again later."
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -119,6 +123,8 @@ const LandingPage: React.FC = () => {
         formData={formData}
         blogs={blogs}
         scrollToSection={scrollToSection}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
       />
     </div>
   );
@@ -133,7 +139,17 @@ const MainContent: React.FC<{
   formData: { name: string; company: string; email: string };
   blogs: any;
   scrollToSection: (sectionId: string) => void;
-}> = ({ handleChange, handleSchedule, formData, blogs, scrollToSection }) => (
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+}> = ({
+  handleChange,
+  handleSchedule,
+  formData,
+  blogs,
+  scrollToSection,
+  isLoading,
+  setIsLoading
+}) => (
   <main className="mt-16 sm:mt-16">
     <LandingHeroSection />
     <LandingCompanySection />
@@ -146,6 +162,8 @@ const MainContent: React.FC<{
       handleChange={handleChange}
       handleSchedule={handleSchedule}
       formData={formData}
+      isLoading={isLoading}
+      setIsLoading={setIsLoading}
     />
     <LandingFooterSection scrollToSection={scrollToSection} />
   </main>

@@ -1,4 +1,7 @@
+import { useRouter } from "next/navigation";
+
 const LandingCreditSection = () => {
+  const router = useRouter();
   return (
     <section
       id="pricing"
@@ -13,14 +16,14 @@ const LandingCreditSection = () => {
       </div>
       <div className="w-full max-w-7xl mx-auto font-sans p-4">
         <div className="flex justify-center mb-16">
-          <div className="inline-flex bg-gray-100 rounded-full p-1">
+          {/* <div className="inline-flex bg-gray-100 rounded-full p-1">
             <button className="text-white bg-blue-600 py-2 px-4 rounded-full text-sm font-medium">
               Monthly
             </button>
             <button className="text-gray-700 py-2 px-4 rounded-full text-sm font-medium">
               Yearly
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -38,6 +41,7 @@ const LandingCreditSection = () => {
               </h3>
               <button
                 type="button"
+                onClick={() => router.push("/auth/sign-up")}
                 className="w-full mt-8 px-6 py-3 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-full transition duration-300"
               >
                 Sign Up
@@ -147,6 +151,7 @@ const LandingCreditSection = () => {
               </h3>
               <button
                 type="button"
+                onClick={() => router.push("/auth/sign-up")}
                 className="w-full mt-8 px-6 py-3 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-full transition duration-300"
               >
                 Subscribe
@@ -313,6 +318,7 @@ const LandingCreditSection = () => {
               </h3>
               <button
                 type="button"
+                onClick={() => router.push("/auth/sign-up")}
                 className="w-full mt-8 px-6 py-3 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-full transition duration-300"
               >
                 Contact Sales
