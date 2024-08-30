@@ -20,7 +20,7 @@ const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
   const searchBarRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const watchlist = useAtomValue(watchlistAtom);
-  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchInput, setSearchInput] = useState<string>("Nvidia");
   const [searchType, setSearchType] = useState<string>("all");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);

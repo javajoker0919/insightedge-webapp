@@ -8,7 +8,7 @@ interface CompanyData {
   summary: string;
   pain_points: string;
   challenges: string;
-  keyhighlight: string;
+  opportunities: string;
 }
 
 export interface OpportunityData {
@@ -99,8 +99,8 @@ const LandingCompanySectionTable: React.FC<Props> = ({ companyID }) => {
       title: "Challenges",
     },
     {
-      value: "keyhighlight",
-      title: "Key Highlight",
+      value: "key_initiatives",
+      title: "Key Initiatives",
     },
   ];
 
@@ -115,7 +115,7 @@ const LandingCompanySectionTable: React.FC<Props> = ({ companyID }) => {
     setIsFetchingGS(true);
     const { data, error } = await supabase
       .from("companies_with_summaries_view_v1")
-      .select("id, summary, pain_points, challenges, keyhighlight")
+      .select("id, summary, pain_points, challenges, opportunities")
       .eq("id", companyID)
       .single();
 
@@ -197,17 +197,12 @@ const LandingCompanySectionTable: React.FC<Props> = ({ companyID }) => {
                 contents={companyData.challenges}
               />
             )}
-            {activeTab === "keyhighlight" &&
-              companyData &&
-              (companyData.keyhighlight ? (
-                <div className="text-gray-700 text-md p-4">
-                  {companyData.keyhighlight}
-                </div>
-              ) : (
-                <div className="flex items-center justify-center w-full h-full text-gray-400 text-4xl">
-                  No data
-                </div>
-              ))}
+            {activeTab === "key_initiatives" && companyData && (
+              <ContentList
+                type="key_initiatives"
+                contents={companyData.opportunities}
+              />
+            )}
           </>
         )}
       </div>
