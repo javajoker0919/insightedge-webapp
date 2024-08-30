@@ -52,7 +52,7 @@ const SignIn = () => {
   const handleSignInClick = async () => {
     const { email, password } = credentials;
 
-    if (!isValidForm) {
+    if (!isValidForm || !email || !password) {
       setErrors({
         email: validateEmail(email).error,
         password: validatePassword(password).error
@@ -295,6 +295,7 @@ const SignIn = () => {
                 Forgot password?
               </Link>
               <button
+                type="button"
                 onClick={handleSignInClick}
                 className="w-full bg-primary-600 text-white text-sm md:text-base font-semibold py-3 md:py-4 mt-4 rounded-md hover:bg-primary-700 active:bg-primary-800 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 disabled={isLoading}
