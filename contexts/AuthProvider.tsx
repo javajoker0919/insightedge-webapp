@@ -7,7 +7,7 @@ import {
   profileAtom,
   userInfoAtom,
   orgInfoAtom,
-  watchlistAtom
+  watchlistAtom,
 } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 import { Loading } from "@/app/components";
@@ -32,10 +32,11 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/verify-email",
     "/auth/reset-password",
     "/auth/reset-confirm",
-    "/auth/reset-success"
+    "/auth/reset-success",
   ];
 
-  const publicPaths = ["/", "/terms", "/privacy", "/blog"];
+  const publicPaths = ["/", "/terms", "/privacy"];
+  const blogPath = "/blog";
 
   useEffect(() => {
     checkUser();
@@ -55,13 +56,13 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const checkUser = async () => {
     try {
       const {
-        data: { session }
+        data: { session },
       } = await supabase.auth.getSession();
 
       if (session?.user) {
         setUserMetadata(session.user.user_metadata);
 
-        if (authPaths.some(path => pathname.startsWith(path))) {
+        if (authPaths.some((path) => pathname.startsWith(path))) {
           router.push("/app");
         }
       } else {
@@ -70,7 +71,11 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
         setWatchlist(null);
         setOrgInfo(null);
 
-        if (publicPaths.some(path => pathname.startsWith(path)) || authPaths.some(path => pathname.startsWith(path))) {
+        if (
+          publicPaths.includes(pathname) ||
+          authPaths.includes(pathname) ||
+          pathname.startsWith(blogPath)
+        ) {
           return;
         }
 
