@@ -37,7 +37,7 @@ const Details = ({
   return (
     <details
       open={open}
-      className={"mb-2 overflow-hidden rounded border bg-white border-gray-200 " + wrapperClass}
+      className={"mb-2 overflow-y-auto rounded border bg-white border-gray-200 " + wrapperClass}
       onToggle={toggleOpen}
     >
       <summary
