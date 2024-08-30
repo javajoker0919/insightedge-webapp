@@ -32,6 +32,8 @@ const OnboardingInitialCompanySection = ({
   productsServices,
   setOnboardingStep,
   symbols,
+  isLoading,
+  setIsLoading
 }: {
   formData: any;
   website: any;
@@ -39,14 +41,14 @@ const OnboardingInitialCompanySection = ({
   productsServices: any;
   setOnboardingStep: any;
   symbols: string[];
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const router = useRouter();
   const setProfile = useSetAtom(profileAtom);
   const setOrgInfo = useSetAtom(orgInfoAtom);
   const setWatchList = useSetAtom(watchlistAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
-  const [isLoading, setIsLoading] = useState(false);
-
   const [companies, setCompanies] = useState<CompanyProps[]>([]);
 
   const randomColor = [
@@ -181,7 +183,10 @@ const OnboardingInitialCompanySection = ({
 
   return (
     <div className="flex flex-row w-full h-screen">
-      <div className="w-1/2 flex items-center justify-center h-full px-4">
+      <div className="w-1/2 flex flex-col items-center justify-center h-full px-4">
+        <h1 className="mb-4 text-3xl leading-10 font-bold">
+          Add Companies to your Watchlist
+        </h1>
         <div className="w-full flex max-w-[40rem] relative justify-center">
           <OnboardCompanySearchbar
             isSearchBarOpen={false}
@@ -231,19 +236,19 @@ const OnboardingInitialCompanySection = ({
               })}
             </div>
 
-            <div className="flex justify-between mt-10 w-full">
+            <div className="mt-10 w-full flex flex-col sm:flex-row justify-between gap-4">
               <button
-                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ease-in-out"
                 onClick={() => setOnboardingStep(1)}
               >
                 <GoArrowLeft className="mr-2 h-5 w-5" />
                 Back
               </button>
               <button
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 ease-in-out"
                 onClick={handleCreateProfile}
               >
-                Dashboard
+                Continue
                 <GoArrowRight className="ml-2 h-5 w-5" />
               </button>
             </div>
