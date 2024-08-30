@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const Logo: React.FC = () => {
   return (
-    <Link href={`/`}>
+    <Link href={`/app`}>
       <Image
         src={"/logo.png"}
         alt={"ProspectEdge"}
