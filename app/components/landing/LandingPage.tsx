@@ -23,6 +23,7 @@ const LandingPage: React.FC = () => {
   const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
   const salesAndMarketingSectionRef = useRef<HTMLElement>(null);
   const featureSectionRef = useRef<HTMLElement>(null);
@@ -35,7 +36,6 @@ const LandingPage: React.FC = () => {
   });
 
   const [blogs, setBlogs] = useState([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { invokeToast } = useToastContext();
 
@@ -44,7 +44,6 @@ const LandingPage: React.FC = () => {
   ): Promise<void> => {
     e.preventDefault();
     try {
-      setIsLoading(true);
       const response = await getSchedule(formData);
       invokeToast("success", "Your demo has been scheduled successfully!");
       setFormData({ name: "", company: "", email: "" });
@@ -54,8 +53,6 @@ const LandingPage: React.FC = () => {
         "error",
         "There was an issue scheduling your demo. Please try again later."
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -69,6 +66,7 @@ const LandingPage: React.FC = () => {
 
     setIsHeaderVisible(currentScrollY <= lastScrollY);
     setLastScrollY(currentScrollY);
+    setIsScrolled(currentScrollY > 0);
   }, [lastScrollY]);
 
   useEffect(() => {
@@ -106,67 +104,172 @@ const LandingPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full text-black bg-gradient-to-b">
-      <LandingHeaderSection
-        isHeaderVisible={isHeaderVisible}
-        isMenuOpen={isMenuOpen}
-        toggleMenu={toggleMenu}
-        scrollToSection={scrollToSection}
-      />
+    <div className="relative w-full text-black min-h-screen overflow-x-hidden bg-transparent">
+      <BackgroundPattern />
+      <div className="relative z-10">
+        <LandingHeaderSection
+          isHeaderVisible={isHeaderVisible}
+          isMenuOpen={isMenuOpen}
+          toggleMenu={toggleMenu}
+          scrollToSection={scrollToSection}
+          isLandingPage={true}
+        />
 
-      <MainContent
-        salesAndMarketingSectionRef={salesAndMarketingSectionRef}
-        featureSectionRef={featureSectionRef}
-        pricingSectionRef={pricingSectionRef}
-        handleChange={handleChange}
-        handleSchedule={handleSchedule}
-        formData={formData}
-        blogs={blogs}
-        scrollToSection={scrollToSection}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-      />
+        <main className="mt-10 sm:mt-15">
+          {" "}
+          {/* Significantly reduced margin-top here */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <LandingHeroSection />
+            <LandingCompanySection />
+            <LandingSalesAndMarketingSection />
+            {/* <LandingSummarySection /> */}
+            <LandingBusinessSection />
+            <LandingCreditSection />
+            <LandingNewsSection blogs={blogs} />
+            <LandingScheduleSection
+              handleChange={handleChange}
+              handleSchedule={handleSchedule}
+              formData={formData}
+            />
+            <LandingFooterSection scrollToSection={scrollToSection} />
+          </div>
+        </main>
+      </div>
     </div>
   );
 };
 
-const MainContent: React.FC<{
-  salesAndMarketingSectionRef: React.RefObject<HTMLElement>;
-  featureSectionRef: React.RefObject<HTMLElement>;
-  pricingSectionRef: React.RefObject<HTMLElement>;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSchedule: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  formData: { name: string; company: string; email: string };
-  blogs: any;
-  scrollToSection: (sectionId: string) => void;
-  isLoading: boolean;
-  setIsLoading: (isLoading: boolean) => void;
-}> = ({
-  handleChange,
-  handleSchedule,
-  formData,
-  blogs,
-  scrollToSection,
-  isLoading,
-  setIsLoading
-}) => (
-  <main className="mt-16 sm:mt-16">
-    <LandingHeroSection />
-    <LandingCompanySection />
-    <LandingSalesAndMarketingSection />
-    <LandingSummarySection />
-    <LandingBusinessSection />
-    <LandingCreditSection />
-    <LandingNewsSection blogs={blogs} />
-    <LandingScheduleSection
-      handleChange={handleChange}
-      handleSchedule={handleSchedule}
-      formData={formData}
-      isLoading={isLoading}
-      setIsLoading={setIsLoading}
-    />
-    <LandingFooterSection scrollToSection={scrollToSection} />
-  </main>
-);
+const BackgroundPattern: React.FC = () => {
+  return (
+    <div className="fixed inset-0 overflow-hidden">
+      <svg
+        className="absolute w-full h-full"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1000 1000"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#9ca3af" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#d1d5db" stopOpacity="0.08" />
+          </linearGradient>
+        </defs>
+
+        {/* Subtle gradient background */}
+        <rect width="100%" height="100%" fill="url(#grad1)" />
+
+        {/* Abstract shapes */}
+        <circle cx="50" cy="100" r="80" fill="#9ca3af" opacity="0.15" />
+
+        {/* New design graphics */}
+        <ellipse
+          cx="200"
+          cy="800"
+          rx="100"
+          ry="50"
+          fill="#6b7280"
+          opacity="0.1"
+        />
+        <polygon
+          points="600,100 650,150 550,150"
+          fill="#9ca3af"
+          opacity="0.12"
+        />
+
+        {/* Floating dots */}
+        <g>
+          <circle cx="150" cy="300" r="6" fill="#6b7280" opacity="0.6">
+            <animate
+              attributeName="cy"
+              values="300;285;300"
+              dur="5s"
+              repeatCount="indefinite"
+            />
+          </circle>
+          <circle cx="750" cy="200" r="5" fill="#9ca3af" opacity="0.6">
+            <animate
+              attributeName="cy"
+              values="200;215;200"
+              dur="4s"
+              repeatCount="indefinite"
+            />
+          </circle>
+          <circle cx="550" cy="700" r="7" fill="#4b5563" opacity="0.6">
+            <animate
+              attributeName="cy"
+              values="700;685;700"
+              dur="6s"
+              repeatCount="indefinite"
+            />
+          </circle>
+          <circle cx="150" cy="500" r="5" fill="#9ca3af" opacity="0.6">
+            <animate
+              attributeName="cy"
+              values="500;515;500"
+              dur="5.5s"
+              repeatCount="indefinite"
+            />
+          </circle>
+        </g>
+
+        {/* Additional subtle graphics */}
+        <path
+          d="M0,0 Q500,200 1000,0"
+          fill="none"
+          stroke="#e5e7eb"
+          strokeWidth="1"
+          opacity="0.2"
+        />
+        <path
+          d="M0,1000 Q500,800 1000,1000"
+          fill="none"
+          stroke="#e5e7eb"
+          strokeWidth="1"
+          opacity="0.2"
+        />
+        <circle
+          cx="900"
+          cy="100"
+          r="50"
+          fill="none"
+          stroke="#d1d5db"
+          strokeWidth="1"
+          opacity="0.2"
+        />
+        <circle
+          cx="100"
+          cy="900"
+          r="70"
+          fill="none"
+          stroke="#d1d5db"
+          strokeWidth="1"
+          opacity="0.2"
+        />
+
+        {/* New wavy line */}
+        <path
+          d="M0,400 Q250,350 500,400 T1000,400"
+          fill="none"
+          stroke="#9ca3af"
+          strokeWidth="1"
+          opacity="0.2"
+        />
+      </svg>
+
+      {/* Subtle gradient overlays */}
+      <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-gray-100 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-gray-300 to-transparent"></div>
+      <div className="absolute top-0 left-0 bottom-0 w-64 bg-gradient-to-r from-gray-200 to-transparent"></div>
+      <div className="absolute top-0 right-0 bottom-0 w-64 bg-gradient-to-l from-gray-200 to-transparent"></div>
+
+      {/* Diagonal gradients */}
+      <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-gray-100 to-transparent opacity-50"></div>
+      <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-gray-200 to-transparent opacity-50"></div>
+
+      {/* Radial gradient */}
+      <div className="absolute inset-0 bg-radial-gradient from-gray-100 to-transparent opacity-30"></div>
+    </div>
+  );
+};
 
 export default LandingPage;

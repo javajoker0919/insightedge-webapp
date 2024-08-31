@@ -1,337 +1,125 @@
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
-import { useAtomValue, useSetAtom } from "jotai";
+import { motion } from "framer-motion";
 
-import { supabase } from "@/utils/supabaseClient";
-import { generateTailoredSummaryAPI } from "@/utils/apiClient";
-import { profileAtom, orgInfoAtom, userInfoAtom } from "@/utils/atoms";
-import RenderSummaryContent from "./RenderSummaryContent";
-import { useToastContext } from "@/contexts/toastContext";
-import { Details, Loading } from "../..";
-
-interface SummarySectionProps {
-  year: number | null;
-  quarter: number | null;
-  etID: number | null;
-  setJsonGS: React.Dispatch<React.SetStateAction<any | null>>;
-  setJsonTS: React.Dispatch<React.SetStateAction<any | null>>;
-}
-
-export interface SummaryProps {
-  summary: string[];
-  challenges: string[];
-  pain_points: string[];
-  opportunities: string[];
-  priorities: string[];
-  keywords: { keyword: string; weight: number }[];
-}
-
-const SummarySection: React.FC<SummarySectionProps> = ({
-  year,
-  quarter,
-  etID,
-  setJsonGS,
-  setJsonTS,
-}) => {
-  if (!year || !quarter) {
-    return null;
-  }
-
-  const { id: companyId } = useParams<{ id: string }>();
-
-  const { invokeToast } = useToastContext();
-  const setProfile = useSetAtom(profileAtom);
-  const orgInfo = useAtomValue(orgInfoAtom);
-  const setUserInfo = useSetAtom(userInfoAtom);
-
-  const [generalSummary, setGeneralSummary] = useState<SummaryProps | null>(
-    null
-  );
-  const [tailoredSummary, setTailoredSummary] = useState<SummaryProps | null>(
-    null
-  );
-  const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
-  const [isGSLoading, setIsGSLoading] = useState(false);
-  const [isTSLoading, setIsTSLoading] = useState(false);
-  const [isTSGenerating, setIsTSGenerating] = useState(false);
-  const [showFullSummary, setShowFullSummary] = useState(true);
-  const [showMore, setShowMore] = useState<boolean>(false);
-
-  useEffect(() => {
-    setActiveTab("general");
-    fetchGeneralSummary();
-    fetchTailoredlSummary();
-    setTailoredSummary(null);
-  }, [companyId, year, quarter]);
-
-  const fetchGeneralSummary = async () => {
-    setIsGSLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("earnings_transcripts")
-        .select(
-          "summary, challenges, pain_points, opportunities, priorities, keywords"
-        )
-        .eq("company_id", companyId)
-        .eq("year", year)
-        .eq("quarter", quarter)
-        .single();
-
-      if (error) throw error;
-
-      if (data) {
-        const processedData: SummaryProps = {
-          summary: data.summary ? data.summary.split("\n") : [],
-          challenges: data.challenges ? data.challenges.split("\n") : [],
-          pain_points: data.pain_points ? data.pain_points.split("\n") : [],
-          opportunities: data.opportunities
-            ? data.opportunities.split("\n")
-            : [],
-          priorities: data.priorities ? data.priorities.split("\n") : [],
-          keywords: data.keywords ? JSON.parse(data.keywords) : [],
-        };
-
-        setGeneralSummary(processedData);
-        setJsonGS(processedData);
-        setShowFullSummary(true);
-      } else {
-        setGeneralSummary(null);
-        setJsonGS([]);
-        setShowFullSummary(false);
-      }
-    } catch (error) {
-      console.error("Error fetching transcript data:", error);
-      setGeneralSummary(null);
-      setJsonGS(null);
-    } finally {
-      setIsGSLoading(false);
-    }
-  };
-
-  const fetchTailoredlSummary = async () => {
-    if (!orgInfo) {
-      return;
-    }
-
-    setIsTSLoading(true);
-    try {
-      const { data: etData, error: etError } = await supabase
-        .from("earnings_transcripts")
-        .select("id")
-        .eq("company_id", companyId)
-        .eq("year", year)
-        .eq("quarter", quarter)
-        .limit(1);
-
-      if (etError) throw etError;
-      const earningsTranscriptId = etData[0].id;
-
-      const { data: tsData, error: tsError } = await supabase
-        .from("tailored_summaries")
-        .select("summary, challenges, pain_points, opportunities, priorities")
-        .eq("organization_id", orgInfo?.id)
-        .eq("earnings_transcript_id", earningsTranscriptId);
-
-      if (tsError) throw tsError;
-      if (tsData.length > 0) {
-        const processedData: SummaryProps = {
-          summary: tsData[0].summary.split("\n"),
-          challenges: tsData[0].challenges.split("\n"),
-          pain_points: tsData[0].pain_points.split("\n"),
-          opportunities: tsData[0].opportunities.split("\n"),
-          priorities: tsData[0].priorities.split("\n"),
-          keywords: [], // Assuming tailored summaries do not have keywords
-        };
-
-        setTailoredSummary(processedData);
-        setJsonTS(processedData);
-      } else {
-        setTailoredSummary(null);
-        setJsonTS([]);
-      }
-      setShowFullSummary(true);
-    } catch (error) {
-      console.error("Error fetching transcript data:", error);
-      setTailoredSummary(null);
-      setJsonTS(null);
-    } finally {
-      setIsTSLoading(false);
-    }
-  };
-
-  const generateTailoredSummary = async () => {
-    if (!orgInfo) {
-      return;
-    }
-
-    setIsTSGenerating(true);
-    try {
-      const { data } = await generateTailoredSummaryAPI({
-        companyID: companyId,
-        orgID: orgInfo?.id.toString(),
-        year: year,
-        quarter: quarter,
-      });
-
-      if (data.status === "success") {
-        const processedData: SummaryProps = {
-          summary: data.summary.summary.split("\n"),
-          challenges: data.summary.challenges.split("\n"),
-          pain_points: data.summary.pain_points.split("\n"),
-          opportunities: data.summary.opportunities.split("\n"),
-          priorities: data.summary.priorities.split("\n"),
-          keywords: [], // Assuming generated tailored summaries do not have keywords
-        };
-
-        setTailoredSummary(processedData);
-
-        setProfile((prev) => {
-          if (!prev || !prev.credits) return prev;
-
-          return {
-            ...prev,
-            credits: prev.credits - 1,
-          };
-        });
-
-        setUserInfo((prev) => {
-          if (!prev || !prev.creditCount) return prev;
-          return {
-            ...prev,
-            creditCount: prev.creditCount ? prev.creditCount - 1 : 0,
-          };
-        });
-        invokeToast("success", data.message);
-        setActiveTab("tailored");
-      } else if (data.status === "error") {
-        invokeToast("error", `${data.message}`);
-      }
-    } catch (error) {
-      invokeToast("error", "Failed to generate tailored summary");
-      console.error("Error fetching tailored summary:", error);
-      setTailoredSummary(null);
-    } finally {
-      setIsTSGenerating(false);
-    }
-  };
-
+const LandingSummarySection = () => {
   return (
-    <div>
-      {(activeTab === "general" && isGSLoading) ||
-      (activeTab === "tailored" && isTSLoading) ? (
-        <div className="flex justify-center items-center h-40">
-          <Loading />
-        </div>
-      ) : (
-        generalSummary &&
-        generalSummary.keywords.length > 0 && (
-          <Details title="Keywords">
-            <div className="p-4 bg-white rounded-lg shadow-sm">
-              <div className="flex flex-wrap gap-3 mb-4">
-                {generalSummary.keywords
-                  .sort((a, b) => b.weight - a.weight)
-                  .slice(0, showMore ? undefined : 5)
-                  .map((keywordObj, index) => (
-                    <span
-                      key={index}
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                        index < 5
-                          ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                          : "bg-gray-100 text-gray-800 border border-gray-200"
-                      }`}
-                    >
-                      {keywordObj.keyword}
-                      <span className="ml-2 px-2 py-0.5 bg-white rounded-full text-xs font-semibold">
-                        {keywordObj.weight}
-                      </span>
-                    </span>
-                  ))}
-              </div>
-              {generalSummary.keywords.length > 5 && (
-                <button
-                  onClick={() => setShowMore(!showMore)}
-                  className="text-primary-600 hover:text-primary-700 font-medium transition-colors duration-200"
-                >
-                  {showMore ? "Show less" : "Show more keywords"}
-                </button>
-              )}
-            </div>
-          </Details>
-        )
-      )}
+    <section
+      id="summary"
+      className="py-16 md:py-24 px-4 md:px-8 flex flex-col items-center"
+    >
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="text-3xl md:text-5xl font-bold text-center max-w-4xl mb-6 text-gray-800"
+      >
+        Tailored insights{" "}
+        <span className="text-primary-500 inline-block hover:scale-105 transition-transform">
+          delivered to your inbox
+        </span>
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="text-lg md:text-xl text-gray-600 max-w-3xl text-center mb-12"
+      >
+        Customize your outreach using insights from executive statements in
+        earnings calls and press releases for your key accounts.
+      </motion.p>
 
-      <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">
-        <summary
-          className={`bg-gray-100 font-medium text-gray-700 flex items-center justify-between ${
-            tailoredSummary ? "" : "p-2"
-          }`}
+      <div className="grid md:grid-cols-2 gap-8 w-full max-w-6xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
         >
-          {tailoredSummary ? (
-            <div className="flex">
-              <button
-                className={`px-4 py-4 border-b-2 ${
-                  activeTab === "general"
-                    ? "border-primary-600 text-primary-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
-                onClick={() => setActiveTab("general")}
-              >
-                General Summary
-              </button>
-              <button
-                className={`px-4 py-4 border-b-2 ${
-                  activeTab === "tailored"
-                    ? "border-primary-600 text-primary-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
-                onClick={() => setActiveTab("tailored")}
-              >
-                Tailored Summary
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between w-full">
-              <p className="text-gray-700 p-2">Summary</p>
-              {orgInfo && !isTSLoading && (
-                <button
-                  title="Get custom earnings report summaries tailored to your business needs"
-                  disabled={isTSGenerating}
-                  onClick={generateTailoredSummary}
-                  className="ml-2 px-3 w-60 flex items-center justify-center py-2 bg-primary-600 text-white rounded-md text-sm"
-                >
-                  {isTSGenerating ? (
-                    <span className="ml-2 inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
-                  ) : (
-                    <span>Generate Tailored Summary</span>
-                  )}
-                </button>
-              )}
-            </div>
-          )}
-        </summary>
-        <div className="px-3 py-1">
-          {(activeTab === "general" && isGSLoading) ||
-          (activeTab === "tailored" && isTSLoading) ? (
-            <div className="flex justify-center items-center h-40">
-              <Loading />
-            </div>
-          ) : activeTab === "general" ? (
-            <RenderSummaryContent
-              data={generalSummary}
-              showFullSummary={showFullSummary}
-              setShowFullSummary={setShowFullSummary}
-            />
-          ) : activeTab === "tailored" ? (
-            <RenderSummaryContent
-              data={tailoredSummary}
-              showFullSummary={showFullSummary}
-              setShowFullSummary={setShowFullSummary}
-            />
-          ) : null}
-        </div>
+          <InsightCard
+            title="Targeted Sales & Marketing"
+            subtitle="TAILORED ACCOUNT SPECIFIC STRATEGIES"
+            items={[
+              "Generate growth opportunities based on customer priorities",
+              "Develop strategies using insights from earnings calls",
+              "Gain an edge by addressing specific customer needs",
+              "Personalize outreach with executive-level insights",
+              "Align your offerings with customer's strategic initiatives",
+              "Identify upsell and cross-sell opportunities",
+            ]}
+          />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="md:mt-16"
+        >
+          <InsightCard
+            title="Actionable Insights"
+            subtitle="DATA DRIVEN CUSTOMER ENGAGEMENT"
+            items={[
+              "Identify key business priorities driving customer decisions",
+              "Reveal critical pain points affecting target accounts",
+              "Demonstrate how your solutions support their projects",
+              "Track industry trends and competitive landscape",
+              "Anticipate customer needs based on financial performance",
+              "Leverage real-time data for timely decision-making",
+            ]}
+          />
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default SummarySection;
+export default LandingSummarySection;
+
+interface InsightCardProps {
+  title: string;
+  subtitle: string;
+  items: string[];
+}
+
+const InsightCard: React.FC<InsightCardProps> = ({
+  title,
+  subtitle,
+  items,
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8, delay: 0.4 }}
+    className="flex flex-col p-6 backdrop-blur-md bg-white/10 rounded-lg border border-white/20 hover:bg-white/20 transition-all"
+  >
+    <p className="text-gray-500 text-sm mb-2">{subtitle}</p>
+    <motion.h3
+      whileHover={{ scale: 1.05 }}
+      className="text-2xl md:text-3xl font-bold text-primary-500 mb-4"
+    >
+      {title}
+    </motion.h3>
+    <ul className="space-y-3">
+      {items.map((item, index) => (
+        <motion.li
+          key={index}
+          whileHover={{ x: 5 }}
+          className="flex items-start"
+        >
+          <svg
+            className="w-6 h-6 text-primary-500 mr-2 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span className="text-gray-700">{item}</span>
+        </motion.li>
+      ))}
+    </ul>
+  </motion.div>
+);

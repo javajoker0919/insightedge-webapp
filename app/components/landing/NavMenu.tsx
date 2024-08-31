@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 import { userMetadataAtom } from "@/utils/atoms";
 
 const LandingNavMenuSection = ({
-  scrollToSection
+  scrollToSection,
 }: {
   scrollToSection: (sectionId: string) => void;
 }) => {
