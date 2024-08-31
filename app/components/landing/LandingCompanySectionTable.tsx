@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 import LandingCompanySectionOpportunity from "./LandingComapnySectionOpportunity";
 import Loading from "../Loading";
+import { motion } from "framer-motion";
 
 interface CompanyData {
   id: string;
@@ -39,14 +40,18 @@ interface TabProps {
 
 const Tab: React.FC<TabProps> = ({ title, value, activeTab, setActiveTab }) => {
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
       onClick={() => setActiveTab(value)}
-      className={`px-6 pt-3 pb-4 rounded-t-lg text-gray-700 ${
-        activeTab === value ? "bg-gray-50" : "hover:bg-gray-100"
+      className={`px-4 py-3 text-sm sm:text-base font-semibold transition-all duration-300 ${
+        activeTab === value
+          ? "bg-white text-gray-800"
+          : "text-gray-700 hover:text-gray-900 hover:bg-blue-700"
       }`}
     >
       {title}
-    </button>
+    </motion.button>
   );
 };
 
@@ -65,11 +70,25 @@ const ContentList: React.FC<ContentListProps> = ({ type, contents }) => {
   }
 
   return (
-    <ul className="list-disc py-4 pl-10 pr-4 text-gray-700 text-md space-y-2">
+    <motion.ul
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="list-disc py-4 pl-10 pr-4 text-gray-700 text-md space-y-2"
+    >
       {contents.split("\n").map((item, index) => {
-        return <li key={`landing-company-${type}-${index}`}>{item}</li>;
+        return (
+          <motion.li
+            key={`landing-company-${type}-${index}`}
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            {item}
+          </motion.li>
+        );
       })}
-    </ul>
+    </motion.ul>
   );
 };
 
@@ -158,8 +177,13 @@ const LandingCompanySectionTable: React.FC<Props> = ({ companyID }) => {
   };
 
   return (
-    <div className="max-w-6xl mt-16 border rounded-lg overflow-hidden w-full">
-      <div className="bg-gray-200 flex items-center gap-1.5 px-2 pt-1.5 pb-0">
+    <motion.div
+      initial={{ y: 50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-6xl mt-8 sm:mt-16 border-2 border-gray-200 rounded-lg overflow-hidden w-full shadow-lg bg-[#004AAD]"
+    >
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 flex items-center gap-1 sm:gap-1.5 px-1 sm:px-2 pt-1 sm:pt-1.5 pb-0 overflow-x-auto">
         {TabItems.map(({ value, title }, index) => {
           return (
             <Tab
@@ -172,13 +196,17 @@ const LandingCompanySectionTable: React.FC<Props> = ({ companyID }) => {
           );
         })}
       </div>
-      <div className="bg-gray-50 h-96 overflow-y-auto">
+      <div className="bg-white h-64 sm:h-96 overflow-y-auto">
         {isFetchingGO || isFetchingGS ? (
           <div className="w-full h-full flex items-center justify-center">
             <Loading />
           </div>
         ) : (
-          <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             {activeTab === "opportunities" && (
               <LandingCompanySectionOpportunity opportunities={opportunities} />
             )}
@@ -203,10 +231,10 @@ const LandingCompanySectionTable: React.FC<Props> = ({ companyID }) => {
                 contents={companyData.opportunities}
               />
             )}
-          </>
+          </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

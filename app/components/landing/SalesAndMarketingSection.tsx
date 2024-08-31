@@ -1,77 +1,161 @@
-import { IoTelescope } from "react-icons/io5";
-import { FaPuzzlePiece } from "react-icons/fa6";
-import { FaBookReader } from "react-icons/fa";
-import { LuBrainCircuit } from "react-icons/lu";
+import React from "react";
+import {
+  FaChartLine,
+  FaBullseye,
+  FaLightbulb,
+  FaBalanceScale,
+} from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const LandingSalesAndMarketingSection = () => {
   return (
     <section
       id="salesandmarketing"
-      className="py-16 px-4 flex flex-col items-center"
+      className="py-24 px-4 relative overflow-hidden"
     >
-      <h1 className="text-3xl md:text-[40px] leading-tight md:leading-[56px] font-bold text-center max-w-[994px] px-4 md:px-10 flex flex-col">
-        Avoid wasted sales & marketing efforts.
-        <span className="text-primary-500">
-          Focus your time on what matters most for your sales planning accounts.
-        </span>
-      </h1>
-      <p className="text-lg md:text-2xl leading-normal md:leading-9 font-normal text-neutral-600 text-center max-w-3xl mx-auto mt-3 mb-8 md:mb-16">
-        Align your Sales and Marketing approach to meet your clients needs and
-        focus areas.
-      </p>
-      <div className="flex flex-col items-center justify-center gap-10 md:gap-20 w-full max-w-[90rem]">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Feature
-            icon={
-              <IoTelescope className="w-8 h-8 md:w-12 md:h-12 text-primary-500" />
-            }
-            title="Targeted Sales Opportunities"
-            description="Identify top sales opportunities 
-          tailored to your offerings & identify buyers."
-          />
-          <Feature
-            icon={
-              <FaPuzzlePiece className="w-8 h-8 md:w-12 md:h-12 text-primary-500" />
-            }
-            title="Account Based Marketing"
-            description="Generate targeted marketing tactics for each account aligned to your offerings and customer needs."
-          />
-          <Feature
-            icon={
-              <FaBookReader className="w-8 h-8 md:w-12 md:h-12 text-primary-500" />
-            }
-            title="Actionable Insights"
-            description="Discover key initiatives, priorities, challenges & pain points."
-          />
-          <Feature
-            icon={
-              <LuBrainCircuit className="w-8 h-8 md:w-12 md:h-12 text-primary-500" />
-            }
-            title="Prioritize Accounts"
-            description="Identity and prioritize high-potential accounts based on financial outlook and earnings summary"
-          />
-        </div>
-      </div>
+      <ConnectingDesign />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="max-w-7xl mx-auto"
+      >
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-4xl md:text-5xl font-bold text-center mb-8 text-gray-800"
+        >
+          Avoid wasted sales & marketing efforts.{" "}
+          <span className="text-primary-500 inline-block hover:scale-105 transition-transform">
+            Focus on what matters most for your key accounts.
+          </span>
+        </motion.h2>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16"
+        >
+          {[
+            {
+              icon: <FaChartLine />,
+              title: "Targeted Sales Opportunities",
+              description:
+                "Identify top sales opportunities tailored to your offerings & pinpoint decision-makers. Leverage AI-driven insights to craft personalized pitches that address specific pain points and increase your win rates.",
+            },
+            {
+              icon: <FaBullseye />,
+              title: "Account Based Marketing",
+              description:
+                "Generate targeted marketing tactics for each account, perfectly aligned with your offerings and customer needs. Utilize deep market intelligence to create highly relevant content and campaigns that resonate with your ideal customers.",
+            },
+            {
+              icon: <FaLightbulb />,
+              title: "Actionable Insights",
+              description:
+                "Uncover key initiatives, priorities, challenges & pain points within your target accounts. Transform raw data into strategic action plans that drive meaningful conversations and build stronger customer relationships.",
+            },
+            {
+              icon: <FaBalanceScale />,
+              title: "Prioritize Accounts",
+              description:
+                "Identify and prioritize high-potential accounts based on comprehensive financial outlook and earnings summaries. Focus your resources on the most promising opportunities to maximize ROI and accelerate growth.",
+            },
+          ].map((feature, index) => (
+            <Feature
+              key={index}
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+              index={index}
+            />
+          ))}
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
 
-export default LandingSalesAndMarketingSection;
-
 const Feature: React.FC<{
-  icon: React.ReactNode;
+  icon: React.ReactElement;
   title: string;
   description: string;
-}> = ({ icon, title, description }) => (
-  <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4">
-    <div className="rounded-full flex items-center justify-center w-20 h-20 md:w-[102px] md:h-[102px] bg-primary-50 flex-shrink-0">
-      {icon}
+  index: number;
+}> = ({ icon, title, description, index }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 50 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{
+      duration: 0.5,
+      delay: 0.2 + index * 0.1,
+      ease: "easeOut",
+    }}
+    whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
+    className="bg-white rounded-xl p-8 transition-all duration-300 shadow-md hover:shadow-xl border border-gray-100"
+  >
+    <div className="flex items-center mb-6">
+      <div className="rounded-full p-3 bg-primary-100 text-primary-600 mr-4">
+        {React.cloneElement(icon, { size: 28 })}
+      </div>
+      <h4 className="text-xl font-semibold text-gray-800">{title}</h4>
     </div>
-    <div className="flex flex-col gap-1 max-w-[23rem]">
-      <p className="text-primary-500 text-xl md:text-2xl leading-8 font-bold">
-        {title}
-      </p>
-      <p className="text-gray-400 text-base md:text-xl">{description}</p>
-    </div>
-  </div>
+    <p className="text-base text-gray-600 leading-relaxed">{description}</p>
+  </motion.div>
 );
+
+const ConnectingDesign = () => (
+  <svg
+    className="absolute inset-0 w-full h-full pointer-events-none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <radialGradient
+        id="particle-gradient"
+        cx="50%"
+        cy="50%"
+        r="50%"
+        fx="50%"
+        fy="50%"
+      >
+        <stop offset="0%" stopColor="rgba(59, 130, 246, 0.4)" />
+        <stop offset="100%" stopColor="rgba(59, 130, 246, 0)" />
+      </radialGradient>
+    </defs>
+    {[...Array(20)].map((_, i) => (
+      <motion.circle
+        key={i}
+        r="4"
+        fill="url(#particle-gradient)"
+        initial={{
+          x: Math.random() * 100 + "%",
+          y: Math.random() * 100 + "%",
+          opacity: 0,
+        }}
+        animate={{
+          x: [
+            null,
+            Math.random() * 100 + "%",
+            Math.random() * 100 + "%",
+            Math.random() * 100 + "%",
+          ],
+          y: [
+            null,
+            Math.random() * 100 + "%",
+            Math.random() * 100 + "%",
+            Math.random() * 100 + "%",
+          ],
+          opacity: [0, 0.7, 0.7, 0],
+        }}
+        transition={{
+          duration: Math.random() * 10 + 10,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      />
+    ))}
+  </svg>
+);
+
+export default LandingSalesAndMarketingSection;

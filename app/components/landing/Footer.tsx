@@ -3,7 +3,7 @@ import Logo from "../Logo";
 import Link from "next/link";
 
 const LandingFooterSection = ({
-  scrollToSection
+  scrollToSection,
 }: {
   scrollToSection: (sectionId: string) => void;
 }) => {
@@ -25,23 +25,23 @@ const LandingFooterSection = ({
               {
                 alt: "tiktok",
                 src: "/icons/phosphor-tiktok-logo.svg",
-                url: "https://www.tiktok.com"
+                url: "https://www.tiktok.com",
               },
               {
                 alt: "facebook",
                 src: "/icons/phosphor-facebook-logo.svg",
-                url: "https://www.facebook.com"
+                url: "https://www.facebook.com",
               },
               {
                 alt: "youtube",
                 src: "/icons/phosphor-youtube-logo.svg",
-                url: "https://www.youtube.com"
+                url: "https://www.youtube.com",
               },
               {
                 alt: "linkedin",
                 src: "/icons/phosphor-linkedin-logo.svg",
-                url: "https://www.linkedin.com"
-              }
+                url: "https://www.linkedin.com",
+              },
             ].map((icon, index) => (
               <Link
                 key={index}

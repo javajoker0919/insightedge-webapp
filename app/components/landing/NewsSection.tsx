@@ -4,67 +4,81 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 const LandingNewsSection = ({ blogs }: any) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Sort blogs by date in descending order
+  const sortedBlogs = [...blogs].sort((a, b) => {
+    // Assuming there's a 'date' field in the blog attributes
+    return (
+      new Date(b.attributes.date).getTime() -
+      new Date(a.attributes.date).getTime()
+    );
+  });
+
   return (
-    <section id="new" className="py-16 px-4 flex flex-col items-center gap-10">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem]">
+    <section
+      id="new"
+      className="py-16 px-4 flex flex-col items-center gap-6 bg-transparent"
+    >
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] text-primary-600">
         What's new?
       </h1>
 
-      <p className="text-gray-600">Explore our blogs</p>
+      <p className="text-gray-800 text-base font-medium drop-shadow">
+        Explore our latest insights
+      </p>
 
-      <div className="flex flex-col md:flex-row w-full max-w-[80rem] items-center md:items-start justify-around gap-6">
-        <Swiper
-          pagination={{ clickable: true }}
-          onInit={(swiper) => {
-            swiper.navigation.init();
-            swiper.navigation.update();
-          }}
-          watchOverflow={false}
-          spaceBetween={15}
-          slidesPerView={3}
-          navigation={{
-            prevEl: ".swiper-button-prev",
-            nextEl: ".swiper-button-next"
-          }}
-          modules={[Navigation]}
-          // breakpoints={{
-          //   320: { slidesPerView: 1 },
-          //   768: { slidesPerView: 2 },
-          //   1024: { slidesPerView: 3 },
-          //   1280: { slidesPerView: 4 },
-          //   1440: { slidesPerView: 5 },
-          //   1600: { slidesPerView: 6 },
-          //   1920: { slidesPerView: 7 }
-          // }}
-          className="gap-2 items-center md:!flex !py-5 !px-7 !hidden"
-        >
-          <div className="swiper-button-prev border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
-          <div className="swiper-button-next border rounded-full bg-white px-5 after:!text-sm after:!font-bold shadow-sm after:!text-black"></div>
-          {blogs.map((item: any, index: number) => (
-            <SwiperSlide key={index}>
+      <div className="w-full max-w-[80rem]">
+        {isMobile ? (
+          <div className="flex flex-col gap-6">
+            {sortedBlogs.slice(0, 1).map((item: any) => (
               <BlogCard
                 key={item.id}
                 id={item.attributes.slug}
                 title={item.attributes.title}
                 description={item.attributes.description}
-                src={`${item.attributes.cover.data.attributes.url}`}
+                src={item.attributes.cover.data.attributes.url}
               />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-        <div className="md:hidden flex flex-col gap-6">
-          {blogs.map((item: any, index: number) => (
-            <BlogCard
-              key={item.id}
-              id={item.attributes.slug}
-              title={item.attributes.title}
-              description={item.attributes.description}
-              src={`${item.attributes.cover.data.attributes.url}`}
-            />
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <Swiper
+            pagination={{ clickable: true }}
+            spaceBetween={15}
+            slidesPerView={3}
+            navigation={{
+              prevEl: ".swiper-button-prev",
+              nextEl: ".swiper-button-next",
+            }}
+            modules={[Navigation]}
+            className="!py-5 !px-7"
+          >
+            <div className="swiper-button-prev bg-white/90 rounded-full px-5 after:!text-sm after:!font-bold shadow-lg after:!text-black hover:bg-white transition-all"></div>
+            <div className="swiper-button-next bg-white/90 rounded-full px-5 after:!text-sm after:!font-bold shadow-lg after:!text-black hover:bg-white transition-all"></div>
+            {sortedBlogs.map((item: any) => (
+              <SwiperSlide key={item.id}>
+                <BlogCard
+                  id={item.attributes.slug}
+                  title={item.attributes.title}
+                  description={item.attributes.description}
+                  src={item.attributes.cover.data.attributes.url}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
       </div>
     </section>
   );
@@ -78,8 +92,8 @@ const BlogCard: React.FC<{
   description: string;
   src: string;
 }> = ({ id, title, description, src }) => (
-  <div className="border shadow rounded-md overflow-hidden w-auto max-w-sm mx-auto">
-    <div className="w-full h-48 sm:h-64 bg-primary-100">
+  <div className="bg-white/80 border border-gray-200 shadow-lg rounded-lg overflow-hidden w-auto max-w-sm mx-auto transform hover:scale-105 transition-all duration-300">
+    <div className="w-full h-48 sm:h-64 bg-primary-100 relative">
       <Image
         src={src}
         alt="Blog image"
@@ -87,16 +101,19 @@ const BlogCard: React.FC<{
         height={400}
         className="object-cover w-full h-full"
       />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
     </div>
-    <div className="p-4">
-      <p className="font-bold text-lg sm:text-xl line-clamp-2 mb-4">{title}</p>
+    <div className="p-6">
+      <p className="font-bold text-xl sm:text-2xl line-clamp-2 mb-4 text-gray-800">
+        {title}
+      </p>
       <span>
-        <p className="text-gray-600 text-sm sm:text-base line-clamp-3 mb-2">
+        <p className="text-gray-600 text-sm sm:text-base line-clamp-3 mb-4">
           {description}
         </p>
         <Link
           href={`/blog/${id}`}
-          className="text-primary-600 text-sm sm:text-base hover:text-primary-700 hover:underline active:text-primary-800 transition-all"
+          className="inline-block px-4 py-2 bg-primary-600 text-white rounded-full text-sm sm:text-base hover:bg-primary-700 active:bg-primary-800 transition-all"
         >
           Read more
         </Link>

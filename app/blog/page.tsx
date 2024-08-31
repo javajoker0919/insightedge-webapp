@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import LandingHeaderSection from "../components/landing/Header";
+import LandingFooterSection from "../components/landing/Footer";
 
 interface BlogPost {
   id: number;
@@ -89,10 +90,10 @@ const Blog = () => {
   }, []);
 
   return (
-    <div className="w-full min-h-screen bg-gray-100">
+    <div className="w-full min-h-screen">
       <LandingHeaderSection isHeaderVisible={true} />
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {blog && blog.length > 0 && (
+        {blog && blog.length > 0 ? (
           <div>
             <div
               className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-20 cursor-pointer"
@@ -130,7 +131,7 @@ const Blog = () => {
               <h2 className="text-3xl font-bold text-gray-800">
                 Explore Blogs
               </h2>
-              <div className="flex flex-row gap-3">
+              <div className="flex flex-wrap gap-3 justify-center">
                 <button
                   className={`${
                     selectedCategory === "all" ? "bg-blue-600" : "bg-gray-500"
@@ -142,31 +143,29 @@ const Blog = () => {
                 >
                   All
                 </button>
-                {categoryList.map((category) => {
-                  return (
-                    <button
-                      key={category.id}
-                      className={`${
-                        selectedCategory === category.attributes.slug
-                          ? "bg-blue-600"
-                          : "bg-gray-500"
-                      } hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out outline-none`}
-                      onClick={() => {
-                        setSelectedCategory(category.attributes.slug);
-                        getBlogDataByCategory(category.attributes.slug);
-                      }}
-                    >
-                      {category.attributes.name}
-                    </button>
-                  );
-                })}
+                {categoryList.map((category) => (
+                  <button
+                    key={category.id}
+                    className={`${
+                      selectedCategory === category.attributes.slug
+                        ? "bg-blue-600"
+                        : "bg-gray-500"
+                    } hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out outline-none`}
+                    onClick={() => {
+                      setSelectedCategory(category.attributes.slug);
+                      getBlogDataByCategory(category.attributes.slug);
+                    }}
+                  >
+                    {category.attributes.name}
+                  </button>
+                ))}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
               {categroyBlogData.map((post) => (
                 <div
                   key={post.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+                  className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105"
                   onClick={() => router.push(`/blog/${post.attributes.slug}`)}
                 >
                   <div className="relative h-48">
@@ -175,7 +174,6 @@ const Blog = () => {
                       src={post.attributes.cover.data.attributes.url}
                       layout="fill"
                       objectFit="cover"
-                      className="transition-transform duration-300 hover:scale-105"
                     />
                   </div>
                   <div className="p-6">
@@ -199,8 +197,47 @@ const Blog = () => {
               ))}
             </div>
           </div>
+        ) : (
+          <div className="animate-pulse">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-20">
+              <div className="bg-gray-300 h-64 md:h-full rounded-lg"></div>
+              <div className="flex flex-col justify-center p-6 space-y-4">
+                <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                <div className="h-8 bg-gray-300 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-300 rounded w-full"></div>
+                <div className="h-4 bg-gray-300 rounded w-full"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+              </div>
+            </div>
+            <div className="mt-20 flex flex-col gap-10 items-center justify-center">
+              <div className="h-8 bg-gray-300 rounded w-1/4"></div>
+              <div className="flex flex-wrap gap-3 justify-center">
+                {[...Array(5)].map((_, index) => (
+                  <div key={index} className="h-10 w-20 bg-gray-300 rounded-md"></div>
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
+              {[...Array(6)].map((_, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  <div className="bg-gray-300 h-48"></div>
+                  <div className="p-6">
+                    <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                    <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                    <div className="h-4 bg-gray-300 rounded w-3/4 mb-4"></div>
+                    <div className="flex justify-between items-center">
+                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </div>
+      <LandingFooterSection scrollToSection={() => {}} />
     </div>
   );
 };
