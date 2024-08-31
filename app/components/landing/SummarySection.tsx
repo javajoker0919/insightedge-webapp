@@ -1,40 +1,70 @@
+import { motion } from "framer-motion";
+
 const LandingSummarySection = () => {
   return (
     <section
       id="summary"
-      className="py-8 md:py-16 px-4 flex flex-col items-center"
+      className="py-16 md:py-24 px-4 md:px-8 flex flex-col items-center"
     >
-      <h1 className="text-3xl md:text-[42px] leading-tight md:leading-[60px] font-bold text-center max-w-[60rem] mb-3 md:mb-5">
-        Tailored earnings call transcripts database insights{" "}
-        <span className="text-primary-500">delivered to your inbox</span>
-      </h1>
-      <p className="text-base md:text-[18px] leading-normal md:leading-7 font-normal text-neutral-600 max-w-[70rem] text-center mb-8 md:mb-5">
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="text-3xl md:text-5xl font-bold text-center max-w-4xl mb-6 text-gray-800"
+      >
+        Tailored insights{" "}
+        <span className="text-primary-500 inline-block hover:scale-105 transition-transform">
+          delivered to your inbox
+        </span>
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="text-lg md:text-xl text-gray-600 max-w-3xl text-center mb-12"
+      >
         Customize your outreach using insights from executive statements in
-        earnings calls and press releases for your key accounts. Understand
-        customer priorities, key initiatives, challenges & painpoints.
-      </p>
+        earnings calls and press releases for your key accounts.
+      </motion.p>
 
-      <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-6 mb-8 md:mb-5">
-        <div className="w-full lg:w-1/2 h-[18rem] md:h-[22rem] relative">
-          <video className="h-full w-full object-cover rounded-lg" controls>
-            <source
-              src="https://docs.material-tailwind.com/demo.mp4"
-              type="video/mp4"
-            />
-          </video>
-        </div>
-        <SummaryContent />
-      </div>
-      <div className="flex flex-col lg:flex-row-reverse items-center gap-8">
-        <div className="w-full lg:w-1/2 h-[18rem] md:h-[22rem] relative">
-          <video className="h-full w-full object-cover rounded-lg" controls>
-            <source
-              src="https://docs.material-tailwind.com/demo.mp4"
-              type="video/mp4"
-            />
-          </video>
-        </div>
-        <DashboardContent />
+      <div className="grid md:grid-cols-2 gap-8 w-full max-w-6xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          <InsightCard
+            title="Targeted Sales & Marketing"
+            subtitle="TAILORED ACCOUNT SPECIFIC STRATEGIES"
+            items={[
+              "Generate growth opportunities based on customer priorities",
+              "Develop strategies using insights from earnings calls",
+              "Gain an edge by addressing specific customer needs",
+              "Personalize outreach with executive-level insights",
+              "Align your offerings with customer's strategic initiatives",
+              "Identify upsell and cross-sell opportunities",
+            ]}
+          />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="md:mt-16"
+        >
+          <InsightCard
+            title="Actionable Insights"
+            subtitle="DATA DRIVEN CUSTOMER ENGAGEMENT"
+            items={[
+              "Identify key business priorities driving customer decisions",
+              "Reveal critical pain points affecting target accounts",
+              "Demonstrate how your solutions support their projects",
+              "Track industry trends and competitive landscape",
+              "Anticipate customer needs based on financial performance",
+              "Leverage real-time data for timely decision-making",
+            ]}
+          />
+        </motion.div>
       </div>
     </section>
   );
@@ -42,59 +72,54 @@ const LandingSummarySection = () => {
 
 export default LandingSummarySection;
 
-const SummaryContent: React.FC = () => (
-  <div className="flex flex-col gap-4 md:gap-6 p-4 md:p-6 md:pr-0 max-w-full lg:max-w-[35rem]">
-    <p className="text-gray-600 text-xs md:text-sm">
-      TAILORED ACCOUNT SPECIFIC STRATEGIES
-    </p>
-    <p className="text-2xl md:text-4xl font-bold text-primary-500 leading-tight md:leading-[56px]">
-      Targeted Sales & Marketing
-    </p>
-    <div className="flex flex-col gap-1 text-gray-600 text-sm">
-      <ul className="list-disc text-base md:text-xl font-normal leading-relaxed md:leading-8 ml-5 md:ml-10">
-        <li>
-          Generate growth opportunities based on customer priorities and market
-          trends
-        </li>
-        <li>
-          Develop strategies using insights from earnings calls, press releases,
-          and customer pain points to tailor your messaging and value
-          proposition
-        </li>
-        <li>
-          Gain an edge by addressing specific customer needs, optimizing
-          engagement through customer-focused messaging
-        </li>
-      </ul>
-    </div>
-  </div>
-);
+interface InsightCardProps {
+  title: string;
+  subtitle: string;
+  items: string[];
+}
 
-const DashboardContent: React.FC = () => (
-  <div className="flex flex-col gap-4 md:gap-6 p-4 md:p-6 md:pl-0 max-w-full lg:max-w-[35rem]">
-    <p className="text-neutral-600 text-xs md:text-base">
-      DATA DRIVEN CUSTOMER ENGAGEMENT
-    </p>
-    <p className="text-2xl md:text-4xl font-bold text-primary-500 leading-tight md:leading-[56px]">
-      Actionable Insights
-    </p>
-    <div className="flex flex-col gap-1 text-gray-600 text-sm">
-      <ul className="list-disc text-base md:text-xl font-normal leading-relaxed md:leading-8 ml-5 md:ml-10">
-        <li>
-          Identify key business priorities and mission-critical projects driving
-          customer decisions. Understand their core focus areas to tailor your
-          approach.
-        </li>
-        <li>
-          Reveal critical pain points and obstacles affecting your target
-          accounts most important objectives. Recognize how these challenges
-          impact their strategic goals.
-        </li>
-        <li>
-          Demonstrate how your solutions directly support their mission-critical
-          projects and focus areas, enhancing your conversion potential.
-        </li>
-      </ul>
-    </div>
-  </div>
+const InsightCard: React.FC<InsightCardProps> = ({
+  title,
+  subtitle,
+  items,
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8, delay: 0.4 }}
+    className="flex flex-col p-6 backdrop-blur-md bg-white/10 rounded-lg border border-white/20 hover:bg-white/20 transition-all"
+  >
+    <p className="text-gray-500 text-sm mb-2">{subtitle}</p>
+    <motion.h3
+      whileHover={{ scale: 1.05 }}
+      className="text-2xl md:text-3xl font-bold text-primary-500 mb-4"
+    >
+      {title}
+    </motion.h3>
+    <ul className="space-y-3">
+      {items.map((item, index) => (
+        <motion.li
+          key={index}
+          whileHover={{ x: 5 }}
+          className="flex items-start"
+        >
+          <svg
+            className="w-6 h-6 text-primary-500 mr-2 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span className="text-gray-700">{item}</span>
+        </motion.li>
+      ))}
+    </ul>
+  </motion.div>
 );
