@@ -10,7 +10,9 @@ const LandingCompanySection: React.FC = () => {
   return (
     <div className="flex flex-col items-center gap-2 p-8">
       <LandingCompanySearchbar setCompanyID={setCompanyID} />
-      <LandingCompanySectionTable companyID={companyID} />
+      <div className="w-full overflow-x-auto">
+        <LandingCompanySectionTable companyID={companyID} />
+      </div>
     </div>
   );
 };

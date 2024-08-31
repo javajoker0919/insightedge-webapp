@@ -11,7 +11,7 @@ import LandingCreditSection from "./CreditSection";
 import LandingNewsSection from "./NewsSection";
 import LandingFooterSection from "./Footer";
 import LandingScheduleSection from "./Schedule";
-import LandingCompanySection from "./LandingComapnySection";
+import LandingCompanySection from "./LandingCompanySection";
 
 interface FormData {
   name: string;
@@ -115,14 +115,14 @@ const LandingPage: React.FC = () => {
           isLandingPage={true}
         />
 
-        <main className="mt-10 sm:mt-15">
-          {" "}
-          {/* Significantly reduced margin-top here */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <main className="mt-10 sm:mt-15 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
             <LandingHeroSection />
-            <LandingCompanySection />
+            <div className="hidden md:block">
+              <LandingCompanySection />
+            </div>
             <LandingSalesAndMarketingSection />
-            {/* <LandingSummarySection /> */}
+            <LandingSummarySection />
             <LandingBusinessSection />
             <LandingCreditSection />
             <LandingNewsSection blogs={blogs} />
@@ -141,7 +141,7 @@ const LandingPage: React.FC = () => {
 
 const BackgroundPattern: React.FC = () => {
   return (
-    <div className="fixed inset-0 overflow-hidden">
+    <div className="fixed inset-0 overflow-hidden pointer-events-none">
       <svg
         className="absolute w-full h-full"
         xmlns="http://www.w3.org/2000/svg"
@@ -150,124 +150,103 @@ const BackgroundPattern: React.FC = () => {
       >
         <defs>
           <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#9ca3af" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#d1d5db" stopOpacity="0.08" />
+            <stop offset="0%" stopColor="#9ca3af" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="#d1d5db" stopOpacity="0.15" />
           </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
 
-        {/* Subtle gradient background */}
         <rect width="100%" height="100%" fill="url(#grad1)" />
 
-        {/* Abstract shapes */}
-        <circle cx="50" cy="100" r="80" fill="#9ca3af" opacity="0.15" />
+        {/* Large subtle gray circles */}
+        <circle cx="200" cy="200" r="300" fill="#9ca3af" opacity="0.07" />
+        <circle cx="800" cy="800" r="400" fill="#6b7280" opacity="0.05" />
 
-        {/* New design graphics */}
-        <ellipse
-          cx="200"
-          cy="800"
-          rx="100"
-          ry="50"
-          fill="#6b7280"
-          opacity="0.1"
-        />
-        <polygon
-          points="600,100 650,150 550,150"
-          fill="#9ca3af"
-          opacity="0.12"
-        />
+        {/* Small shapes - hidden on mobile */}
+        <g className="hidden md:block">
+          <circle cx="50" cy="100" r="80" fill="#9ca3af" opacity="0.25" />
+          <polygon
+            points="600,150 625,175 575,175"
+            fill="#9ca3af"
+            opacity="0.15"
+          />{" "}
+          {/* Moved lower */}
+        </g>
 
-        {/* Floating dots */}
-        <g>
-          <circle cx="150" cy="300" r="6" fill="#6b7280" opacity="0.6">
+        {/* Animated shapes - hidden on mobile */}
+        <g className="hidden md:block">
+          <circle cx="800" cy="200" r="40" fill="#4b5563" opacity="0.3">
             <animate
-              attributeName="cy"
-              values="300;285;300"
-              dur="5s"
-              repeatCount="indefinite"
-            />
-          </circle>
-          <circle cx="750" cy="200" r="5" fill="#9ca3af" opacity="0.6">
-            <animate
-              attributeName="cy"
-              values="200;215;200"
+              attributeName="r"
+              values="40;55;40"
               dur="4s"
-              repeatCount="indefinite"
-            />
-          </circle>
-          <circle cx="550" cy="700" r="7" fill="#4b5563" opacity="0.6">
-            <animate
-              attributeName="cy"
-              values="700;685;700"
-              dur="6s"
-              repeatCount="indefinite"
-            />
-          </circle>
-          <circle cx="150" cy="500" r="5" fill="#9ca3af" opacity="0.6">
-            <animate
-              attributeName="cy"
-              values="500;515;500"
-              dur="5.5s"
               repeatCount="indefinite"
             />
           </circle>
         </g>
 
-        {/* Additional subtle graphics */}
-        <path
-          d="M0,0 Q500,200 1000,0"
-          fill="none"
-          stroke="#e5e7eb"
-          strokeWidth="1"
-          opacity="0.2"
-        />
-        <path
-          d="M0,1000 Q500,800 1000,1000"
-          fill="none"
-          stroke="#e5e7eb"
-          strokeWidth="1"
-          opacity="0.2"
-        />
-        <circle
-          cx="900"
-          cy="100"
-          r="50"
-          fill="none"
-          stroke="#d1d5db"
-          strokeWidth="1"
-          opacity="0.2"
-        />
-        <circle
-          cx="100"
-          cy="900"
-          r="70"
-          fill="none"
-          stroke="#d1d5db"
-          strokeWidth="1"
-          opacity="0.2"
-        />
+        {/* Glowing dots - reduced on mobile */}
+        <g filter="url(#glow)">
+          <circle cx="300" cy="300" r="5" fill="#60a5fa" opacity="0.8">
+            <animate
+              attributeName="opacity"
+              values="0.8;0.4;0.8"
+              dur="3s"
+              repeatCount="indefinite"
+            />
+          </circle>
+        </g>
 
-        {/* New wavy line */}
-        <path
-          d="M0,400 Q250,350 500,400 T1000,400"
-          fill="none"
-          stroke="#9ca3af"
-          strokeWidth="1"
-          opacity="0.2"
-        />
+        {/* Pulsating hexagon - hidden on mobile */}
+        <g className="hidden md:block">
+          <polygon
+            points="850,550 925,625 925,775 850,850 775,775 775,625"
+            fill="none"
+            stroke="#4b5563"
+            strokeWidth="2"
+            opacity="0.2"
+          >
+            {" "}
+            {/* Reduced stroke width and opacity */}
+            <animate
+              attributeName="opacity"
+              values="0.2;0.4;0.2"
+              dur="5s"
+              repeatCount="indefinite"
+            />{" "}
+            {/* Adjusted opacity animation */}
+          </polygon>
+        </g>
+
+        {/* Rotating triangle - smaller and visible on all devices */}
+        <g opacity="0.2">
+          {" "}
+          {/* Reduced opacity */}
+          <polygon points="175,175 200,150 225,175" fill="#6b7280">
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from="0 200 175"
+              to="360 200 175"
+              dur="15s"
+              repeatCount="indefinite"
+            />
+          </polygon>
+        </g>
       </svg>
 
-      {/* Subtle gradient overlays */}
-      <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-gray-100 to-transparent"></div>
-      <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-gray-300 to-transparent"></div>
-      <div className="absolute top-0 left-0 bottom-0 w-64 bg-gradient-to-r from-gray-200 to-transparent"></div>
-      <div className="absolute top-0 right-0 bottom-0 w-64 bg-gradient-to-l from-gray-200 to-transparent"></div>
-
-      {/* Diagonal gradients */}
-      <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-gray-100 to-transparent opacity-50"></div>
-      <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-gray-200 to-transparent opacity-50"></div>
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-100 via-transparent to-gray-300 opacity-40"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-transparent to-gray-200 opacity-40"></div>
 
       {/* Radial gradient */}
-      <div className="absolute inset-0 bg-radial-gradient from-gray-100 to-transparent opacity-30"></div>
+      <div className="absolute inset-0 bg-radial-gradient from-gray-100 to-transparent opacity-25"></div>
     </div>
   );
 };
