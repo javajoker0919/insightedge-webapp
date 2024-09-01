@@ -31,7 +31,7 @@ const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
     "Nvidia",
     "Tesla",
     "Eli Lilly",
-    "Salesforce",
+    "Walmart",
   ];
   const rotationIndexRef = useRef<number>(0);
   const typingSpeedRef = useRef<number>(100); // milliseconds per character
