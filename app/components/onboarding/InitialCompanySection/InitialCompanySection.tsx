@@ -17,6 +17,7 @@ import OnboardCompanySearchbar from "./OnboardCompanySearchbar";
 import OnboardSimilarCompanySection from "./OnboardSimilarCompanySection";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
+import { useToastContext } from "@/contexts/toastContext";
 
 export interface CompanyProps {
   id: number;
@@ -33,7 +34,7 @@ const OnboardingInitialCompanySection = ({
   setOnboardingStep,
   symbols,
   isLoading,
-  setIsLoading
+  setIsLoading,
 }: {
   formData: any;
   website: any;
@@ -45,6 +46,8 @@ const OnboardingInitialCompanySection = ({
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const router = useRouter();
+  const { invokeToast } = useToastContext();
+
   const setProfile = useSetAtom(profileAtom);
   const setOrgInfo = useSetAtom(orgInfoAtom);
   const setWatchList = useSetAtom(watchlistAtom);
@@ -63,6 +66,10 @@ const OnboardingInitialCompanySection = ({
 
   const handleCreateProfile = async () => {
     try {
+      invokeToast(
+        "success",
+        "We are creating your profile. This may take a few seconds."
+      );
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -95,6 +102,7 @@ const OnboardingInitialCompanySection = ({
         companyName: formData.companyName,
       });
 
+      // invokeToast("success", "We are creating your organization...");
       const insertOrganizationData = {
         name: formData.companyName || "",
         website: website,
@@ -126,6 +134,7 @@ const OnboardingInitialCompanySection = ({
         credits: null,
       });
 
+      // invokeToast("success", "We are creating your watchlist...");
       const insertWatchlistData = {
         name: "Watchlist",
         organization_id: orgData.id,
@@ -152,6 +161,7 @@ const OnboardingInitialCompanySection = ({
 
       const companyIDs = companies.map((company) => company.id);
 
+      // invokeToast("success", "We are adding companies to your watchlist...");
       const { data: watchlistCompanies, error: watchlistCompanyError } =
         await supabase.from("watchlist_companies").insert(
           companyIDs.map((companyId) => ({
@@ -161,9 +171,13 @@ const OnboardingInitialCompanySection = ({
         );
 
       if (watchlistCompanyError) throw watchlistCompanyError;
+      invokeToast("success", "Your profile has been created successfully!");
       router.replace(`/app/watchlist/${watchlistData.uuid}`);
     } catch (error) {
       console.error(error);
+      invokeToast("error", "An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
