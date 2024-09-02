@@ -172,7 +172,7 @@ const OnboardingInitialCompanySection = ({
 
       if (watchlistCompanyError) throw watchlistCompanyError;
       invokeToast("success", "Your profile has been created successfully!");
-      router.replace(`/app/watchlist/${watchlistData.uuid}`);
+      router.replace("/app");
     } catch (error) {
       console.error(error);
       invokeToast("error", "An error occurred. Please try again.");
