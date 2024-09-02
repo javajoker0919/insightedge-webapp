@@ -13,10 +13,12 @@ import {
   userInfoAtom,
   orgInfoAtom,
 } from "@/utils/atoms";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const Callback = () => {
   const router = useRouter();
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
 
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setProfile = useSetAtom(profileAtom);
@@ -60,6 +62,11 @@ const Callback = () => {
           lastName: "",
           companyName: "",
         });
+
+        mixpanel.identify(sessionData.session?.user?.id ?? ""); // Identify user in Mixpanel
+        mixpanel.track("OAuth Callback", {
+          email: sessionData.session?.user?.email,
+        }); // Track OAuth callback event
 
         if (sessionData?.session?.access_token) {
           const mainURL = `${process.env.NEXT_PUBLIC_APP_URL}/onboarding`;

@@ -18,6 +18,7 @@ import {
   watchlistAtom,
 } from "@/utils/atoms";
 import { Logo } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const SignIn = () => {
   const router = useRouter();
@@ -27,6 +28,7 @@ const SignIn = () => {
   const setOrgInfo = useSetAtom(orgInfoAtom);
   const setProfile = useSetAtom(profileAtom);
   const setWatchlist = useSetAtom(watchlistAtom);
+  const mixpanel = getMixPanelClient();
 
   const { validateEmail, validatePassword } = useValidation();
 
@@ -117,6 +119,9 @@ const SignIn = () => {
         org_id: orgData.id,
         credits: null,
       });
+
+      mixpanel.identify(userData.id); // Identify user in Mixpanel
+      mixpanel.track("Sign In", { email: userData.email }); // Track sign-in event
 
       setOrgInfo({
         id: orgData.id,

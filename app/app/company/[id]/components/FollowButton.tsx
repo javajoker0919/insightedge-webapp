@@ -7,6 +7,7 @@ import { watchlistAtom } from "@/utils/atoms";
 import { PlusSvg, CheckSvg } from ".";
 import { supabase } from "@/utils/supabaseClient";
 import WatchlistModal from "@/app/components/WatchlistModal";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 interface WatchlistItem {
   id: number;
@@ -16,6 +17,8 @@ interface WatchlistItem {
 
 const FollowButton: React.FC = () => {
   const { id: companyID } = useParams<{ id: string }>();
+  const mixpanel = getMixPanelClient();
+
   const watchlist = useAtomValue(watchlistAtom);
   const [checkedWatchlists, setCheckedWatchlists] =
     useState<Set<number> | null>(null);
@@ -97,11 +100,13 @@ const FollowButton: React.FC = () => {
             .delete()
             .eq("watchlist_id", id)
             .eq("company_id", companyID);
+          mixpanel.track("Unfollow Company", { companyID }); // Track unfollow event
         } else {
           await supabase.from("watchlist_companies").insert({
             watchlist_id: id,
             company_id: companyID,
           });
+          mixpanel.track("Follow Company", { companyID }); // Track follow event
         }
       } catch (error) {
         console.error("Error updating watchlist:", error);

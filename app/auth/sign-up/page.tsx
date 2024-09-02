@@ -10,8 +10,11 @@ import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 import useValidation from "@/hooks/useValidation";
 import { Logo } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const SignUp = () => {
+  const mixpanel = getMixPanelClient();
+
   const { validateEmail, validatePassword } = useValidation();
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setUserData = useSetAtom(userInfoAtom);
@@ -85,6 +88,9 @@ const SignUp = () => {
         lastName: "",
         companyName: "",
       });
+
+      mixpanel.identify(authData.user?.id ?? ""); // Identify user in Mixpanel
+      mixpanel.track("Sign Up", { email: authData.user?.email }); // Track sign-up event
 
       router.replace("/auth/verify-email");
     } catch (error: any) {
