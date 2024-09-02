@@ -9,6 +9,7 @@ import { IoClose } from "react-icons/io5";
 
 interface CompanySearchbarProps {
   setCompanyID: (id: number) => void;
+  isCompanySelected: boolean;
 }
 
 const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
@@ -54,13 +55,13 @@ const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
     if (data && data.length > 0) {
       const selectedCompany = data[0];
       setCompanyID(selectedCompany.id);
-      console.log(
-        `Updated company: ${selectedCompany.name} (ID: ${selectedCompany.id})`
-      );
+      // console.log(
+      //   `Updated company: ${selectedCompany.name} (ID: ${selectedCompany.id})`
+      // );
       // If you have a specific function to update the companysection, call it here
       // For example: updateCompanySection(selectedCompany);
     } else {
-      console.log(`No company found for: ${companyName}`);
+      // console.log(`No company found for: ${companyName}`);
     }
 
     setIsSearching(false);

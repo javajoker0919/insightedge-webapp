@@ -93,7 +93,7 @@ const LandingFooterSection = ({
           <div className="flex flex-col gap-3 text-sm font-medium text-[#171A1FFF]">
             <Link href="/">Resources</Link>
             <Link href="/">Blog</Link>
-            <Link href="/">guides</Link>
+            <Link href="/">Guides</Link>
           </div>
           <div className="flex flex-col gap-3 text-sm font-medium text-[#171A1FFF]">
             <Link href="/">Legal</Link>

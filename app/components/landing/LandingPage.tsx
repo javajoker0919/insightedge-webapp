@@ -165,18 +165,33 @@ const BackgroundPattern: React.FC = () => {
         <rect width="100%" height="100%" fill="url(#grad1)" />
 
         {/* Large subtle gray circles */}
-        <circle cx="200" cy="200" r="300" fill="#9ca3af" opacity="0.07" />
-        <circle cx="800" cy="800" r="400" fill="#6b7280" opacity="0.05" />
+        <circle cx="200" cy="200" r="300" fill="#9ca3af" opacity="0.07">
+          <animate
+            attributeName="r"
+            values="300;320;300"
+            dur="10s"
+            repeatCount="indefinite"
+          />
+        </circle>
+        <circle cx="800" cy="800" r="400" fill="#6b7280" opacity="0.05">
+          <animate
+            attributeName="r"
+            values="400;420;400"
+            dur="15s"
+            repeatCount="indefinite"
+          />
+        </circle>
 
         {/* Small shapes - hidden on mobile */}
         <g className="hidden md:block">
-          <circle cx="50" cy="100" r="80" fill="#9ca3af" opacity="0.25" />
-          <polygon
-            points="600,150 625,175 575,175"
-            fill="#9ca3af"
-            opacity="0.15"
-          />{" "}
-          {/* Moved lower */}
+          <circle cx="50" cy="100" r="80" fill="#9ca3af" opacity="0.25">
+            <animate
+              attributeName="cy"
+              values="100;120;100"
+              dur="5s"
+              repeatCount="indefinite"
+            />
+          </circle>
         </g>
 
         {/* Animated shapes - hidden on mobile */}
@@ -186,6 +201,12 @@ const BackgroundPattern: React.FC = () => {
               attributeName="r"
               values="40;55;40"
               dur="4s"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="cx"
+              values="800;820;800"
+              dur="6s"
               repeatCount="indefinite"
             />
           </circle>
@@ -200,44 +221,13 @@ const BackgroundPattern: React.FC = () => {
               dur="3s"
               repeatCount="indefinite"
             />
-          </circle>
-        </g>
-
-        {/* Pulsating hexagon - hidden on mobile */}
-        <g className="hidden md:block">
-          <polygon
-            points="850,550 925,625 925,775 850,850 775,775 775,625"
-            fill="none"
-            stroke="#4b5563"
-            strokeWidth="2"
-            opacity="0.2"
-          >
-            {" "}
-            {/* Reduced stroke width and opacity */}
             <animate
-              attributeName="opacity"
-              values="0.2;0.4;0.2"
-              dur="5s"
-              repeatCount="indefinite"
-            />{" "}
-            {/* Adjusted opacity animation */}
-          </polygon>
-        </g>
-
-        {/* Rotating triangle - smaller and visible on all devices */}
-        <g opacity="0.2">
-          {" "}
-          {/* Reduced opacity */}
-          <polygon points="175,175 200,150 225,175" fill="#6b7280">
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="0 200 175"
-              to="360 200 175"
-              dur="15s"
+              attributeName="r"
+              values="5;7;5"
+              dur="3s"
               repeatCount="indefinite"
             />
-          </polygon>
+          </circle>
         </g>
       </svg>
 
