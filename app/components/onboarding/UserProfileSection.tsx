@@ -26,13 +26,13 @@ const filteredIndustries = [
   "Construction & Engineering",
   "Hospitality & Leisure",
   "Professional Services",
-  "Education"
+  "Education",
 ];
 
 const OnboardingUserProfileSection = ({
   setOnboardingStep,
   formData,
-  setFormData
+  setFormData,
 }: {
   setOnboardingStep: any;
   formData: any;
@@ -42,7 +42,7 @@ const OnboardingUserProfileSection = ({
     firstName: "",
     lastName: "",
     companyName: "",
-    industry: ""
+    industry: "",
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
@@ -67,18 +67,8 @@ const OnboardingUserProfileSection = ({
   return (
     <>
       <div className="flex flex-col lg:flex-row w-full h-screen">
-        <div className="flex items-center absolute top-4 left-4 z-20">
-          <Link href="/app">
-            <Image
-              src="/favicon.png"
-              alt="ProspectEdge Logo"
-              width={40}
-              height={40}
-            />
-          </Link>
-          <div className="hidden sm:block">
-            <Logo />
-          </div>
+        <div className="absolute top-4 left-4 z-20">
+          <Logo withIcon />
         </div>
         <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full z-10 px-6 sm:px-12 lg:px-16 py-20 lg:py-0">
           <div className="flex flex-col w-full max-w-[500px]">

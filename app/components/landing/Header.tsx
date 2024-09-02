@@ -24,17 +24,8 @@ const LandingHeaderSection = ({
         } ${isLandingPage ? "bg-transparent" : "bg-white"}`}
       >
         <div className="flex flex-wrap justify-between items-center px-4">
-          <div className="flex items-center cursor-pointer">
-            <Link href={`/`}>
-              <Image
-                src={"/favicon.png"}
-                alt={"ProspectEdge"}
-                width={40}
-                height={40}
-              />
-            </Link>
-            <Logo />
-          </div>
+          <Logo withIcon />
+
           <div className="md:hidden">
             <button
               onClick={toggleMenu}

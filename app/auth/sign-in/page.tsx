@@ -15,7 +15,7 @@ import {
   userInfoAtom,
   orgInfoAtom,
   profileAtom,
-  watchlistAtom
+  watchlistAtom,
 } from "@/utils/atoms";
 import { Logo } from "@/app/components";
 
@@ -55,7 +55,7 @@ const SignIn = () => {
     if (!isValidForm || !email || !password) {
       setErrors({
         email: validateEmail(email).error,
-        password: validatePassword(password).error
+        password: validatePassword(password).error,
       });
       invokeToast("error", "Please fill in all fields correctly");
       return;
@@ -66,7 +66,7 @@ const SignIn = () => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
       if (error) throw error;
 
@@ -90,7 +90,7 @@ const SignIn = () => {
         email: userData.email,
         firstName: userData.first_name,
         lastName: userData.last_name,
-        companyName: ""
+        companyName: "",
       });
 
       invokeToast("success", "You have successfully logged in!");
@@ -115,7 +115,7 @@ const SignIn = () => {
       setProfile({
         user_id: userData.id,
         org_id: orgData.id,
-        credits: null
+        credits: null,
       });
 
       setOrgInfo({
@@ -124,7 +124,7 @@ const SignIn = () => {
         website: orgData.website,
         overview: orgData.overview,
         products: orgData.products,
-        creatorID: orgData.creator_id
+        creatorID: orgData.creator_id,
       });
 
       const { data: watchlistData, error: watchlistError } = await supabase
@@ -151,7 +151,7 @@ const SignIn = () => {
             organizationID: item.organization_id,
             creatorID: item.creator_id,
             uuid: item.uuid,
-            company_count: item.watchlist_companies?.length
+            company_count: item.watchlist_companies?.length,
           };
         })
       );
@@ -172,8 +172,8 @@ const SignIn = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
-        }
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        },
       });
 
       if (error) {
@@ -187,16 +187,8 @@ const SignIn = () => {
   return (
     <div className="flex flex-col xl:flex-row w-full h-screen">
       <div className="flex flex-col w-full xl:w-1/2 bg-white">
-        <div className="flex items-center mt-4 ml-4">
-          <Link href="/app">
-            <Image
-              src="/favicon.png"
-              alt="ProspectEdge Logo"
-              width={40}
-              height={40}
-            />
-          </Link>
-          <Logo />
+        <div className="mt-4 ml-4">
+          <Logo withIcon />
         </div>
         <div className="flex flex-col mt-8 md:mt-24 items-center w-full px-4 md:px-0">
           <div className="flex flex-col w-full max-w-[26rem] text-center">
