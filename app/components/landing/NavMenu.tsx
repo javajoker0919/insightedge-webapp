@@ -15,16 +15,6 @@ const LandingNavMenuSection = ({
       >
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
           <Link
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("business");
-            }}
-            className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
-          >
-            Benefits
-          </Link>
-          <Link
             href="/features"
             className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
           >
@@ -37,11 +27,7 @@ const LandingNavMenuSection = ({
             Blog
           </Link>
           <Link
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("pricing");
-            }}
+            href="/pricing"
             className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
           >
             Pricing

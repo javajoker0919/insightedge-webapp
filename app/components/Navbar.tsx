@@ -124,6 +124,9 @@ export default function Navbar() {
           <li>
             <Link href="/features">Features</Link>
           </li>
+          <li>
+            <Link href="/pricing">Pricing</Link>
+          </li>
         </ul>
       </nav>
     </header>

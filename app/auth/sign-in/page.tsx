@@ -187,8 +187,16 @@ const SignIn = () => {
   return (
     <div className="flex flex-col xl:flex-row w-full h-screen">
       <div className="flex flex-col w-full xl:w-1/2 bg-white">
-        <div className="mt-4 ml-4">
-          <Logo withIcon />
+        <div className="flex items-center mt-4 ml-4">
+          <Link href="/app">
+            <Image
+              src="/favicon.png"
+              alt="ProspectEdge Logo"
+              width={40}
+              height={40}
+            />
+          </Link>
+          <Logo />
         </div>
         <div className="flex flex-col mt-8 md:mt-24 items-center w-full px-4 md:px-0">
           <div className="flex flex-col w-full max-w-[26rem] text-center">
