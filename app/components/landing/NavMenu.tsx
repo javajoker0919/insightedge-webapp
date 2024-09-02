@@ -25,11 +25,7 @@ const LandingNavMenuSection = ({
             Benefits
           </Link>
           <Link
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("summary");
-            }}
+            href="/features"
             className="w-full md:w-auto text-center hover:text-primary-600 transition-colors"
           >
             Features

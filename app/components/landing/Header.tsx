@@ -9,19 +9,21 @@ const LandingHeaderSection = ({
   toggleMenu,
   scrollToSection,
   isLandingPage,
+  isTransparent = false,
 }: {
   isHeaderVisible?: boolean;
   isMenuOpen?: boolean;
   toggleMenu?: () => void;
   scrollToSection?: (sectionId: string) => void;
   isLandingPage?: boolean;
+  isTransparent?: boolean;
 }) => {
   return (
     <>
       <header
         className={`py-4 sticky top-0 left-0 right-0 z-10 transition-transform duration-300 ${
           isHeaderVisible ? "translate-y-0" : "-translate-y-full"
-        } ${isLandingPage ? "bg-transparent" : "bg-white"}`}
+        } bg-transparent`}
       >
         <div className="flex flex-wrap justify-between items-center px-4">
           <Logo withIcon />

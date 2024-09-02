@@ -35,6 +35,9 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   const pathname = usePathname();
   const isAuthPage = AUTH_PAGES.includes(pathname);
 
+  // Check for redirection logic here
+  // If there's any logic that redirects to the sign-in page, modify or remove it
+
   return (
     <div className="flex h-full min-h-screen flex-col items-center justify-between bg-white">
       <AuthProvider>
