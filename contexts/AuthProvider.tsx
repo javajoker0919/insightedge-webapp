@@ -35,7 +35,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/reset-success",
   ];
 
-  const publicPaths = ["/", "/terms", "/privacy", "/features"];
+  const publicPaths = ["/", "/terms", "/privacy", "/features", "/pricing"];
   const blogPath = "/blog";
 
   useEffect(() => {
