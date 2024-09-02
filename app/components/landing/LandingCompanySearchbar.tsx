@@ -55,13 +55,13 @@ const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
     if (data && data.length > 0) {
       const selectedCompany = data[0];
       setCompanyID(selectedCompany.id);
-      // console.log(
-      //   `Updated company: ${selectedCompany.name} (ID: ${selectedCompany.id})`
-      // );
+      console.log(
+        `Updated company: ${selectedCompany.name} (ID: ${selectedCompany.id})`
+      );
       // If you have a specific function to update the companysection, call it here
       // For example: updateCompanySection(selectedCompany);
     } else {
-      // console.log(`No company found for: ${companyName}`);
+      console.log(`No company found for: ${companyName}`);
     }
 
     setIsSearching(false);
@@ -193,12 +193,12 @@ const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
       <div
         id="search-bar"
         ref={searchBarRef}
-        className="w-full flex justify-center"
+        className="w-full flex justify-center relative"
       >
         <div
           className={`${
             isInputFocused ? "shadow-2xl -translate-y-1 z-20" : "shadow-md"
-          } w-full border border-gray-200 overflow-hidden bg-white relative rounded-md transition-all duration-200`}
+          } w-full border border-gray-200 overflow-hidden bg-white absolute top-full left-0 rounded-md transition-all duration-200`}
         >
           {isInputFocused && (
             <div className="absolute top-2 right-2 flex items-center">

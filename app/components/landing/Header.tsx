@@ -26,8 +26,17 @@ const LandingHeaderSection = ({
         } bg-transparent`}
       >
         <div className="flex flex-wrap justify-between items-center px-4">
-          <Logo withIcon />
-
+          <div className="flex items-center cursor-pointer">
+            <Link href={`/`}>
+              <Image
+                src={"/favicon.png"}
+                alt={"ProspectEdge"}
+                width={40}
+                height={40}
+              />
+            </Link>
+            <Logo />
+          </div>
           <div className="md:hidden">
             <button
               onClick={toggleMenu}

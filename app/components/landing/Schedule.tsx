@@ -18,32 +18,17 @@ const LandingScheduleSection: React.FC<LandingScheduleSectionProps> = ({
 }) => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-    if (!formData.name) newErrors.name = "Name is required";
-    if (!formData.company) newErrors.company = "Company is required";
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
-    return newErrors;
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
+      // Ensure all required fields are filled
+      if (!formData.name || !formData.email || !formData.company) {
+        throw new Error("Please fill in all required fields");
+      }
+
       // Construct Calendly URL with query parameters
       const calendlyUrl =
         `https://calendly.com/pratik-padooru-prospectedge/30min?` +
@@ -95,9 +80,6 @@ const LandingScheduleSection: React.FC<LandingScheduleSectionProps> = ({
                   placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                   className="peer w-full p-4 rounded-lg bg-white border-2 border-primary-300 focus:border-primary-500 outline-none transition-all text-lg text-primary-800 placeholder-primary-400 shadow-sm"
                 />
-                {errors[field] && (
-                  <p className="text-red-500 text-sm mt-1">{errors[field]}</p>
-                )}
                 <motion.div
                   initial={false}
                   animate={{ width: focusedField === field ? "100%" : "0%" }}

@@ -14,7 +14,7 @@ const LandingCompanySection: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-2 p-8">
+    <div className="relative flex flex-col items-center gap-2 p-8">
       <LandingCompanySearchbar
         setCompanyID={handleCompanySelection}
         isCompanySelected={isCompanySelected}
