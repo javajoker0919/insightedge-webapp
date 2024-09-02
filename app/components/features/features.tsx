@@ -1,17 +1,40 @@
 "use client";
+import React, { useState, useEffect, useCallback } from "react";
+import LandingHeaderSection from "../landing/Header";
 import FeatureHeroSection from "./FeatureHeroSection";
 import FeatureSalesSection from "./FeatureSalesSection";
 import FeatureMarketingSection from "./FeatureMarketingSection";
 import FeatureBusinessSection from "./FeatureBusinessSection";
 import FeatureFooterSection from "./FeatureFooterSection";
-import LandingHeaderSection from "../landing/Header"; // Import the LandingHeaderSection
 
 const FeaturesPage: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+    setIsScrolled(currentScrollY > 0);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
   return (
-    <div
-      className="relative w-full text-black min-h-screen overflow-x-hidden bg-transparent"
-      // Removed the bg-gradient-to-b class and inline style
-    >
+    <div className="relative w-full text-black min-h-screen overflow-x-hidden bg-transparent">
+      {/* Existing background SVG and gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <svg
           className="absolute w-full h-full"
@@ -193,13 +216,25 @@ const FeaturesPage: React.FC = () => {
         {/* Radial gradient */}
         <div className="absolute inset-0 bg-radial-gradient from-gray-100 to-transparent opacity-25"></div>
       </div>
-      <LandingHeaderSection isHeaderVisible={true} isTransparent={true} />{" "}
-      {/* Add the header here */}
-      <FeatureHeroSection />
-      <FeatureSalesSection />
-      <FeatureMarketingSection />
-      <FeatureBusinessSection />
-      <FeatureFooterSection />
+
+      {/* Floating header with subtle background */}
+      <LandingHeaderSection
+        isMenuOpen={isMenuOpen}
+        toggleMenu={toggleMenu}
+        scrollToSection={scrollToSection}
+        isLandingPage={false}
+        isTransparent={!isScrolled}
+        isScrolled={isScrolled}
+      />
+
+      {/* Add padding to the top to account for the fixed header */}
+      <div className="pt-20">
+        <FeatureHeroSection />
+        <FeatureSalesSection />
+        <FeatureMarketingSection />
+        <FeatureBusinessSection />
+        <FeatureFooterSection />
+      </div>
     </div>
   );
 };

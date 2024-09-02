@@ -20,14 +20,8 @@ interface FormData {
 }
 
 const LandingPage: React.FC = () => {
-  const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(true);
-  const [lastScrollY, setLastScrollY] = useState<number>(0);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
-
-  const salesAndMarketingSectionRef = useRef<HTMLElement>(null);
-  const featureSectionRef = useRef<HTMLElement>(null);
-  const pricingSectionRef = useRef<HTMLElement>(null);
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -63,15 +57,11 @@ const LandingPage: React.FC = () => {
 
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
-
-    setIsHeaderVisible(currentScrollY <= lastScrollY);
-    setLastScrollY(currentScrollY);
     setIsScrolled(currentScrollY > 0);
-  }, [lastScrollY]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
@@ -108,14 +98,17 @@ const LandingPage: React.FC = () => {
       <BackgroundPattern />
       <div className="relative z-10">
         <LandingHeaderSection
-          isHeaderVisible={isHeaderVisible}
           isMenuOpen={isMenuOpen}
           toggleMenu={toggleMenu}
           scrollToSection={scrollToSection}
           isLandingPage={true}
+          headerBackground=""
+          isScrolled={isScrolled}
         />
 
-        <main className="mt-10 sm:mt-15 px-4 sm:px-6 lg:px-8">
+        <main className="pt-20 sm:pt-24 px-4 sm:px-6 lg:px-8">
+          {" "}
+          {/* Changed mt- to pt- */}
           <div className="max-w-7xl mx-auto">
             <LandingHeroSection />
             <div className="hidden md:block">

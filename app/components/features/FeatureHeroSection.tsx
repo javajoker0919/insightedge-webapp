@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaBullseye, FaChartLine, FaLightbulb } from "react-icons/fa";
 
 const features = [
@@ -42,37 +42,31 @@ const FeatureHeroSection: React.FC = () => {
   }, [rotateItems]);
 
   return (
-    <section className="relative py-20 overflow-hidden">
-      <motion.h1
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-4xl md:text-5xl font-bold mb-6 text-center relative"
-      >
-        <span className="text-[#004AAD] inline-block w-full h-[40px] sm:h-[50px] md:h-[60px] lg:h-[80px] overflow-hidden relative">
-          {rotatingItems.map((item, index) => (
-            <span
-              key={item}
-              className={`block transition-transform duration-500 absolute w-full ${
-                index === currentIndex ? "translate-y-0" : "-translate-y-full"
-              }`}
-              style={{
-                top: 0,
-                left: 0,
-                right: 0,
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {item}
-            </span>
-          ))}
-        </span>
-        <br />
-        <span className="text-black"> to Accelerate Your B2B Growth</span>
-      </motion.h1>
+    <section className="relative py-12 sm:py-16 overflow-hidden">
+      <div className="max-w-5xl mx-auto px-4">
+        <h1 className="font-bold text-center">
+          <div className="h-20 sm:h-24 md:h-28 lg:h-32 mb-2 sm:mb-4 relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -50, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 flex items-end justify-center text-[#004AAD] text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+              >
+                <span className="text-center px-2 leading-tight pb-1">
+                  {rotatingItems[currentIndex]}
+                </span>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          <span className="text-black block text-2xl sm:text-3xl md:text-4xl lg:text-5xl mt-2 sm:mt-4">
+            to Accelerate Your B2B Growth
+          </span>
+        </h1>
+      </div>
+
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

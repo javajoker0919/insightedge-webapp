@@ -4,26 +4,28 @@ import Logo from "../Logo";
 import LandingNavMenuSection from "./NavMenu";
 
 const LandingHeaderSection = ({
-  isHeaderVisible,
   isMenuOpen,
   toggleMenu,
   scrollToSection,
   isLandingPage,
   isTransparent = false,
+  headerBackground = "",
+  isScrolled = false, // Add this line
 }: {
-  isHeaderVisible?: boolean;
   isMenuOpen?: boolean;
   toggleMenu?: () => void;
   scrollToSection?: (sectionId: string) => void;
   isLandingPage?: boolean;
   isTransparent?: boolean;
+  headerBackground?: string;
+  isScrolled?: boolean; // Add this line
 }) => {
   return (
     <>
       <header
-        className={`py-4 sticky top-0 left-0 right-0 z-10 transition-transform duration-300 ${
-          isHeaderVisible ? "translate-y-0" : "-translate-y-full"
-        } bg-transparent`}
+        className={`py-4 fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled ? "bg-gray-100/70 backdrop-blur-sm" : "bg-transparent"
+        }`}
       >
         <div className="flex flex-wrap justify-between items-center px-4">
           <div className="flex items-center cursor-pointer">

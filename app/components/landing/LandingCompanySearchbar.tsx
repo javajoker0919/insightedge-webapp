@@ -114,6 +114,22 @@ const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
     return () => clearTimeout(debounce);
   }, [searchInput, searchType]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target as Node)
+      ) {
+        setIsInputFocused(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
       searchBarRef.current &&

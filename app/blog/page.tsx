@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import LandingHeaderSection from "../components/landing/Header";
@@ -55,6 +55,9 @@ const Blog = () => {
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [categroyBlogData, setCategoryBlogData] = useState<BlogPost[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
   const strapiUrl =
     process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
@@ -84,10 +87,20 @@ const Blog = () => {
     setCategoryBlogData(posts.data);
   };
 
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+
+    setIsHeaderVisible(currentScrollY <= lastScrollY || currentScrollY < 50);
+    setLastScrollY(currentScrollY);
+    setIsScrolled(currentScrollY > 0);
+  }, [lastScrollY]);
+
   useEffect(() => {
     getBlogData();
     getCategoryList();
-  }, []);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   return (
     <div className="relative w-full min-h-screen overflow-x-hidden bg-transparent">
@@ -263,7 +276,14 @@ const Blog = () => {
         <div className="absolute inset-0 bg-radial-gradient from-gray-100 to-transparent opacity-25"></div>
       </div>
 
-      <LandingHeaderSection isHeaderVisible={true} />
+      <LandingHeaderSection
+        isMenuOpen={false}
+        toggleMenu={() => {}}
+        scrollToSection={() => {}}
+        isLandingPage={true}
+        isTransparent={!isScrolled}
+        isScrolled={isScrolled}
+      />
       <div className="max-w-6xl mx-auto px-4 py-8">
         {blog && blog.length > 0 ? (
           <div>
