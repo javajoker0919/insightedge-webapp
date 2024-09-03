@@ -11,7 +11,6 @@ export const getMixPanelClient = () => {
 
 class MixPanel {
   constructor() {
-    const isProd = process.env.NODE_ENV === "production";
     const token = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN ?? "";
     mixpanel.init(token, {
       track_pageview: true,
@@ -29,7 +28,11 @@ class MixPanel {
   }
 
   track(event: string, props?: Dict) {
-    mixpanel.track(event, props);
+    const trackEnabled = !process.env.NEXT_PUBLIC_TRACK_DISABLED ?? true;
+
+    if (trackEnabled) {
+      mixpanel.track(event, props);
+    }
   }
 
   track_links(query: Query, name: string) {
