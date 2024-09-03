@@ -120,6 +120,8 @@ const IncomeStatementSection: React.FC<IncomeStatementSectionProps> = ({
           },
         ];
         setFCData(comparableData);
+      } else {
+        setFCData([]);
       }
     } catch (error) {
       console.error(error);

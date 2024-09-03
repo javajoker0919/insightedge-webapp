@@ -19,7 +19,7 @@ const FinancialTable: React.FC<FinancialTableProps> = ({
   change,
   data,
 }) => {
-  if (!data) {
+  if (data === null) {
     return (
       <div className="w-full p-4 h-40 flex justify-center items-center">
         <Loading />
@@ -29,8 +29,8 @@ const FinancialTable: React.FC<FinancialTableProps> = ({
 
   if (data.length == 0) {
     return (
-      <div className="w-full p-4 h-20 flex justify-center items-center">
-        <span>There is no data</span>
+      <div className="w-full p-4 h-40 flex justify-center items-center">
+        <span className="text-gray-500">There is no data</span>
       </div>
     );
   }
