@@ -13,6 +13,7 @@ import { useToastContext } from "@/contexts/toastContext";
 import { Loading } from "../..";
 import { generateTOAPI } from "@/utils/apiClient";
 import { profileAtom, userInfoAtom, orgInfoAtom } from "@/utils/atoms";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 export interface OpportunityProps {
   opportunityName: string;
@@ -45,6 +46,8 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   isLoading,
 }) => {
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
+
   const setProfile = useSetAtom(profileAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
@@ -217,6 +220,10 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
       invokeToast("error", "No earnings transcripts selected");
       return;
     }
+
+    mixpanel.track("generate.opportunity", {
+      $source: "Watchlist_page",
+    });
 
     setIsGeneratingTO(true);
 

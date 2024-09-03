@@ -8,6 +8,7 @@ import { profileAtom, orgInfoAtom, userInfoAtom } from "@/utils/atoms";
 import RenderSummaryContent from "./RenderSummaryContent";
 import { useToastContext } from "@/contexts/toastContext";
 import { Details, Loading } from "../..";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 interface SummarySectionProps {
   year: number | null;
@@ -38,8 +39,9 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   }
 
   const { id: companyId } = useParams<{ id: string }>();
-
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
+
   const setProfile = useSetAtom(profileAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
@@ -163,6 +165,10 @@ const SummarySection: React.FC<SummarySectionProps> = ({
     if (!orgInfo) {
       return;
     }
+
+    mixpanel.track("generate.summary", {
+      $source: "company_page",
+    });
 
     setIsTSGenerating(true);
     try {

@@ -11,6 +11,7 @@ import MarketingStrategyTable from "./MarketingStrategyTable";
 import { generateTMAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
 import { Loading } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 interface MarketingCompProps {
   companyName: string;
@@ -41,6 +42,8 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   }
 
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
+
   const setProfile = useSetAtom(profileAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
@@ -164,6 +167,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
     if (!etID) {
       return;
     }
+
+    mixpanel.track("generate.marketing", {
+      $source: "company_page",
+    });
 
     setIsGeneratingTM(true);
 

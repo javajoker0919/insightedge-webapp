@@ -12,6 +12,7 @@ import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTOAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
 import { Loading } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 interface OpportunitiesProps {
   companyName: string;
@@ -50,6 +51,8 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   }
 
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
+
   const setProfile = useSetAtom(profileAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
@@ -168,6 +171,10 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   };
 
   const generateTO = async () => {
+    mixpanel.track("generate.opportunity", {
+      $source: "company_page",
+    });
+
     setIsGeneratingTO(true);
 
     try {
