@@ -35,6 +35,10 @@ const Sidebar: React.FC = () => {
   };
 
   const openModal = () => {
+    mixpanel.track("watchlist.create", {
+      $source: "main.sidebar",
+    });
+
     setIsModalOpen(true);
   };
 
