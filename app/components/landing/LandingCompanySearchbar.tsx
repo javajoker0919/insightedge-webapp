@@ -9,6 +9,7 @@ import { IoClose } from "react-icons/io5";
 
 interface CompanySearchbarProps {
   setCompanyID: (id: number) => void;
+  isCompanySelected: boolean;
 }
 
 const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
@@ -113,6 +114,22 @@ const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
     return () => clearTimeout(debounce);
   }, [searchInput, searchType]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target as Node)
+      ) {
+        setIsInputFocused(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
       searchBarRef.current &&
@@ -192,12 +209,12 @@ const LandingCompanySearchbar = ({ setCompanyID }: CompanySearchbarProps) => {
       <div
         id="search-bar"
         ref={searchBarRef}
-        className="w-full flex justify-center"
+        className="w-full flex justify-center relative"
       >
         <div
           className={`${
             isInputFocused ? "shadow-2xl -translate-y-1 z-20" : "shadow-md"
-          } w-full border border-gray-200 overflow-hidden bg-white relative rounded-md transition-all duration-200`}
+          } w-full border border-gray-200 overflow-hidden bg-white absolute top-full left-0 rounded-md transition-all duration-200`}
         >
           {isInputFocused && (
             <div className="absolute top-2 right-2 flex items-center">

@@ -13,15 +13,20 @@ import { useParams } from "next/navigation";
 
 import "swiper/css";
 import "swiper/css/navigation";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const Header = () => {
   const params = useParams();
   const paramUUID = params.id as string;
+  const mixpanel = getMixPanelClient();
 
   const watchlist = useAtomValue(watchlistAtom);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleAddWatchlist = () => {
+    mixpanel.track("watchlist.create", {
+      $source: "watchlist_page.header",
+    });
     setIsModalOpen(true);
   };
 

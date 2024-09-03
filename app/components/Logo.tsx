@@ -1,15 +1,33 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const Logo: React.FC = () => {
+import { userMetadataAtom } from "@/utils/atoms";
+import { useAtomValue } from "jotai";
+
+interface LogoProps {
+  onClick?: () => void;
+  withIcon?: boolean;
+}
+
+const Logo: React.FC<LogoProps> = ({ onClick, withIcon }) => {
+  const userMetadata = useAtomValue(userMetadataAtom);
+
   return (
-    <Link href={`/app`}>
+    <Link
+      href={userMetadata == null ? "/" : "/app"}
+      onClick={onClick}
+      className="flex items-center"
+    >
+      {withIcon && (
+        <Image src="/favicon.png" alt="Favicon" width={40} height={40} />
+      )}
+
       <Image
         src={"/logo.png"}
-        alt={"ProspectEdge"}
+        alt={"Logo"}
         width={200}
         height={40}
-        className="max-w-[150px] sm:max-w-[200px]"
+        // className="max-w-[150px] sm:max-w-[200px]"
       />
     </Link>
   );

@@ -10,8 +10,11 @@ import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";
 import { useToastContext } from "@/contexts/toastContext";
 import useValidation from "@/hooks/useValidation";
 import { Logo } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const SignUp = () => {
+  const mixpanel = getMixPanelClient();
+
   const { validateEmail, validatePassword } = useValidation();
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setUserData = useSetAtom(userInfoAtom);
@@ -21,12 +24,12 @@ const SignUp = () => {
 
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [errors, setErrors] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [isValidate, setIsValidate] = useState(false);
@@ -65,12 +68,14 @@ const SignUp = () => {
     setIsLoading(true);
 
     try {
+      mixpanel.track("sign_up.email");
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: email,
         password: password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/onboarding`
-        }
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/onboarding`,
+        },
       });
 
       if (authError) throw authError;
@@ -83,7 +88,7 @@ const SignUp = () => {
         email: authData.user?.email || "",
         firstName: "",
         lastName: "",
-        companyName: ""
+        companyName: "",
       });
 
       router.replace("/auth/verify-email");
@@ -100,8 +105,8 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
-        }
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        },
       });
       if (error) {
         throw error;
@@ -116,16 +121,15 @@ const SignUp = () => {
   return (
     <div className="flex flex-col xl:flex-row w-full h-screen">
       <div className="flex flex-col w-full xl:w-1/2 h-full bg-white">
-        <div className="flex items-center mt-4 ml-4">
-          <Link href="/app">
-            <Image
-              src="/favicon.png"
-              alt="ProspectEdge Logo"
-              width={40}
-              height={40}
-            />
-          </Link>
-          <Logo />
+        <div className="mt-4 ml-4">
+          <Logo
+            onClick={() => {
+              mixpanel.track("logo.click", {
+                $source: "sign_up",
+              });
+            }}
+            withIcon
+          />
         </div>
         <div className="flex flex-col mt-8 lg:mt-24 items-center w-full">
           <div className="flex flex-col w-full max-w-md text-center px-4">
@@ -251,9 +255,14 @@ const SignUp = () => {
           <span>Have an account? </span>
           <Link
             href="/auth/sign-in"
+            onClick={() => {
+              mixpanel.track("goto.sign_in", {
+                $source: "sign_up",
+              });
+            }}
             className="text-primary-400 hover:underline"
           >
-            Log in
+            Sign In
           </Link>
         </div>
       </div>

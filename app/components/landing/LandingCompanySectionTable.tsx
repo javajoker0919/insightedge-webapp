@@ -4,6 +4,7 @@ import LandingCompanySectionOpportunity from "./LandingCompanySectionOpportunity
 import Loading from "../Loading";
 import { motion } from "framer-motion";
 import { createPortal } from "react-dom";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 type CompanyData = {
   id: string;
@@ -40,54 +41,68 @@ interface TabProps {
 
 const Tab: React.FC<TabProps> = ({ title, value, activeTab, setActiveTab }) => {
   return (
-    <button
-      onClick={() => setActiveTab(value)}
-      className={`px-4 py-3 text-sm sm:text-base font-semibold transition-all duration-300 relative ${
-        activeTab === value
-          ? "bg-white text-gray-800"
-          : "text-gray-700 hover:text-gray-900 hover:font-bold"
-      }`}
-    >
-      {title}
-      <span className="absolute right-0 top-1/2 -translate-y-1/2 h-2/3 w-px bg-white/30 last:hidden"></span>
-    </button>
+    <div className="flex items-center relative">
+      <button
+        onClick={() => setActiveTab(value)}
+        className={`px-4 py-3 text-sm sm:text-base font-semibold transition-all duration-300 ${
+          activeTab === value
+            ? "bg-white text-gray-800"
+            : "text-white hover:text-gray-100 hover:font-bold"
+        }`}
+      >
+        {title}
+      </button>
+      <div className="h-5 w-px bg-white/30 absolute right-0 top-1/2 transform -translate-y-1/2"></div>
+    </div>
   );
 };
 
 interface ContentListProps {
   type: string;
-  contents: string;
+  contents: string | string[];
 }
 
 const ContentList: React.FC<ContentListProps> = ({ type, contents }) => {
-  if (!contents) {
-    return (
-      <div className="flex items-center justify-center w-full h-full text-gray-400 text-4xl">
-        No data
-      </div>
-    );
-  }
+  const contentArray = Array.isArray(contents)
+    ? contents
+    : contents.split("\n");
+  const filteredContent = contentArray.filter((item) => item.trim() !== "");
 
   return (
-    <motion.ul
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="list-disc py-4 pl-10 pr-4 text-gray-700 text-md space-y-2"
+      className="py-3 px-3 sm:px-4 relative"
     >
-      {contents.split("\n").map((item, index) => {
-        return (
+      <ul className="space-y-2 text-gray-700">
+        {filteredContent.map((item, index) => (
           <motion.li
             key={`landing-company-${type}-${index}`}
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: index * 0.1 }}
+            className="bg-white rounded-md p-2 sm:p-3 shadow-sm border border-gray-300 flex items-center"
           >
-            {item}
+            <span className="text-blue-500 mr-2 flex-shrink-0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
+            <span className="text-sm sm:text-base leading-snug">{item}</span>
           </motion.li>
-        );
-      })}
-    </motion.ul>
+        ))}
+      </ul>
+    </motion.div>
   );
 };
 
@@ -95,6 +110,8 @@ const DefaultExportMenu: React.FC<{
   companyData: CompanyData | null;
   opportunities: OpportunityData[];
 }> = ({ companyData, opportunities }) => {
+  const mixpanel = getMixPanelClient();
+
   const [isOpen, setIsOpen] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -217,6 +234,10 @@ const DefaultExportMenu: React.FC<{
 
   const exportAsCSV = () => {
     if (!opportunities || opportunities.length === 0) return;
+
+    mixpanel.track("export.csv", {
+      $source: "landing_page",
+    });
 
     const headers = [
       "Opportunity Name",
@@ -457,7 +478,7 @@ const LandingCompanySectionTable: React.FC<Props> = ({
   return (
     <div className="max-w-6xl mt-8 sm:mt-16 overflow-hidden w-full">
       <div className="border border-gray-200 rounded-lg shadow-lg bg-white overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600/90 via-blue-500/80 to-blue-400/70 backdrop-blur-sm flex items-center justify-between px-1 sm:px-2 pt-1 sm:pt-1.5 pb-0 overflow-x-auto relative">
+        <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 flex items-center justify-between px-1 sm:px-2 pt-1 sm:pt-1.5 pb-0 overflow-x-auto relative">
           <div className="flex items-center flex-grow">
             {TabItems.map(({ value, title }, index) => (
               <Tab
@@ -476,7 +497,7 @@ const LandingCompanySectionTable: React.FC<Props> = ({
             />
           </div>
         </div>
-        <div className="h-64 sm:h-96 overflow-y-auto">
+        <div className="h-48 sm:h-[calc(100vh-300px)] overflow-y-auto">
           {isFetchingGO || isFetchingGS ? (
             <div className="w-full h-full flex items-center justify-center">
               <Loading />
@@ -503,11 +524,7 @@ const LandingCompanySectionTable: React.FC<Props> = ({
                 companyData.pain_points && (
                   <ContentList
                     type="pain_points"
-                    contents={
-                      Array.isArray(companyData.pain_points)
-                        ? companyData.pain_points.join("\n")
-                        : companyData.pain_points
-                    }
+                    contents={companyData.pain_points}
                   />
                 )}
               {activeTab === "challenges" &&
@@ -515,11 +532,7 @@ const LandingCompanySectionTable: React.FC<Props> = ({
                 companyData.challenges && (
                   <ContentList
                     type="challenges"
-                    contents={
-                      Array.isArray(companyData.challenges)
-                        ? companyData.challenges.join("\n")
-                        : companyData.challenges
-                    }
+                    contents={companyData.challenges}
                   />
                 )}
               {activeTab === "key_initiatives" &&
@@ -527,11 +540,7 @@ const LandingCompanySectionTable: React.FC<Props> = ({
                 companyData.opportunities && (
                   <ContentList
                     type="key_initiatives"
-                    contents={
-                      Array.isArray(companyData.opportunities)
-                        ? companyData.opportunities.join("\n")
-                        : companyData.opportunities
-                    }
+                    contents={companyData.opportunities}
                   />
                 )}
             </motion.div>

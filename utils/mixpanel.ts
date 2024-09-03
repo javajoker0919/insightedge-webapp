@@ -11,9 +11,11 @@ export const getMixPanelClient = () => {
 
 class MixPanel {
   constructor() {
-    const isProd = process.env.NODE_ENV === "production";
-    mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN!, {
-      api_host: process.env.NEXT_PUBLIC_MIXPANEL_API!,
+    const token = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN ?? "";
+    mixpanel.init(token, {
+      track_pageview: true,
+      persistence: "localStorage",
+      // api_host: process.env.NEXT_PUBLIC_MIXPANEL_API ?? "",
     });
   }
 
@@ -26,7 +28,11 @@ class MixPanel {
   }
 
   track(event: string, props?: Dict) {
-    mixpanel.track(event, props);
+    const trackEnabled = !process.env.NEXT_PUBLIC_TRACK_DISABLED ?? true;
+
+    if (trackEnabled) {
+      mixpanel.track(event, props);
+    }
   }
 
   track_links(query: Query, name: string) {

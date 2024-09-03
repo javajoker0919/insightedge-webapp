@@ -16,10 +16,13 @@ import { watchlistAtom, isSidebarExpandedAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import Image from "next/image";
 import { Logo } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const Sidebar: React.FC = () => {
   const params = useParams();
   const paramUUID = params.id as string;
+  const mixpanel = getMixPanelClient();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useAtom(isSidebarExpandedAtom);
   const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
@@ -32,6 +35,10 @@ const Sidebar: React.FC = () => {
   };
 
   const openModal = () => {
+    mixpanel.track("watchlist.create", {
+      $source: "main.sidebar",
+    });
+
     setIsModalOpen(true);
   };
 
@@ -63,7 +70,15 @@ const Sidebar: React.FC = () => {
           isExpanded ? "left-0" : "-left-64"
         } transition-all overflow-y-auto overflow-x-hidden duration-300 border-r border-gray-200 shadow-md flex flex-col`}
       >
-        <SidebarHeader watchlist={watchlist} />
+        <div className="p-6">
+          <Logo
+            onClick={() => {
+              mixpanel.track("logo.click", {
+                $source: "main.sidebar",
+              });
+            }}
+          />
+        </div>
         <SidebarMenu
           setIsExpanded={setIsExpanded}
           isSettingsExpanded={isSettingsExpanded}
@@ -87,112 +102,100 @@ const Sidebar: React.FC = () => {
   );
 };
 
-const SidebarHeader: React.FC<{ watchlist: any }> = ({ watchlist }) => {
-  return (
-    <div className="p-6">
-      <Logo />
-    </div>
-  );
-};
-
 const SidebarMenu: React.FC<{
   setIsExpanded: (value: boolean) => void;
   isSettingsExpanded: boolean;
   toggleSettings: () => void;
-}> = ({ setIsExpanded, isSettingsExpanded, toggleSettings }) => (
-  <div className="p-3">
-    <ul>
-      <li className="mb-1">
-        <Link
-          href={`/app`}
-          onClick={() => setIsExpanded(false)}
-          className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
-        >
-          <IoHomeOutline className={`text-2xl`} />
-          <span className="text-gray-700 transition-colors duration-200 text-lg">
-            Home
-          </span>
-        </Link>
-      </li>
-      {/* <li>
-        <Link
-          href="/app/settings/company-profile"
-          onClick={() => setIsExpanded(false)}
-          className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
-        >
-          <IoPersonOutline className={`text-2xl`} />
-          <span className="text-gray-700 transition-colors duration-200 text-lg">
-            Company Profile
-          </span>
-        </Link>
-      </li> */}
-      <li>
-        <button
-          onClick={toggleSettings}
-          className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200 w-full text-left`}
-        >
-          <IoSettingsOutline className={`text-2xl`} />
-          <span className="text-gray-700 transition-colors duration-200 text-lg">
-            Settings
-          </span>
-          {isSettingsExpanded ? (
-            <IoChevronDownOutline className={`text-xl ml-auto`} />
-          ) : (
-            <IoChevronForwardOutline className={`text-xl ml-auto`} />
-          )}
-        </button>
-        <div
-          className={`transition-max-height duration-300 ease-in-out overflow-hidden ${
-            isSettingsExpanded ? "max-h-96" : "max-h-0"
-          }`}
-        >
-          {isSettingsExpanded && (
-            <ul className="pl-8">
-              <li>
-                <Link
-                  href="/app/settings/my-profile"
-                  onClick={() => setIsExpanded(false)}
-                  className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
-                >
-                  <span className="text-gray-700 transition-colors duration-200 text-base">
-                    My Profile
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/app/settings/company-profile"
-                  onClick={() => setIsExpanded(false)}
-                  className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
-                >
-                  <span className="text-gray-700 transition-colors duration-200 text-base">
-                    Company Profile
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/app/settings/billing"
-                  onClick={() => setIsExpanded(false)}
-                  className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
-                >
-                  <span className="text-gray-700 transition-colors duration-200 text-base">
-                    Billing
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/app/settings/plans"
-                  onClick={() => setIsExpanded(false)}
-                  className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
-                >
-                  <span className="text-gray-700 transition-colors duration-200 text-base">
-                    Plans
-                  </span>
-                </Link>
-              </li>
-              {/* <li>
+}> = ({ setIsExpanded, isSettingsExpanded, toggleSettings }) => {
+  const mixpanel = getMixPanelClient();
+
+  return (
+    <div className="p-3">
+      <ul>
+        <li className="mb-1">
+          <Link
+            href="/app"
+            onClick={() => {
+              mixpanel.track("goto.dashboard", {
+                $source: "main.sidebar",
+              });
+              setIsExpanded(false);
+            }}
+            className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+          >
+            <IoHomeOutline className={`text-2xl`} />
+            <span className="text-gray-700 transition-colors duration-200 text-lg">
+              Home
+            </span>
+          </Link>
+        </li>
+        <li>
+          <button
+            onClick={toggleSettings}
+            className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200 w-full text-left`}
+          >
+            <IoSettingsOutline className={`text-2xl`} />
+            <span className="text-gray-700 transition-colors duration-200 text-lg">
+              Settings
+            </span>
+            {isSettingsExpanded ? (
+              <IoChevronDownOutline className={`text-xl ml-auto`} />
+            ) : (
+              <IoChevronForwardOutline className={`text-xl ml-auto`} />
+            )}
+          </button>
+          <div
+            className={`transition-max-height duration-300 ease-in-out overflow-hidden ${
+              isSettingsExpanded ? "max-h-96" : "max-h-0"
+            }`}
+          >
+            {isSettingsExpanded && (
+              <ul className="pl-8">
+                <li>
+                  <Link
+                    href="/app/settings/my-profile"
+                    onClick={() => setIsExpanded(false)}
+                    className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                  >
+                    <span className="text-gray-700 transition-colors duration-200 text-base">
+                      My Profile
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/app/settings/company-profile"
+                    onClick={() => setIsExpanded(false)}
+                    className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                  >
+                    <span className="text-gray-700 transition-colors duration-200 text-base">
+                      Company Profile
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/app/settings/billing"
+                    onClick={() => setIsExpanded(false)}
+                    className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                  >
+                    <span className="text-gray-700 transition-colors duration-200 text-base">
+                      Billing
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/app/settings/plans"
+                    onClick={() => setIsExpanded(false)}
+                    className={`flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
+                  >
+                    <span className="text-gray-700 transition-colors duration-200 text-base">
+                      Plans
+                    </span>
+                  </Link>
+                </li>
+                {/* <li>
                 <Link
                   href="/app/settings/usage"
                   onClick={() => setIsExpanded(false)}
@@ -203,13 +206,14 @@ const SidebarMenu: React.FC<{
                   </span>
                 </Link>
               </li> */}
-            </ul>
-          )}
-        </div>
-      </li>
-    </ul>
-  </div>
-);
+              </ul>
+            )}
+          </div>
+        </li>
+      </ul>
+    </div>
+  );
+};
 
 const SidebarFooter: React.FC<{
   openModal: () => void;

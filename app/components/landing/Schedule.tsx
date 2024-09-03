@@ -1,20 +1,50 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-const LandingScheduleSection = ({
-  handleChange,
-  handleSchedule,
-  formData,
-}: {
+interface LandingScheduleSectionProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSchedule: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleSchedule: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   formData: {
     name: string;
     company: string;
     email: string;
   };
+}
+
+const LandingScheduleSection: React.FC<LandingScheduleSectionProps> = ({
+  handleChange,
+  handleSchedule,
+  formData,
 }) => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Ensure all required fields are filled
+      if (!formData.name || !formData.email || !formData.company) {
+        throw new Error("Please fill in all required fields");
+      }
+
+      // Construct Calendly URL with query parameters
+      const calendlyUrl =
+        `https://calendly.com/pratik-padooru-prospectedge/30min?` +
+        `name=${encodeURIComponent(formData.name)}` +
+        `&email=${encodeURIComponent(formData.email)}` +
+        `&a1=${encodeURIComponent(formData.company)}`;
+
+      // Open Calendly appointment scheduler in a new tab
+      window.open(calendlyUrl, "_blank");
+    } catch (error) {
+      console.error("Error scheduling demo:", error);
+      // Handle error (e.g., show an error message to the user)
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto py-16 px-4">
@@ -32,10 +62,7 @@ const LandingScheduleSection = ({
           <p className="text-xl text-primary-600 mb-8 text-center">
             Schedule a demo and discover how we can transform your business
           </p>
-          <form
-            className="flex flex-col w-full gap-6"
-            onSubmit={handleSchedule}
-          >
+          <form className="flex flex-col w-full gap-6" onSubmit={handleSubmit}>
             {["name", "company", "email"].map((field) => (
               <motion.div
                 key={field}
@@ -68,8 +95,9 @@ const LandingScheduleSection = ({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-3 bg-primary-500 text-white rounded-full text-lg font-semibold hover:bg-primary-600 active:bg-primary-700 transition-colors shadow-md"
+                disabled={isSubmitting}
               >
-                Schedule Demo
+                {isSubmitting ? "Scheduling..." : "Schedule Demo"}
               </motion.button>
             </div>
           </form>

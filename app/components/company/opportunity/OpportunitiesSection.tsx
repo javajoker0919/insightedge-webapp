@@ -12,6 +12,7 @@ import OpportunitiesTable from "./OpportunitiesTable";
 import { generateTOAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
 import { Loading } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 interface OpportunitiesProps {
   companyName: string;
@@ -50,6 +51,8 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   }
 
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
+
   const setProfile = useSetAtom(profileAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
@@ -168,6 +171,10 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   };
 
   const generateTO = async () => {
+    mixpanel.track("generate.opportunity", {
+      $source: "company_page",
+    });
+
     setIsGeneratingTO(true);
 
     try {
@@ -264,6 +271,11 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         data={csvData}
         headers={headers}
         filename={filename}
+        onClick={() => {
+          mixpanel.track("export.csv", {
+            $source: "company_page.opportunity",
+          });
+        }}
         className="px-4 py-2 sm:py-2 w-40 sm:w-40 rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center justify-center gap-2"
       >
         <FontAwesomeIcon icon={faFileCsv} />

@@ -11,12 +11,14 @@ import {
   profileAtom,
   watchlistAtom,
   userInfoAtom,
-  orgInfoAtom
+  orgInfoAtom,
 } from "@/utils/atoms";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const Callback = () => {
   const router = useRouter();
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
 
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setProfile = useSetAtom(profileAtom);
@@ -33,7 +35,7 @@ const Callback = () => {
     try {
       const {
         data: { user },
-        error: userError
+        error: userError,
       } = await supabase.auth.getUser();
 
       if (userError) throw userError;
@@ -58,7 +60,7 @@ const Callback = () => {
           email: sessionData.session?.user?.email || "",
           firstName: "",
           lastName: "",
-          companyName: ""
+          companyName: "",
         });
 
         if (sessionData?.session?.access_token) {
@@ -82,7 +84,13 @@ const Callback = () => {
           email: userData.email,
           firstName: userData.first_name,
           lastName: userData.last_name,
-          companyName: ""
+          companyName: "",
+        });
+
+        mixpanel.identify(userData.id);
+        mixpanel.set({
+          $name: `${userData.first_name} ${userData.last_name}`,
+          $email: userData.email,
         });
 
         const { data: orgData, error: orgError } = await supabase
@@ -108,13 +116,13 @@ const Callback = () => {
           website: orgData.website,
           overview: orgData.overview,
           products: orgData.products,
-          creatorID: orgData.creator_id
+          creatorID: orgData.creator_id,
         });
 
         setProfile({
           user_id: userData.id,
           org_id: orgData.id,
-          credits: null
+          credits: null,
         });
 
         const { data: watchlistData, error: watchlistError } = await supabase
@@ -141,7 +149,7 @@ const Callback = () => {
               organizationID: item.organization_id,
               creatorID: item.creator_id,
               uuid: item.uuid,
-              company_count: item.watchlist_companies?.length
+              company_count: item.watchlist_companies?.length,
             };
           })
         );

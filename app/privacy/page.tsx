@@ -6,7 +6,7 @@ import LandingFooterSection from "../components/landing/Footer";
 const Privacy = () => {
   return (
     <div className="w-full h-screen overflow-y-auto">
-      <LandingHeaderSection isHeaderVisible={true} />
+      <LandingHeaderSection />
       <div className="flex flex-col items-center justify-start w-full">
         <div className="max-w-4xl mx-auto mt-10 px-4 py-16 sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-8">

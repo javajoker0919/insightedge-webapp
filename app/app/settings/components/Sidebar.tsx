@@ -2,13 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  FaUser,
-  FaBuilding,
-  FaCreditCard,
-  FaListAlt,
-  FaChartBar,
-} from "react-icons/fa";
+import { FaUser, FaBuilding, FaCreditCard, FaChartBar } from "react-icons/fa";
 
 const Sidebar = () => {
   const pathname = usePathname();

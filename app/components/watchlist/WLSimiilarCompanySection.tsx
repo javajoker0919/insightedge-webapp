@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa";
 import { supabase } from "@/utils/supabaseClient";
 import { CompanyProps } from "../../app/watchlist/[id]/page";
 import Loading from "../Loading";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 interface WLSimilarCompanySectionProps {
   watchlistCompanies: CompanyProps[];
@@ -19,6 +20,8 @@ const WLSimilarCompanySection: React.FC<WLSimilarCompanySectionProps> = ({
   handleAddCompanyToWatchlist,
   isLoading,
 }) => {
+  const mixpanel = getMixPanelClient();
+
   const [similarCompanies, setSimilarCompanies] = useState<CompanyProps[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
@@ -123,6 +126,11 @@ const WLSimilarCompanySection: React.FC<WLSimilarCompanySectionProps> = ({
                   <button
                     onClick={(e) => {
                       e.preventDefault();
+
+                      mixpanel.track("company.add", {
+                        $source: "watchlist_page.similar_companies",
+                      });
+
                       handleAddCompanyToWatchlist(company.id);
                       setSimilarCompanies((prev) =>
                         prev.filter((item) => item.id !== company.id)

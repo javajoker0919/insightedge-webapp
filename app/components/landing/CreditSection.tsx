@@ -1,4 +1,10 @@
+import Link from "next/link";
+
+import { getMixPanelClient } from "@/utils/mixpanel";
+
 const LandingCreditSection = () => {
+  const mixpanel = getMixPanelClient();
+
   return (
     <section id="pricing" className="py-12 md:py-24">
       <div className="container mx-auto px-4">
@@ -40,9 +46,17 @@ const LandingCreditSection = () => {
                   / month
                 </span>
               </div>
-              <button className="w-full mt-4 md:mt-6 px-4 md:px-6 py-2 md:py-3 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-full transition duration-300">
+              <Link
+                href="/auth/sign-up"
+                onClick={() => {
+                  mixpanel.track("goto.sign_up", {
+                    $source: "pricing.free",
+                  });
+                }}
+                className="block w-full mt-4 md:mt-6 px-4 md:px-6 py-2 md:py-3 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-full transition duration-300 text-center"
+              >
                 Sign Up
-              </button>
+              </Link>
             </div>
             {/* Plan features */}
             <ul className="p-6 md:p-8 space-y-3 md:space-y-4">
@@ -83,9 +97,17 @@ const LandingCreditSection = () => {
                   / month
                 </span>
               </div>
-              <button className="w-full mt-4 md:mt-6 px-4 md:px-6 py-2 md:py-3 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-full transition duration-300">
+              <Link
+                href="/auth/sign-up"
+                onClick={() => {
+                  mixpanel.track("goto.sign_up", {
+                    $source: "pricing.premium",
+                  });
+                }}
+                className="block w-full mt-4 md:mt-6 px-4 md:px-6 py-2 md:py-3 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-full transition duration-300 text-center"
+              >
                 Sign Up
-              </button>
+              </Link>
             </div>
             {/* Plan features */}
             <ul className="p-6 md:p-8 space-y-3 md:space-y-4">
@@ -124,9 +146,14 @@ const LandingCreditSection = () => {
               <div className="text-3xl md:text-4xl font-bold text-gray-900">
                 Custom
               </div>
-              <button className="w-full mt-4 md:mt-6 px-4 md:px-6 py-2 md:py-3 text-sm font-medium bg-gray-800 text-white hover:bg-gray-900 rounded-full transition duration-300">
+              <a
+                href="https://calendly.com/pratik-padooru-prospectedge/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full mt-4 md:mt-6 px-4 md:px-6 py-2 md:py-3 text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 rounded-full transition duration-300 text-center"
+              >
                 Contact Sales
-              </button>
+              </a>
             </div>
             {/* Plan features */}
             <ul className="p-6 md:p-8 space-y-3 md:space-y-4">

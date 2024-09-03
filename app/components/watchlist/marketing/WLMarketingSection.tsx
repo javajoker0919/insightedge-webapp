@@ -12,6 +12,7 @@ import MarketingStrategyTable from "./WLMarketingTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { generateTMAPI } from "@/utils/apiClient";
 import { profileAtom, userInfoAtom, orgInfoAtom } from "@/utils/atoms";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 export interface MarketingProps {
   tactic: string;
@@ -35,6 +36,8 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
   isLoading,
 }) => {
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
+
   const setProfile = useSetAtom(profileAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
@@ -188,6 +191,10 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
       invokeToast("error", "No earnings transcripts selected");
       return;
     }
+
+    mixpanel.track("generate.marketing", {
+      $source: "watchlist_page",
+    });
 
     setIsGeneratingTM(true);
 
@@ -367,6 +374,11 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
                 activeTab === "general" ? generalMarketings : tailoredMarketings
               )}
               filename={`${activeTab}_marketing_strategies.csv`}
+              onClick={() => {
+                mixpanel.track("export.csv", {
+                  $source: "watchlist_page.marketing",
+                });
+              }}
               className="px-4 py-2 sm:py-2 w-full sm:w-auto rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center gap-2"
             >
               <FontAwesomeIcon icon={faFileCsv} />

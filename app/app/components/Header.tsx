@@ -14,9 +14,11 @@ import {
   isSidebarExpandedAtom,
 } from "@/utils/atoms";
 import { CompanySearchbar, Logo } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const Header: React.FC = () => {
   const router = useRouter();
+  const mixpanel = getMixPanelClient();
 
   const [profile, setProfile] = useAtom(profileAtom);
   const watchlist = useAtomValue(watchlistAtom);
@@ -29,7 +31,7 @@ const Header: React.FC = () => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleLogout = async () => {
+  const handleSignOut = async () => {
     setIsLoggingOut(true);
 
     try {
@@ -127,7 +129,13 @@ const Header: React.FC = () => {
           >
             <IoMenu className="text-2xl" />
           </button>
-          <Logo />
+          <Logo
+            onClick={() => {
+              mixpanel.track("logo.click", {
+                $source: "main.header",
+              });
+            }}
+          />
         </div>
 
         <div className="relative w-full sm:w-[300px] lg:w-[400px] xl:w-[700px] mb-4 sm:mb-0 h-10">
@@ -170,9 +178,15 @@ const Header: React.FC = () => {
             {isDropdownOpen && (
               <div className="absolute border border-gray-200 right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                 <Link
-                  href={`/app`}
+                  href="/app"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={closeDropdown}
+                  onClick={() => {
+                    mixpanel.track("goto.dashboard", {
+                      $source: "main.header",
+                    });
+
+                    closeDropdown();
+                  }}
                 >
                   Dashboard
                 </Link>
@@ -184,11 +198,11 @@ const Header: React.FC = () => {
                   Settings
                 </Link>
                 <button
-                  onClick={handleLogout}
+                  onClick={handleSignOut}
                   disabled={isLoggingOut}
                   className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
                 >
-                  {"Log out"}
+                  {"Sign out"}
                 </button>
               </div>
             )}

@@ -11,10 +11,12 @@ import {
 } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 import { Loading } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const router = useRouter();
   const pathname = usePathname();
+  const mixpanel = getMixPanelClient();
 
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setProfile = useSetAtom(profileAtom);
@@ -35,7 +37,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
     "/auth/reset-success",
   ];
 
-  const publicPaths = ["/", "/terms", "/privacy"];
+  const publicPaths = ["/", "/terms", "/privacy", "/features", "/pricing"];
   const blogPath = "/blog";
 
   useEffect(() => {
@@ -45,6 +47,10 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
     const { data: authListener } = supabase.auth.onAuthStateChange(() => {
       checkUser();
+    });
+
+    mixpanel.track("page_view", {
+      $destination: pathname,
     });
 
     return () => {

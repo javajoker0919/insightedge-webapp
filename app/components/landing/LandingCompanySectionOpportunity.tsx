@@ -1,45 +1,50 @@
-import { useState } from "react";
-import { IoBulb, IoPerson } from "react-icons/io5";
-import { FaSort } from "react-icons/fa";
+import React, { useState, useMemo, FC } from "react";
 
 import { OpportunityData } from "./LandingCompanySectionTable";
 
-const LandingCompanySectionOpportunity: React.FC<{
+const LandingCompanySectionOpportunity: FC<{
   opportunities: OpportunityData[];
 }> = ({ opportunities }) => {
   const [sortConfig, setSortConfig] = useState<{
-    key: string;
-    direction: string;
-  } | null>(null);
-
-  const sortedOpportunities = [...opportunities].sort((a, b) => {
-    if (sortConfig !== null) {
-      if (
-        (a[sortConfig.key as keyof OpportunityData] ?? "") <
-        (b[sortConfig.key as keyof OpportunityData] ?? "")
-      ) {
-        return sortConfig.direction === "ascending" ? -1 : 1;
-      }
-      if (
-        (a[sortConfig.key as keyof OpportunityData] ?? "") >
-        (b[sortConfig.key as keyof OpportunityData] ?? "")
-      ) {
-        return sortConfig.direction === "ascending" ? 1 : -1;
-      }
-    }
-    return 0;
+    key: keyof OpportunityData;
+    direction: "ascending" | "descending";
+  }>({
+    key: "score",
+    direction: "descending",
   });
 
-  const requestSort = (key: string) => {
-    let direction = "ascending";
-    if (
-      sortConfig &&
-      sortConfig.key === key &&
-      sortConfig.direction === "ascending"
-    ) {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
+  const sortedOpportunities = useMemo(() => {
+    const sortableOpportunities = [...opportunities];
+    sortableOpportunities.sort((a, b) => {
+      if (sortConfig.key === "score") {
+        return sortConfig.direction === "ascending"
+          ? a.score - b.score
+          : b.score - a.score;
+      }
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === "ascending" ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === "ascending" ? 1 : -1;
+      }
+      return 0;
+    });
+    return sortableOpportunities;
+  }, [opportunities, sortConfig]);
+
+  const requestSort = (key: keyof OpportunityData) => {
+    setSortConfig((currentConfig) => {
+      if (currentConfig.key === key) {
+        return {
+          key,
+          direction:
+            currentConfig.direction === "ascending"
+              ? "descending"
+              : "ascending",
+        };
+      }
+      return { key, direction: "descending" };
+    });
   };
 
   const getDepartmentClass = (department: string) => {
@@ -68,29 +73,29 @@ const LandingCompanySectionOpportunity: React.FC<{
           <table className="relative border-collapse min-w-[1200px] xl:min-w-[600px] overflow-x-auto">
             <thead className="sticky z-10 top-0">
               <tr className="bg-gray-100 text-black">
-                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300">
+                <th className="px-2 sm:px-4 py-3 text-left font-medium border-x border-gray-300 w-[50%]">
                   Opportunity
                 </th>
                 <th
-                  className="px-2 sm:px-4 py-3 text-center font-medium w-16 sm:w-fit"
+                  className="px-2 sm:px-4 py-3 text-center font-medium w-[10%]"
                   onClick={() => requestSort("score")}
                 >
                   <div className="justify-center gap-1 flex items-center cursor-pointer">
                     <span>Score</span>
-                    <FaSort />
+                    {/* Sort icon removed */}
                   </div>
                 </th>
-                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-24 sm:w-32">
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-[15%]">
                   <span className="hidden sm:inline">Target Buyer Role</span>
                   <span className="sm:hidden">Role</span>
                 </th>
-                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-24 sm:w-32">
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-[15%]">
                   <span className="hidden sm:inline">
                     Target Buyer Department
                   </span>
                   <span className="sm:hidden">Dept.</span>
                 </th>
-                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-32 xl:w-40">
+                <th className="px-2 sm:px-4 py-3 text-center font-medium border-x border-gray-300 w-[10%]">
                   Quick Actions
                 </th>
               </tr>
@@ -99,9 +104,7 @@ const LandingCompanySectionOpportunity: React.FC<{
               {sortedOpportunities.map((opp, index) => (
                 <tr
                   key={index}
-                  className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} ${
-                    opportunities.length > 0 ? "" : "blur"
-                  }`}
+                  className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                 >
                   <td className="px-2 sm:px-4 py-3 border text-left border-gray-300 text-xs 2xl:text-sm">
                     {opp.name}
@@ -122,7 +125,7 @@ const LandingCompanySectionOpportunity: React.FC<{
                     </span>
                   </td>
                   <td className="px-2 sm:px-4 py-3 border border-gray-300">
-                    <div className="flex flex-col 2xl:flex-row justify-center space-y-2 2xl:space-y-0 2xl:space-x-2">
+                    <div className="flex justify-center">
                       <a
                         href={`https://www.google.com/search?q=${encodeURIComponent(
                           opp.company_name
@@ -133,10 +136,10 @@ const LandingCompanySectionOpportunity: React.FC<{
                         )}+"LinkedIn"`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary-500 hover:text-white font-semibold justify-center border-primary-500 border flex items-center gap-1 rounded-full !min-w-fit p-1 px-2 hover:bg-primary-500 text-xs 2xl:text-sm"
+                        className="text-primary-500 hover:text-white font-semibold border-primary-500 border flex items-center gap-1 rounded-full p-1 px-2 hover:bg-primary-500 text-xs 2xl:text-sm whitespace-nowrap"
                       >
-                        Find Buyer
-                        <IoPerson />
+                        <span className="hidden sm:inline">Find</span> Buyer
+                        {/* Person icon removed */}
                       </a>
                     </div>
                   </td>

@@ -80,7 +80,7 @@ const Blog = () => {
 
   return (
     <div className="w-full">
-      <LandingHeaderSection isHeaderVisible={true} />
+      <LandingHeaderSection />
       <div className="flex max-w-3xl mx-auto px-4 py-8">
         <article className="prose lg:prose-xl">
           <h1 className="text-4xl font-bold mb-4">{blogData.title}</h1>
