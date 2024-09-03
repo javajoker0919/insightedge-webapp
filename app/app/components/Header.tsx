@@ -113,6 +113,17 @@ const Header: React.FC = () => {
             credits: parseInt(data.value),
           };
         });
+      } else {
+        setIsCreditLoaded(false);
+
+        setProfile((prev) => {
+          if (!prev) return prev;
+
+          return {
+            ...prev,
+            credits: 0,
+          };
+        });
       }
     } catch (error) {
       console.error("Error fetching credit count:", error);
