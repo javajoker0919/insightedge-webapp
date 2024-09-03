@@ -23,6 +23,7 @@ import SummarySection from "../../../components/company/summary/SummarySection";
 import AboutSection from "./AboutSection";
 import { FollowButton, ShareButton } from "./components";
 import MarketingStrategySection from "../../../components/company/marketing/MarketingStrategySection";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 ChartJS.register(
   CategoryScale,
@@ -47,6 +48,8 @@ export interface CompanyData {
 
 const CompanyDetailPage: React.FC = () => {
   const { id: companyID } = useParams<{ id: string }>();
+  const mixpanel = getMixPanelClient();
+
   const [companyData, setCompanyData] = useState<CompanyData | null>(null);
   const [yearQuarters, setYearQuarters] = useState<YearQuarter[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
@@ -185,7 +188,15 @@ const CompanyDetailPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex text-sm items-center gap-2 text-gray-400">
-            <Link href={`/app`} className="hover:underline">
+            <Link
+              href="/app"
+              onClick={() => {
+                mixpanel.track("goto.dashboard", {
+                  $source: "company_page.home_button",
+                });
+              }}
+              className="hover:underline"
+            >
               Home
             </Link>
             <FaArrowRight className="w-3 h-3" />
