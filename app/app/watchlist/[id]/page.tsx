@@ -27,6 +27,7 @@ import {
 import { HighlightProps } from "@/app/components/watchlist/WLHighlightSection";
 import { CalendarProps } from "@/app/components/watchlist/WLCalendarSection";
 import { IncomeStatementProps } from "@/app/components/watchlist/WLIncomeStatementSection";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 export interface CompanyProps {
   id: number;
@@ -49,6 +50,8 @@ const WatchlistPage = () => {
   const params = useParams();
   const paramID = params.id as string;
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
+
   const [watchlist, setWatchlist] = useAtom(watchlistAtom);
 
   const [watchlistInfo, setWatchlistInfo] = useState<WatchlistProps | null>(
@@ -129,6 +132,10 @@ const WatchlistPage = () => {
   };
 
   const handleAddInvestments = () => {
+    mixpanel.track("company.add", {
+      $source: "watchlist_page.plus_company",
+    });
+
     setIsSearchBarOpen(true);
   };
 

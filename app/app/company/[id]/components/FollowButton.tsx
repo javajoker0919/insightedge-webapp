@@ -80,40 +80,45 @@ const FollowButton: React.FC = () => {
     setIsWatchlistDropdownOpen((prev) => !prev);
   }, [fetchWatchlists, checkedWatchlists]);
 
-  const handleWatchlistItemClick = useCallback(
-    async (id: number) => {
-      try {
-        setCheckedWatchlists((prev) => {
-          if (!prev) return prev;
-          const newSet = new Set(prev);
-          if (newSet.has(id)) {
-            newSet.delete(id);
-          } else {
-            newSet.add(id);
-          }
-          return newSet;
+  const handleWatchlistItemClick = async (id: number) => {
+    try {
+      setCheckedWatchlists((prev) => {
+        if (!prev) return prev;
+        const newSet = new Set(prev);
+        if (newSet.has(id)) {
+          newSet.delete(id);
+        } else {
+          newSet.add(id);
+        }
+        return newSet;
+      });
+
+      if (checkedWatchlists?.has(id)) {
+        mixpanel.track("company.remove", {
+          $source: "company_page.follow_button",
         });
 
-        if (checkedWatchlists?.has(id)) {
-          await supabase
-            .from("watchlist_companies")
-            .delete()
-            .eq("watchlist_id", id)
-            .eq("company_id", companyID);
-          mixpanel.track("Unfollow Company", { companyID }); // Track unfollow event
-        } else {
-          await supabase.from("watchlist_companies").insert({
-            watchlist_id: id,
-            company_id: companyID,
-          });
-          mixpanel.track("Follow Company", { companyID }); // Track follow event
-        }
-      } catch (error) {
-        console.error("Error updating watchlist:", error);
+        await supabase
+          .from("watchlist_companies")
+          .delete()
+          .eq("watchlist_id", id)
+          .eq("company_id", companyID);
+        mixpanel.track("Unfollow Company", { companyID }); // Track unfollow event
+      } else {
+        mixpanel.track("company.add", {
+          $source: "company_page.follow_button",
+        });
+
+        await supabase.from("watchlist_companies").insert({
+          watchlist_id: id,
+          company_id: companyID,
+        });
+        mixpanel.track("Follow Company", { companyID }); // Track follow event
       }
-    },
-    [checkedWatchlists, companyID]
-  );
+    } catch (error) {
+      console.error("Error updating watchlist:", error);
+    }
+  };
 
   return (
     <div className="relative" ref={watchlistRef}>
@@ -176,8 +181,12 @@ const FollowButton: React.FC = () => {
             onClick={() => {
               setIsWatchlistDropdownOpen(false);
               setIsWatchlistModalOpen(true);
+
+              mixpanel.track("watchlist.create", {
+                $source: "company_page.follow_button",
+              });
             }}
-            className="py-2.5 flex items-center px-3.5 text-gray-700 hover:bg-gray-100 w-full"
+            className="py-2.5 flex items-center gap-1 px-3.5 text-gray-700 hover:bg-gray-100 w-full"
           >
             <PlusSvg />
             New watchlist

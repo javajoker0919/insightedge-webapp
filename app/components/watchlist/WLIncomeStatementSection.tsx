@@ -7,6 +7,7 @@ import { MdArrowUpward, MdArrowDownward } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 
 import { Loading } from "..";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 export interface IncomeStatementProps {
   companyID: number;
@@ -44,6 +45,7 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
   isLoading,
 }) => {
   const router = useRouter();
+  const mixpanel = getMixPanelClient();
 
   const sortStatements = (
     statements: IncomeStatementProps[],
@@ -183,6 +185,11 @@ const WLIncomeStatementSection: React.FC<WLIncomeStatementProps> = ({
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+
+                            mixpanel.track("company.remove", {
+                              $source: "watchlist_page.income_statements",
+                            });
+
                             handleRemoveCompanyFromWatchlist(
                               incomeStatement.companyID
                             );

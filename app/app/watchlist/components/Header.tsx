@@ -25,7 +25,7 @@ const Header = () => {
 
   const handleAddWatchlist = () => {
     mixpanel.track("watchlist.create", {
-      $source: "watchlist.header",
+      $source: "watchlist_page.header",
     });
     setIsModalOpen(true);
   };
