@@ -271,6 +271,11 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
         data={csvData}
         headers={headers}
         filename={filename}
+        onClick={() => {
+          mixpanel.track("export.csv", {
+            $source: "company_page.opportunity",
+          });
+        }}
         className="px-4 py-2 sm:py-2 w-40 sm:w-40 rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center justify-center gap-2"
       >
         <FontAwesomeIcon icon={faFileCsv} />

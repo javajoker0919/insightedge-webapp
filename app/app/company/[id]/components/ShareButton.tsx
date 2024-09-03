@@ -6,6 +6,7 @@ import { ShareSvg } from ".";
 import { profileAtom } from "@/utils/atoms";
 import { emailShare } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 interface ShareButtonProps {
   etID: number | null;
@@ -75,8 +76,10 @@ const EmailList: FC<EmailListProps> = ({ emails, handleRemoveEmail }) => (
 );
 
 const ShareButton: FC<ShareButtonProps> = ({ etID }) => {
-  const profile = useAtomValue(profileAtom);
   const { invokeToast } = useToastContext();
+  const mixpanel = getMixPanelClient();
+
+  const profile = useAtomValue(profileAtom);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const newEmailRef = useRef<HTMLInputElement>(null);
@@ -138,6 +141,11 @@ const ShareButton: FC<ShareButtonProps> = ({ etID }) => {
         organization_id: profile.org_id.toString(),
         share_email_ids: emails.filter((email) => email !== ""),
       };
+
+      mixpanel.track("share.email", {
+        email_count: emailData.share_email_ids.length,
+      });
+
       const { data } = await emailShare(emailData);
 
       invokeToast("success", data.message);

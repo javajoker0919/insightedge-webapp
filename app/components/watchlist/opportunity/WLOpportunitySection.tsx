@@ -419,6 +419,11 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
             <CSVLink
               {...exportToCSV()}
               filename={`${activeTab}_opportunities.csv`}
+              onClick={() => {
+                mixpanel.track("export.csv", {
+                  $source: "watchlist_page.opportunity",
+                });
+              }}
               className="px-4 py-2 sm:py-2 w-full sm:w-auto rounded-md text-white text-sm border border-green-600 bg-green-600 hover:bg-green-700 flex items-center gap-2"
             >
               <FontAwesomeIcon icon={faFileCsv} />

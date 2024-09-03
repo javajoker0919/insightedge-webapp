@@ -4,6 +4,7 @@ import LandingCompanySectionOpportunity from "./LandingCompanySectionOpportunity
 import Loading from "../Loading";
 import { motion } from "framer-motion";
 import { createPortal } from "react-dom";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 type CompanyData = {
   id: string;
@@ -109,6 +110,8 @@ const DefaultExportMenu: React.FC<{
   companyData: CompanyData | null;
   opportunities: OpportunityData[];
 }> = ({ companyData, opportunities }) => {
+  const mixpanel = getMixPanelClient();
+
   const [isOpen, setIsOpen] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -231,6 +234,10 @@ const DefaultExportMenu: React.FC<{
 
   const exportAsCSV = () => {
     if (!opportunities || opportunities.length === 0) return;
+
+    mixpanel.track("export.csv", {
+      $source: "landing_page",
+    });
 
     const headers = [
       "Opportunity Name",
