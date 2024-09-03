@@ -89,9 +89,6 @@ const SignUp = () => {
         companyName: "",
       });
 
-      mixpanel.identify(authData.user?.id ?? ""); // Identify user in Mixpanel
-      mixpanel.track("Sign Up", { email: authData.user?.email }); // Track sign-up event
-
       router.replace("/auth/verify-email");
     } catch (error: any) {
       console.error("Sign-up error:", error);

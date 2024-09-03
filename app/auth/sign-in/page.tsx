@@ -121,6 +121,10 @@ const SignIn = () => {
       });
 
       mixpanel.identify(userData.id); // Identify user in Mixpanel
+      mixpanel.set({
+        $name: `${userData.first_name} ${userData.last_name}`,
+        $email: userData.email,
+      });
       mixpanel.track("Sign In", { email: userData.email }); // Track sign-in event
 
       setOrgInfo({

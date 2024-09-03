@@ -12,8 +12,11 @@ export const getMixPanelClient = () => {
 class MixPanel {
   constructor() {
     const isProd = process.env.NODE_ENV === "production";
-    mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN!, {
-      api_host: process.env.NEXT_PUBLIC_MIXPANEL_API!,
+    const token = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN ?? "";
+    mixpanel.init(token, {
+      track_pageview: true,
+      persistence: "localStorage",
+      // api_host: process.env.NEXT_PUBLIC_MIXPANEL_API ?? "",
     });
   }
 

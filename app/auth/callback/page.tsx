@@ -63,11 +63,6 @@ const Callback = () => {
           companyName: "",
         });
 
-        mixpanel.identify(sessionData.session?.user?.id ?? ""); // Identify user in Mixpanel
-        mixpanel.track("OAuth Callback", {
-          email: sessionData.session?.user?.email,
-        }); // Track OAuth callback event
-
         if (sessionData?.session?.access_token) {
           const mainURL = `${process.env.NEXT_PUBLIC_APP_URL}/onboarding`;
           const accessTokenURL = `access_token=${sessionData?.session?.access_token}`;
@@ -90,6 +85,12 @@ const Callback = () => {
           firstName: userData.first_name,
           lastName: userData.last_name,
           companyName: "",
+        });
+
+        mixpanel.identify(userData.id);
+        mixpanel.set({
+          $name: `${userData.first_name} ${userData.last_name}`,
+          $email: userData.email,
         });
 
         const { data: orgData, error: orgError } = await supabase
