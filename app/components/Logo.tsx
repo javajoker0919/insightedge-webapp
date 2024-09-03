@@ -5,15 +5,17 @@ import { userMetadataAtom } from "@/utils/atoms";
 import { useAtomValue } from "jotai";
 
 interface LogoProps {
+  onClick?: () => void;
   withIcon?: boolean;
 }
 
-const Logo: React.FC<LogoProps> = ({ withIcon }) => {
+const Logo: React.FC<LogoProps> = ({ onClick, withIcon }) => {
   const userMetadata = useAtomValue(userMetadataAtom);
 
   return (
     <Link
       href={userMetadata == null ? "/" : "/app"}
+      onClick={onClick}
       className="flex items-center"
     >
       {withIcon && (

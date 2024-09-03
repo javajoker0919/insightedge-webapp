@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useAtomValue } from "jotai";
 import { userMetadataAtom } from "@/utils/atoms";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const LandingNavMenuSection = ({
   scrollToSection,
@@ -8,6 +9,8 @@ const LandingNavMenuSection = ({
   scrollToSection: (sectionId: string) => void;
 }) => {
   const userMetadata = useAtomValue(userMetadataAtom);
+  const mixpanel = getMixPanelClient();
+
   return (
     <>
       <nav
@@ -45,12 +48,22 @@ const LandingNavMenuSection = ({
             <>
               <Link
                 href="/auth/sign-in"
+                onClick={() => {
+                  mixpanel.track("goto.sign_in", {
+                    $source: "landing.header",
+                  });
+                }}
                 className="w-full md:w-auto px-4 md:py-2 text-center md:hover:text-primary-600 transition-colors md:border rounded-full flex items-center justify-center"
               >
-                Log In
+                Sign In
               </Link>
               <Link
                 href="/auth/sign-up"
+                onClick={() => {
+                  mixpanel.track("goto.sign_up", {
+                    $source: "landing.header",
+                  });
+                }}
                 className="w-full md:w-auto px-4 md:py-2 text-center md:bg-primary-600 text-black md:text-white rounded-full md:hover:bg-primary-700 transition-colors flex items-center justify-center"
               >
                 Sign Up

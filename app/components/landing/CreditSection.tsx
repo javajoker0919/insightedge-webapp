@@ -1,6 +1,10 @@
 import Link from "next/link";
 
+import { getMixPanelClient } from "@/utils/mixpanel";
+
 const LandingCreditSection = () => {
+  const mixpanel = getMixPanelClient();
+
   return (
     <section id="pricing" className="py-12 md:py-24">
       <div className="container mx-auto px-4">
@@ -44,6 +48,11 @@ const LandingCreditSection = () => {
               </div>
               <Link
                 href="/auth/sign-up"
+                onClick={() => {
+                  mixpanel.track("goto.sign_up", {
+                    $source: "pricing.free",
+                  });
+                }}
                 className="block w-full mt-4 md:mt-6 px-4 md:px-6 py-2 md:py-3 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-full transition duration-300 text-center"
               >
                 Sign Up
@@ -90,6 +99,11 @@ const LandingCreditSection = () => {
               </div>
               <Link
                 href="/auth/sign-up"
+                onClick={() => {
+                  mixpanel.track("goto.sign_up", {
+                    $source: "pricing.premium",
+                  });
+                }}
                 className="block w-full mt-4 md:mt-6 px-4 md:px-6 py-2 md:py-3 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-full transition duration-300 text-center"
               >
                 Sign Up

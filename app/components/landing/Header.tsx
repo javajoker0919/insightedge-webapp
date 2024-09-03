@@ -1,7 +1,6 @@
-import Link from "next/link";
-import Image from "next/image";
 import Logo from "../Logo";
 import LandingNavMenuSection from "./NavMenu";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const LandingHeaderSection = ({
   isMenuOpen,
@@ -20,6 +19,8 @@ const LandingHeaderSection = ({
   headerBackground?: string;
   isScrolled?: boolean; // Add this line
 }) => {
+  const mixpanel = getMixPanelClient();
+
   return (
     <>
       <header
@@ -28,17 +29,15 @@ const LandingHeaderSection = ({
         }`}
       >
         <div className="flex flex-wrap justify-between items-center px-4">
-          <div className="flex items-center cursor-pointer">
-            <Link href={`/`}>
-              <Image
-                src={"/favicon.png"}
-                alt={"ProspectEdge"}
-                width={40}
-                height={40}
-              />
-            </Link>
-            <Logo />
-          </div>
+          <Logo
+            onClick={() => {
+              mixpanel.track("logo.click", {
+                $source: "landing.header",
+              });
+            }}
+            withIcon
+          />
+
           <div className="md:hidden">
             <button
               onClick={toggleMenu}

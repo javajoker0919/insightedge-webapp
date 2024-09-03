@@ -4,7 +4,6 @@ import Footer from "./Footer";
 import HeaderImage from "./HeaderImage";
 import Loading from "./Loading";
 import Modal from "./Modal";
-import Navbar from "./Navbar";
 import AuthInput from "./SignInput";
 import WatchlistModal from "./WatchlistModal";
 import PrelineScript from "./PrelineScript";
@@ -32,7 +31,6 @@ export {
   HeaderImage,
   Loading,
   Modal,
-  Navbar,
   AuthInput,
   WatchlistModal,
   PrelineScript,

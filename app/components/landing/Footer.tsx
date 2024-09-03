@@ -2,25 +2,28 @@ import Image from "next/image";
 import Logo from "../Logo";
 import Link from "next/link";
 import { FaTwitter } from "react-icons/fa";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const LandingFooterSection = ({
   scrollToSection,
 }: {
   scrollToSection: (sectionId: string) => void;
 }) => {
+  const mixpanel = getMixPanelClient();
+
   return (
     <footer id="cta" className="mt-20">
       <div className="flex flex-col px-4 sm:px-6 lg:px-20 lg:flex-row justify-between items-center w-full">
         <div className="flex flex-col items-center lg:items-start mb-8 lg:mb-0">
-          <div className="flex items-center">
-            <Image
-              src={"/favicon.png"}
-              alt={"ProspectEdge"}
-              width={40}
-              height={40}
-            />
-            <Logo />
-          </div>
+          <Logo
+            onClick={() => {
+              mixpanel.track("logo.click", {
+                $source: "landing.footer",
+              });
+            }}
+            withIcon
+          />
+
           <div className="flex flex-row gap-4 mt-6 lg:mt-8 lg:ml-[100px]">
             {[
               {

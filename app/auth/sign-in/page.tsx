@@ -125,7 +125,7 @@ const SignIn = () => {
         $name: `${userData.first_name} ${userData.last_name}`,
         $email: userData.email,
       });
-      mixpanel.track("Sign In", { email: userData.email }); // Track sign-in event
+      mixpanel.track("sign_in.email"); // Track sign-in event
 
       setOrgInfo({
         id: orgData.id,
@@ -178,6 +178,8 @@ const SignIn = () => {
 
   const handleGoogleSignIn = async () => {
     try {
+      mixpanel.track("sign_in.google");
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -196,16 +198,15 @@ const SignIn = () => {
   return (
     <div className="flex flex-col xl:flex-row w-full h-screen">
       <div className="flex flex-col w-full xl:w-1/2 bg-white">
-        <div className="flex items-center mt-4 ml-4">
-          <Link href="/app">
-            <Image
-              src="/favicon.png"
-              alt="ProspectEdge Logo"
-              width={40}
-              height={40}
-            />
-          </Link>
-          <Logo />
+        <div className="mt-4 ml-4">
+          <Logo
+            onClick={() => {
+              mixpanel.track("logo.click", {
+                $source: "sign_in",
+              });
+            }}
+            withIcon
+          />
         </div>
         <div className="flex flex-col mt-8 md:mt-24 items-center w-full px-4 md:px-0">
           <div className="flex flex-col w-full max-w-[26rem] text-center">
@@ -229,7 +230,7 @@ const SignIn = () => {
             <div className="flex items-center w-full mt-6 mb-4 md:mt-8 md:mb-6">
               <div className="flex-grow border-t border-gray-300"></div>
               <span className="flex-shrink mx-2 md:mx-4 text-xs md:text-sm font-bold text-gray-500">
-                OR LOG IN WITH YOUR EMAIL
+                OR SIGN IN WITH YOUR EMAIL
               </span>
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
@@ -343,6 +344,11 @@ const SignIn = () => {
           <span>Don't have an account yet?</span>
           <Link
             href="/auth/sign-up"
+            onClick={() => {
+              mixpanel.track("goto.sign_up", {
+                $source: "sign_in",
+              });
+            }}
             className="text-primary-400 hover:underline"
           >
             Sign Up

@@ -16,10 +16,13 @@ import { watchlistAtom, isSidebarExpandedAtom } from "@/utils/atoms";
 import WatchlistModal from "@/app/components/WatchlistModal";
 import Image from "next/image";
 import { Logo } from "@/app/components";
+import { getMixPanelClient } from "@/utils/mixpanel";
 
 const Sidebar: React.FC = () => {
   const params = useParams();
   const paramUUID = params.id as string;
+  const mixpanel = getMixPanelClient();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useAtom(isSidebarExpandedAtom);
   const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
@@ -63,7 +66,15 @@ const Sidebar: React.FC = () => {
           isExpanded ? "left-0" : "-left-64"
         } transition-all overflow-y-auto overflow-x-hidden duration-300 border-r border-gray-200 shadow-md flex flex-col`}
       >
-        <SidebarHeader watchlist={watchlist} />
+        <div className="p-6">
+          <Logo
+            onClick={() => {
+              mixpanel.track("logo.click", {
+                $source: "main.sidebar",
+              });
+            }}
+          />
+        </div>
         <SidebarMenu
           setIsExpanded={setIsExpanded}
           isSettingsExpanded={isSettingsExpanded}
@@ -87,14 +98,6 @@ const Sidebar: React.FC = () => {
   );
 };
 
-const SidebarHeader: React.FC<{ watchlist: any }> = ({ watchlist }) => {
-  return (
-    <div className="p-6">
-      <Logo />
-    </div>
-  );
-};
-
 const SidebarMenu: React.FC<{
   setIsExpanded: (value: boolean) => void;
   isSettingsExpanded: boolean;
@@ -114,18 +117,6 @@ const SidebarMenu: React.FC<{
           </span>
         </Link>
       </li>
-      {/* <li>
-        <Link
-          href="/app/settings/company-profile"
-          onClick={() => setIsExpanded(false)}
-          className={`flex items-center gap-4 py-3 px-4 rounded-lg hover:bg-gray-100 transition-all duration-200`}
-        >
-          <IoPersonOutline className={`text-2xl`} />
-          <span className="text-gray-700 transition-colors duration-200 text-lg">
-            Company Profile
-          </span>
-        </Link>
-      </li> */}
       <li>
         <button
           onClick={toggleSettings}
