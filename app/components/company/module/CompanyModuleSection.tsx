@@ -4,10 +4,19 @@ import { supabase } from "@/utils/supabaseClient";
 import { profileAtom, creditCountAtom } from "@/utils/atoms";
 import CompanyModuleOpportunitySection from "./opportunity/CompanyModuleOpportunitySection";
 import CompanyModuleMarketingSection from "./marketing/CompanyModuleMarketingSection";
-import { OpportunityProps, MarketingProps } from "@/app/components/interface";
+import CompanyModuleSummarySection from "./summary/CompanyModuleSummarySection";
+import {
+  OpportunityProps,
+  MarketingProps,
+  SummaryProps,
+} from "@/app/components/interface";
 import { useAtom, useAtomValue } from "jotai";
 import { getMixPanelClient } from "@/utils/mixpanel";
-import { generateTOAPI, generateTMAPI } from "@/utils/apiClient";
+import {
+  generateTOAPI,
+  generateTMAPI,
+  generateTailoredSummaryAPI,
+} from "@/utils/apiClient";
 
 interface CompanyModuleSectionProps {
   companyName: string;
@@ -67,10 +76,18 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   const [isFetchingTM, setIsFetchingTM] = useState<boolean>(false);
   const [isGeneratingTM, setIsGeneratingTM] = useState<boolean>(false);
 
+  // Summary States
+  const [GS, setGS] = useState<SummaryProps | null>(null);
+  const [TS, setTS] = useState<SummaryProps | null>(null);
+  const [isFetchingGS, setIsFetchingGS] = useState<boolean>(false);
+  const [isFetchingTS, setIsFetchingTS] = useState<boolean>(false);
+  const [isGeneratingTS, setIsGeneratingTS] = useState<boolean>(false);
+
   useEffect(() => {
     if (etID) {
       fetchGO(etID);
       fetchGM(etID);
+      fetchGS(etID);
     }
   }, [etID]);
 
@@ -78,6 +95,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
     if (profile && profile.org_id) {
       fetchTO(etID, profile.org_id);
       fetchTM(etID, profile.org_id);
+      fetchTS(etID, profile.org_id);
     }
   }, [etID, profile]);
 
@@ -417,6 +435,135 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
     }
   };
 
+  const fetchGS = async (etID: number) => {
+    setIsFetchingGS(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("earnings_transcripts")
+        .select(
+          "summary, challenges, pain_points, opportunities, priorities, keywords"
+        )
+        .eq("id", etID)
+        .single();
+
+      if (error) {
+        invokeToast(
+          "error",
+          `Failed to fetch general summary: ${error.message}`
+        );
+      } else if (data) {
+        const processedData: SummaryProps = {
+          summary: data.summary ? data.summary.split("\n") : [],
+          challenges: data.challenges ? data.challenges.split("\n") : [],
+          pain_points: data.pain_points ? data.pain_points.split("\n") : [],
+          opportunities: data.opportunities
+            ? data.opportunities.split("\n")
+            : [],
+          priorities: data.priorities ? data.priorities.split("\n") : [],
+          keywords: data.keywords ? JSON.parse(data.keywords) : [],
+        };
+
+        setGS(processedData);
+      } else {
+        setGS(null);
+      }
+    } catch (error) {
+      invokeToast("error", `Failed to fetch general summary: ${error}`);
+      console.error(`Failed to fetch general summary: ${error}`);
+    } finally {
+      setIsFetchingGS(false);
+    }
+  };
+
+  const fetchTS = async (etID: number, orgID: number) => {
+    setIsFetchingTS(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("tailored_summaries")
+        .select("summary, challenges, pain_points, opportunities, priorities")
+        .eq("earnings_transcript_id", etID)
+        .eq("organization_id", orgID)
+        .single();
+
+      if (error) {
+        invokeToast(
+          "error",
+          `Failed to fetch tailored summary: ${error.message}`
+        );
+      } else if (data) {
+        const processedData: SummaryProps = {
+          summary: data.summary.split("\n"),
+          challenges: data.challenges.split("\n"),
+          pain_points: data.pain_points.split("\n"),
+          opportunities: data.opportunities.split("\n"),
+          priorities: data.priorities.split("\n"),
+          keywords: [], // Assuming tailored summaries do not have keywords
+        };
+
+        setTS(processedData);
+      } else {
+        setTS(null);
+      }
+    } catch (error) {
+      invokeToast("error", `Failed to fetch tailored summary: ${error}`);
+      console.error(`Failed to fetch tailored summary: ${error}`);
+    } finally {
+      setIsFetchingTS(false);
+    }
+  };
+
+  const handleGenerateTS = () => {
+    mixpanel.track("generate.summary", {
+      $source: "company_page",
+    });
+
+    generateTS(etID);
+  };
+
+  const generateTS = async (etID: number) => {
+    if (!profile || !profile.org_id) {
+      invokeToast("error", "Organization ID not found");
+      return;
+    }
+
+    setIsGeneratingTS(true);
+
+    try {
+      const { data } = await generateTailoredSummaryAPI({
+        companyID: etID.toString(),
+        orgID: profile.org_id.toString(),
+        year: new Date().getFullYear(),
+        quarter: Math.floor((new Date().getMonth() + 3) / 3),
+      });
+
+      if (data.status === "success") {
+        const processedData: SummaryProps = {
+          summary: data.summary.summary.split("\n"),
+          challenges: data.summary.challenges.split("\n"),
+          pain_points: data.summary.pain_points.split("\n"),
+          opportunities: data.summary.opportunities.split("\n"),
+          priorities: data.summary.priorities.split("\n"),
+          keywords: [], // Assuming generated tailored summaries do not have keywords
+        };
+
+        setTS(processedData);
+        setActiveTab("Summary");
+        invokeToast("success", data.message);
+
+        setCreditCount((prev) => (prev ? prev - 1 : null));
+      } else {
+        invokeToast("error", data.message);
+      }
+    } catch (error) {
+      invokeToast("error", `Failed to generate tailored summary: ${error}`);
+      console.error(`Failed to generate tailored summary: ${error}`);
+    } finally {
+      setIsGeneratingTS(false);
+    }
+  };
+
   return (
     <div className="w-full border rounded">
       <div className="tabs flex justify-start gap-2 border-b border-gray-200">
@@ -459,7 +606,14 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
             handleGenerateTM={handleGenerateTM}
           />
         ) : (
-          <div>Summary Content</div>
+          <CompanyModuleSummarySection
+            GS={GS}
+            TS={TS}
+            isFetchingGS={isFetchingGS}
+            isFetchingTS={isFetchingTS}
+            isGeneratingTS={isGeneratingTS}
+            handleGenerateTS={handleGenerateTS}
+          />
         )}
       </div>
     </div>
