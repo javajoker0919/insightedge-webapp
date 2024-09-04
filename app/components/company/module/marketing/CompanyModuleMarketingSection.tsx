@@ -1,27 +1,27 @@
 import { useState } from "react";
 
-import CompanyModuleOpportunityTable from "./CompanyModuleOpportunityTable";
+import CompanyModuleMarketingTable from "./CompanyModuleMarketingTable";
 import { LoadingSection, NoDataSection } from "@/app/components";
-import { OpportunityProps } from "@/app/components/interface";
+import { MarketingProps } from "@/app/components/interface";
 
-interface CompanyModuleOpportunitySectionProps {
-  GOs: OpportunityProps[] | null;
-  TOs: OpportunityProps[] | null;
-  isFetchingGO: boolean;
-  isFetchingTO: boolean;
-  isGeneratingTO: boolean;
-  handleGenerateTO: () => void;
+interface CompanyModuleMarketingSectionProps {
+  GMs: MarketingProps[] | null;
+  TMs: MarketingProps[] | null;
+  isFetchingGM: boolean;
+  isFetchingTM: boolean;
+  isGeneratingTM: boolean;
+  handleGenerateTM: () => void;
 }
 
-const CompanyModuleOpportunitySection: React.FC<
-  CompanyModuleOpportunitySectionProps
+const CompanyModuleMarketingSection: React.FC<
+  CompanyModuleMarketingSectionProps
 > = ({
-  GOs,
-  TOs,
-  isFetchingGO,
-  isFetchingTO,
-  isGeneratingTO,
-  handleGenerateTO,
+  GMs,
+  TMs,
+  isFetchingGM,
+  isFetchingTM,
+  isGeneratingTM,
+  handleGenerateTM,
 }) => {
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
 
@@ -53,36 +53,36 @@ const CompanyModuleOpportunitySection: React.FC<
       </div>
 
       <div className="overflow-x-auto overflow-y-auto max-h-[35rem]">
-        {activeTab == "general" ? (
+        {activeTab === "general" ? (
           <>
-            {isFetchingGO ? (
+            {isFetchingGM ? (
               <LoadingSection />
-            ) : GOs == null ? (
-              <NoDataSection content="There is no general opportunities" />
+            ) : GMs == null ? (
+              <NoDataSection content="There are no general marketing campaigns" />
             ) : (
-              <CompanyModuleOpportunityTable opportunities={GOs} />
+              <CompanyModuleMarketingTable marketings={GMs} />
             )}
           </>
-        ) : activeTab == "tailored" ? (
+        ) : activeTab === "tailored" ? (
           <>
-            {isFetchingTO ? (
+            {isFetchingTM ? (
               <LoadingSection />
-            ) : TOs == null ? (
+            ) : TMs == null ? (
               <div className="w-full h-72 flex items-center justify-center">
                 <button
-                  onClick={handleGenerateTO}
-                  disabled={isGeneratingTO}
-                  className="px-4 py-2 w-72 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out disabled:cursor-not-allowed"
+                  onClick={handleGenerateTM}
+                  disabled={isGeneratingTM}
+                  className="px-4 py-2 w-80 flex items-center justify-center text-sm bg-primary-600 text-white rounded-md border border-primary-700 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out disabled:cursor-not-allowed"
                 >
-                  {isGeneratingTO ? (
+                  {isGeneratingTM ? (
                     <span className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></span>
                   ) : (
-                    "Generate Tailored Opportunities"
+                    "Generate Tailored Marketing Campaigns"
                   )}
                 </button>
               </div>
             ) : (
-              <CompanyModuleOpportunityTable opportunities={TOs} />
+              <CompanyModuleMarketingTable marketings={TMs} />
             )}
           </>
         ) : (
@@ -93,4 +93,4 @@ const CompanyModuleOpportunitySection: React.FC<
   );
 };
 
-export default CompanyModuleOpportunitySection;
+export default CompanyModuleMarketingSection;
