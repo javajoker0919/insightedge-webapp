@@ -53,3 +53,4 @@ export const watchlistAtom = atomWithStorage<Watchlist[] | null>(
   null
 );
 export const isSidebarExpandedAtom = atom<boolean>(false);
+export const creditCountAtom = atom<number | null>(null);

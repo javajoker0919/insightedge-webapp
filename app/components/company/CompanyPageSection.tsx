@@ -9,7 +9,7 @@ import { getMixPanelClient } from "@/utils/mixpanel";
 
 import CompanyFollowButton from "./CompanyFollowButton";
 import CompanyDateSelector from "./CompanyDateSelector";
-import CompanyModuleSection from "./CompanyModuleSection";
+import CompanyModuleSection from "./module/CompanyModuleSection";
 import CompanyIncomeStatementSection from "./income-statement/IncomeStatementSection";
 import CompanyAboutSection from "./CompanyAboutSection";
 import CompanyNewsSection from "./CompanyNewsSection";
@@ -101,7 +101,8 @@ const CompanyPage: React.FC = () => {
         <div className="flex gap-4 w-full">
           <div className="h-full w-full space-y-4 overflow-hidden">
             <CompanyModuleSection
-              etIDs={selectedETID ? [selectedETID] : null}
+              companyName={companyData.name}
+              etID={selectedETID}
             />
             <CompanyIncomeStatementSection companyID={companyID} />
             <CompanyNewsSection companyID={companyID} />
