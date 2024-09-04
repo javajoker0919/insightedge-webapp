@@ -17,7 +17,7 @@ import {
 
 import OpportunitiesSection from "../../../components/company/opportunity/OpportunitiesSection";
 import IncomeStatementSection from "../../../components/company/income-statement/IncomeStatementSection";
-import RecentNewsSection from "../../../components/company/RecentNewsSection";
+import RecentNewsSection from "../../../components/company/CompanyNewsSection";
 import YearQuarterSelector, { YearQuarter } from "./YearQuarterSelector";
 import SummarySection from "../../../components/company/summary/SummarySection";
 import AboutSection from "./AboutSection";

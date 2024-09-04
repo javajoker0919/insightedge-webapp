@@ -5,47 +5,54 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 import { supabase } from "@/utils/supabaseClient";
-import { Details, Loading } from "..";
+import { useToastContext } from "@/contexts/toastContext";
+import { Details, Loading, LoadingSection, NoDataSection } from "..";
 
-export interface NewsItem {
+interface NewsProps {
   published_date: string;
   title: string;
   image: string;
   url: string;
 }
 
-interface RecentNewsSectionProps {
+interface CompanyNewsSectionProps {
   companyID: number;
 }
 
-const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({ companyID }) => {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+const CompanyNewsSection: React.FC<CompanyNewsSectionProps> = ({
+  companyID,
+}) => {
+  const { invokeToast } = useToastContext();
+
+  const [newsItems, setNewsItems] = useState<NewsProps[] | null>(null);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
 
   useEffect(() => {
     fetchNewsItems(companyID);
   }, [companyID]);
 
   const fetchNewsItems = async (companyID: number) => {
-    if (!companyID) return;
-
-    setIsLoading(true);
+    setIsFetching(true);
 
     try {
-      const { data: newsData, error: newsError } = await supabase
+      const { data, error } = await supabase
         .from("stock_news_sentiments")
         .select("published_date, title, image, url")
         .eq("company_id", companyID)
         .order("published_date", { ascending: false })
         .limit(10);
 
-      if (newsError) throw newsError;
-
-      setNewsItems(newsData as NewsItem[]);
+      if (error) {
+        invokeToast("error", `Failed to fetch news: ${error.message}`);
+      } else if (data && data.length > 0) {
+        setNewsItems(data as NewsProps[]);
+      } else {
+        setNewsItems(null);
+      }
     } catch (error) {
       console.error("Error fetching news items:", error);
     } finally {
-      setIsLoading(false);
+      setIsFetching(false);
     }
   };
 
@@ -75,14 +82,10 @@ const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({ companyID }) => {
 
   return (
     <Details title={"Recent News"}>
-      {isLoading ? (
-        <div className="flex justify-center items-center h-40 p-4">
-          <Loading />
-        </div>
-      ) : newsItems.length === 0 ? (
-        <div className="flex p-4 h-40 items-center justify-center">
-          <span className="text-gray-600">There is no recent news</span>
-        </div>
+      {isFetching ? (
+        <LoadingSection />
+      ) : newsItems == null ? (
+        <NoDataSection content="There is no recent news" />
       ) : (
         <Swiper
           pagination={{ clickable: true }}
@@ -143,4 +146,4 @@ const RecentNewsSection: React.FC<RecentNewsSectionProps> = ({ companyID }) => {
   );
 };
 
-export default RecentNewsSection;
+export default CompanyNewsSection;

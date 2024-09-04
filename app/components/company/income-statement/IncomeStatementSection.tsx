@@ -1,28 +1,32 @@
 import { useEffect, useState } from "react";
 
-import { Details } from "../..";
-import FinancialTable, { FinancialData } from "./FinancialTable";
-import QuarterlyChart from "./QuarterlyChart";
 import { supabase } from "@/utils/supabaseClient";
+import { useToastContext } from "@/contexts/toastContext";
+import { Details, LoadingSection, NoDataSection } from "@/app/components";
+import FinancialTable, { FinancialDataProps } from "./FinancialTable";
 
-interface IncomeStatementSectionProps {
+interface CompanyIncomeStatementSectionProps {
   companyID: number;
 }
 
-const IncomeStatementSection: React.FC<IncomeStatementSectionProps> = ({
-  companyID,
-}) => {
+const CompanyIncomeStatementSection: React.FC<
+  CompanyIncomeStatementSectionProps
+> = ({ companyID }) => {
+  const { invokeToast } = useToastContext();
+
+  const [fcData, setFCData] = useState<FinancialDataProps[] | null>(null);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+
   const [currency, setCurrency] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [change, setChange] = useState<string>("");
-  const [fcData, setFCData] = useState<FinancialData[] | null>(null);
 
   useEffect(() => {
     fetchIncomeStatements(companyID);
   }, [companyID]);
 
   const fetchIncomeStatements = async (companyID: number) => {
-    if (!companyID) return;
+    setIsFetching(true);
 
     try {
       const { data, error } = await supabase
@@ -48,33 +52,18 @@ const IncomeStatementSection: React.FC<IncomeStatementSectionProps> = ({
         .limit(2);
 
       if (error) {
-        console.error(
-          "Error occurred while fetching income statements: ",
-          error
+        invokeToast(
+          "error",
+          `Failed to fetch income statements: ${error.message}`
         );
-        throw error;
-      }
-
-      if (data.length === 2) {
+      } else if (data && data.length === 2) {
         const [current, previous] = data;
 
         setCurrency(current.reported_currency);
         setDate(current.date);
         setChange("QoQ change");
 
-        const formatLargeValue = (value: number) =>
-          value >= 1e9
-            ? `${(value / 1e9).toFixed(2)}B`
-            : value >= 1e6
-            ? `${(value / 1e6).toFixed(2)}M`
-            : value.toLocaleString("en-US");
-
-        const parseNumber = (value: any) => {
-          const parsedValue = parseFloat(value);
-          return isNaN(parsedValue) ? 0 : parsedValue;
-        };
-
-        const comparableData: FinancialData[] = [
+        const comparableData: FinancialDataProps[] = [
           {
             label: "Revenue",
             value: formatLargeValue(parseNumber(current.revenue)),
@@ -119,27 +108,50 @@ const IncomeStatementSection: React.FC<IncomeStatementSectionProps> = ({
               100,
           },
         ];
+
         setFCData(comparableData);
       } else {
-        setFCData([]);
+        setFCData(null);
       }
     } catch (error) {
-      console.error(error);
+      invokeToast("error", `Failed to fetch income statement: ${error}`);
+      console.error(`Failed to fetch income statement: ${error}`);
+    } finally {
+      setIsFetching(false);
     }
+  };
+
+  const formatLargeValue = (value: number) =>
+    value >= 1e9
+      ? `${(value / 1e9).toFixed(2)}B`
+      : value >= 1e6
+      ? `${(value / 1e6).toFixed(2)}M`
+      : value.toLocaleString("en-US");
+
+  const parseNumber = (value: any) => {
+    const parsedValue = parseFloat(value);
+
+    return isNaN(parsedValue) ? 0 : parsedValue;
   };
 
   return (
     <Details title={"Income Statement"}>
       <div className="bg-white">
-        <FinancialTable
-          currency={currency}
-          date={date}
-          change={change}
-          data={fcData}
-        />
+        {isFetching ? (
+          <LoadingSection />
+        ) : fcData == null ? (
+          <NoDataSection />
+        ) : (
+          <FinancialTable
+            currency={currency}
+            date={date}
+            change={change}
+            data={fcData}
+          />
+        )}
       </div>
     </Details>
   );
 };
 
-export default IncomeStatementSection;
+export default CompanyIncomeStatementSection;

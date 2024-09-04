@@ -12,10 +12,11 @@ import Close from "./CloseIcon";
 import OnboardingUserProfileSection from "./onboarding/UserProfileSection";
 import OnboardingCompanyProfileSection from "./onboarding/CompanyProfileSection";
 import OnboardingInitialCompanySection from "./onboarding/InitialCompanySection/InitialCompanySection";
+import LoadingSection from "./LoadingSection";
 import NoDataSection from "./NoDataSection";
 import Logo from "./Logo";
 
-/// watchlist
+/// watchlist page
 import WLMarketingSection from "./watchlist/marketing/WLMarketingSection";
 import WLOpportunitySection from "./watchlist/opportunity/WLOpportunitySection";
 import WLCalendarSection from "./watchlist/WLCalendarSection";
@@ -23,6 +24,9 @@ import WLIncomeStatementSection from "./watchlist/WLIncomeStatementSection";
 import WLHighlightSection from "./watchlist/WLHighlightSection";
 import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
 import WLCompanySearchbar from "./watchlist/WLCompanySearchbar";
+
+/// company page
+import CompanyPageSection from "./company/CompanyPageSection";
 
 export {
   CompanySearchbar,
@@ -39,10 +43,11 @@ export {
   OnboardingUserProfileSection,
   OnboardingCompanyProfileSection,
   OnboardingInitialCompanySection,
+  LoadingSection,
   NoDataSection,
   Logo,
 
-  /// Watchlist
+  /// Watchlist Page
   WLMarketingSection,
   WLOpportunitySection,
   WLCalendarSection,
@@ -50,4 +55,7 @@ export {
   WLHighlightSection,
   WLSimilarCompanySection,
   WLCompanySearchbar,
+
+  /// Company Page
+  CompanyPageSection,
 };

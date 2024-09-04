@@ -1,6 +1,4 @@
-import { Loading } from "../..";
-
-export interface FinancialData {
+export interface FinancialDataProps {
   label: string;
   value: string | number;
   change: number;
@@ -10,7 +8,7 @@ interface FinancialTableProps {
   currency: string;
   date: string;
   change: string;
-  data: FinancialData[] | null;
+  data: FinancialDataProps[];
 }
 
 const FinancialTable: React.FC<FinancialTableProps> = ({
@@ -19,22 +17,6 @@ const FinancialTable: React.FC<FinancialTableProps> = ({
   change,
   data,
 }) => {
-  if (data === null) {
-    return (
-      <div className="w-full p-4 h-40 flex justify-center items-center">
-        <Loading />
-      </div>
-    );
-  }
-
-  if (data.length == 0) {
-    return (
-      <div className="w-full p-4 h-40 flex justify-center items-center">
-        <span className="text-gray-500">There is no data</span>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto">
       <table className="w-full">
