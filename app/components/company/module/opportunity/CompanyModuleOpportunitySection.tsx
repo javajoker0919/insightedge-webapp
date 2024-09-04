@@ -3,6 +3,7 @@ import { useState } from "react";
 import CompanyModuleOpportunityTable from "./CompanyModuleOpportunityTable";
 import { LoadingSection, NoDataSection } from "@/app/components";
 import { OpportunityProps } from "@/app/components/interface";
+import CompanyModuleSubTabs from "../CompanyModuleSubTabs";
 
 interface CompanyModuleOpportunitySectionProps {
   GOs: OpportunityProps[] | null;
@@ -27,30 +28,7 @@ const CompanyModuleOpportunitySection: React.FC<
 
   return (
     <div className="h-full w-full">
-      <div className="w-full border-b border-gray-300 flex items-center bg-gray-50 justify-between">
-        <div className="flex gap-1">
-          <button
-            onClick={() => setActiveTab("general")}
-            className={`px-4 py-2 w-full sm:w-auto ${
-              activeTab === "general"
-                ? "text-gray-900 bg-gray-200"
-                : "text-gray-700"
-            }`}
-          >
-            General
-          </button>
-          <button
-            onClick={() => setActiveTab("tailored")}
-            className={`px-4 py-2 w-full sm:w-auto ${
-              activeTab === "tailored"
-                ? "text-gray-900 bg-gray-200"
-                : "text-gray-700"
-            }`}
-          >
-            Tailored
-          </button>
-        </div>
-      </div>
+      <CompanyModuleSubTabs active={activeTab} setActive={setActiveTab} />
 
       <div className="overflow-x-auto overflow-y-auto max-h-[35rem]">
         {activeTab == "general" ? (
