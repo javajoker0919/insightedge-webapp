@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "@/app/components/Modal";
-import { Details } from "../../../app/company/[id]/components";
+import { Details } from "../../../app/company_v1/[id]/components";
 
 interface MarketingPlanModalProps {
   open: boolean;
@@ -20,7 +20,7 @@ interface MarketingPlanModalProps {
 const MarketingPlanModal: React.FC<MarketingPlanModalProps> = ({
   open,
   onClose,
-  selectedStrats
+  selectedStrats,
 }) => {
   return (
     <Modal

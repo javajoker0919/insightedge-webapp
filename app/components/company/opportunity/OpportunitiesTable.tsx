@@ -1,6 +1,6 @@
 import { IoBulb, IoPerson } from "react-icons/io5";
 import { OpportunityProps } from "./OpportunitiesSection";
-import { generalOpportunities } from "../../../app/company/[id]/Constants";
+import { generalOpportunities } from "../../../app/company_v1/[id]/Constants";
 
 const OpportunitiesTable: React.FC<{
   companyName: string;

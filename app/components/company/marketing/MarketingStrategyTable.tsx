@@ -3,7 +3,7 @@ import { FaLightbulb } from "react-icons/fa";
 import {
   coloredChannelList,
   marketingStrategy,
-} from "../../../app/company/[id]/Constants";
+} from "../../../app/company_v1/[id]/Constants";
 import { MarketingProps } from "./MarketingStrategySection";
 
 interface MSTableCompProps {

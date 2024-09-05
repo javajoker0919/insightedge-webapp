@@ -1,7 +1,7 @@
 "use client";
 import { useCallback } from "react";
 import { FaLightbulb } from "react-icons/fa";
-import { marketingStrategy } from "@/app/app/company/[id]/Constants";
+import { marketingStrategy } from "@/app/app/company_v1/[id]/Constants";
 import { MarketingProps } from "./WLMarketingSection";
 
 interface MSTableCompProps {
