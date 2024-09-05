@@ -37,10 +37,6 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   setJsonGM,
   setJsonTM,
 }) => {
-  if (etID === null) {
-    return null;
-  }
-
   const { invokeToast } = useToastContext();
   const mixpanel = getMixPanelClient();
 
@@ -255,6 +251,10 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       </CSVLink>
     );
   };
+
+  if (etID === null) {
+    return null;
+  }
 
   return (
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden">

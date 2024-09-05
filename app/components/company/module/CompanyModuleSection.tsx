@@ -51,10 +51,6 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   companyName,
   etID,
 }) => {
-  if (etID == null) {
-    return null;
-  }
-
   const { invokeToast } = useToastContext();
   const mixpanel = getMixPanelClient();
 
@@ -93,12 +89,16 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   }, [etID]);
 
   useEffect(() => {
-    if (profile && profile.org_id) {
+    if (etID && profile && profile.org_id) {
       fetchTO(etID, profile.org_id);
       fetchTM(etID, profile.org_id);
       fetchTS(etID, profile.org_id);
     }
   }, [etID, profile]);
+
+  if (etID == null) {
+    return null;
+  }
 
   const fetchGO = async (etID: number) => {
     setIsFetchingGO(true);

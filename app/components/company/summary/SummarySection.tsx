@@ -34,10 +34,6 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   setJsonGS,
   setJsonTS,
 }) => {
-  if (!year || !quarter) {
-    return null;
-  }
-
   const { id: companyId } = useParams<{ id: string }>();
   const { invokeToast } = useToastContext();
   const mixpanel = getMixPanelClient();
@@ -65,6 +61,10 @@ const SummarySection: React.FC<SummarySectionProps> = ({
     fetchTailoredlSummary();
     setTailoredSummary(null);
   }, [companyId, year, quarter]);
+
+  if (!year || !quarter) {
+    return null;
+  }
 
   const fetchGeneralSummary = async () => {
     setIsGSLoading(true);

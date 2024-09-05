@@ -46,10 +46,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   setJsonGO,
   setJsonTO,
 }) => {
-  if (!etID) {
-    return null;
-  }
-
   const { invokeToast } = useToastContext();
   const mixpanel = getMixPanelClient();
 
@@ -57,7 +53,6 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
   const orgInfo = useAtomValue(orgInfoAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
 
-  // const [etID, setETID] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedOpp, setSelectedOpp] = useState<OpportunityProps | null>(null);
   const [generalOpps, setGOs] = useState<OpportunityProps[] | null>(null);
@@ -78,6 +73,10 @@ const OpportunitiesSection: React.FC<OpportunitiesProps> = ({
       fetchTO(etID, orgInfo.id);
     }
   }, [orgInfo, etID]);
+
+  if (etID === null) {
+    return null;
+  }
 
   const fetchGO = async (etID: number) => {
     setIsFetchingGO(true);
