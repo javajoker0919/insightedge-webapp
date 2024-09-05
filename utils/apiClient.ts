@@ -74,6 +74,17 @@ const stopCancelSubscription = async () => {
   return response.data;
 };
 
+const generateTSAPI = async (etIDs: number[]) => {
+  const earnings_transcript_ids = { earnings_transcript_ids: etIDs };
+  const apiClient = await createApiClient();
+  const response = await apiClient.post(
+    "/api/v1/generate/summaries",
+    earnings_transcript_ids
+  );
+
+  return response;
+};
+
 const generateTOAPI = async (etIDs: number[]) => {
   const earnings_transcript_ids = { earnings_transcript_ids: etIDs };
   const apiClient = await createApiClient();
@@ -135,6 +146,7 @@ export {
   customerPortal,
   cancelSubscription,
   stopCancelSubscription,
+  generateTSAPI,
   generateTOAPI,
   generateTMAPI,
   getScrapeData,

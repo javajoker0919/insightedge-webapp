@@ -15,7 +15,7 @@ import { getMixPanelClient } from "@/utils/mixpanel";
 import {
   generateTOAPI,
   generateTMAPI,
-  generateTailoredSummaryAPI,
+  generateTSAPI,
 } from "@/utils/apiClient";
 
 interface CompanyModuleSectionProps {
@@ -262,7 +262,6 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
         setTOs(null);
       }
 
-      setActiveTab("tailored");
       invokeToast("success", data.message);
 
       setCreditCount((prev) => (prev ? prev - 1 : null));
@@ -418,7 +417,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
         setTMs(null);
       }
 
-      setActiveTab("Marketing Campaign");
+
       invokeToast("success", data.message);
 
       setCreditCount((prev) => (prev ? prev - 1 : null));
@@ -445,7 +444,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
           "summary, challenges, pain_points, opportunities, priorities, keywords"
         )
         .eq("id", etID)
-        .single();
+        .maybeSingle();
 
       if (error) {
         invokeToast(
@@ -485,7 +484,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
         .select("summary, challenges, pain_points, opportunities, priorities")
         .eq("earnings_transcript_id", etID)
         .eq("organization_id", orgID)
-        .single();
+        .maybeSingle();
 
       if (error) {
         invokeToast(
@@ -531,31 +530,27 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
     setIsGeneratingTS(true);
 
     try {
-      const { data } = await generateTailoredSummaryAPI({
-        companyID: etID.toString(),
-        orgID: profile.org_id.toString(),
-        year: new Date().getFullYear(),
-        quarter: Math.floor((new Date().getMonth() + 3) / 3),
-      });
+      const { data } = await generateTSAPI([etID]);
 
-      if (data.status === "success") {
+      if (data && data.summaries && data.summaries.length > 0) {
         const processedData: SummaryProps = {
-          summary: data.summary.summary.split("\n"),
-          challenges: data.summary.challenges.split("\n"),
-          pain_points: data.summary.pain_points.split("\n"),
-          opportunities: data.summary.opportunities.split("\n"),
-          priorities: data.summary.priorities.split("\n"),
+          summary: data.summaries[0].summary.split("\n"),
+          challenges: data.summaries[0].challenges.split("\n"),
+          pain_points: data.summaries[0].pain_points.split("\n"),
+          opportunities: data.summaries[0].opportunities.split("\n"),
+          priorities: data.summaries[0].priorities.split("\n"),
           keywords: [], // Assuming generated tailored summaries do not have keywords
         };
 
         setTS(processedData);
-        setActiveTab("Summary");
-        invokeToast("success", data.message);
-
-        setCreditCount((prev) => (prev ? prev - 1 : null));
       } else {
-        invokeToast("error", data.message);
+        setTS(null);
       }
+
+
+      invokeToast("success", data.message);
+
+      setCreditCount((prev) => (prev ? prev - 1 : null));
     } catch (error) {
       invokeToast("error", `Failed to generate tailored summary: ${error}`);
       console.error(`Failed to generate tailored summary: ${error}`);
