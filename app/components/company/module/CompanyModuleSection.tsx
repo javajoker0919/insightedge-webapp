@@ -442,6 +442,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
           "summary, challenges, pain_points, opportunities, priorities, keywords"
         )
         .eq("id", etID)
+        .not("summary", "is", null)
         .maybeSingle();
 
       if (error) {
