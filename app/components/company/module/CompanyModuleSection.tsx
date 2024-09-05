@@ -15,6 +15,7 @@ import {
   MarketingProps,
   SummaryProps,
 } from "@/app/components/interface";
+import ModuleShareButton from "./share/ModuleShareButton";
 
 interface CompanyModuleSectionProps {
   companyName: string;
@@ -552,25 +553,31 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
 
   return (
     <div className="w-full border rounded">
-      <div className="tabs flex justify-start gap-2 border-b border-gray-200">
-        <TabButton
-          isActive={activeTab === "Opportunity"}
-          onClick={() => setActiveTab("Opportunity")}
-        >
-          Opportunity
-        </TabButton>
-        <TabButton
-          isActive={activeTab === "Marketing Campaign"}
-          onClick={() => setActiveTab("Marketing Campaign")}
-        >
-          Marketing Campaign
-        </TabButton>
-        <TabButton
-          isActive={activeTab === "Summary"}
-          onClick={() => setActiveTab("Summary")}
-        >
-          Summary
-        </TabButton>
+      <div className="tabs flex items-center justify-between border-b border-gray-200">
+        <div className="flex gap-2">
+          <TabButton
+            isActive={activeTab === "Opportunity"}
+            onClick={() => setActiveTab("Opportunity")}
+          >
+            Opportunity
+          </TabButton>
+          <TabButton
+            isActive={activeTab === "Marketing Campaign"}
+            onClick={() => setActiveTab("Marketing Campaign")}
+          >
+            Marketing Campaign
+          </TabButton>
+          <TabButton
+            isActive={activeTab === "Summary"}
+            onClick={() => setActiveTab("Summary")}
+          >
+            Summary
+          </TabButton>
+        </div>
+
+        <div className="pr-2">
+          <ModuleShareButton etIDs={[etID]} />
+        </div>
       </div>
       <div className="tab-content">
         {activeTab === "Opportunity" ? (
