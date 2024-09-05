@@ -27,7 +27,8 @@ const Logo: React.FC<LogoProps> = ({ onClick, withIcon }) => {
         alt={"Logo"}
         width={200}
         height={40}
-        // className="max-w-[150px] sm:max-w-[200px]"
+        priority={true}
+        className="w-auto max-w-52"
       />
     </Link>
   );
