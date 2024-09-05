@@ -31,13 +31,12 @@ export interface MarketingProps {
 
 export interface SummaryProps {
   challenges: string[];
-  keywords: {
-    keyword: string;
-    weight: number;
-  }[];
-
   opportunities: string[];
   pain_points: string[];
   priorities: string[];
   summary: string[];
+  keywords: {
+    keyword: string;
+    weight: number;
+  }[];
 }

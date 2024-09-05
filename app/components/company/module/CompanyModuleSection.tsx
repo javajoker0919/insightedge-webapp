@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+
+import { generateTOAPI, generateTMAPI, generateTSAPI } from "@/utils/apiClient";
+import { profileAtom, creditCountAtom } from "@/utils/atoms";
+import { getMixPanelClient } from "@/utils/mixpanel";
 import { useToastContext } from "@/contexts/toastContext";
 import { supabase } from "@/utils/supabaseClient";
-import { profileAtom, creditCountAtom } from "@/utils/atoms";
+
 import CompanyModuleOpportunitySection from "./opportunity/CompanyModuleOpportunitySection";
 import CompanyModuleMarketingSection from "./marketing/CompanyModuleMarketingSection";
 import CompanyModuleSummarySection from "./summary/CompanyModuleSummarySection";
@@ -10,13 +15,6 @@ import {
   MarketingProps,
   SummaryProps,
 } from "@/app/components/interface";
-import { useAtom, useAtomValue } from "jotai";
-import { getMixPanelClient } from "@/utils/mixpanel";
-import {
-  generateTOAPI,
-  generateTMAPI,
-  generateTSAPI,
-} from "@/utils/apiClient";
 
 interface CompanyModuleSectionProps {
   companyName: string;
@@ -58,7 +56,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   const mixpanel = getMixPanelClient();
 
   const profile = useAtomValue(profileAtom);
-  const [creditCount, setCreditCount] = useAtom(creditCountAtom);
+  const setCreditCount = useSetAtom(creditCountAtom);
 
   const [activeTab, setActiveTab] = useState("Opportunity");
 
@@ -417,7 +415,6 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
         setTMs(null);
       }
 
-
       invokeToast("success", data.message);
 
       setCreditCount((prev) => (prev ? prev - 1 : null));
@@ -522,11 +519,6 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   };
 
   const generateTS = async (etID: number) => {
-    if (!profile || !profile.org_id) {
-      invokeToast("error", "Organization ID not found");
-      return;
-    }
-
     setIsGeneratingTS(true);
 
     try {
@@ -546,7 +538,6 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
       } else {
         setTS(null);
       }
-
 
       invokeToast("success", data.message);
 
@@ -600,7 +591,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
             isGeneratingTM={isGeneratingTM}
             handleGenerateTM={handleGenerateTM}
           />
-        ) : (
+        ) : activeTab === "Summary" ? (
           <CompanyModuleSummarySection
             GS={GS}
             TS={TS}
@@ -609,6 +600,8 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
             isGeneratingTS={isGeneratingTS}
             handleGenerateTS={handleGenerateTS}
           />
+        ) : (
+          <></>
         )}
       </div>
     </div>
