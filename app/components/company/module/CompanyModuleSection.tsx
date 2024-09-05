@@ -36,7 +36,9 @@ const TabButton: React.FC<TabButtonProps> = ({
   return (
     <button
       className={`py-4 px-8 ${
-        isActive ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-500"
+        isActive
+          ? "text-gray-700 bg-gray-100 rounded-t border border-gray-200 border-b-0"
+          : "text-gray-500 hover:bg-gray-50"
       }`}
       onClick={onClick}
     >
@@ -555,7 +557,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   return (
     <div className="w-full border rounded">
       <div className="tabs flex items-center justify-between border-b border-gray-200">
-        <div className="flex gap-2">
+        <div className="flex gap-2 p-2 pb-0">
           <TabButton
             isActive={activeTab === "Opportunity"}
             onClick={() => setActiveTab("Opportunity")}
