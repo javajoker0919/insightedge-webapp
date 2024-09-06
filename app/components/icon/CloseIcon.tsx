@@ -1,9 +1,9 @@
-interface PlusIconProps {
+interface CloseIconProps {
   color?: string;
   size?: number;
 }
 
-const PlusIcon: React.FC<PlusIconProps> = ({ color = "blue", size = 4 }) => {
+const CloseIcon: React.FC<CloseIconProps> = ({ color = "blue", size = 4 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -16,10 +16,10 @@ const PlusIcon: React.FC<PlusIconProps> = ({ color = "blue", size = 4 }) => {
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth={2}
-        d="M12 4v16m8-8H4"
+        d="M6 18L18 6M6 6l12 12"
       />
     </svg>
   );
 };
 
-export default PlusIcon;
+export default CloseIcon;

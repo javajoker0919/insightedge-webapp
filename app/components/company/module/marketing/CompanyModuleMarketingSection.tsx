@@ -6,8 +6,8 @@ import { MarketingProps } from "@/app/components/interface";
 import CompanyModuleSubTabs from "../CompanyModuleSubTabs";
 
 interface CompanyModuleMarketingSectionProps {
-  GMs: MarketingProps[] | null;
-  TMs: MarketingProps[] | null;
+  GMs: MarketingProps[];
+  TMs: MarketingProps[];
   isFetchingGM: boolean;
   isFetchingTM: boolean;
   isGeneratingTM: boolean;
@@ -35,7 +35,7 @@ const CompanyModuleMarketingSection: React.FC<
           <>
             {isFetchingGM ? (
               <LoadingSection />
-            ) : GMs == null ? (
+            ) : GMs.length === 0 ? (
               <NoDataSection content="There are no general marketing campaigns" />
             ) : (
               <CompanyModuleMarketingTable marketings={GMs} />
@@ -45,7 +45,7 @@ const CompanyModuleMarketingSection: React.FC<
           <>
             {isFetchingTM ? (
               <LoadingSection />
-            ) : TMs == null ? (
+            ) : TMs.length === 0 ? (
               <div className="w-full h-72 flex items-center justify-center">
                 <button
                   onClick={handleGenerateTM}

@@ -4,7 +4,7 @@ interface NoDataSectionProps {
 
 const NoDataSection: React.FC<NoDataSectionProps> = ({ content }) => {
   return (
-    <div className="flex items-center justify-center p-4 h-40">
+    <div className="flex items-center justify-center p-4 h-40 text-gray-500">
       <span>{content ?? "There is no data"}</span>
     </div>
   );

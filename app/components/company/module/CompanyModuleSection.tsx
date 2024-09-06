@@ -16,6 +16,12 @@ import {
   SummaryProps,
 } from "@/app/components/interface";
 import ModuleShareButton from "./share/ModuleShareButton";
+import { CloseIcon, PlusIcon } from "../../icon";
+import Modal from "../../Modal";
+import CompanyModuleTenKSection from "./CompanyModuleTenKSection";
+import CompanyModulePressReleaseSection from "./CompanyModulePressReleaseSection";
+import CompanyModuleClinicalTrialSection from "./CompanyModuleClinicalTrialSection";
+import CompanyModuleGovernmentContractSection from "./CompanyModuleGovernmentContractSection";
 
 interface CompanyModuleSectionProps {
   companyName: string;
@@ -23,26 +29,49 @@ interface CompanyModuleSectionProps {
 }
 
 interface TabButtonProps {
+  title: string;
   isActive: boolean;
   onClick: () => void;
-  children: React.ReactNode;
+  onClose: () => void;
+}
+
+interface ModuleItem {
+  value: string;
+  title: string;
 }
 
 const TabButton: React.FC<TabButtonProps> = ({
+  title,
   isActive,
   onClick,
-  children,
+  onClose,
 }) => {
   return (
     <button
-      className={`py-4 px-8 ${
-        isActive
-          ? "text-gray-700 bg-gray-100 rounded-t border border-gray-200 border-b-0"
-          : "text-gray-500 hover:bg-gray-50"
-      }`}
+      title={title}
       onClick={onClick}
+      className={`pb-1 max-w-80 flex-1 ${
+        isActive ? "text-gray-800 bg-white rounded-t-lg" : "text-gray-500"
+      }`}
     >
-      {children}
+      <div
+        className={`flex items-center justify-between pl-4 pr-2.5 py-2 rounded-lg ${
+          isActive ? "" : "hover:bg-gray-100"
+        }`}
+      >
+        <span className="line-clamp-1 text-left">{title}</span>
+        <button
+          className={`ml-2 p-0.5 rounded-full ${
+            isActive ? "hover:bg-gray-200" : "hover:bg-gray-200"
+          } `}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+        >
+          <CloseIcon color="black" />
+        </button>
+      </div>
     </button>
   );
 };
@@ -55,20 +84,21 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   const mixpanel = getMixPanelClient();
 
   const profile = useAtomValue(profileAtom);
+  const userID = profile?.user_id;
   const setCreditCount = useSetAtom(creditCountAtom);
 
-  const [activeTab, setActiveTab] = useState("Opportunity");
+  const [activeTab, setActiveTab] = useState("");
 
   // Opportunity States
-  const [GOs, setGOs] = useState<OpportunityProps[] | null>(null);
-  const [TOs, setTOs] = useState<OpportunityProps[] | null>(null);
+  const [GOs, setGOs] = useState<OpportunityProps[]>([]);
+  const [TOs, setTOs] = useState<OpportunityProps[]>([]);
   const [isFetchingGO, setIsFetchingGO] = useState<boolean>(false);
   const [isFetchingTO, setIsFetchingTO] = useState<boolean>(false);
   const [isGeneratingTO, setIsGeneratingTO] = useState<boolean>(false);
 
   // Marketing States
-  const [GMs, setGMs] = useState<MarketingProps[] | null>(null);
-  const [TMs, setTMs] = useState<MarketingProps[] | null>(null);
+  const [GMs, setGMs] = useState<MarketingProps[]>([]);
+  const [TMs, setTMs] = useState<MarketingProps[]>([]);
   const [isFetchingGM, setIsFetchingGM] = useState<boolean>(false);
   const [isFetchingTM, setIsFetchingTM] = useState<boolean>(false);
   const [isGeneratingTM, setIsGeneratingTM] = useState<boolean>(false);
@@ -80,21 +110,186 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   const [isFetchingTS, setIsFetchingTS] = useState<boolean>(false);
   const [isGeneratingTS, setIsGeneratingTS] = useState<boolean>(false);
 
+  const [moduleItems, setModuleItems] = useState<ModuleItem[]>([]);
+  const [userModuleItems, setUserModuleItems] = useState<ModuleItem[]>([]);
+  const [showAddModulePopup, setShowAddModulePopup] = useState(false);
+
   useEffect(() => {
-    if (etID) {
-      fetchGO(etID);
-      fetchGM(etID);
-      fetchGS(etID);
+    fetchModuleItems();
+  }, []);
+
+  useEffect(() => {
+    if (profile && profile.user_id && moduleItems.length > 0) {
+      fetchUserModuleItems(profile.user_id);
+    }
+  }, [profile, moduleItems]);
+
+  useEffect(() => {
+    if (etID && userModuleItems.length > 0) {
+      const itemValueList =
+        userModuleItems.map((item: ModuleItem) => item.value) ?? [];
+
+      if (itemValueList.includes("opportunity")) fetchGO(etID);
+      if (itemValueList.includes("marketing_campaign")) fetchGM(etID);
+      if (itemValueList.includes("summary")) fetchGS(etID);
     }
   }, [etID]);
 
   useEffect(() => {
-    if (etID && profile && profile.org_id) {
-      fetchTO(etID, profile.org_id);
-      fetchTM(etID, profile.org_id);
-      fetchTS(etID, profile.org_id);
+    if (etID && userModuleItems.length > 0) {
+      const itemValueList =
+        userModuleItems.map((item: ModuleItem) => item.value) ?? [];
+
+      if (GOs.length === 0 && itemValueList.includes("opportunity")) {
+        fetchGO(etID);
+      }
+      if (GMs.length === 0 && itemValueList.includes("marketing_campaign")) {
+        fetchGM(etID);
+      }
+      if (GS === null && itemValueList.includes("summary")) {
+        fetchGS(etID);
+      }
     }
-  }, [etID, profile]);
+  }, [userModuleItems]);
+
+  useEffect(() => {
+    if (etID && profile && profile.org_id && userModuleItems.length > 0) {
+      const orgID = profile.org_id;
+      const itemValueList =
+        userModuleItems.map((item: ModuleItem) => item.value) ?? [];
+
+      if (itemValueList.includes("opportunity")) fetchTO(etID, orgID);
+      if (itemValueList.includes("marketing_campaign")) fetchTM(etID, orgID);
+      if (itemValueList.includes("summary")) fetchTS(etID, orgID);
+    }
+  }, [etID]);
+
+  useEffect(() => {
+    if (etID && profile && profile.org_id && userModuleItems.length > 0) {
+      const orgID = profile.org_id;
+      const itemValueList =
+        userModuleItems.map((item: ModuleItem) => item.value) ?? [];
+
+      if (TOs.length === 0 && itemValueList.includes("opportunity")) {
+        fetchTO(etID, orgID);
+      }
+      if (TMs.length === 0 && itemValueList.includes("marketing_campaign")) {
+        fetchTM(etID, orgID);
+      }
+      if (TS === null && itemValueList.includes("summary")) {
+        fetchTS(etID, orgID);
+      }
+    }
+  }, [profile, userModuleItems]);
+
+  const fetchModuleItems = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("module_items")
+        .select("value, title");
+
+      if (error) {
+        invokeToast("error", `Failed to fetch module items: ${error.message}`);
+      } else {
+        setModuleItems(data);
+      }
+    } catch (error) {
+      console.error("Error fetching module items:", error);
+      invokeToast("error", `Failed to fetch module items: ${error}`);
+    }
+  };
+
+  const fetchUserModuleItems = async (userID: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("user_module_items")
+        .select("module_items")
+        .eq("user_id", userID)
+        .single();
+
+      if (error) {
+        invokeToast(
+          "error",
+          `Failed to fetch user module items: ${error.message}`
+        );
+      } else {
+        const userItems = data.module_items
+          .split(",")
+          .map((item: string) => item.trim());
+
+        const userModuleItems = moduleItems.filter((item: ModuleItem) =>
+          userItems.includes(item.value)
+        );
+
+        setUserModuleItems(userModuleItems);
+        setActiveTab(userModuleItems[0].value);
+      }
+    } catch (error) {
+      console.error("Error fetching user module items:", error);
+      invokeToast("error", `Failed to fetch user module items: ${error}`);
+    }
+  };
+
+  const handleAddModule = async (item: ModuleItem) => {
+    if (!profile || !profile.user_id) {
+      return;
+    }
+
+    const previousItems = [...userModuleItems];
+    const updatedItems = [...previousItems, item];
+    setUserModuleItems(updatedItems);
+
+    try {
+      const { error } = await supabase
+        .from("user_module_items")
+        .update({
+          module_items: updatedItems.map((i) => i.value).join(", "),
+        })
+        .eq("user_id", profile.user_id);
+
+      if (error) {
+        setUserModuleItems(previousItems);
+        invokeToast("error", `Failed to add module item: ${error.message}`);
+      } else {
+        invokeToast("success", `New module item has been added successfully`);
+      }
+    } catch (error) {
+      setUserModuleItems(previousItems);
+      console.error("Error adding module item:", error);
+      invokeToast("error", `Failed to add module item: ${error}`);
+    }
+  };
+
+  const handleRemoveModule = async (item: ModuleItem) => {
+    if (!profile?.user_id) return;
+
+    const previousItems = [...userModuleItems];
+    const updatedItems = previousItems.filter((i) => i.value !== item.value);
+    setUserModuleItems(updatedItems);
+
+    try {
+      const { error } = await supabase
+        .from("user_module_items")
+        .update({
+          module_items: updatedItems.map((i) => i.value).join(", "),
+        })
+        .eq("user_id", profile.user_id);
+
+      if (error) {
+        setUserModuleItems(previousItems);
+        invokeToast("error", `Failed to remove module item: ${error.message}`);
+      } else {
+        if (activeTab === item.value) {
+          setActiveTab(updatedItems[0]?.value || "");
+        }
+        invokeToast("success", `Module item has been removed successfully`);
+      }
+    } catch (error) {
+      setUserModuleItems(previousItems);
+      console.error("Error removing module item:", error);
+      invokeToast("error", `Failed to remove module item: ${error}`);
+    }
+  };
 
   if (etID == null) {
     return null;
@@ -150,7 +345,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
 
         setGOs(formattedData);
       } else {
-        setGOs(null);
+        setGOs([]);
       }
     } catch (error) {
       invokeToast("error", `Failed to fetch general opportunities: ${error}`);
@@ -211,7 +406,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
 
         setTOs(formattedData);
       } else {
-        setTOs(null);
+        setTOs([]);
       }
     } catch (error) {
       invokeToast("error", `Failed to fetch tailored opportunities: ${error}`);
@@ -260,7 +455,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
 
         setTOs(formattedData);
       } else {
-        setTOs(null);
+        setTOs([]);
       }
 
       invokeToast("success", data.message);
@@ -318,7 +513,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
 
         setGMs(formattedData);
       } else {
-        setGMs(null);
+        setGMs([]);
       }
     } catch (error) {
       invokeToast(
@@ -371,7 +566,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
 
         setTMs(formattedData);
       } else {
-        setTMs(null);
+        setTMs([]);
       }
     } catch (error) {
       invokeToast(
@@ -415,7 +610,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
 
         setTMs(formattedData);
       } else {
-        setTMs(null);
+        setTMs([]);
       }
 
       invokeToast("success", data.message);
@@ -556,34 +751,48 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
 
   return (
     <div className="w-full border rounded">
-      <div className="tabs flex items-center justify-between border-b border-gray-200">
-        <div className="flex gap-2 p-2 pb-0">
-          <TabButton
-            isActive={activeTab === "Opportunity"}
-            onClick={() => setActiveTab("Opportunity")}
+      <div className="tabs flex items-center gap-2 justify-between bg-gray-200">
+        <div className="flex items-center w-full">
+          <div className="flex items-center gap-0.5 px-1 pt-1 pb-0">
+            {userModuleItems.map((item: ModuleItem, index) => (
+              <>
+                <TabButton
+                  key={item.value}
+                  title={item.title}
+                  isActive={activeTab === item.value}
+                  onClick={() => setActiveTab(item.value)}
+                  onClose={() => handleRemoveModule(item)}
+                />
+
+                {index ===
+                  userModuleItems.map((item) => item.value).indexOf(activeTab) -
+                    1 ||
+                index ===
+                  userModuleItems
+                    .map((item) => item.value)
+                    .indexOf(activeTab) ? (
+                  <div className="h-6 w-px border -translate-y-0.5" />
+                ) : (
+                  <div className="h-6 w-px border border-white -translate-y-0.5" />
+                )}
+              </>
+            ))}
+          </div>
+          <button
+            className="p-2 rounded-full text-gray-500 hover:bg-gray-50"
+            onClick={() => setShowAddModulePopup(true)}
           >
-            Opportunity
-          </TabButton>
-          <TabButton
-            isActive={activeTab === "Marketing Campaign"}
-            onClick={() => setActiveTab("Marketing Campaign")}
-          >
-            Marketing Campaign
-          </TabButton>
-          <TabButton
-            isActive={activeTab === "Summary"}
-            onClick={() => setActiveTab("Summary")}
-          >
-            Summary
-          </TabButton>
+            <PlusIcon color="black" />
+          </button>
+          <div className="flex-grow"></div>
         </div>
 
-        <div className="pr-2">
+        <div className="pr-1">
           <ModuleShareButton etIDs={[etID]} />
         </div>
       </div>
       <div className="tab-content">
-        {activeTab === "Opportunity" ? (
+        {activeTab === "opportunity" && (
           <CompanyModuleOpportunitySection
             GOs={GOs}
             TOs={TOs}
@@ -592,7 +801,8 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
             isGeneratingTO={isGeneratingTO}
             handleGenerateTO={handleGenerateTO}
           />
-        ) : activeTab === "Marketing Campaign" ? (
+        )}
+        {activeTab === "marketing_campaign" && (
           <CompanyModuleMarketingSection
             GMs={GMs}
             TMs={TMs}
@@ -601,7 +811,8 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
             isGeneratingTM={isGeneratingTM}
             handleGenerateTM={handleGenerateTM}
           />
-        ) : activeTab === "Summary" ? (
+        )}
+        {activeTab === "summary" && (
           <CompanyModuleSummarySection
             GS={GS}
             TS={TS}
@@ -610,11 +821,70 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
             isGeneratingTS={isGeneratingTS}
             handleGenerateTS={handleGenerateTS}
           />
+        )}
+        {activeTab === "ten-k" && <CompanyModuleTenKSection />}
+        {activeTab === "press_release" && <CompanyModulePressReleaseSection />}
+        {activeTab === "clinical_trial" && (
+          <CompanyModuleClinicalTrialSection />
+        )}
+        {activeTab === "government_contract" && (
+          <CompanyModuleGovernmentContractSection />
+        )}
+
+        {/* Add other module sections here */}
+      </div>
+      {showAddModulePopup && (
+        <AddModulePopup
+          isOpen={showAddModulePopup}
+          availableModules={moduleItems.filter(
+            (item) =>
+              !userModuleItems.some((userItem) => userItem.value === item.value)
+          )}
+          onAdd={handleAddModule}
+          onClose={() => setShowAddModulePopup(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+interface AddModulePopupProps {
+  isOpen: boolean;
+  availableModules: ModuleItem[];
+  onAdd: (item: ModuleItem) => void;
+  onClose: () => void;
+}
+
+const AddModulePopup: React.FC<AddModulePopupProps> = ({
+  isOpen,
+  availableModules,
+  onAdd,
+  onClose,
+}) => {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="bg-white p-4 rounded">
+        <h2 className="text-lg font-bold mb-4 text-center">Add Item</h2>
+        {availableModules.length > 0 ? (
+          <ul>
+            {availableModules.map((module) => (
+              <li key={module.value} className="mb-2">
+                <button
+                  onClick={() => onAdd(module)}
+                  className={
+                    "p-4 text-base w-full font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out"
+                  }
+                >
+                  {module.title}
+                </button>
+              </li>
+            ))}
+          </ul>
         ) : (
-          <></>
+          <p className="text-center text-gray-500">There is no item to add</p>
         )}
       </div>
-    </div>
+    </Modal>
   );
 };
 

@@ -6,8 +6,8 @@ import { OpportunityProps } from "@/app/components/interface";
 import CompanyModuleSubTabs from "../CompanyModuleSubTabs";
 
 interface CompanyModuleOpportunitySectionProps {
-  GOs: OpportunityProps[] | null;
-  TOs: OpportunityProps[] | null;
+  GOs: OpportunityProps[];
+  TOs: OpportunityProps[];
   isFetchingGO: boolean;
   isFetchingTO: boolean;
   isGeneratingTO: boolean;
@@ -35,7 +35,7 @@ const CompanyModuleOpportunitySection: React.FC<
           <>
             {isFetchingGO ? (
               <LoadingSection />
-            ) : GOs == null ? (
+            ) : GOs.length === 0 ? (
               <NoDataSection content="There is no general opportunities" />
             ) : (
               <CompanyModuleOpportunityTable opportunities={GOs} />
@@ -45,7 +45,7 @@ const CompanyModuleOpportunitySection: React.FC<
           <>
             {isFetchingTO ? (
               <LoadingSection />
-            ) : TOs == null ? (
+            ) : TOs.length === 0 ? (
               <div className="w-full h-72 flex items-center justify-center">
                 <button
                   onClick={handleGenerateTO}
