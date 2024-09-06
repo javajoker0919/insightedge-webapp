@@ -13,10 +13,10 @@ const TabButton: React.FC<TabButtonProps> = ({ label, isActive, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className={`px-8 py-2 w-full sm:w-auto ${
+      className={`px-16 py-1 w-full sm:w-auto ${
         isActive
-          ? "text-gray-900 bg-gray-100 rounded-t border border-gray-300 border-b-0"
-          : "text-gray-700"
+          ? "text-gray-900 bg-white border-gray-300"
+          : "text-gray-500 bg-gray-200 hover:bg-gray-100"
       }`}
     >
       {label}
@@ -29,8 +29,8 @@ const CompanyModuleSubTabs: React.FC<CompanyModuleSubTabsProps> = ({
   setActive,
 }) => {
   return (
-    <div className="w-full border-b border-gray-300 p-1 pb-0 flex items-center justify-between">
-      <div className="flex gap-1">
+    <div className="w-full border-b px-1 pt-2 pb-0 flex items-center justify-between">
+      <div className="flex rounded-t-lg border border-b-0 overflow-hidden">
         <TabButton
           label="General"
           isActive={active === "general"}
