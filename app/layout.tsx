@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     url: "https://prospectedge.co/",
     type: "website",
-    title: "ProspectEdge: AI-Powered Sales Insights for B2B Teams",
+    title: "ProspectEdge: AI Sales Planning",
     description:
       "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
     images: [
