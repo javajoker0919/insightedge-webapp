@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@prospectedge",
-    title: "ProspectEdge: AI Sales Planning",
+    title: "ProspectEdge: AI Sales Account Planning",
     description:
       "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
     images: ["https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75"],
