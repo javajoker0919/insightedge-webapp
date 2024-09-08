@@ -9,7 +9,7 @@ import ToastProvider from "@/contexts/toastContext";
 import AuthProvider from "@/contexts/AuthProvider";
 
 export const metadata: Metadata = {
-  title: "ProspectEdge: AI-Powered Sales Insights for B2B Teams",
+  title: "ProspectEdge: AI-Powered Sales Account Planning",
   description:
     "Boost B2B sales with our AI-driven sales intelligence & engagement platform. Get earnings call transcripts database & insights on customers, markets, & trends.",
   openGraph: {
