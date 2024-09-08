@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import ClientLayout from "./ClientLayout";
 import { PrelineScript } from "./components";
 import Script from "next/script";
-import Head from "next/head";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./globals.css";
+
+import ToastProvider from "@/contexts/toastContext";
+import AuthProvider from "@/contexts/AuthProvider";
 
 export const metadata: Metadata = {
   title: "ProspectEdge: AI-Powered Sales Insights for B2B Teams",
@@ -15,8 +19,8 @@ export const metadata: Metadata = {
     description:
       "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
     images: [
-      { url: "https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75" }
-    ]
+      { url: "https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75" },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -24,51 +28,60 @@ export const metadata: Metadata = {
     title: "ProspectEdge: AI-Powered Sales Insights for B2B Teams",
     description:
       "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
-    images: ["https://prospectedge.co/logo_twitter.jpg"]
-  }
+    images: ["https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75"],
+  },
+  alternates: {
+    canonical: "https://prospectedge.co/",
+  },
+};
+
+const ToastContainerConfig = {
+  closeOnClick: true,
+  draggable: true,
+  pauseOnFocusLoss: true,
+  pauseOnHover: true,
+  autoClose: 3000,
+  hideProgressBar: true,
+  newestOnTop: false,
+  position: "top-right" as const,
+  theme: "colored" as const,
 };
 
 export default function RootLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-      <Head>
-        <meta property="og:url" content="https://prospectedge.co/" />
-        <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content="ProspectEdge: AI-Powered Sales Insights for B2B Teams"
-        />
-        <meta
-          property="og:description"
-          content="Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals."
-        />
-        <meta
-          property="og:image"
-          content="https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75"
-        />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="prospectedge.co" />
-        <meta property="twitter:url" content="https://prospectedge.co/" />
-        <meta
-          name="twitter:title"
-          content="ProspectEdge: AI-Powered Sales Insights for B2B Teams"
-        />
-        <meta
-          name="twitter:description"
-          content="Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals."
-        />
-        <meta
-          name="twitter:image"
-          content="https://prospectedge.co/logo_twitter.jpg"
-        />
-        <meta name="twitter:image:alt" content="Prospect Edge Logo" />
-        <link rel="canonical" href="https://prospectedge.co/" />
-
+      <head>
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-537W4DTR');
+          `}
+        </Script>
+      </head>
+      <body className="text-black">
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-537W4DTR"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
+        <div className="flex h-full min-h-screen flex-col items-center justify-between bg-white">
+          <AuthProvider>
+            <ToastProvider>
+              <ToastContainer {...ToastContainerConfig} />
+              {children}
+            </ToastProvider>
+          </AuthProvider>
+        </div>
         <Script
           id="organization-schema"
           type="application/ld+json"
@@ -79,13 +92,10 @@ export default function RootLayout({
               name: "ProspectEdge",
               alternateName: "ProspectEdge",
               url: "https://prospectedge.co/",
-              logo: "https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75"
-            })
+              logo: "https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75",
+            }),
           }}
         />
-      </Head>
-      <body className="text-black">
-        <ClientLayout>{children}</ClientLayout>
       </body>
       <PrelineScript />
     </html>
