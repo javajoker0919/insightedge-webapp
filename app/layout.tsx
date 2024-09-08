@@ -4,8 +4,6 @@ import { PrelineScript } from "./components";
 import Script from "next/script";
 import Head from "next/head";
 
-const twitterImageUrl = "https://prospectedge.co/_next/image?url=%2Ftwitter-logo-white-bg.png&w=1200&h=675&q=75";
-
 export const metadata: Metadata = {
   title: "ProspectEdge: AI-Powered Sales Insights for B2B Teams",
   description:
@@ -17,7 +15,7 @@ export const metadata: Metadata = {
     description:
       "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
     images: [
-      { url: twitterImageUrl, width: 1200, height: 675 }
+      { url: "https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75" }
     ]
   },
   twitter: {
@@ -26,7 +24,7 @@ export const metadata: Metadata = {
     title: "ProspectEdge: AI-Powered Sales Insights for B2B Teams",
     description:
       "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
-    images: [twitterImageUrl]
+    images: ["https://prospectedge.co/logo_twitter.jpg"]
   }
 };
 
@@ -50,7 +48,7 @@ export default function RootLayout({
         />
         <meta
           property="og:image"
-          content={twitterImageUrl}
+          content="https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75"
         />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -66,7 +64,7 @@ export default function RootLayout({
         />
         <meta
           name="twitter:image"
-          content={twitterImageUrl}
+          content="https://prospectedge.co/logo_twitter.jpg"
         />
         <meta name="twitter:image:alt" content="Prospect Edge Logo" />
         <link rel="canonical" href="https://prospectedge.co/" />
@@ -81,7 +79,7 @@ export default function RootLayout({
               name: "ProspectEdge",
               alternateName: "ProspectEdge",
               url: "https://prospectedge.co/",
-              logo: twitterImageUrl
+              logo: "https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75"
             })
           }}
         />
