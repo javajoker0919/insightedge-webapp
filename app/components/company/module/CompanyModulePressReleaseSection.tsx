@@ -12,15 +12,11 @@ const CompanyModulePressReleaseSection: React.FC<
 
   return (
     <div className="p-4 bg-white max-h-[35rem] overflow-y-auto">
-      <div className="mb-2">
-        <strong>Date:</strong> {formattedDate}
+      <div className="mb-2 text-xl font-bold">
+        {data.title} - {formattedDate}
       </div>
-      <div className="mb-2">
-        <strong>Title:</strong> {data.title}
-      </div>
-      <div className="mb-2">
-        <strong>Text:</strong> {data.text}
-      </div>
+
+      <div className="mb-2">{data.text}</div>
     </div>
   );
 };

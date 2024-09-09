@@ -54,7 +54,7 @@ const TabButton: React.FC<TabButtonProps> = ({
     <button
       title={title}
       onClick={onClick}
-      className={`pb-1 max-w-80 min-w-40 flex-1 ${
+      className={`pb-1 w-60 flex-1 ${
         isActive ? "text-gray-800 bg-white rounded-t-lg" : "text-gray-500"
       }`}
     >
@@ -125,7 +125,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
       value: "marketing_campaign",
     },
     {
-      title: "Summary",
+      title: "Transcript Summary",
       value: "summary",
     },
   ];
