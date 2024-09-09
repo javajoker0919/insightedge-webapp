@@ -101,6 +101,7 @@ const CompanyPage: React.FC = () => {
         <div className="flex gap-4 w-full">
           <div className="h-full w-full space-y-4 overflow-hidden">
             <CompanyModuleSection
+              companyID={companyID}
               companyName={companyData.name}
               etID={selectedETID}
             />

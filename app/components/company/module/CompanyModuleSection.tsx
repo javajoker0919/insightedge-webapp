@@ -14,6 +14,9 @@ import {
   OpportunityProps,
   MarketingProps,
   SummaryProps,
+  ClinicalTrialProps,
+  PressReleaseProps,
+  TenKProps,
 } from "@/app/components/interface";
 import ModuleShareButton from "./share/ModuleShareButton";
 import { CloseIcon, PlusIcon } from "../../icon";
@@ -24,6 +27,7 @@ import CompanyModuleClinicalTrialSection from "./CompanyModuleClinicalTrialSecti
 import CompanyModuleGovernmentContractSection from "./CompanyModuleGovernmentContractSection";
 
 interface CompanyModuleSectionProps {
+  companyID: number;
   companyName: string;
   etID: number | null;
 }
@@ -59,7 +63,7 @@ const TabButton: React.FC<TabButtonProps> = ({
           isActive ? "" : "hover:bg-gray-100"
         }`}
       >
-        <span className="line-clamp-1 text-left">{title}</span>
+        <span className="line-clamp-1 text-left break-all">{title}</span>
         <button
           className={`ml-2 p-0.5 rounded-full ${
             isActive ? "hover:bg-gray-200" : "hover:bg-gray-200"
@@ -77,6 +81,7 @@ const TabButton: React.FC<TabButtonProps> = ({
 };
 
 const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
+  companyID,
   companyName,
   etID,
 }) => {
@@ -87,7 +92,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   const userID = profile?.user_id;
   const setCreditCount = useSetAtom(creditCountAtom);
 
-  const [activeTab, setActiveTab] = useState("");
+  const [activeTab, setActiveTab] = useState("opportunity");
 
   // Opportunity States
   const [GOs, setGOs] = useState<OpportunityProps[]>([]);
@@ -110,123 +115,201 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   const [isFetchingTS, setIsFetchingTS] = useState<boolean>(false);
   const [isGeneratingTS, setIsGeneratingTS] = useState<boolean>(false);
 
-  const [moduleItems, setModuleItems] = useState<ModuleItem[]>([]);
-  const [userModuleItems, setUserModuleItems] = useState<ModuleItem[]>([]);
+  const initialModuleItems: ModuleItem[] = [
+    {
+      title: "Opportunity",
+      value: "opportunity",
+    },
+    {
+      title: "Marketing Campaign",
+      value: "marketing_campaign",
+    },
+    {
+      title: "Summary",
+      value: "summary",
+    },
+  ];
+
+  const [moduleItems, setModuleItems] =
+    useState<ModuleItem[]>(initialModuleItems);
+  const [userModuleItems, setUserModuleItems] =
+    useState<ModuleItem[]>(initialModuleItems);
   const [showAddModulePopup, setShowAddModulePopup] = useState(false);
 
+  const [tenKData, setTenKData] = useState<TenKProps | null>(null);
+  const [pressReleaseData, setPressReleaseData] =
+    useState<PressReleaseProps | null>(null);
+  const [clinicalTrialData, setClinicalTrialData] =
+    useState<ClinicalTrialProps | null>(null);
+
   useEffect(() => {
-    fetchModuleItems();
+    fetchTenKData(companyID);
+    fetchPressReleaseData(companyID);
+    fetchClinicalTrialData(companyID);
   }, []);
 
   useEffect(() => {
-    if (profile && profile.user_id && moduleItems.length > 0) {
-      fetchUserModuleItems(profile.user_id);
-    }
-  }, [profile, moduleItems]);
-
-  useEffect(() => {
-    if (etID && userModuleItems.length > 0) {
-      const itemValueList =
-        userModuleItems.map((item: ModuleItem) => item.value) ?? [];
-
-      if (itemValueList.includes("opportunity")) fetchGO(etID);
-      if (itemValueList.includes("marketing_campaign")) fetchGM(etID);
-      if (itemValueList.includes("summary")) fetchGS(etID);
+    if (etID) {
+      fetchGO(etID);
+      fetchGM(etID);
+      fetchGS(etID);
     }
   }, [etID]);
 
   useEffect(() => {
-    if (etID && userModuleItems.length > 0) {
-      const itemValueList =
-        userModuleItems.map((item: ModuleItem) => item.value) ?? [];
-
-      if (GOs.length === 0 && itemValueList.includes("opportunity")) {
-        fetchGO(etID);
-      }
-      if (GMs.length === 0 && itemValueList.includes("marketing_campaign")) {
-        fetchGM(etID);
-      }
-      if (GS === null && itemValueList.includes("summary")) {
-        fetchGS(etID);
-      }
-    }
-  }, [userModuleItems]);
-
-  useEffect(() => {
-    if (etID && profile && profile.org_id && userModuleItems.length > 0) {
+    if (etID && profile && profile.org_id) {
       const orgID = profile.org_id;
-      const itemValueList =
-        userModuleItems.map((item: ModuleItem) => item.value) ?? [];
 
-      if (itemValueList.includes("opportunity")) fetchTO(etID, orgID);
-      if (itemValueList.includes("marketing_campaign")) fetchTM(etID, orgID);
-      if (itemValueList.includes("summary")) fetchTS(etID, orgID);
+      fetchTO(etID, orgID);
+      fetchTM(etID, orgID);
+      fetchTS(etID, orgID);
     }
-  }, [etID]);
+  }, [etID, profile]);
 
-  useEffect(() => {
-    if (etID && profile && profile.org_id && userModuleItems.length > 0) {
-      const orgID = profile.org_id;
-      const itemValueList =
-        userModuleItems.map((item: ModuleItem) => item.value) ?? [];
-
-      if (TOs.length === 0 && itemValueList.includes("opportunity")) {
-        fetchTO(etID, orgID);
-      }
-      if (TMs.length === 0 && itemValueList.includes("marketing_campaign")) {
-        fetchTM(etID, orgID);
-      }
-      if (TS === null && itemValueList.includes("summary")) {
-        fetchTS(etID, orgID);
-      }
-    }
-  }, [profile, userModuleItems]);
-
-  const fetchModuleItems = async () => {
+  const fetchTenKData = async (companyID: number) => {
     try {
       const { data, error } = await supabase
-        .from("module_items")
-        .select("value, title");
-
+        .from("10K_info")
+        .select(
+          `
+          url,
+          filling_date,
+          content,
+          item_1,
+          item_1a
+          `
+        )
+        .eq("company_id", companyID)
+        .maybeSingle();
       if (error) {
-        invokeToast("error", `Failed to fetch module items: ${error.message}`);
+        console.error("Error fetching 10-K data:", error);
       } else {
-        setModuleItems(data);
+        if (data) {
+          setTenKData(data);
+          setModuleItems((prev) => {
+            if (!prev.some((item) => item.value === "ten-k")) {
+              return [...prev, { value: "ten-k", title: "10-K" }];
+            }
+            return prev;
+          });
+          setUserModuleItems((prev) => {
+            if (!prev.some((item) => item.value === "ten-k")) {
+              return [...prev, { value: "ten-k", title: "10-K" }];
+            }
+            return prev;
+          });
+        } else {
+          setTenKData(null);
+          setUserModuleItems((prev) =>
+            prev.filter((item) => item.value !== "ten-k")
+          );
+        }
       }
     } catch (error) {
-      console.error("Error fetching module items:", error);
-      invokeToast("error", `Failed to fetch module items: ${error}`);
+      console.error("Error fetching 10-K data:", error);
     }
   };
 
-  const fetchUserModuleItems = async (userID: string) => {
+  const fetchPressReleaseData = async (companyID: number) => {
     try {
       const { data, error } = await supabase
-        .from("user_module_items")
-        .select("module_items")
-        .eq("user_id", userID)
-        .single();
+        .from("press_releases")
+        .select(
+          `
+          date, title, text
+          `
+        )
+        .eq("company_id", companyID)
+        .limit(1)
+        .maybeSingle();
 
       if (error) {
-        invokeToast(
-          "error",
-          `Failed to fetch user module items: ${error.message}`
-        );
+        console.error("Error fetching press release data:", error);
       } else {
-        const userItems = data.module_items
-          .split(",")
-          .map((item: string) => item.trim());
-
-        const userModuleItems = moduleItems.filter((item: ModuleItem) =>
-          userItems.includes(item.value)
-        );
-
-        setUserModuleItems(userModuleItems);
-        setActiveTab(userModuleItems[0].value);
+        if (data) {
+          setPressReleaseData(data);
+          setModuleItems((prev) => {
+            if (!prev.some((item) => item.value === "press_release")) {
+              return [
+                ...prev,
+                { value: "press_release", title: "Press Release" },
+              ];
+            }
+            return prev;
+          });
+          setUserModuleItems((prev) => {
+            if (!prev.some((item) => item.value === "press_release")) {
+              return [
+                ...prev,
+                { value: "press_release", title: "Press Release" },
+              ];
+            }
+            return prev;
+          });
+        } else {
+          setPressReleaseData(null);
+          setUserModuleItems((prev) =>
+            prev.filter((item) => item.value !== "press_release")
+          );
+        }
       }
     } catch (error) {
-      console.error("Error fetching user module items:", error);
-      invokeToast("error", `Failed to fetch user module items: ${error}`);
+      console.error("Error fetching press release data:", error);
+    }
+  };
+
+  const fetchClinicalTrialData = async (companyID: number) => {
+    try {
+      const { data, error } = await supabase
+        .from("clinical_trials")
+        .select(
+          `
+          company_name,
+          company_symbol,
+          nct_id,
+          completion_date,
+          phase,
+          title,
+          conditions,
+          interventions,
+          last_update_posted
+          `
+        )
+        .eq("company_id", companyID)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error fetching clinical trial data:", error);
+      } else {
+        if (data) {
+          setClinicalTrialData(data);
+          setModuleItems((prev) => {
+            if (!prev.some((item) => item.value === "clinical_trial")) {
+              return [
+                ...prev,
+                { value: "clinical_trial", title: "Clinical Trial" },
+              ];
+            }
+            return prev;
+          });
+          setUserModuleItems((prev) => {
+            if (!prev.some((item) => item.value === "clinical_trial")) {
+              return [
+                ...prev,
+                { value: "clinical_trial", title: "Clinical Trial" },
+              ];
+            }
+            return prev;
+          });
+        } else {
+          setClinicalTrialData(null);
+          setUserModuleItems((prev) =>
+            prev.filter((item) => item.value !== "clinical_trial")
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching clinical trial data:", error);
     }
   };
 
@@ -238,26 +321,6 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
     const previousItems = [...userModuleItems];
     const updatedItems = [...previousItems, item];
     setUserModuleItems(updatedItems);
-
-    try {
-      const { error } = await supabase
-        .from("user_module_items")
-        .update({
-          module_items: updatedItems.map((i) => i.value).join(", "),
-        })
-        .eq("user_id", profile.user_id);
-
-      if (error) {
-        setUserModuleItems(previousItems);
-        invokeToast("error", `Failed to add module item: ${error.message}`);
-      } else {
-        invokeToast("success", `New module item has been added successfully`);
-      }
-    } catch (error) {
-      setUserModuleItems(previousItems);
-      console.error("Error adding module item:", error);
-      invokeToast("error", `Failed to add module item: ${error}`);
-    }
   };
 
   const handleRemoveModule = async (item: ModuleItem) => {
@@ -266,29 +329,6 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
     const previousItems = [...userModuleItems];
     const updatedItems = previousItems.filter((i) => i.value !== item.value);
     setUserModuleItems(updatedItems);
-
-    try {
-      const { error } = await supabase
-        .from("user_module_items")
-        .update({
-          module_items: updatedItems.map((i) => i.value).join(", "),
-        })
-        .eq("user_id", profile.user_id);
-
-      if (error) {
-        setUserModuleItems(previousItems);
-        invokeToast("error", `Failed to remove module item: ${error.message}`);
-      } else {
-        if (activeTab === item.value) {
-          setActiveTab(updatedItems[0]?.value || "");
-        }
-        invokeToast("success", `Module item has been removed successfully`);
-      }
-    } catch (error) {
-      setUserModuleItems(previousItems);
-      console.error("Error removing module item:", error);
-      invokeToast("error", `Failed to remove module item: ${error}`);
-    }
   };
 
   if (etID == null) {
@@ -822,16 +862,18 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
             handleGenerateTS={handleGenerateTS}
           />
         )}
-        {activeTab === "ten-k" && <CompanyModuleTenKSection />}
-        {activeTab === "press_release" && <CompanyModulePressReleaseSection />}
-        {activeTab === "clinical_trial" && (
-          <CompanyModuleClinicalTrialSection />
+        {activeTab === "ten-k" && tenKData && (
+          <CompanyModuleTenKSection data={tenKData} />
         )}
-        {activeTab === "government_contract" && (
+        {activeTab === "press_release" && pressReleaseData && (
+          <CompanyModulePressReleaseSection data={pressReleaseData} />
+        )}
+        {activeTab === "clinical_trial" && clinicalTrialData && (
+          <CompanyModuleClinicalTrialSection data={clinicalTrialData} />
+        )}
+        {activeTab === "government_contract" && false && (
           <CompanyModuleGovernmentContractSection />
         )}
-
-        {/* Add other module sections here */}
       </div>
       {showAddModulePopup && (
         <AddModulePopup
