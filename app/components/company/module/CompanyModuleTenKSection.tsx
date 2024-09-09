@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { TenKProps } from "../../interface";
+import NoDataSection from "../../NoDataSection";
 
 interface CompanyModuleTenKSectionProps {
   data: TenKProps;
@@ -8,27 +9,47 @@ interface CompanyModuleTenKSectionProps {
 const CompanyModuleTenKSection: React.FC<CompanyModuleTenKSectionProps> = ({
   data,
 }) => {
+  const [activeTab, setActiveTab] = useState<"summary" | "iframe">("summary");
+
   return (
-    <div className="p-4 bg-white max-h-[35rem] overflow-y-auto">
-      <h2 className="text-xl font-bold mb-4">10-K Report</h2>
-      <div className="mb-2">
-        <strong>URL:</strong>{" "}
-        <a href={data.url} target="_blank" rel="noopener noreferrer">
-          {data.url}
-        </a>
+    <div className="bg-white max-h-[35rem] overflow-y-auto">
+      <div className="w-full border-b pb-0 flex items-center justify-between">
+        <div className="flex border border-b-0">
+          <button
+            onClick={() => setActiveTab("summary")}
+            className={`px-16 py-2 w-full sm:w-auto ${
+              activeTab === "summary"
+                ? "text-gray-900 bg-white border-gray-300"
+                : "text-gray-500 bg-gray-100 hover:bg-gray-100"
+            }`}
+          >
+            Summary
+          </button>
+          <button
+            onClick={() => setActiveTab("iframe")}
+            className={`px-16 py-2 w-full sm:w-auto ${
+              activeTab === "iframe"
+                ? "text-gray-900 bg-white border-gray-300"
+                : "text-gray-500 bg-gray-100 hover:bg-gray-100"
+            }`}
+          >
+            Full Report
+          </button>
+        </div>
       </div>
-      <div className="mb-2">
-        <strong>Filing Date:</strong> {data.filling_date}
-      </div>
-      <div className="mb-2">
-        <strong>Content:</strong> {data.content}
-      </div>
-      <div className="mb-2">
-        <strong>Item 1:</strong> {data.item_1}
-      </div>
-      <div className="mb-2">
-        <strong>Item 1A:</strong> {data.item_1a}
-      </div>
+      {activeTab === "summary" ? (
+        <NoDataSection content="There is no summary yet" />
+      ) : (
+        <div className="">
+          <iframe
+            src={data.url}
+            title="10-K Report"
+            width="100%"
+            height="500px"
+            frameBorder="0"
+          ></iframe>
+        </div>
+      )}
     </div>
   );
 };
