@@ -220,6 +220,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
           `
         )
         .eq("company_id", companyID)
+        .order("date", { ascending: false })
         .limit(1)
         .maybeSingle();
 
@@ -276,6 +277,8 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
           `
         )
         .eq("company_id", companyID)
+        .order("last_update_posted", { ascending: false })
+        .limit(1)
         .maybeSingle();
 
       if (error) {

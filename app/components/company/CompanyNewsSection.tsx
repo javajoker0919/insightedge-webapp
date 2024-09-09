@@ -136,6 +136,7 @@ const CompanyNewsSection: React.FC<CompanyNewsSectionProps> = ({
                   <p className="text-sm text-gray-500">
                     {getTimeAgo(item.published_date)}
                   </p>
+                  <div className="flex-grow"></div>
                 </div>
               </a>
             </SwiperSlide>
