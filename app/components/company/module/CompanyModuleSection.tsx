@@ -18,7 +18,7 @@ import {
   PressReleaseProps,
   TenKProps,
 } from "@/app/components/interface";
-import ModuleShareButton from "./share/ModuleShareButton";
+import ModuleShareButtonGroup from "./share/ModuleShareButtonGroup";
 import { CloseIcon, PlusIcon } from "../../icon";
 import Modal from "../../Modal";
 import CompanyModuleTenKSection from "./CompanyModuleTenKSection";
@@ -89,28 +89,27 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   const mixpanel = getMixPanelClient();
 
   const profile = useAtomValue(profileAtom);
-  const userID = profile?.user_id;
   const setCreditCount = useSetAtom(creditCountAtom);
 
   const [activeTab, setActiveTab] = useState("opportunity");
 
   // Opportunity States
-  const [GOs, setGOs] = useState<OpportunityProps[]>([]);
-  const [TOs, setTOs] = useState<OpportunityProps[]>([]);
+  const [GOs, setGOs] = useState<OpportunityProps[] | null>(null);
+  const [TOs, setTOs] = useState<OpportunityProps[] | null>(null);
   const [isFetchingGO, setIsFetchingGO] = useState<boolean>(false);
   const [isFetchingTO, setIsFetchingTO] = useState<boolean>(false);
   const [isGeneratingTO, setIsGeneratingTO] = useState<boolean>(false);
 
   // Marketing States
-  const [GMs, setGMs] = useState<MarketingProps[]>([]);
-  const [TMs, setTMs] = useState<MarketingProps[]>([]);
+  const [GMs, setGMs] = useState<MarketingProps[] | null>(null);
+  const [TMs, setTMs] = useState<MarketingProps[] | null>(null);
   const [isFetchingGM, setIsFetchingGM] = useState<boolean>(false);
   const [isFetchingTM, setIsFetchingTM] = useState<boolean>(false);
   const [isGeneratingTM, setIsGeneratingTM] = useState<boolean>(false);
 
   // Summary States
-  const [GS, setGS] = useState<SummaryProps | null>(null);
-  const [TS, setTS] = useState<SummaryProps | null>(null);
+  const [GS, setGS] = useState<SummaryProps | null | undefined>(undefined);
+  const [TS, setTS] = useState<SummaryProps | null | undefined>(undefined);
   const [isFetchingGS, setIsFetchingGS] = useState<boolean>(false);
   const [isFetchingTS, setIsFetchingTS] = useState<boolean>(false);
   const [isGeneratingTS, setIsGeneratingTS] = useState<boolean>(false);
@@ -126,12 +125,13 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
     },
     {
       title: "Transcript Summary",
-      value: "summary",
+      value: "transcript_summary",
     },
   ];
 
-  const [moduleItems, setModuleItems] =
-    useState<ModuleItem[]>(initialModuleItems);
+  const [additionalModuleItems, setAdditionalModuleItems] = useState<
+    ModuleItem[]
+  >([]);
   const [userModuleItems, setUserModuleItems] =
     useState<ModuleItem[]>(initialModuleItems);
   const [showAddModulePopup, setShowAddModulePopup] = useState(false);
@@ -151,21 +151,23 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
 
   useEffect(() => {
     if (etID) {
-      fetchGO(etID);
-      fetchGM(etID);
-      fetchGS(etID);
+      if (activeTab === "opportunity" && GOs === null) fetchGO(etID);
+      if (activeTab === "marketing_campaign" && GMs === null) fetchGM(etID);
+      if (activeTab === "transcript_summary" && GS === undefined) fetchGS(etID);
     }
-  }, [etID]);
+  }, [etID, activeTab]);
 
   useEffect(() => {
     if (etID && profile && profile.org_id) {
       const orgID = profile.org_id;
 
-      fetchTO(etID, orgID);
-      fetchTM(etID, orgID);
-      fetchTS(etID, orgID);
+      if (activeTab === "opportunity" && GOs === null) fetchTO(etID, orgID);
+      if (activeTab === "marketing_campaign" && GMs === null)
+        fetchTM(etID, orgID);
+      if (activeTab === "transcript_summary" && GS === undefined)
+        fetchTS(etID, orgID);
     }
-  }, [etID, profile]);
+  }, [etID, profile, activeTab]);
 
   const fetchTenKData = async (companyID: number) => {
     try {
@@ -187,7 +189,8 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
       } else {
         if (data) {
           setTenKData(data);
-          setModuleItems((prev) => {
+
+          setAdditionalModuleItems((prev) => {
             if (!prev.some((item) => item.value === "ten-k")) {
               return [...prev, { value: "ten-k", title: "10-K" }];
             }
@@ -230,7 +233,8 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
       } else {
         if (data) {
           setPressReleaseData(data);
-          setModuleItems((prev) => {
+
+          setAdditionalModuleItems((prev) => {
             if (!prev.some((item) => item.value === "press_release")) {
               return [
                 ...prev,
@@ -285,7 +289,8 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
       } else {
         if (data && data.length > 0) {
           setClinicalTrialData(data);
-          setModuleItems((prev) => {
+
+          setAdditionalModuleItems((prev) => {
             if (!prev.some((item) => item.value === "clinical_trial")) {
               return [
                 ...prev,
@@ -331,6 +336,10 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
     const previousItems = [...userModuleItems];
     const updatedItems = previousItems.filter((i) => i.value !== item.value);
     setUserModuleItems(updatedItems);
+
+    setActiveTab((prev) =>
+      prev === item.value ? userModuleItems[0].value : prev
+    );
   };
 
   if (etID == null) {
@@ -830,7 +839,11 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
         </div>
 
         <div className="pr-1">
-          <ModuleShareButton etIDs={[etID]} />
+          <ModuleShareButtonGroup
+            companyID={companyID}
+            etIDs={[etID]}
+            items={additionalModuleItems}
+          />
         </div>
       </div>
       <div className="tab-content">
@@ -854,7 +867,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
             handleGenerateTM={handleGenerateTM}
           />
         )}
-        {activeTab === "summary" && (
+        {activeTab === "transcript_summary" && (
           <CompanyModuleSummarySection
             GS={GS}
             TS={TS}
@@ -880,7 +893,10 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
       {showAddModulePopup && (
         <AddModulePopup
           isOpen={showAddModulePopup}
-          availableModules={moduleItems.filter(
+          availableModules={[
+            ...initialModuleItems,
+            ...additionalModuleItems,
+          ].filter(
             (item) =>
               !userModuleItems.some((userItem) => userItem.value === item.value)
           )}

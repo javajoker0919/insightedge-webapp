@@ -5,8 +5,8 @@ import CompanyModuleSubTabs from "../CompanyModuleSubTabs";
 import CompanyModuleSummaryContent from "./CompanyModuleSummaryContent";
 
 interface CompanyModuleSummarySectionProps {
-  GS: SummaryProps | null;
-  TS: SummaryProps | null;
+  GS: SummaryProps | null | undefined;
+  TS: SummaryProps | null | undefined;
   isFetchingGS: boolean;
   isFetchingTS: boolean;
   isGeneratingTS: boolean;
@@ -34,7 +34,7 @@ const CompanyModuleSummarySection: React.FC<
           <>
             {isFetchingGS ? (
               <LoadingSection />
-            ) : GS == null ? (
+            ) : GS === undefined || GS === null ? (
               <NoDataSection content="There is no general summary" />
             ) : (
               <CompanyModuleSummaryContent summary={GS} />
@@ -44,7 +44,7 @@ const CompanyModuleSummarySection: React.FC<
           <>
             {isFetchingTS ? (
               <LoadingSection />
-            ) : TS == null ? (
+            ) : TS === undefined || TS === null ? (
               <div className="w-full h-72 flex items-center justify-center">
                 <button
                   onClick={handleGenerateTS}
