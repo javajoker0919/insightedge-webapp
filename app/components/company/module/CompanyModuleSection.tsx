@@ -163,29 +163,25 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   useEffect(() => {
     if (!etID) return;
 
-    if (activeTab === "opportunity" && GOs === null) {
-      fetchGO(etID);
-    }
-    if (activeTab === "marketing_campaign" && GMs === null) {
-      fetchGM(etID);
-    }
-    if (activeTab === "transcript_summary" && GS === undefined) {
-      fetchGS(etID);
-    }
+    const goCondition = activeTab === "opportunity" && GOs === null;
+    const gmCondition = activeTab === "marketing_campaign" && GMs === null;
+    const gsCondition = activeTab === "transcript_summary" && GS === undefined;
+
+    if (goCondition) fetchGO(etID);
+    if (gmCondition) fetchGM(etID);
+    if (gsCondition) fetchGS(etID);
   }, [etID, activeTab, GOs, GMs, GS]);
 
   useEffect(() => {
     if (!etID || !profile || !profile.org_id) return;
 
-    if (activeTab === "opportunity" && TOs === null) {
-      fetchTO(etID, profile.org_id);
-    }
-    if (activeTab === "marketing_campaign" && TMs === null) {
-      fetchTM(etID, profile.org_id);
-    }
-    if (activeTab === "transcript_summary" && TS === undefined) {
-      fetchTS(etID, profile.org_id);
-    }
+    const toCondition = activeTab === "opportunity" && TOs === null;
+    const tmCondition = activeTab === "marketing_campaign" && TMs === null;
+    const tsCondition = activeTab === "transcript_summary" && TS === undefined;
+
+    if (toCondition) fetchTO(etID, profile.org_id);
+    if (tmCondition) fetchTM(etID, profile.org_id);
+    if (tsCondition) fetchTS(etID, profile.org_id);
   }, [etID, profile, activeTab, TOs, TMs, TS]);
 
   const fetchTenKData = async (companyID: number) => {
