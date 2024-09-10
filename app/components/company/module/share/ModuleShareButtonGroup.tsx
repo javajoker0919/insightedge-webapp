@@ -219,9 +219,9 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
   };
 
   const renderExportMethods = () => (
-    <div className="space-y-6">
-      <h3 className="text-xl font-semibold mb-6">Choose method</h3>
-      <div className="flex items-center gap-2 pb-4 justify-between">
+    <div className="">
+      <h3 className="text-lg font-semibold mb-2">Choose method</h3>
+      <div className="flex items-center gap-2 justify-between mb-6">
         {[
           { method: "PDF", icon: FaFilePdf },
           { method: "CSV", icon: FaFileCsv },
@@ -237,7 +237,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
             }`}
           >
             <div className="flex items-center">
-              <Icon className="mr-3 text-xl" />
+              <Icon className="mr-3 text-lg" />
               {method}
             </div>
             {selectedMethod === method && (
@@ -289,11 +289,12 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
     ];
 
     return (
-      <div className="space-y-6">
-        <h3 className="text-xl font-semibold mb-6">
-          Select items to {activeTab === "export" ? "export" : "share"}
+      <div>
+        <h3 className="text-lg font-semibold mb-1">
+          Items
+          {/* to {activeTab === "export" ? "export" : "share"} */}
         </h3>
-        <div className="space-y-4">
+        <div className="space-y-0.5">
           {[...defaultItems, ...items].map((item) => (
             <div key={`item-${item.value}`} className="flex items-center">
               <input
@@ -303,10 +304,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
                 onChange={() => handleItemSelection(item.value)}
                 className="mr-2"
               />
-              <label
-                htmlFor={item.value}
-                className={`text-base font-medium text-gray-700`}
-              >
+              <label htmlFor={item.value} className={`text-base text-gray-700`}>
                 {item.title}
               </label>
             </div>
@@ -317,8 +315,10 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
   };
 
   const renderEmailInput = () => (
-    <div className="space-y-6">
-      <span className="text-xl font-semibold">Enter emails</span>
+    <div className="">
+      <div className="mb-2">
+        <span className="text-lg font-semibold">Enter emails</span>
+      </div>
       <EmailInput
         newEmailRef={newEmailRef}
         isInputNotEmpty={isInputNotEmpty}
@@ -345,8 +345,9 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
 
   const renderTabContent = () => {
     return (
-      <div className="space-y-6">
+      <div>
         {renderItemSelection()}
+        <div className="h-4"></div>
         {activeTab === "export" ? renderExportMethods() : renderEmailInput()}
       </div>
     );
@@ -379,30 +380,30 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
           >
             <FaTimes className="h-4 w-4" />
           </button>
-          <div className="mb-6">
-            <div className="flex border-b border-gray-200">
-              <button
-                onClick={() => setActiveTab("export")}
-                className={`py-2 px-4 text-sm font-medium ${
-                  activeTab === "export"
-                    ? "border-b-2 border-primary-500 text-primary-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Export
-              </button>
-              <button
-                onClick={() => setActiveTab("share")}
-                className={`py-2 px-4 text-sm font-medium ${
-                  activeTab === "share"
-                    ? "border-b-2 border-primary-500 text-primary-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Share
-              </button>
-            </div>
+
+          <div className="flex border-b border-gray-200 mb-4">
+            <button
+              onClick={() => setActiveTab("export")}
+              className={`pb-1.5 px-6 text-lg font-medium ${
+                activeTab === "export"
+                  ? "border-b-2 border-primary-500 text-primary-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Export
+            </button>
+            <button
+              onClick={() => setActiveTab("share")}
+              className={`pb-1.5 px-6 text-lg font-medium ${
+                activeTab === "share"
+                  ? "border-b-2 border-primary-500 text-primary-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Share
+            </button>
           </div>
+
           {renderTabContent()}
         </div>
       </Modal>
