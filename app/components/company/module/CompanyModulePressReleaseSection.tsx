@@ -12,7 +12,7 @@ const CompanyModulePressReleaseSection: React.FC<
 
   return (
     <div className="p-4 bg-white max-h-[35rem] overflow-y-auto">
-      <div className="mb-2 text-xl font-bold">
+      <div className="mb-2 text-lg font-semibold">
         {data.title} - {formattedDate}
       </div>
 

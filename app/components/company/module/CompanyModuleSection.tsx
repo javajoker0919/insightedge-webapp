@@ -139,8 +139,9 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   const [tenKData, setTenKData] = useState<TenKProps | null>(null);
   const [pressReleaseData, setPressReleaseData] =
     useState<PressReleaseProps | null>(null);
-  const [clinicalTrialData, setClinicalTrialData] =
-    useState<ClinicalTrialProps | null>(null);
+  const [clinicalTrialData, setClinicalTrialData] = useState<
+    ClinicalTrialProps[]
+  >([]);
 
   useEffect(() => {
     fetchTenKData(companyID);
@@ -277,14 +278,12 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
           `
         )
         .eq("company_id", companyID)
-        .order("last_update_posted", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+        .order("last_update_posted", { ascending: false });
 
       if (error) {
         console.error("Error fetching clinical trial data:", error);
       } else {
-        if (data) {
+        if (data && data.length > 0) {
           setClinicalTrialData(data);
           setModuleItems((prev) => {
             if (!prev.some((item) => item.value === "clinical_trial")) {
@@ -305,7 +304,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
             return prev;
           });
         } else {
-          setClinicalTrialData(null);
+          setClinicalTrialData([]);
           setUserModuleItems((prev) =>
             prev.filter((item) => item.value !== "clinical_trial")
           );

@@ -2,33 +2,44 @@ import React from "react";
 import { ClinicalTrialProps } from "../../interface";
 
 interface CompanyModuleClinicalTrialSectionProps {
-  data: ClinicalTrialProps;
+  data: ClinicalTrialProps[];
 }
 
 const CompanyModuleClinicalTrialSection: React.FC<
   CompanyModuleClinicalTrialSectionProps
 > = ({ data }) => {
   return (
-    <div className="p-4 bg-white max-h-[35rem] overflow-y-auto">
-      <div className="mb-2 text-xl font-bold">{data.title}</div>
-      <div className="mb-2">
-        <strong>NCT ID:</strong> {data.nct_id}
-      </div>
-      <div className="mb-2">
-        <strong>Completion Date:</strong> {data.completion_date}
-      </div>
-      <div className="mb-2">
-        <strong>Phase:</strong> {data.phase}
-      </div>
-      <div className="mb-2">
-        <strong>Conditions:</strong> {data.conditions}
-      </div>
-      <div className="mb-2">
-        <strong>Interventions:</strong> {data.interventions}
-      </div>
-      <div className="mb-2">
-        <strong>Last Update Posted:</strong> {data.last_update_posted}
-      </div>
+    <div className="bg-white max-h-[35rem] overflow-y-auto">
+      <table className="min-w-full bg-white border-collapse">
+        <thead>
+          <tr className="text-sm border bg-gray-100">
+            <th className="py-2 px-2 border">Title</th>
+            <th className="py-2 px-2 border">NCT ID</th>
+            <th className="py-2 px-2 border">Completion Date</th>
+            <th className="py-2 px-2 border w-20">Phase</th>
+            <th className="py-2 px-2 border">Conditions</th>
+            <th className="py-2 px-2 border">Interventions</th>
+            <th className="py-2 px-2 border w-28">Last Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((trial, index) => (
+            <tr key={index} className="text-sm border">
+              <td className="py-2 px-2 border">{trial.title}</td>
+              <td className="py-2 px-2 border">{trial.nct_id}</td>
+              <td className="py-2 px-2 border text-center">
+                {trial.completion_date}
+              </td>
+              <td className="py-2 px-2 border text-center">{trial.phase}</td>
+              <td className="py-2 px-2 border">{trial.conditions}</td>
+              <td className="py-2 px-2 border">{trial.interventions}</td>
+              <td className="py-2 px-2 border text-center">
+                {trial.last_update_posted}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
