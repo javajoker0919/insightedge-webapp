@@ -18,9 +18,8 @@ export const metadata: Metadata = {
     title: "ProspectEdge: AI Sales Account Planning",
     description:
       "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
-    images: [
-      { url: "https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75" },
-    ],
+    siteName: "ProspectEdge",
+    images: ["/logo_full.jpg?fit=max"],
   },
   twitter: {
     card: "summary_large_image",
@@ -28,11 +27,12 @@ export const metadata: Metadata = {
     title: "ProspectEdge: AI Sales Account Planning",
     description:
       "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
-    images: ["https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75"],
+    images: "/logo_full.jpg?fit=max",
   },
   alternates: {
     canonical: "https://prospectedge.co/",
   },
+  metadataBase: new URL("https://prospectedge.co/"),
 };
 
 const ToastContainerConfig = {
@@ -92,7 +92,7 @@ export default function RootLayout({
               name: "ProspectEdge",
               alternateName: "ProspectEdge",
               url: "https://prospectedge.co/",
-              logo: "https://prospectedge.co/_next/image?url=%2Flogo.png&w=640&q=75",
+              logo: "/logo_full.jpg?fit=max",
             }),
           }}
         />
