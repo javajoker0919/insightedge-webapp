@@ -221,7 +221,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
   const renderExportMethods = () => (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold mb-6">Choose method</h3>
-      <div className="flex items-center gap-2 py-2 justify-between">
+      <div className="flex items-center gap-2 pb-4 justify-between">
         {[
           { method: "PDF", icon: FaFilePdf },
           { method: "CSV", icon: FaFileCsv },
