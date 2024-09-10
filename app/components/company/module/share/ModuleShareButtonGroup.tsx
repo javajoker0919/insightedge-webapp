@@ -354,7 +354,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
 
   return (
     <>
-      <div className="flex gap-2">
+      <div className="flex gap-1">
         <button
           onClick={() => handleOpenModal("export")}
           className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-100 focus:outline-none flex items-center gap-1 transition duration-150 ease-in-out"

@@ -54,7 +54,7 @@ const TabButton: React.FC<TabButtonProps> = ({
     <button
       title={title}
       onClick={onClick}
-      className={`pb-1 w-60 flex-1 ${
+      className={`pb-1 flex-1 max-w-60 ${
         isActive ? "text-gray-800 bg-white rounded-t-lg" : "text-gray-500"
       }`}
     >
@@ -803,39 +803,35 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
   return (
     <div className="w-full border rounded">
       <div className="tabs flex items-center gap-2 justify-between bg-gray-200">
-        <div className="flex items-center w-full">
-          <div className="flex items-center gap-0.5 px-1 pt-1 pb-0">
-            {userModuleItems.map((item: ModuleItem, index) => (
-              <>
-                <TabButton
-                  key={item.value}
-                  title={item.title}
-                  isActive={activeTab === item.value}
-                  onClick={() => setActiveTab(item.value)}
-                  onClose={() => handleRemoveModule(item)}
-                />
+        <div className="flex flex-1 items-center gap-0.5 px-1 pt-1 pb-0">
+          {userModuleItems.map((item: ModuleItem, index) => (
+            <>
+              <TabButton
+                key={item.value}
+                title={item.title}
+                isActive={activeTab === item.value}
+                onClick={() => setActiveTab(item.value)}
+                onClose={() => handleRemoveModule(item)}
+              />
 
-                {index ===
-                  userModuleItems.map((item) => item.value).indexOf(activeTab) -
-                    1 ||
-                index ===
-                  userModuleItems
-                    .map((item) => item.value)
-                    .indexOf(activeTab) ? (
-                  <div className="h-6 w-px border -translate-y-0.5" />
-                ) : (
-                  <div className="h-6 w-px border border-white -translate-y-0.5" />
-                )}
-              </>
-            ))}
-          </div>
+              {index ===
+                userModuleItems.map((item) => item.value).indexOf(activeTab) -
+                  1 ||
+              index ===
+                userModuleItems.map((item) => item.value).indexOf(activeTab) ? (
+                <div className="h-6 w-px border -translate-y-0.5" />
+              ) : (
+                <div className="h-6 w-px border border-white -translate-y-0.5" />
+              )}
+            </>
+          ))}
+
           <button
-            className="p-2 rounded-full text-gray-500 hover:bg-gray-50"
+            className="p-2 ml-1 mb-1 rounded-full text-gray-500 hover:bg-gray-50"
             onClick={() => setShowAddModulePopup(true)}
           >
             <PlusIcon color="black" />
           </button>
-          <div className="flex-grow"></div>
         </div>
 
         <div className="pr-1">
