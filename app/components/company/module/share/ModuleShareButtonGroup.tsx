@@ -221,7 +221,9 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
         email_list: [],
       });
 
-      console.log("data: ", data);
+      if (status === 200) {
+        console.log("data: ", data);
+      }
     } catch (error) {
       console.error(`Failed to export: ${error}`);
       invokeToast("error", `Failed to export: ${error}`);
