@@ -13,7 +13,7 @@ import { useAtomValue } from "jotai";
 import { ShareIcon } from "@/app/components/icon";
 import { Modal } from "@/app/components";
 import { profileAtom } from "@/utils/atoms";
-import { emailShare } from "@/utils/apiClient";
+import { emailShare, exportAndShare } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
 import { getMixPanelClient } from "@/utils/mixpanel";
 
@@ -24,7 +24,7 @@ interface ModuleItem {
 
 interface ModuleShareButtonGroupProps {
   companyID: number;
-  etIDs: number[];
+  etID: number;
   items: ModuleItem[];
 }
 
@@ -96,7 +96,7 @@ const EmailList: FC<EmailListProps> = ({ emails, handleRemoveEmail }) => (
 
 const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
   companyID,
-  etIDs,
+  etID,
   items,
 }) => {
   const { invokeToast } = useToastContext();
@@ -113,7 +113,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
   const [activeTab, setActiveTab] = useState<"export" | "share">("export");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [selectedMethod, setSelectedMethod] = useState<string>("PDF");
+  const [selectedMethod, setSelectedMethod] = useState<string>("pdf");
 
   const handleOpenModal = (tab: "export" | "share") => {
     setActiveTab(tab);
@@ -165,13 +165,13 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
   };
 
   const handleSendEmail = async (): Promise<void> => {
-    if (!profile || !etIDs || selectedItems.length === 0) return;
+    if (!profile || !etID || selectedItems.length === 0) return;
 
     setIsSending(true);
     try {
       const emailData = {
         user_id: profile.user_id,
-        earnings_transcript_id: etIDs[0].toString(),
+        earnings_transcript_id: etID.toString(),
         organization_id: profile.org_id.toString(),
         share_email_ids: emails.filter((email) => email !== ""),
         selected_items: selectedItems,
@@ -200,7 +200,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
     );
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (selectedItems.length === 0) {
       invokeToast("error", "Please select at least one item to export.");
       return;
@@ -210,7 +210,23 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
       return;
     }
     // Placeholder for export functionality
-    console.log(`Exporting as ${selectedMethod}`, { selectedItems });
+
+    try {
+      const { data, status } = await exportAndShare({
+        company_id: companyID,
+        earnings_transcript_id: etID,
+        item_list: selectedItems,
+        action: "export",
+        file_type: selectedMethod,
+        email_list: [],
+      });
+
+      console.log("data: ", data);
+    } catch (error) {
+      console.error(`Failed to export: ${error}`);
+      invokeToast("error", `Failed to export: ${error}`);
+    }
+
     invokeToast(
       "success",
       `Exported ${selectedItems.length} item(s) as ${selectedMethod}`
@@ -223,9 +239,9 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
       <h3 className="text-lg font-semibold mb-2">Choose method</h3>
       <div className="flex items-center gap-2 justify-between mb-6">
         {[
-          { method: "PDF", icon: FaFilePdf },
-          { method: "CSV", icon: FaFileCsv },
-          { method: "JSON", icon: FaFileCode },
+          { method: "pdf", icon: FaFilePdf },
+          { method: "csv", icon: FaFileCsv },
+          { method: "json", icon: FaFileCode },
         ].map(({ method, icon: Icon }) => (
           <button
             key={method}

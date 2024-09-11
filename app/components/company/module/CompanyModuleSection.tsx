@@ -852,7 +852,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
         <div className="pr-1">
           <ModuleShareButtonGroup
             companyID={companyID}
-            etIDs={[etID]}
+            etID={etID}
             items={additionalModuleItems}
           />
         </div>

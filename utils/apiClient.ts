@@ -12,6 +12,7 @@ const getAuthToken = async () => {
 
 const createApiClient = async () => {
   const token = await getAuthToken();
+
   return axios.create({
     baseURL: process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:8000",
     headers: { Authorization: `Bearer ${token}` },
@@ -126,6 +127,7 @@ const getSchedule = async (data: any) => {
     `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/v1/schedule`,
     data
   );
+
   return response.data;
 };
 
@@ -136,7 +138,21 @@ const emailShare = async (data: {
   share_email_ids: string[];
 }) => {
   const apiClient = await createApiClient();
+
   return await apiClient.post("/api/v1/email-share", data);
+};
+
+const exportAndShare = async (data: {
+  company_id: number;
+  earnings_transcript_id: number;
+  item_list: string[];
+  action: "export" | "share";
+  file_type: string; // "none" | "csv" | "json" | "pdf"
+  email_list: string[];
+}) => {
+  const apiClient = await createApiClient();
+
+  return await apiClient.post("/api/v1/export-and-share", data);
 };
 
 export {
@@ -152,4 +168,5 @@ export {
   getScrapeData,
   getSchedule,
   emailShare,
+  exportAndShare,
 };
