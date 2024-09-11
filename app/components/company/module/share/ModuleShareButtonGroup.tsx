@@ -223,16 +223,17 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
 
       if (status === 200) {
         console.log("data: ", data);
+
+        invokeToast(
+          "success",
+          `Exported ${selectedItems.length} item(s) as ${selectedMethod}`
+        );
       }
     } catch (error) {
       console.error(`Failed to export: ${error}`);
       invokeToast("error", `Failed to export: ${error}`);
     }
 
-    invokeToast(
-      "success",
-      `Exported ${selectedItems.length} item(s) as ${selectedMethod}`
-    );
     handleClose();
   };
 
