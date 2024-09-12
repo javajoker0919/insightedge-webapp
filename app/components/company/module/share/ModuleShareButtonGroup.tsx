@@ -222,12 +222,52 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
       });
 
       if (status === 200) {
-        console.log("data: ", data);
+        if (data.data && data.data.exported_data) {
+          let blob: Blob;
+          let fileName: string;
 
-        invokeToast(
-          "success",
-          `Exported ${selectedItems.length} item(s) as ${selectedMethod}`
-        );
+          if (selectedMethod === "json") {
+            blob = new Blob([data.data.exported_data], {
+              type: "application/json",
+            });
+            fileName = "exported_data.json";
+          } else if (selectedMethod === "csv") {
+            // Handle ZIP file containing CSV files
+            blob = new Blob([data.data.exported_data], {
+              type: "application/csv",
+            });
+            fileName = "exported_data.csv";
+          } else if (selectedMethod === "pdf") {
+            blob = new Blob([data.data.exported_data], {
+              type: "application/pdf",
+            });
+            fileName = "exported_data.pdf";
+          } else {
+            // Handle 'none' or any other unexpected file type
+            blob = new Blob([JSON.stringify(data.data.exported_data)], {
+              type: "application/json",
+            });
+            fileName = "exported_data.txt";
+          }
+
+          // Create a download link and trigger the download
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+
+          invokeToast("success", data.message);
+        } else {
+          console.error("Exported data not found in the response");
+          invokeToast("error", "Exported data not found in the response");
+        }
+      } else {
+        console.error("Unexpected status code:", status);
+        invokeToast("error", `Unexpected status code: ${status}`);
       }
     } catch (error) {
       console.error(`Failed to export: ${error}`);
