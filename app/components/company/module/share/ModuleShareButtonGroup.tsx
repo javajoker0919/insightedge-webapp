@@ -9,6 +9,7 @@ import {
   FaCheck,
 } from "react-icons/fa";
 import { useAtomValue } from "jotai";
+import JSZip from "jszip";
 
 import { ShareIcon } from "@/app/components/icon";
 import { Modal } from "@/app/components";
@@ -222,44 +223,87 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
       });
 
       if (status === 200) {
-        if (data.data && data.data.exported_data) {
-          let blob: Blob;
-          let fileName: string;
-
-          if (selectedMethod === "json") {
-            blob = new Blob([data.data.exported_data], {
-              type: "application/json",
-            });
-            fileName = "exported_data.json";
-          } else if (selectedMethod === "csv") {
-            // Handle ZIP file containing CSV files
-            blob = new Blob([data.data.exported_data], {
-              type: "application/csv",
-            });
-            fileName = "exported_data.csv";
-          } else if (selectedMethod === "pdf") {
-            blob = new Blob([data.data.exported_data], {
-              type: "application/pdf",
-            });
-            fileName = "exported_data.pdf";
-          } else {
-            // Handle 'none' or any other unexpected file type
-            blob = new Blob([JSON.stringify(data.data.exported_data)], {
-              type: "application/json",
-            });
-            fileName = "exported_data.txt";
+        if (data.data) {
+          switch (selectedMethod) {
+            case "json":
+              if (data.data.json_data) {
+                const jsonBlob = new Blob([data.data.json_data], {
+                  type: "application/json",
+                });
+                downloadFile(jsonBlob, "exported_data.json");
+              }
+              break;
+            case "csv":
+              if (data.data.csv_files) {
+                if (Object.keys(data.data.csv_files).length === 1) {
+                  const [key, value] = Object.entries(data.data.csv_files)[0];
+                  if (
+                    typeof value === "string" ||
+                    value instanceof ArrayBuffer ||
+                    value instanceof Blob ||
+                    value instanceof Uint8Array
+                  ) {
+                    const csvBlob = new Blob([value], {
+                      type: "text/csv",
+                    });
+                    downloadFile(csvBlob, `${key}.csv`);
+                  } else {
+                    console.error("Unexpected data type for CSV file content");
+                    invokeToast(
+                      "error",
+                      "Unexpected data type for CSV file content"
+                    );
+                    return;
+                  }
+                } else {
+                  const zip = new JSZip();
+                  Object.entries(data.data.csv_files).forEach(
+                    ([key, value]) => {
+                      if (
+                        typeof value === "string" ||
+                        value instanceof ArrayBuffer ||
+                        value instanceof Blob ||
+                        value instanceof Uint8Array
+                      ) {
+                        zip.file(`${key}.csv`, value);
+                      } else {
+                        console.error(
+                          "Unexpected data type for CSV file content"
+                        );
+                        invokeToast(
+                          "error",
+                          "Unexpected data type for CSV file content"
+                        );
+                        return;
+                      }
+                    }
+                  );
+                  zip.generateAsync({ type: "blob" }).then((content) => {
+                    downloadFile(content, "exported_data.zip");
+                  });
+                }
+              }
+              break;
+            case "pdf":
+              if (data.data.pdf_data) {
+                const pdfBlob = new Blob([data.data.pdf_data], {
+                  type: "application/pdf",
+                });
+                downloadFile(pdfBlob, "exported_data.pdf");
+              }
+              break;
+            default:
+              if (data.data.raw_data) {
+                const rawBlob = new Blob([data.data.raw_data], {
+                  type: "application/json",
+                });
+                downloadFile(rawBlob, "exported_data.txt");
+              } else {
+                console.error("Unexpected data format in the response");
+                invokeToast("error", "Unexpected data format in the response");
+                return;
+              }
           }
-
-          // Create a download link and trigger the download
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.style.display = "none";
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-
           invokeToast("success", data.message);
         } else {
           console.error("Exported data not found in the response");
@@ -275,6 +319,18 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
     }
 
     handleClose();
+  };
+
+  // Helper function to download a file
+  const downloadFile = (blob: Blob, fileName: string) => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   const renderExportMethods = () => (
