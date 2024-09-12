@@ -107,6 +107,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
 
   const [emails, setEmails] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [isInputNotEmpty, setIsInputNotEmpty] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -210,8 +211,8 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
       invokeToast("error", "Please select a export method.");
       return;
     }
-    // Placeholder for export functionality
 
+    setIsExporting(true);
     try {
       const { data, status } = await exportAndShare({
         company_id: companyID,
@@ -316,9 +317,10 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
     } catch (error) {
       console.error(`Failed to export: ${error}`);
       invokeToast("error", `Failed to export: ${error}`);
+    } finally {
+      setIsExporting(false);
+      handleClose();
     }
-
-    handleClose();
   };
 
   // Helper function to download a file
@@ -363,14 +365,14 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
       </div>
       <button
         onClick={handleExport}
-        disabled={selectedItems.length === 0 || !selectedMethod}
+        disabled={selectedItems.length === 0 || !selectedMethod || isExporting}
         className={`w-full px-6 py-3 text-base font-medium text-white bg-primary-500 rounded-md shadow-sm hover:bg-primary-600 focus:outline-none transition duration-150 ease-in-out ${
-          selectedItems.length === 0 || !selectedMethod
+          selectedItems.length === 0 || !selectedMethod || isExporting
             ? "opacity-50 cursor-not-allowed"
             : ""
         }`}
       >
-        Export
+        {isExporting ? "Exporting..." : "Export"}
       </button>
     </div>
   );
