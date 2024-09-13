@@ -26,6 +26,7 @@ interface ModuleItem {
 
 interface ModuleShareButtonGroupProps {
   companyID: number;
+  companyName: string;
   etID: number;
   items: ModuleItem[];
 }
@@ -98,6 +99,7 @@ const EmailList: FC<EmailListProps> = ({ emails, handleRemoveEmail }) => (
 
 const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
   companyID,
+  companyName,
   etID,
   items,
 }) => {
@@ -232,7 +234,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
                 const jsonBlob = new Blob([data.data.json_data], {
                   type: "application/json",
                 });
-                downloadFile(jsonBlob, "exported_data.json");
+                downloadFile(jsonBlob, `${companyName}.json`);
               }
               break;
             case "csv":
@@ -281,7 +283,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
                     }
                   );
                   zip.generateAsync({ type: "blob" }).then((content) => {
-                    downloadFile(content, "exported_data.zip");
+                    downloadFile(content, `${companyName}.zip`);
                   });
                 }
               }
@@ -298,7 +300,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
                 // Create a Blob from the array buffer
                 const pdfBlob = new Blob([pdfArray], { type: 'application/pdf' });
                 // Use file-saver to download the PDF
-                saveAs(pdfBlob, 'exported_data.pdf');
+                saveAs(pdfBlob, `${companyName}.pdf`);
               } else {
                 console.error("PDF data not found in the response");
                 invokeToast("error", "PDF data not found in the response");
@@ -309,7 +311,7 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
                 const rawBlob = new Blob([data.data.raw_data], {
                   type: "application/json",
                 });
-                downloadFile(rawBlob, "exported_data.txt");
+                downloadFile(rawBlob, `${companyName}.txt`);
               } else {
                 console.error("Unexpected data format in the response");
                 invokeToast("error", "Unexpected data format in the response");
