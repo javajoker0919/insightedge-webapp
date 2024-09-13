@@ -8,7 +8,7 @@ const nextConfig = {
       "2.gravatar.com",
       "xtcrjordvnddzvchmpvd.supabase.co",
       "*",
-      "young-wonder-ac90143803.media.strapiapp.com"
+      "fabulous-bouquet-37c770787a.media.strapiapp.com"
     ],
   },
 };
