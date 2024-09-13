@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { useAtomValue } from "jotai";
 import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 import { ShareIcon } from "@/app/components/icon";
 import { Modal } from "@/app/components";
@@ -287,10 +288,20 @@ const ModuleShareButtonGroup: FC<ModuleShareButtonGroupProps> = ({
               break;
             case "pdf":
               if (data.data.pdf_data) {
-                const pdfBlob = new Blob([data.data.pdf_data], {
-                  type: "application/pdf",
-                });
-                downloadFile(pdfBlob, "exported_data.pdf");
+                // Decode the base64 PDF data
+                const pdfBinary = atob(data.data.pdf_data);
+                // Convert the binary string to an array buffer
+                const pdfArray = new Uint8Array(pdfBinary.length);
+                for (let i = 0; i < pdfBinary.length; i++) {
+                  pdfArray[i] = pdfBinary.charCodeAt(i);
+                }
+                // Create a Blob from the array buffer
+                const pdfBlob = new Blob([pdfArray], { type: 'application/pdf' });
+                // Use file-saver to download the PDF
+                saveAs(pdfBlob, 'exported_data.pdf');
+              } else {
+                console.error("PDF data not found in the response");
+                invokeToast("error", "PDF data not found in the response");
               }
               break;
             default:

@@ -24,6 +24,7 @@
     "chart.js": "^4.4.3",
     "date-fns": "^3.6.0",
     "eventsource-parser": "^1.1.2",
+    "file-saver": "^2.0.5",
     "framer-motion": "^11.2.13",
     "jotai": "^2.8.4",
     "jszip": "^3.10.1",
@@ -45,6 +46,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^20",
     "@types/numeral": "^2.0.5",
     "@types/react": "^18",
