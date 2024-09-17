@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Import Font
 import { faFileCsv } from "@fortawesome/free-solid-svg-icons"; // Add this import
 
 import Modal from "@/app/components/Modal";
-import { profileAtom, orgInfoAtom, userInfoAtom } from "@/utils/atoms";
+import { orgInfoAtom, creditCountAtom } from "@/utils/atoms";
 import MarketingStrategyTable from "./MarketingStrategyTable";
 import { generateTMAPI } from "@/utils/apiClient";
 import { useToastContext } from "@/contexts/toastContext";
@@ -40,9 +40,8 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
   const { invokeToast } = useToastContext();
   const mixpanel = getMixPanelClient();
 
-  const setProfile = useSetAtom(profileAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
-  const setUserInfo = useSetAtom(userInfoAtom);
+  const setCreditCount = useSetAtom(creditCountAtom);
 
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedStrats, setSelectedMS] = useState<MarketingProps | null>(null);
@@ -191,25 +190,8 @@ const MarketingStrategySection: React.FC<MarketingCompProps> = ({
       setTMs(formattedData);
       setJsonTM(formattedData);
       setActiveTab("tailored");
+      setCreditCount((prev) => (prev ? prev - data.used_credits : null));
 
-      setProfile((prev) => {
-        if (!prev || !prev.credits) return prev;
-
-        return {
-          ...prev,
-          credits: prev.credits - data.used_credits,
-        };
-      });
-
-      setUserInfo((prev) => {
-        if (!prev || !prev.creditCount) return prev;
-        return {
-          ...prev,
-          creditCount: prev.creditCount
-            ? prev.creditCount - data.used_credits
-            : 0,
-        };
-      });
       invokeToast("success", data.message);
     } catch (error) {
       console.error(error);

@@ -11,7 +11,7 @@ import { useAtomValue } from "jotai";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
 
-import { userInfoAtom } from "@/utils/atoms";
+import { userInfoAtom, creditCountAtom } from "@/utils/atoms";
 import { supabase } from "@/utils/supabaseClient";
 import { FaArrowRight } from "react-icons/fa";
 import Loading from "@/app/components/Loading";
@@ -33,7 +33,10 @@ const Membership: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
+
   const userInfo = useAtomValue(userInfoAtom);
+  const creditCount = useAtomValue(creditCountAtom);
+
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -221,9 +224,9 @@ const Membership: React.FC = () => {
         <div className="flex items-end justify-between mb-10">
           <div className="text-3xl">Subscription Details</div>
 
-          {userInfo?.creditCount && (
+          {creditCount && (
             <div className="flex justify-center font-semibold text-lg text-primary-500">
-              <p>{`Credits: ${userInfo.creditCount}`}</p>
+              <p>{`Credits: ${creditCount}`}</p>
             </div>
           )}
         </div>

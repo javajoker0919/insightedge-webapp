@@ -12,7 +12,7 @@ import OpportunitiesTable from "./WLOpportunityTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { Loading } from "../..";
 import { generateTOAPI } from "@/utils/apiClient";
-import { profileAtom, userInfoAtom, orgInfoAtom } from "@/utils/atoms";
+import { orgInfoAtom, creditCountAtom } from "@/utils/atoms";
 import { getMixPanelClient } from "@/utils/mixpanel";
 
 export interface OpportunityProps {
@@ -48,9 +48,8 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
   const { invokeToast } = useToastContext();
   const mixpanel = getMixPanelClient();
 
-  const setProfile = useSetAtom(profileAtom);
-  const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
+  const setCreditCount = useSetAtom(creditCountAtom);
 
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedOpp, setSelectedOpp] = useState<OpportunityProps | null>(null);
@@ -261,25 +260,7 @@ const WLOpportunitySection: React.FC<OpportunitiesProps> = ({
       setCompanyCount(uniqueCompanyNames.size);
       setTOs(formattedData);
       setActiveTab("tailored");
-
-      setProfile((prev) => {
-        if (!prev || !prev.credits) return prev;
-
-        return {
-          ...prev,
-          credits: prev.credits - data.used_credits,
-        };
-      });
-
-      setUserInfo((prev) => {
-        if (!prev || !prev.creditCount) return prev;
-        return {
-          ...prev,
-          creditCount: prev.creditCount
-            ? prev.creditCount - data.used_credits
-            : 0,
-        };
-      });
+      setCreditCount((prev) => (prev ? prev - data.used_credits : null));
 
       invokeToast("success", data.message);
     } catch (error) {

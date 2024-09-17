@@ -8,26 +8,24 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { supabase } from "@/utils/supabaseClient";
 import {
-  userInfoAtom,
   profileAtom,
-  watchlistAtom,
   isSidebarExpandedAtom,
+  creditCountAtom,
 } from "@/utils/atoms";
 import { CompanySearchbar, Logo } from "@/app/components";
 import { getMixPanelClient } from "@/utils/mixpanel";
+import { useToastContext } from "@/contexts/toastContext";
 
 const Header: React.FC = () => {
   const router = useRouter();
   const mixpanel = getMixPanelClient();
+  const { invokeToast } = useToastContext();
 
-  const [profile, setProfile] = useAtom(profileAtom);
-  const watchlist = useAtomValue(watchlistAtom);
+  const profile = useAtomValue(profileAtom);
   const setIsSidebarExpanded = useSetAtom(isSidebarExpandedAtom);
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-
+  const [creditCount, setCreditCount] = useAtom(creditCountAtom);
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [isCreditLoaded, setIsCreditLoaded] = useState<boolean>(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -62,17 +60,10 @@ const Header: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!profile) {
-      return;
+    if (creditCount === null && profile) {
+      fetchCreditCount_v2(profile.user_id);
     }
-
-    if (profile.credits === null) {
-      fetchCreditCount(profile.user_id);
-    } else if (!isCreditLoaded) {
-      setIsCreditLoaded(true);
-      fetchCreditCount(profile.user_id);
-    }
-  }, [profile]);
+  }, [creditCount, profile]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -83,7 +74,7 @@ const Header: React.FC = () => {
     }
   };
 
-  const fetchCreditCount = async (userID: string) => {
+  const fetchCreditCount_v2 = async (userID: string) => {
     try {
       const { data, error } = await supabase
         .from("user_packages")
@@ -93,37 +84,9 @@ const Header: React.FC = () => {
         .maybeSingle();
 
       if (error) {
-        throw error;
-      }
-
-      if (data) {
-        setUserInfo((prev) => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            creditCount: parseInt(data?.value),
-          };
-        });
-
-        setProfile((prev) => {
-          if (!prev) return prev;
-
-          return {
-            ...prev,
-            credits: parseInt(data.value),
-          };
-        });
-      } else {
-        setIsCreditLoaded(false);
-
-        setProfile((prev) => {
-          if (!prev) return prev;
-
-          return {
-            ...prev,
-            credits: 0,
-          };
-        });
+        invokeToast("error", `Failed to fetch credit count: ${error.message}`);
+      } else if (data) {
+        setCreditCount(data.value);
       }
     } catch (error) {
       console.error("Error fetching credit count:", error);
@@ -171,8 +134,8 @@ const Header: React.FC = () => {
               className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2"
             />
             <span className="font-medium text-gray-700">
-              Credits:{" "}
-              <span className="text-primary-600">{profile?.credits || 0}</span>
+              {"Credits: "}
+              <span className="text-primary-600">{creditCount || 0}</span>
             </span>
           </div>
 

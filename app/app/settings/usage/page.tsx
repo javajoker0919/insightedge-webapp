@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabaseClient";
-import { userInfoAtom } from "@/utils/atoms";
+import { userInfoAtom, creditCountAtom } from "@/utils/atoms";
 import { useAtomValue } from "jotai";
 import { format } from "date-fns";
 
@@ -18,7 +18,9 @@ interface CreditLog {
 
 const Usage = () => {
   const { invokeToast } = useToastContext();
+
   const userInfo = useAtomValue(userInfoAtom);
+  const creditCount = useAtomValue(creditCountAtom);
 
   const [creditLogs, setCreditLogs] = useState<CreditLog[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -59,7 +61,7 @@ const Usage = () => {
     <div className="container max-w-6xl mx-auto p-8">
       <div className="flex items-center mb-4 gap-2">
         <h1 className="text-2xl font-bold">Usage</h1>
-        <span>{`(Remaning credits: ${userInfo?.creditCount})`}</span>
+        <span>{`(Remaning credits: ${creditCount})`}</span>
       </div>
       {isLoading ? (
         <div className="flex justify-center m-auto items-center">

@@ -22,13 +22,14 @@ import { getMixPanelClient } from "@/utils/mixpanel";
 
 const SignIn = () => {
   const router = useRouter();
+  const mixpanel = getMixPanelClient();
   const { invokeToast } = useToastContext();
+
   const setUserMetadata = useSetAtom(userMetadataAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const setOrgInfo = useSetAtom(orgInfoAtom);
   const setProfile = useSetAtom(profileAtom);
   const setWatchlist = useSetAtom(watchlistAtom);
-  const mixpanel = getMixPanelClient();
 
   const { validateEmail, validatePassword } = useValidation();
 
@@ -117,7 +118,6 @@ const SignIn = () => {
       setProfile({
         user_id: userData.id,
         org_id: orgData.id,
-        credits: null,
       });
 
       mixpanel.identify(userData.id); // Identify user in Mixpanel

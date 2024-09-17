@@ -4,7 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 
 import { supabase } from "@/utils/supabaseClient";
 import { generateTailoredSummaryAPI } from "@/utils/apiClient";
-import { profileAtom, orgInfoAtom, userInfoAtom } from "@/utils/atoms";
+import { orgInfoAtom, creditCountAtom } from "@/utils/atoms";
 import RenderSummaryContent from "./RenderSummaryContent";
 import { useToastContext } from "@/contexts/toastContext";
 import { Details, Loading } from "../..";
@@ -38,9 +38,8 @@ const SummarySection: React.FC<SummarySectionProps> = ({
   const { invokeToast } = useToastContext();
   const mixpanel = getMixPanelClient();
 
-  const setProfile = useSetAtom(profileAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
-  const setUserInfo = useSetAtom(userInfoAtom);
+  const setCreditCount = useSetAtom(creditCountAtom);
 
   const [generalSummary, setGeneralSummary] = useState<SummaryProps | null>(
     null
@@ -190,23 +189,8 @@ const SummarySection: React.FC<SummarySectionProps> = ({
         };
 
         setTailoredSummary(processedData);
+        setCreditCount((prev) => (prev ? prev - 1 : null));
 
-        setProfile((prev) => {
-          if (!prev || !prev.credits) return prev;
-
-          return {
-            ...prev,
-            credits: prev.credits - 1,
-          };
-        });
-
-        setUserInfo((prev) => {
-          if (!prev || !prev.creditCount) return prev;
-          return {
-            ...prev,
-            creditCount: prev.creditCount ? prev.creditCount - 1 : 0,
-          };
-        });
         invokeToast("success", data.message);
         setActiveTab("tailored");
       } else if (data.status === "error") {

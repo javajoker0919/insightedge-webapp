@@ -122,7 +122,6 @@ const Callback = () => {
         setProfile({
           user_id: userData.id,
           org_id: orgData.id,
-          credits: null,
         });
 
         const { data: watchlistData, error: watchlistError } = await supabase

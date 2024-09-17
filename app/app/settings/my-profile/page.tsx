@@ -39,7 +39,6 @@ const MyProfile = () => {
         id: prev?.id || "", // Ensure id is always a string
         email: prev?.email || "", // Ensure email is always a string
         companyName: prev?.companyName || "", // Ensure companyName is always a string
-        creditCount: prev?.creditCount ?? 0, // Ensure creditCount is always number or null
       }));
     }
     setIsUpdating(false);

@@ -9,7 +9,6 @@ interface User {
   firstName: string;
   lastName: string;
   companyName: string;
-  creditCount?: number | null;
 }
 
 interface Organization {
@@ -33,7 +32,6 @@ interface Watchlist {
 interface Profile {
   user_id: string;
   org_id: number;
-  credits: number | null;
 }
 
 export const userMetadataAtom = atomWithStorage<UserMetadata | null>(

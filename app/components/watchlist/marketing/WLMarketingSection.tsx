@@ -11,7 +11,7 @@ import { Modal, Loading } from "@/app/components";
 import MarketingStrategyTable from "./WLMarketingTable";
 import { useToastContext } from "@/contexts/toastContext";
 import { generateTMAPI } from "@/utils/apiClient";
-import { profileAtom, userInfoAtom, orgInfoAtom } from "@/utils/atoms";
+import { orgInfoAtom, creditCountAtom } from "@/utils/atoms";
 import { getMixPanelClient } from "@/utils/mixpanel";
 
 export interface MarketingProps {
@@ -38,9 +38,8 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
   const { invokeToast } = useToastContext();
   const mixpanel = getMixPanelClient();
 
-  const setProfile = useSetAtom(profileAtom);
-  const setUserInfo = useSetAtom(userInfoAtom);
   const orgInfo = useAtomValue(orgInfoAtom);
+  const setCreditCount = useSetAtom(creditCountAtom);
 
   const [activeTab, setActiveTab] = useState<"general" | "tailored">("general");
   const [selectedMSs, setSelectedMSs] = useState<MarketingProps | null>(null);
@@ -225,25 +224,8 @@ const WLMarketingSection: React.FC<MarketingStrategiesProps> = ({
       setCompanyCount(uniqueCompanyNames.size);
       setTMs(formattedData);
       setActiveTab("tailored");
+      setCreditCount((prev) => (prev ? prev - data.used_credits : null));
 
-      setProfile((prev) => {
-        if (!prev || !prev.credits) return prev;
-
-        return {
-          ...prev,
-          credits: prev.credits - data.used_credits,
-        };
-      });
-
-      setUserInfo((prev) => {
-        if (!prev || !prev.creditCount) return prev;
-        return {
-          ...prev,
-          creditCount: prev.creditCount
-            ? prev.creditCount - data.used_credits
-            : 0,
-        };
-      });
       invokeToast("success", data.message);
     } catch (error) {
       invokeToast("error", "Failed to generate tailored marketing strategies");
