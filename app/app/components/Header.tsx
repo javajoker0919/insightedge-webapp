@@ -61,7 +61,7 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     if (creditCount === null && profile) {
-      fetchCreditCount_v2(profile.user_id);
+      fetchCreditCount(profile.user_id);
     }
   }, [creditCount, profile]);
 
@@ -74,7 +74,7 @@ const Header: React.FC = () => {
     }
   };
 
-  const fetchCreditCount_v2 = async (userID: string) => {
+  const fetchCreditCount = async (userID: string) => {
     try {
       const { data, error } = await supabase
         .from("user_packages")
