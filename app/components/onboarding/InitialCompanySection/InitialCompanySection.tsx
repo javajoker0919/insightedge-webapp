@@ -131,7 +131,6 @@ const OnboardingInitialCompanySection = ({
       setProfile({
         user_id: userData.id,
         org_id: orgData.id,
-        credits: null,
       });
 
       // invokeToast("success", "We are creating your watchlist...");
