@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 
 import { supabase } from "@/utils/supabaseClient";
 import { orgInfoAtom } from "@/utils/atoms";
@@ -9,23 +9,54 @@ import { useToastContext } from "@/contexts/toastContext";
 import { getScrapeData } from "@/utils/apiClient";
 
 const CompanyProfile = () => {
-  const [orgInfo, setOrgInfo] = useAtom(orgInfoAtom);
+  const { invokeToast } = useToastContext();
+
+  const orgInfo = useAtomValue(orgInfoAtom);
+
   const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
   const [overview, setOverview] = useState("");
   const [products, setProducts] = useState("");
+
+  const [isFetching, setIsFetching] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSummarizing, setIsSummarizing] = useState(false);
-  const { invokeToast } = useToastContext();
 
   useEffect(() => {
-    if (orgInfo) {
-      setName(orgInfo.name || "");
-      setWebsite(orgInfo.website || "");
-      setOverview(orgInfo.overview || "");
-      setProducts(orgInfo.products || "");
+    if (orgInfo && orgInfo.id) {
+      fetchOrgInfo(orgInfo.id);
     }
   }, [orgInfo]);
+
+  const fetchOrgInfo = async (orgID: number) => {
+    setIsFetching(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("organizations")
+        .select("name, website, overview, products")
+        .eq("id", orgID)
+        .single();
+
+      if (error) {
+        invokeToast(
+          "error",
+          `Failed to fetch organization data: ${error.message}`
+        );
+        console.error("Failed to fetch organization data:", error);
+      } else {
+        setName(data.name || "");
+        setWebsite(data.website || "");
+        setOverview(data.overview || "");
+        setProducts(data.products || "");
+      }
+    } catch (error) {
+      invokeToast("error", `Failed to fetch organization data: ${error}`);
+      console.error("Failed to fetch organization data:", error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   const handleUpdateProfile = async () => {
     setIsUpdating(true);
@@ -40,18 +71,10 @@ const CompanyProfile = () => {
       .eq("id", orgInfo?.id);
 
     if (error) {
-      console.error("Error updating profile:", error);
+      invokeToast("error", `Failed to update profile: ${error.message}`);
+      console.error("Faield to update profile:", error);
     } else {
       invokeToast("success", "Profile updated successfully");
-      setOrgInfo((prev) => ({
-        ...prev,
-        name,
-        website,
-        overview,
-        products,
-        id: prev?.id || 0, // Ensure id is always a number
-        creatorID: prev?.creatorID || "", // Ensure creatorID is always a string
-      }));
     }
     setIsUpdating(false);
   };
@@ -62,7 +85,7 @@ const CompanyProfile = () => {
 
       const reqData = {
         company_url: website,
-        company_name: name
+        company_name: name,
       };
 
       const data = await getScrapeData(reqData);
@@ -80,7 +103,7 @@ const CompanyProfile = () => {
     }
   };
 
-  if (!orgInfo) {
+  if (isFetching) {
     return (
       <div className="m-auto p-10 w-[60rem] bg-white flex justify-center items-center">
         <Loading size={10} color="primary" />

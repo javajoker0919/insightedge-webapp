@@ -1,50 +1,89 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useAtom } from "jotai";
 
 import { supabase } from "@/utils/supabaseClient";
-import { userInfoAtom } from "@/utils/atoms";
 import { Loading } from "@/app/components";
 import { useToastContext } from "@/contexts/toastContext";
 
 const MyProfile = () => {
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [isUpdating, setIsUpdating] = useState(false);
   const { invokeToast } = useToastContext();
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+
   useEffect(() => {
-    if (userInfo) {
-      setFirstName(userInfo.firstName || "");
-      setLastName(userInfo.lastName || "");
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    setIsFetching(true);
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data, error } = await supabase
+          .from("users")
+          .select("first_name, last_name, email")
+          .eq("id", user.id)
+          .single();
+
+        if (error) {
+          invokeToast(
+            "error",
+            `Failed to fetch user profile: ${error.message}`
+          );
+          console.error("Failed to fetch user profile:", error);
+        } else {
+          setFirstName(data.first_name || "");
+          setLastName(data.last_name || "");
+          setEmail(data.email || "");
+        }
+      }
+    } catch (error) {
+      invokeToast("error", `Failed to fetch user profile: ${error}`);
+      console.error("Failed to fetch user profile:", error);
+    } finally {
+      setIsFetching(false);
     }
-  }, [userInfo]);
+  };
 
   const handleUpdateProfile = async () => {
     setIsUpdating(true);
-    const { error } = await supabase
-      .from("users")
-      .update({ first_name: firstName, last_name: lastName })
-      .eq("id", userInfo?.id);
 
-    if (error) {
-      console.error("Error updating profile:", error);
-    } else {
-      invokeToast("success", "Profile updated successfully");
-      setUserInfo((prev) => ({
-        ...prev,
-        firstName,
-        lastName,
-        id: prev?.id || "", // Ensure id is always a string
-        email: prev?.email || "", // Ensure email is always a string
-        companyName: prev?.companyName || "", // Ensure companyName is always a string
-      }));
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const { error } = await supabase
+          .from("users")
+          .update({ first_name: firstName, last_name: lastName })
+          .eq("id", user.id);
+
+        if (error) {
+          invokeToast("error", `Failed to update profile: ${error.message}`);
+          console.error("Failed to update profile: ", error);
+        } else {
+          invokeToast("success", "Profile updated successfully");
+        }
+      }
+    } catch (error) {
+      invokeToast("error", `Failed to update profile: ${error}`);
+      console.error(`Failed to update profile: ${error}`);
+    } finally {
+      setIsUpdating(false);
     }
-    setIsUpdating(false);
   };
 
-  if (!userInfo) {
+  if (isFetching) {
     return (
       <div className="m-auto p-10 w-[60rem] bg-white flex justify-center items-center">
         <Loading size={10} color="primary" />
@@ -58,9 +97,7 @@ const MyProfile = () => {
       <div className="text-lg space-y-8">
         <div>
           <strong>Email:</strong>
-          <div className="p-2 border bg-gray-50 mt-1 rounded">
-            {userInfo?.email}
-          </div>
+          <div className="p-2 border bg-gray-50 mt-1 rounded">{email}</div>
         </div>
         <div>
           <strong>First Name:</strong>
