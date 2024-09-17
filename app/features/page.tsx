@@ -1,7 +1,7 @@
-import Features from '../components/features/features';
+import FeatureSection from "@/app/components/landing/feature/LandingFeatureSection";
 
 const FeaturesPage = () => {
-  return <Features />;
+  return <FeatureSection />;
 };
 
 export default FeaturesPage;

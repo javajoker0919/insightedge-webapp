@@ -1,12 +1,14 @@
-"use client"; // Add this directive to make the component a client component
-
+"use client";
+import type { Metadata } from "next";
 import React, { useState, useEffect, useCallback } from "react";
-import Pricing from "./pricingsection";
-import FAQ from "./faq";
-import LandingHeaderSection from "../landing/LandingHeaderSection";
-import LandingFooterSection from "../landing/LandingFooterSection";
+import LandingHeaderSection from "../LandingHeaderSection";
+import FeatureHeroSection from "./LandingFeatureHeroSection";
+import FeatureSalesSection from "./LandingFeatureSalesSection";
+import FeatureMarketingSection from "./LandingFeatureMarketingSection";
+import FeatureBusinessSection from "./LandingFeatureBusinessSection";
+import FeatureFooterSection from "./LandingFeatureFooterSection";
 
-const PricingPage: React.FC = () => {
+const FeaturesPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -33,14 +35,7 @@ const PricingPage: React.FC = () => {
 
   return (
     <div className="relative w-full text-black min-h-screen overflow-x-hidden bg-transparent">
-      <LandingHeaderSection
-        isMenuOpen={isMenuOpen}
-        toggleMenu={toggleMenu}
-        scrollToSection={scrollToSection}
-        isLandingPage={false}
-        isTransparent={!isScrolled}
-        isScrolled={isScrolled}
-      />
+      {/* Existing background SVG and gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <svg
           className="absolute w-full h-full"
@@ -49,7 +44,7 @@ const PricingPage: React.FC = () => {
           preserveAspectRatio="xMidYMid slice"
         >
           <defs>
-            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%">
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#9ca3af" stopOpacity="0.15" />
               <stop offset="100%" stopColor="#d1d5db" stopOpacity="0.15" />
             </linearGradient>
@@ -65,7 +60,10 @@ const PricingPage: React.FC = () => {
               <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.2" />
             </linearGradient>
           </defs>
+
           <rect width="100%" height="100%" fill="url(#grad1)" />
+
+          {/* Large subtle gray circles */}
           <circle cx="200" cy="200" r="300" fill="#9ca3af" opacity="0.07">
             <animate
               attributeName="r"
@@ -82,6 +80,8 @@ const PricingPage: React.FC = () => {
               repeatCount="indefinite"
             />
           </circle>
+
+          {/* Small shapes - hidden on mobile */}
           <g className="hidden md:block">
             <circle cx="50" cy="100" r="80" fill="#9ca3af" opacity="0.25">
               <animate
@@ -92,6 +92,8 @@ const PricingPage: React.FC = () => {
               />
             </circle>
           </g>
+
+          {/* Animated shapes - hidden on mobile */}
           <g className="hidden md:block">
             <circle cx="800" cy="200" r="40" fill="#4b5563" opacity="0.3">
               <animate
@@ -108,6 +110,8 @@ const PricingPage: React.FC = () => {
               />
             </circle>
           </g>
+
+          {/* Glowing dots - reduced on mobile */}
           <g filter="url(#glow)">
             <circle cx="300" cy="300" r="5" fill="#60a5fa" opacity="0.8">
               <animate
@@ -124,6 +128,8 @@ const PricingPage: React.FC = () => {
               />
             </circle>
           </g>
+
+          {/* New animated wave */}
           <path
             d="M0,100 Q250,50 500,100 T1000,100 V1000 H0 Z"
             fill="url(#grad2)"
@@ -137,6 +143,8 @@ const PricingPage: React.FC = () => {
               repeatCount="indefinite"
             />
           </path>
+
+          {/* New floating geometric shapes */}
           <g className="hidden lg:block">
             <polygon
               points="850,80 870,120 830,120"
@@ -169,6 +177,8 @@ const PricingPage: React.FC = () => {
               />
             </rect>
           </g>
+
+          {/* Additional glowing dots */}
           <g filter="url(#glow)">
             <circle cx="700" cy="500" r="4" fill="#93c5fd" opacity="0.6">
               <animate
@@ -200,31 +210,34 @@ const PricingPage: React.FC = () => {
             </circle>
           </g>
         </svg>
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-100 via-transparent to-gray-300 opacity-0"></div>
-        <div className="absolute inset-0 bg-radial-gradient from-gray-100 to-transparent opacity-0"></div>
+
+        {/* Updated gradient overlay to match LandingPage */}
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-100 via-transparent to-gray-300 opacity-40"></div>
+
+        {/* Radial gradient */}
+        <div className="absolute inset-0 bg-radial-gradient from-gray-100 to-transparent opacity-25"></div>
       </div>
-      <section className="py-12 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              <span className="text-[#004AAD]">Compare our plans</span>
-            </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-              Start for free or choose among our paid plans for more power
-            </p>
-          </div>
-          <div className="relative z-10 pt-20">
-            <h1 className="text-4xl font-bold text-center mb-8">
-              Pricing Plans
-            </h1>
-            <Pricing />
-          </div>
-          <FAQ />
-        </div>
-      </section>
-      <LandingFooterSection scrollToSection={scrollToSection} />
+
+      {/* Floating header with subtle background */}
+      <LandingHeaderSection
+        isMenuOpen={isMenuOpen}
+        toggleMenu={toggleMenu}
+        scrollToSection={scrollToSection}
+        isLandingPage={false}
+        isTransparent={!isScrolled}
+        isScrolled={isScrolled}
+      />
+
+      {/* Add padding to the top to account for the fixed header */}
+      <div className="pt-20">
+        <FeatureHeroSection />
+        <FeatureSalesSection />
+        <FeatureMarketingSection />
+        <FeatureBusinessSection />
+        <FeatureFooterSection />
+      </div>
     </div>
   );
 };
 
-export default PricingPage;
+export default FeaturesPage;

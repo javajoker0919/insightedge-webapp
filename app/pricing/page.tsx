@@ -1,4 +1,4 @@
-import PricingPage from "../components/pricing/pricing";
+import PricingPage from "../components/landing/pricing/LandingPricingSection";
 
 const Pricing = () => {
   return <PricingPage />;

@@ -1,5 +1,5 @@
 import React from "react";
-import LandingFooterSection from "../landing/LandingFooterSection"; // Adjust the path as necessary
+import LandingFooterSection from "../LandingFooterSection"; // Adjust the path as necessary
 
 const FeatureFooterSection: React.FC = () => {
   const scrollToSection = (sectionId: string) => {
