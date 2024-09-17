@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import LandingHeaderSection from "../landing/Header";
+import LandingHeaderSection from "../landing/LandingHeaderSection";
 import FeatureHeroSection from "./FeatureHeroSection";
 import FeatureSalesSection from "./FeatureSalesSection";
 import FeatureMarketingSection from "./FeatureMarketingSection";

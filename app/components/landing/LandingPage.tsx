@@ -2,15 +2,15 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useToastContext } from "@/contexts/toastContext";
 import { getSchedule } from "@/utils/apiClient";
-import LandingHeaderSection from "./Header";
-import LandingHeroSection from "./HeroSection";
-import LandingSalesAndMarketingSection from "./SalesAndMarketingSection";
-import LandingSummarySection from "./SummarySection";
-import LandingBusinessSection from "./BusinessSection";
-import LandingCreditSection from "./CreditSection";
-import LandingNewsSection from "./NewsSection";
-import LandingFooterSection from "./Footer";
-import LandingScheduleSection from "./Schedule";
+import LandingHeaderSection from "./LandingHeaderSection";
+import LandingHeroSection from "./LandingHeroSection";
+import LandingSalesAndMarketingSection from "./LandingSalesAndMarketingSection";
+import LandingSummarySection from "./LandingSummarySection";
+import LandingBusinessSection from "./LandingBusinessSection";
+import LandingCreditSection from "./LandingCreditSection";
+import LandingNewsSection from "./LandingNewsSection";
+import LandingFooterSection from "./LandingFooterSection";
+import LandingScheduleSection from "./LandingScheduleSection";
 import LandingCompanySection from "./LandingCompanySection";
 
 interface FormData {

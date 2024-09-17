@@ -1,5 +1,5 @@
 import Logo from "../Logo";
-import LandingNavMenuSection from "./NavMenu";
+import LandingNavMenuSection from "./LandingNavMenuSection";
 import { getMixPanelClient } from "@/utils/mixpanel";
 
 const LandingHeaderSection = ({

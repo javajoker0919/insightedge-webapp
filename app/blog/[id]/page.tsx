@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import LandingHeaderSection from "@/app/components/landing/Header";
+import LandingHeaderSection from "@/app/components/landing/LandingHeaderSection";
 import BlockRendererClient from "@/app/components/BlockRenderClient";
 import Loading from "@/app/components/Loading";
 

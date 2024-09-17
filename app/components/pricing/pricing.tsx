@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Pricing from "./pricingsection";
 import FAQ from "./faq";
-import LandingHeaderSection from "../landing/Header";
-import LandingFooterSection from "../landing/Footer";
+import LandingHeaderSection from "../landing/LandingHeaderSection";
+import LandingFooterSection from "../landing/LandingFooterSection";
 
 const PricingPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

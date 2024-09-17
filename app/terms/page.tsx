@@ -1,6 +1,6 @@
 "use client";
-import LandingHeaderSection from "../components/landing/Header";
-import LandingFooterSection from "../components/landing/Footer";
+import LandingHeaderSection from "../components/landing/LandingHeaderSection";
+import LandingFooterSection from "../components/landing/LandingFooterSection";
 
 const Terms = () => {
   return (

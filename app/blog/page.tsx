@@ -3,8 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import LandingHeaderSection from "../components/landing/Header";
-import LandingFooterSection from "../components/landing/Footer";
+import LandingHeaderSection from "../components/landing/LandingHeaderSection";
+import LandingFooterSection from "../components/landing/LandingFooterSection";
 
 interface BlogPost {
   id: number;
