@@ -7,7 +7,7 @@ import Link from "next/link";
 import { MdOutlineEmail, MdOutlineLock } from "react-icons/md";
 import { ImEye, ImEyeBlocked } from "react-icons/im";
 import useValidation from "@/hooks/useValidation";
-import { supabase } from "@/supabase";
+import { supabase } from "@/utils/supabaseClient";
 import { useToastContext } from "@/contexts/toastContext";
 import { useSetAtom } from "jotai";
 import {

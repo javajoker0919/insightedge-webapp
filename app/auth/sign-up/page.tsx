@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { supabase } from "@/supabase";
+import { supabase } from "@/utils/supabaseClient";
 import { useRouter } from "next/navigation";
 import { useSetAtom } from "jotai";
 import { userMetadataAtom, userInfoAtom } from "@/utils/atoms";

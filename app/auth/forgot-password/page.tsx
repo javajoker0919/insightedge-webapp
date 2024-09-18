@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import useValidation from "@/hooks/useValidation";
-import { supabase } from "@/supabase";
+import { supabase } from "@/utils/supabaseClient";
 import { useToastContext } from "@/contexts/toastContext";
 import HeaderImage from "@/app/components/HeaderImage";
 
@@ -39,7 +39,7 @@ const ForgotPassword = () => {
 
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password`
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password`,
       });
       if (error) throw error;
 
