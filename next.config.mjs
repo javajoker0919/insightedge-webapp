@@ -7,8 +7,9 @@ const nextConfig = {
       "gravatar.com",
       "2.gravatar.com",
       "xtcrjordvnddzvchmpvd.supabase.co",
+      "vaumwhjggawaplbrwyna.supabase.co",
       "*",
-      "fabulous-bouquet-37c770787a.media.strapiapp.com"
+      "fabulous-bouquet-37c770787a.media.strapiapp.com",
     ],
   },
 };
