@@ -32,9 +32,9 @@ const LandingNewsSection = ({ blogs }: any) => {
       id="new"
       className="py-16 px-4 flex flex-col items-center gap-6 bg-transparent"
     >
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] text-primary-600">
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center max-w-[60rem] text-primary-600">
         What's new?
-      </h1>
+      </h2>
 
       <p className="text-gray-800 text-base font-medium drop-shadow">
         Explore our latest insights

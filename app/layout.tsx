@@ -10,7 +10,7 @@ import ToastProvider from "@/contexts/toastContext";
 import AuthProvider from "@/contexts/AuthProvider";
 
 export const metadata: Metadata = {
-  title: "ProspectEdge: AI-Powered Sales Account Planning",
+  title: "Earnings Transcripts to Marketing & Sales Opportunities",
   description:
     "Boost B2B sales with our AI-driven sales intelligence & engagement platform. Get earnings call transcripts database & insights on customers, markets, & trends.",
   openGraph: {
@@ -34,6 +34,17 @@ export const metadata: Metadata = {
     canonical: "https://prospectedge.co/",
   },
   metadataBase: new URL("https://prospectedge.co/"),
+  keywords: [
+    "earnings transcript to marketing",
+    "earnings transcript to marketing opportunities",
+    "earnings transcript to sales opportunities",
+    "earnings transcript to sales",
+    "earnings call transcripts",
+    "earnings call transcripts database",
+    "sales intelligence and engagement platform",
+    "sales account planning",
+    "automated sales account planning",
+  ],
 };
 
 const ToastContainerConfig = {

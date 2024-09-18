@@ -29,7 +29,7 @@ const LandingBusinessSection = () => {
         </defs>
       </motion.div>
 
-      <motion.h1
+      <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -37,7 +37,7 @@ const LandingBusinessSection = () => {
       >
         Elevate <span className="text-primary-500">Your Business</span> with Our
         Intelligence Platform
-      </motion.h1>
+      </motion.h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto relative z-10">
         <BusinessFeature

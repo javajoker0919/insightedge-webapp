@@ -370,7 +370,7 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({
   onSelectCategory,
 }) => (
   <div className="mt-20 flex flex-col gap-10 items-center justify-center">
-    <h2 className="text-3xl font-bold text-gray-900">Explore Blogs</h2>
+    <h1 className="text-3xl font-bold text-gray-900">Explore Blogs</h1>
     <div className="flex flex-wrap gap-3 justify-center">
       <button
         className={`${

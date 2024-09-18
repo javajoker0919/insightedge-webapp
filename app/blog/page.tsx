@@ -3,7 +3,7 @@ import { Metadata } from "next/types";
 import BlogPageSection from "../components/blog/BlogPageSection";
 
 export const metadata: Metadata = {
-  title: "ProspectEdge: AI-Powered Sales Account Planning",
+  title: "ProspectEdge Blog: Insights, Tips, and Industry Updates",
   description:
     "Boost B2B sales with our AI-driven sales intelligence & engagement platform. Get earnings call transcripts database & insights on customers, markets, & trends.",
   openGraph: {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "ProspectEdge: AI Sales Account Planning",
     description:
-      "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
+      "Explore insights and tips on marketing, business strategies, and more on the ProspectEdge blog. Stay updated with the latest industry trends and advice.",
     siteName: "ProspectEdge",
     images: ["/logo_full.jpg?fit=max"],
   },
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     site: "@prospectedge",
     title: "ProspectEdge: AI Sales Account Planning",
     description:
-      "Boost your B2B sales with ProspectEdge's AI-powered insights. Get real-time data on customers, markets, and trends to close more deals.",
+      "Explore insights and tips on marketing, business strategies, and more on the ProspectEdge blog. Stay updated with the latest industry trends and advice.",
     images: "/logo_full.jpg?fit=max",
   },
   alternates: {
