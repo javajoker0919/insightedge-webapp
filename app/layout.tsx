@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { PrelineScript } from "./components";
 import Script from "next/script";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+
+import { PrelineScript } from "./components";
 
 import ToastProvider from "@/contexts/toastContext";
 import AuthProvider from "@/contexts/AuthProvider";

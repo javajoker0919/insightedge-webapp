@@ -17,16 +17,16 @@ import NoDataSection from "./NoDataSection";
 import Logo from "./Logo";
 
 /// watchlist page
-import WLMarketingSection from "./watchlist/marketing/WLMarketingSection";
-import WLOpportunitySection from "./watchlist/opportunity/WLOpportunitySection";
-import WLCalendarSection from "./watchlist/WLCalendarSection";
-import WLIncomeStatementSection from "./watchlist/WLIncomeStatementSection";
-import WLHighlightSection from "./watchlist/WLHighlightSection";
-import WLSimilarCompanySection from "./watchlist/WLSimiilarCompanySection";
-import WLCompanySearchbar from "./watchlist/WLCompanySearchbar";
+import WLMarketingSection from "./app/watchlist/marketing/WLMarketingSection";
+import WLOpportunitySection from "./app/watchlist/opportunity/WLOpportunitySection";
+import WLCalendarSection from "./app/watchlist/WLCalendarSection";
+import WLIncomeStatementSection from "./app/watchlist/WLIncomeStatementSection";
+import WLHighlightSection from "./app/watchlist/WLHighlightSection";
+import WLSimilarCompanySection from "./app/watchlist/WLSimiilarCompanySection";
+import WLCompanySearchbar from "./app/watchlist/WLCompanySearchbar";
 
 /// company page
-import CompanyPageSection from "./company/CompanyPageSection";
+import CompanyPageSection from "./app/company/CompanyPageSection";
 
 export {
   CompanySearchbar,

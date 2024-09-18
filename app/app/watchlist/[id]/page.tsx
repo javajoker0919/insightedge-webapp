@@ -24,9 +24,9 @@ import {
   WatchlistModal,
 } from "@/app/components";
 
-import { HighlightProps } from "@/app/components/watchlist/WLHighlightSection";
-import { CalendarProps } from "@/app/components/watchlist/WLCalendarSection";
-import { IncomeStatementProps } from "@/app/components/watchlist/WLIncomeStatementSection";
+import { HighlightProps } from "@/app/components/app/watchlist/WLHighlightSection";
+import { CalendarProps } from "@/app/components/app/watchlist/WLCalendarSection";
+import { IncomeStatementProps } from "@/app/components/app/watchlist/WLIncomeStatementSection";
 import { getMixPanelClient } from "@/utils/mixpanel";
 
 export interface CompanyProps {
