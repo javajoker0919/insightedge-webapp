@@ -18,7 +18,7 @@ import {
   PressReleaseProps,
   TenKProps,
 } from "@/app/components/interface";
-import ModuleShareButtonGroup from "./share/ModuleShareButtonGroup";
+import CompanyModuleShareButtonGroup from "./share/CompanyModuleShareButtonGroup";
 import { CloseIcon, PlusIcon } from "@/app/components/icon";
 import Modal from "@/app/components/Modal";
 import CompanyModuleTenKSection from "./CompanyModuleTenKSection";
@@ -850,7 +850,7 @@ const CompanyModuleSection: React.FC<CompanyModuleSectionProps> = ({
         </div>
 
         <div className="pr-1">
-          <ModuleShareButtonGroup
+          <CompanyModuleShareButtonGroup
             companyID={companyID}
             companyName={companyName}
             etID={etID}
