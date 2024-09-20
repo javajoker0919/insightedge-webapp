@@ -155,6 +155,12 @@ const exportAndShare = async (data: {
   return await apiClient.post("/api/v1/export-and-share", data);
 };
 
+const addNewPrivateCompany = async (data: { company_name: string }) => {
+  const apiClient = await createApiClient();
+
+  return await apiClient.post("/api/v1/private-company/add", data);
+};
+
 export {
   generateTailoredSummaryAPI,
   updatePlan,
@@ -169,4 +175,5 @@ export {
   getSchedule,
   emailShare,
   exportAndShare,
+  addNewPrivateCompany,
 };

@@ -113,12 +113,7 @@ const Header: React.FC = () => {
         </div>
 
         <div className="relative w-full sm:w-[300px] lg:w-[400px] xl:w-[700px] mb-4 sm:mb-0 h-10">
-          <CompanySearchbar
-            type="header"
-            isSearchBarOpen={true}
-            setIsSearchBarOpen={() => {}}
-            setWatchlistCompanies={() => {}}
-          />
+          <CompanySearchbar />
         </div>
 
         <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto justify-between sm:justify-end">
