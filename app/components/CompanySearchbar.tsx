@@ -174,7 +174,7 @@ const CompanySearchbar: React.FC = () => {
                 ))
               ) : (
                 <div
-                  className="p-4 bg-white transition-colors duration-200 flex justify-center items-center"
+                  className="p-4 bg-white transition-colors duration-200 flex justify-start items-center"
                   onClick={() => {}}
                 >
                   <span className="text-gray-500">
